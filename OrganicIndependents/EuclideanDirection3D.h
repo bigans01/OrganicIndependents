@@ -3,6 +3,8 @@
 #ifndef EUCLIDEANDIRECTION3D_H
 #define EUCLIDEANDIRECTION3D_H
 
+//test
+
 enum class EuclideanDirection3D
 {
 	POS_X,	// east
