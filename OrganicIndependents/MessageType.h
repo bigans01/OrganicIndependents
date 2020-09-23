@@ -1,0 +1,13 @@
+#pragma once
+
+#ifndef MESSAGETYPE_H
+#define MESSAGETYPE_H
+
+enum class MessageType
+{
+	REQUEST_BLUEPRINTS_FOR_OGLMBUFFERMANAGER,
+	RESPONSE_PROCESS_BLUEPRINT_WHEN_RECEIVED,
+	NOVAL
+};
+
+#endif
