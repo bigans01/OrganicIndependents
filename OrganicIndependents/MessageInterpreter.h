@@ -12,14 +12,17 @@ class MessageInterpreter
 		
 
 		// request maps
-		int requestIndex = 0;
+		int requestID = 0;
 		std::map<int, Message> pendingRequests;
 		std::map<int, Message> completedRequests;
 
 		// response maps
-		int responseIndex = 0;
+		int responseID = 0;
 		std::map<int, Message> pendingResponses;
 		std::map<int, Message> completedResponses;
+
+		// ID retrieval
+		int fetchRequestIndexAndIncrement();
 
 		void moveResponseToCompleted(int in_responseKeyInt);
 		void moveRequestToCompleted(int in_responseKeyInt);

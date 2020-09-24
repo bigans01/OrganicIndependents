@@ -14,12 +14,19 @@ void MessageInterpreter::moveRequestToCompleted(int in_responseKeyInt)
 	pendingRequests.erase(in_responseKeyInt);
 }
 
-void MessageInterpreter::insertRequestToPending(Message in_message)
+void MessageInterpreter::insertRequestToPending(Message in_message)		
 {
-	pendingRequests[requestIndex++] = in_message;
+	pendingRequests[in_message.messageID] = in_message;
 }
 
 void MessageInterpreter::insertResponseToPending(Message in_message)
 {
-	pendingResponses[responseIndex++] = in_message;
+	pendingResponses[in_message.messageID] = in_message;
+}
+
+int MessageInterpreter::fetchRequestIndexAndIncrement()
+{
+	int returnVal = requestID;	// get the value to return
+	requestID++;					// increment the request ID
+	return returnVal;
 }
