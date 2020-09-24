@@ -36,10 +36,16 @@
     <ClInclude Include="Message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MessageInterpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageInterpreter.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
