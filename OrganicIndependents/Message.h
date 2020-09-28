@@ -3,6 +3,7 @@
 #ifndef MESSAGE
 #define MESSAGE
 
+#include "MessageLocality.h"
 #include "MessageType.h"
 #include "EnclaveKeyDef.h"
 #include <vector>
@@ -13,13 +14,15 @@ class Message
 		Message() {};
 		Message& operator=(const Message& message_b)
 		{
+			messageLocality = message_b.messageLocality;
 			messageType = message_b.messageType;
 			intVector = message_b.intVector;
 			//intVectorIter = intVector.begin();
 			messageID = message_b.messageID;
 			return *this;
 		}
-		Message(int in_messageID, MessageType in_messageType) : messageID(in_messageID), messageType(in_messageType) {};
+		Message(int in_messageID, MessageLocality in_messageLocality, MessageType in_messageType) : messageID(in_messageID), messageLocality(in_messageLocality), messageType(in_messageType) {};
+		MessageLocality messageLocality = MessageLocality::LOCAL;	// default is LOCAL
 		MessageType messageType = MessageType::NOVAL;
 		std::vector<int> intVector;
 		std::vector<int>::iterator intVectorIter;
