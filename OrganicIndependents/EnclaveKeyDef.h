@@ -35,6 +35,9 @@ public:
 		int y = 0;
 		int z = 0;
 
+		EnclaveKey() {};
+		EnclaveKey(int in_x, int in_y, int in_z) : x(in_x), y(in_y), z(in_z) {}
+
 		// operator overloading (required)
 		bool operator==(const EnclaveKey &other) const
 		{
