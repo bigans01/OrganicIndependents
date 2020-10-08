@@ -38,6 +38,24 @@ public:
 		EnclaveKey() {};
 		EnclaveKey(int in_x, int in_y, int in_z) : x(in_x), y(in_y), z(in_z) {}
 
+		// addition operator overload
+		EnclaveKey& operator+=(const EnclaveKey& enclaveKey_b)
+		{
+			x += enclaveKey_b.x;
+			y += enclaveKey_b.y;
+			z += enclaveKey_b.z;
+			return *this;
+		}
+
+		// subtraction operator overload
+		EnclaveKey& operator-=(const EnclaveKey& enclaveKey_b)
+		{
+			x -= enclaveKey_b.x;
+			y -= enclaveKey_b.y;
+			z -= enclaveKey_b.z;
+			return *this;
+		}
+
 		// operator overloading (required)
 		bool operator==(const EnclaveKey &other) const
 		{
