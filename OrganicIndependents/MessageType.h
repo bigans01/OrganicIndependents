@@ -22,6 +22,7 @@ enum class MessageType
 
 	// request from server
 	REQUEST_FROM_SERVER_SEND_BLUEPRINTS_FOR_OGLMBUFFERMANAGER,
+	REQUEST_FROM_SERVER_SET_WORLD_DIRECTION,
 
 	// server job event type
 	SERVER_JOB_EVENT_UPDATE_INT,

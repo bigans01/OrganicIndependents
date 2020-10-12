@@ -6,6 +6,7 @@
 #include "MessageLocality.h"
 #include "MessageType.h"
 #include "EnclaveKeyDef.h"
+#include "ECBPolyPoint.h"
 #include <vector>
 #include <string>
 
@@ -45,6 +46,13 @@ class Message
 			intVector.push_back(in_key.z);
 		}
 
+		void insertPoint(ECBPolyPoint in_point)
+		{
+			floatVector.push_back(in_point.x);
+			floatVector.push_back(in_point.y);
+			floatVector.push_back(in_point.z);
+		}
+
 		void insertInt(int in_int)
 		{
 			intVector.push_back(in_int);
@@ -67,6 +75,15 @@ class Message
 			returnKey.y = *intVectorIter++;
 			returnKey.z = *intVectorIter++;
 			return returnKey;
+		}
+
+		ECBPolyPoint readPoint()
+		{
+			ECBPolyPoint returnPoint;
+			returnPoint.x = *floatVectorIter++;
+			returnPoint.y = *floatVectorIter++;
+			returnPoint.z = *floatVectorIter++;
+			return returnPoint;
 		}
 
 		int readInt()
