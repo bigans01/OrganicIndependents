@@ -29,6 +29,18 @@ public:
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
+
+	bool isAllZero()  		// returns true if the point has a value of 0 for x,y and z.
+	{
+		return 
+		(
+			x == 0.0f
+			&&
+			y == 0.0f
+			&&
+			z == 0.0f
+		);
+	}
 };
 
 #endif
