@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BlueprintScanningCuboid.h" />
+    <ClInclude Include="DebugOption.h" />
     <ClInclude Include="ECBPolyPoint.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="EuclideanDirection3D.h" />
