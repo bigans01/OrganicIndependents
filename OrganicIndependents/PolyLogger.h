@@ -25,6 +25,8 @@ public:
 		//std::cout << std::endl;
 	}
 	void log() {};
+	bool isLoggingSet();
+	void waitForDebugInput();
 };
 
 #endif
