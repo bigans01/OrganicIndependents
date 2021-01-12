@@ -27,6 +27,7 @@ public:
 	void log() {};
 	bool isLoggingSet();
 	void waitForDebugInput();
+	PolyDebugLevel getLogLevel();
 };
 
 #endif

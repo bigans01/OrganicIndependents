@@ -24,3 +24,8 @@ void PolyLogger::waitForDebugInput()
 		std::cin >> someVal;
 	}
 }
+
+PolyDebugLevel PolyLogger::getLogLevel()
+{
+	return logLevel;
+}
