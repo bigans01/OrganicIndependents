@@ -15,6 +15,7 @@
 //  --CategorizedLineInterceptsPointPreciseMerger
 //  --CategorizedLinePartialBoundMerger
 //  --CategorizedLineASliceMerger
+// FRACTURER
 
 
 
@@ -36,6 +37,12 @@ enum class DebugOption
 	SPECIFIC_FRACTURER_EXECUTION,
 	SPECIFIC_SPOLY_CATEGORIZED_LINES,
 	SPECIFIC_SPOLY_CATEGORIZED_LINE_COPLANAR_TESTS,
+
+	// Options for OLD ZONE (See MassZoneMaster::oldZone, in OrganicGLWinLib)
+	// debug options for Old zone (generic)
+	MASSZONEMASTER_OLDZONE_PRINT_BOUNDARY_CATEGORIZED_LINES,				// prints the categorized lines in each boundary SPoly
+	MASSZONEMASTER_OLDZONE_HALT_BETWEEN_BOUNDARY_SPOLY_CONSTRUCTION,		// waits for input between SPoly construction in the boundaries of a MassZoneBox.
+	MASSZONEMASTER_OLDZONE_POINT_CLIPPING,
 
 	// debug options for Old Zone, NEG_Z (North)
 	MASSZONEMASTER_OLDZONE_NEG_Z_BOUNDARY_SPOLY_MAIN,
@@ -83,7 +90,12 @@ enum class DebugOption
 	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_SPOLY_FACTORY_MERGER,
 	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_FRACTURER,
 	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_CATEGORIZED_LINES,
-	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_CATEGORIZED_LINE_COPLANAR_TESTS
+	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_CATEGORIZED_LINE_COPLANAR_TESTS,
+
+	// Options for OLD ZONE (See MassZoneMaster::oldZone, in OrganicGLWinLib)
+	MASSZONEMASTER_NEWZONE_PRINT_BOUNDARY_CATEGORIZED_LINES,				// prints the categorized lines in each boundary SPoly
+	MASSZONEMASTER_NEWZONE_HALT_BETWEEN_BOUNDARY_SPOLY_CONSTRUCTION,		// waits for input between SPoly construction in the boundaries of a MassZoneBox.
+	MASSZONEMASTER_NEWZONE_POINT_CLIPPING
 
 };
 
