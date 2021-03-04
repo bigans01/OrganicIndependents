@@ -32,6 +32,8 @@ class PrintableError
 			{
 				PROCESS_ERROR_TEXT(ErrorEnum::NONE);
 				PROCESS_ERROR_TEXT(ErrorEnum::TEST);
+				PROCESS_ERROR_TEXT(ErrorEnum::CUTLINEWELDER_BAD_TYPICAL_RUN);
+				PROCESS_ERROR_TEXT(ErrorEnum::CUTLINEWELDER_BAD_SLICE_RUN);
 			}
 			#undef	PROCESS_ERROR_TEXT
 			std::string stringedOutput(outputChar);
