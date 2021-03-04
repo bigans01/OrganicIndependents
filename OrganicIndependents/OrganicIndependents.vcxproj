@@ -156,6 +156,9 @@
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="ECBPolyPoint.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
+    <ClInclude Include="ErrorEnum.h" />
+    <ClInclude Include="ErrorSensor.h" />
+    <ClInclude Include="ErrorUtils.h" />
     <ClInclude Include="EuclideanDirection3D.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageCable.h" />
@@ -165,6 +168,8 @@
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="PolyDebugLevel.h" />
     <ClInclude Include="PolyLogger.h" />
+    <ClInclude Include="PrintableError.h" />
+    <ClInclude Include="PrintableErrorStack.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
