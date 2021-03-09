@@ -94,7 +94,7 @@ enum class DebugOption
 	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_CATEGORIZED_LINES,
 	MASSZONEMASTER_OLDZONE_NEG_Y_BOUNDARY_CATEGORIZED_LINE_COPLANAR_TESTS,
 
-	// Options for OLD ZONE (See MassZoneMaster::oldZone, in OrganicGLWinLib)
+	// Options for NEW ZONE (See MassZoneMaster::oldZone, in OrganicGLWinLib)
 	MASSZONEMASTER_NEWZONE_PRINT_BOUNDARY_CATEGORIZED_LINES,				// prints the categorized lines in each boundary SPoly
 	MASSZONEMASTER_NEWZONE_HALT_BETWEEN_BOUNDARY_SPOLY_CONSTRUCTION,		// waits for input between SPoly construction in the boundaries of a MassZoneBox.
 	MASSZONEMASTER_NEWZONE_POINT_CLIPPING,
@@ -151,19 +151,26 @@ enum class DebugOption
 	COPLANARRELATIONSHIP_SHOW_TRACKED_SPOLY_BORDER_LINES,
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by class CuttableTriangle (OrganicGLWinLib)
-	REFERENCED_CUTTINGTRIANGLE_COMPARISON,
-	REFERENCED_CUTTINGTRIANGLE_NONCOLINEAR_INTERSECT,
-	REFERENCED_CUTTINGTRIANGLE_TJUNCTION_INTERSECT,
-	REFERENCED_CUTTINGTRIANGLE_COLINEAR_INTERSECT,
-	REFERENCED_CUTTINGTRIANGLE_QUAT_COLINEAR,
-	REFERENCED_CUTTINGTRIANGLE_QUAT_INTERSECTING,
-	REFERENCED_CUTTINGTRIANGLE_PBZ_TEST,
-	REFERENCED_CUTTINGTRIANGLE_CYCLING_DIRECTION,
-	REFERENCED_CUTTINGTRIANGLE_INTERSECT_ANALYZER_RESULT,
-	REFERENCED_CUTTINGTRIANGLE_SLICE_ATTEMPTS,
-	REFERENCED_CUTTINGTRIANGLE_TYPICAL_ATTEMPTS,
-	REFERENCED_CUTTINGTRIANGLE_CUTLINEWELDER,
-	REFERENCED_CUTTINGTRIANGLE_CUTTRIANGLEGROUPBUILDER
+	REFERENCED_CUTTINGTRIANGLE_COMPARISON,					// for CuttableTriangle::compareAgainstCuttingTriangle; prints out generic data in this function.
+	REFERENCED_CUTTINGTRIANGLE_NONCOLINEAR_INTERSECT,		// for CuttableTriangle::compareAgainstCuttingTriangle; prints out data for noncolinear intersects.
+	REFERENCED_CUTTINGTRIANGLE_TJUNCTION_INTERSECT,			// for CuttableTriangle::compareAgainstCuttingTriangle; prints out data for t-junction intersects.
+	REFERENCED_CUTTINGTRIANGLE_COLINEAR_INTERSECT,			
+	REFERENCED_CUTTINGTRIANGLE_QUAT_COLINEAR,				// for CuttableTriangle::compareAgainstCuttingTriangle's instance of TwoDLineSegmentIntersectAnalyzerV2 
+															// flags debugging in colinear quat machine.
+	REFERENCED_CUTTINGTRIANGLE_QUAT_INTERSECTING,			// for CuttableTriangle::compareAgainstCuttingTriangle's instance of TwoDLineSegmentIntersectAnalyzerV2 
+															// flags debugging in intersecting quat machine.
+	REFERENCED_CUTTINGTRIANGLE_PBZ_TEST,					// CuttableTriangle::testIfCuttingTriangleConsumesThisTriangle; shows output for the PBZ test.
+	REFERENCED_CUTTINGTRIANGLE_CYCLING_DIRECTION,			// used during call to QuatUtils::findPointForDeterminingCyclingDirection
+	REFERENCED_CUTTINGTRIANGLE_INTERSECT_ANALYZER_RESULT,   // used mainly during TwoDLineSegmentIntersectAnalyzerV2::performAnalysis(); outputs generic intersection data.
+	REFERENCED_CUTTINGTRIANGLE_SLICE_ATTEMPTS,				// used by CuttableTriangle::buildLinesFromSliceAttempt; shows output related to building a TwoDCrawlingAttempt of type SLICE.
+	REFERENCED_CUTTINGTRIANGLE_TYPICAL_ATTEMPTS,			// used by CuttableTriangle::buildLinesFromTypicalAttempt; shows output reloated to building a TwoDCrawlingAttempt of type TYPICAL.
+	REFERENCED_CUTTINGTRIANGLE_CUTLINEWELDER,				// used by CutLineWelder::handleTypicalRun(); shows output of the CutLineWelder as it produces lines.
+	REFERENCED_CUTTINGTRIANGLE_CUTTRIANGLEGROUPBUILDER,		// used by CutTriangleGroupBuilder::runCutTraceObserver(), and the classe's instance of CutLineTraceObserver.
+	REFERENCED_CUTTINGTRIANGLE_CUT_TRIANGLE_PRODUCTION,		// for CuttableTriangle::produceCutTriangles (OrganicGLWinLib)
+
+	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by class STriangleCutter (OrganicGLWinLib)
+	STRIANGLECUTTER_BASIC									// for showing output of a particular STriangleCutter run; set by SPolySet::setDOTrackedSPolySTriangle (OrganicGLWinLib)
+															// also shows output of remaining/spawned SCuttableTriangles after a comparison to a specific SCuttingTriangle.
 };
 
 #endif
