@@ -23,13 +23,15 @@
 enum class DebugOption
 {
 	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by class SPolySet (OrganicGLWinLib)
-	// generic options, for no specific SPoly
+	// generic options, for no specific SPoly (set via SPolySet::setDOGeneric)
 	SPOLYSET_TYPICAL,
 	SPOLYSET_BOUNDARIES,
 	SPOLYSET_ALL_SPOLY_MAIN,
 	SPOLYSET_ALL_SPOLY_FACTORY,
 	SPOLYSET_ALL_SPOLY_FACTORY_MERGER,
 	SPOLYSET_ALL_FRACTURER,
+	SPOLYSET_ALL_COPLANAR_RELATIONSHIPS_BASIC,		// will output metadata about specific STriangles that are part of a tracked SPoly, and halt (wait for input) between 
+													// cutting operations that are performed on the STriangles; see CoplanarRelationships::performCuttingSequenceTest()
 
 	// specific poly options,
 	SPECIFIC_SPOLY_MAIN,

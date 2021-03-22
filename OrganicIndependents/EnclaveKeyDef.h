@@ -65,6 +65,24 @@ public:
 				&&
 				z == other.z);
 		}
+		
+		// checks if the key equals this exact x/y/z
+		bool equals(int in_x, int in_y, int in_z)
+		{
+			bool equalsValue = false;
+			if
+			(
+				(x == in_x)
+				&&
+				(y == in_y)
+				&&
+				(z == in_z)
+			)
+			{
+				equalsValue = true;
+			}
+			return equalsValue;
+		}
 	};
 
 	struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
@@ -89,6 +107,8 @@ public:
 				^ (hash<int>()(k.z) << 1);
 		}
 	};
+
+
 };
 
 #endif
