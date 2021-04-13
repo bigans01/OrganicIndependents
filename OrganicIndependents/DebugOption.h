@@ -41,6 +41,10 @@ enum class DebugOption
 	SPECIFIC_SPOLY_CATEGORIZED_LINES,
 	SPECIFIC_SPOLY_CATEGORIZED_LINE_COPLANAR_TESTS,
 
+	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by MassZonePointClipper (OrganicGLWinLib)
+	SPECIFIC_SPOLY_CLIPPING_MASS_TRIAL,				// outputs data related to the PointToMassTrial, of a specific SPoly.
+	SPECIFIC_SPOLY_CLIPPING_SHELL_SPOLYS,			// will print out all points of all shell SPolys in a MassZone, before a specific SPoly's PointToMassTrial. (see MassZonePointClipper::compareMeshMatterMetaAgainstClippingShells())
+
 	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by class MassZoneMaster (OrganicGLWinLib)
 	// Options for OLD ZONE (See MassZoneMaster::oldZone, in OrganicGLWinLib)
 	// debug options for Old zone (generic)
