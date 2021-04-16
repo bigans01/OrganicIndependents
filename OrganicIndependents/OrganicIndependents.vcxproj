@@ -170,6 +170,7 @@
     <ClInclude Include="PolyLogger.h" />
     <ClInclude Include="PrintableError.h" />
     <ClInclude Include="PrintableErrorStack.h" />
+    <ClInclude Include="SmartIntMap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
