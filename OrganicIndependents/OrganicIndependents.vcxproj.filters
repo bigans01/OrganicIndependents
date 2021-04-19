@@ -81,6 +81,12 @@
     <ClInclude Include="SmartIntMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StringToMessageBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBuildResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -93,6 +99,9 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="PolyLogger.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StringToMessageBuilder.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
