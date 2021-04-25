@@ -25,6 +25,7 @@ class Message
 			return *this;
 		}
 		Message(int in_messageID, MessageLocality in_messageLocality, MessageType in_messageType) : messageID(in_messageID), messageLocality(in_messageLocality), messageType(in_messageType) {};
+		Message(MessageType in_messageType) : messageType(in_messageType) {};
 
 		MessageLocality messageLocality = MessageLocality::LOCAL;	// default is LOCAL
 		MessageType messageType = MessageType::NOVAL;
