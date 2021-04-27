@@ -65,6 +65,15 @@ public:
 				&&
 				z == other.z);
 		}
+		bool operator!=(const EnclaveKey &other) const
+		{
+			return
+			(x != other.x
+			||
+			y != other.y
+			||
+			z != other.z);
+		}
 		
 		// checks if the key equals this exact x/y/z
 		bool equals(int in_x, int in_y, int in_z)
