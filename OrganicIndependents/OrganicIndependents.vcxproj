@@ -151,15 +151,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BlockBorder.h" />
+    <ClInclude Include="BlockBorderCornerPoint.h" />
+    <ClInclude Include="BlockBorderLineList.h" />
+    <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="ECBPolyPoint.h" />
+    <ClInclude Include="ECBPPOrientationResults.h" />
+    <ClInclude Include="ECBPPOrientations.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="ErrorEnum.h" />
     <ClInclude Include="ErrorSensor.h" />
     <ClInclude Include="ErrorUtils.h" />
     <ClInclude Include="EuclideanDirection3D.h" />
+    <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuildResult.h" />
     <ClInclude Include="MessageCable.h" />
@@ -177,7 +184,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BlockBorderLineList.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
+    <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="PolyLogger.cpp" />
     <ClCompile Include="stdafx.cpp">

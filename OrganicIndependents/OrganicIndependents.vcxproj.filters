@@ -87,6 +87,27 @@
     <ClInclude Include="MessageBuildResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BlockPolyPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockBorderCornerPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockBorderLineList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndependentUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPPOrientations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPPOrientationResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -102,6 +123,12 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="StringToMessageBuilder.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockBorderLineList.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndependentUtils.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
