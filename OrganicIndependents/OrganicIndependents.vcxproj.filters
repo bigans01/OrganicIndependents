@@ -108,6 +108,9 @@
     <ClInclude Include="ECBPPOrientationResults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveBorderLineList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +132,9 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="IndependentUtils.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveBorderLineList.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

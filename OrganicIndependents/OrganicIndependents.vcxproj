@@ -161,6 +161,7 @@
     <ClInclude Include="ECBPolyPoint.h" />
     <ClInclude Include="ECBPPOrientationResults.h" />
     <ClInclude Include="ECBPPOrientations.h" />
+    <ClInclude Include="EnclaveBorderLineList.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="ErrorEnum.h" />
     <ClInclude Include="ErrorSensor.h" />
@@ -186,6 +187,7 @@
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
+    <ClCompile Include="EnclaveBorderLineList.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="PolyLogger.cpp" />
