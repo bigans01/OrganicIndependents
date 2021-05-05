@@ -158,6 +158,10 @@
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
+    <ClInclude Include="ECBBorder.h" />
+    <ClInclude Include="ECBBorderCornerPoint.h" />
+    <ClInclude Include="ECBBorderLine.h" />
+    <ClInclude Include="ECBBorderLineList.h" />
     <ClInclude Include="ECBPolyPoint.h" />
     <ClInclude Include="ECBPPOrientationResults.h" />
     <ClInclude Include="ECBPPOrientations.h" />
@@ -187,6 +191,7 @@
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
+    <ClCompile Include="ECBBorder.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />

@@ -111,6 +111,18 @@
     <ClInclude Include="EnclaveBorderLineList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ECBBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBBorderCornerPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBBorderLineList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBBorderLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -135,6 +147,9 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="EnclaveBorderLineList.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ECBBorder.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
