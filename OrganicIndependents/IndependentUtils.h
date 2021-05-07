@@ -9,6 +9,8 @@
 #include "EnclaveBorderLineList.h"
 #include "EnclaveKeyDef.h"
 #include "ECBBorderLineList.h"
+#include "BorderDataMap.h"
+#include "BorderMDFaceList.h"
 
 class IndependentUtils
 {
@@ -19,6 +21,9 @@ class IndependentUtils
 		static ECBPPOrientationResults GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList);
 		static ECBBorderLineList determineBorderLines(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPolyPoint roundPolyPointToHundredths(ECBPolyPoint in_pointToCheck);
+		static BorderMDFaceList getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
+		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
+		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
 		static float roundToHundredth(float in_float);
 };
 

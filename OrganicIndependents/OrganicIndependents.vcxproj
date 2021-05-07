@@ -154,8 +154,13 @@
     <ClInclude Include="BlockBorder.h" />
     <ClInclude Include="BlockBorderCornerPoint.h" />
     <ClInclude Include="BlockBorderLineList.h" />
+    <ClInclude Include="BlockBorderMDCorner.h" />
+    <ClInclude Include="BlockBorderMDFace.h" />
+    <ClInclude Include="BlockBorderMDLine.h" />
     <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
+    <ClInclude Include="BorderDataMap.h" />
+    <ClInclude Include="BorderMDFaceList.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="ECBBorder.h" />
@@ -190,7 +195,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
+    <ClCompile Include="BlockBorderMDCorner.cpp" />
+    <ClCompile Include="BlockBorderMDLine.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
+    <ClCompile Include="BorderDataMap.cpp" />
+    <ClCompile Include="BorderMDFaceList.cpp" />
     <ClCompile Include="ECBBorder.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />

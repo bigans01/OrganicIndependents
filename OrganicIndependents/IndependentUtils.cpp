@@ -1708,3 +1708,84 @@ float IndependentUtils::roundToHundredth(float in_float)
 	//std::cout << "Calc'ed float is: " << calcedFloat << std::endl;
 	return calcedFloat;
 }
+
+BorderMDFaceList IndependentUtils::getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef)
+{
+	BorderMDFaceList returnFaceList;
+	// get values from face
+	if (in_beginOrientation.otype == ECBPPOrientations::FACE)
+	{
+		//std::cout << "Retrieving data from FACE " << std::endl;
+		returnFaceList.faceList[0] = in_beginOrientation.osubtype;	// store the face's actual value in here
+	}
+
+	// get values from a line
+	else if (in_beginOrientation.otype == ECBPPOrientations::LINE)
+	{
+		//std::cout << "Retrieving data from LINE " << std::endl;
+		returnFaceList.faceList[0] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[1];
+	}
+
+	// get values from a corner
+	else if (in_beginOrientation.otype == ECBPPOrientations::CORNER)
+	{
+		//std::cout << "Point is at corner: " << std::endl;
+		//std::cout << "Retrieving data from CORNER " << std::endl;
+		returnFaceList.faceList[0] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[1];
+		returnFaceList.faceList[2] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[2];
+
+	}
+	return returnFaceList;
+}
+
+BorderMDFaceList IndependentUtils::getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef)
+{
+	BorderMDFaceList returnFaceList;
+	// get values from face
+	if (in_beginOrientation.otype == ECBPPOrientations::FACE)
+	{
+		std::cout << "Retrieving data from FACE " << std::endl;
+		returnFaceList.faceList[0] = in_beginOrientation.osubtype;	// store the face's actual value in here
+	}
+
+	// get values from a line
+	else if (in_beginOrientation.otype == ECBPPOrientations::LINE)
+	{
+		std::cout << "Retrieving data from LINE " << std::endl;
+		returnFaceList.faceList[0] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[1];
+	}
+
+	// get values from a corner
+	else if (in_beginOrientation.otype == ECBPPOrientations::CORNER)
+	{
+		std::cout << "Point is at corner: " << std::endl;
+		//std::cout << "Retrieving data from CORNER " << std::endl;
+		returnFaceList.faceList[0] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[1];
+		returnFaceList.faceList[2] = in_borderDataMapRef->cornerMap[in_beginOrientation.osubtype].linkedFaces[2];
+
+	}
+	return returnFaceList;
+}
+
+void IndependentUtils::printOrientationEnum(ECBPPOrientations in_pointOrientation)
+{
+	switch (in_pointOrientation)
+	{
+		case ECBPPOrientations::ZAXIS_LOWERWEST: { std::cout << "ZAXIS_LOWERWEST" << std::endl; break; }
+		case ECBPPOrientations::ZAXIS_LOWEREAST: { std::cout << "ZAXIS_LOWEREAST" << std::endl; break; }
+		case ECBPPOrientations::ZAXIS_UPPERWEST: { std::cout << "ZAXIS_UPPERWEST" << std::endl; break; }
+		case ECBPPOrientations::ZAXIS_UPPEREAST: { std::cout << "ZAXIS_UPPEREAST" << std::endl; break; }
+		case ECBPPOrientations::XAXIS_LOWERNORTH: { std::cout << "XAXIS_LOWERNORTH" << std::endl; break; }
+		case ECBPPOrientations::XAXIS_LOWERSOUTH: { std::cout << "XAXIS_LOWERSOUTH" << std::endl; break; }
+		case ECBPPOrientations::XAXIS_UPPERNORTH: { std::cout << "XAXIS_UPPERNORTH" << std::endl; break; }
+		case ECBPPOrientations::XAXIS_UPPERSOUTH: { std::cout << "XAXIS_UPPERSOUTH" << std::endl; break; }
+		case ECBPPOrientations::YAXIS_NORTHWEST: { std::cout << "YAXIS_NORTHWEST" << std::endl; break; }
+		case ECBPPOrientations::YAXIS_NORTHEAST: { std::cout << "YAXIS_NORTHEAST" << std::endl; break; }
+		case ECBPPOrientations::YAXIS_SOUTHWEST: { std::cout << "YAXIS_SOUTHWEST" << std::endl; break; }
+		case ECBPPOrientations::YAXIS_SOUTHEAST: { std::cout << "YAXIS_SOUTHEAST" << std::endl; break; }
+	}
+}
