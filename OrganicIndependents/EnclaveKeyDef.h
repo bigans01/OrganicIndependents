@@ -98,6 +98,32 @@ public:
 	{
 		int a = 0;
 		int b = 0;
+
+		Enclave2DKey() {};
+		Enclave2DKey(int in_a, int in_b) : a(in_a), b(in_b) {};
+
+		bool equals(int in_a, int in_b)
+		{
+			bool equalsValue = false;
+			if
+			(
+				(a == in_a)
+				&&
+				(b == in_b)
+			)
+			{
+				equalsValue = true;
+			}
+			return equalsValue;
+		}
+
+		bool operator==(const Enclave2DKey &other) const
+		{
+			return (a == other.a
+				&&
+				b == other.b
+				);
+		}
 	};
 
 
@@ -114,6 +140,16 @@ public:
 					^ (hash<int>()(k.y) << 1)
 					) >> 1)
 				^ (hash<int>()(k.z) << 1);
+		}
+
+		std::size_t operator()(const Enclave2DKey& k) const
+		{
+			using std::size_t;
+			using std::hash;
+			using std::string;
+			return (hash<int>()(k.a)
+				^ (hash<int>()(k.b) << 1)
+				) >> 1;
 		}
 	};
 
