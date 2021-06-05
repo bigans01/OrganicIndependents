@@ -138,6 +138,18 @@
     <ClInclude Include="BorderMDFaceList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicBorderCornerPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicBorderLineList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyPointTri.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -178,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="BorderMDFaceList.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicBorderLineList.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

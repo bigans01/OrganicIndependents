@@ -1789,3 +1789,38 @@ void IndependentUtils::printOrientationEnum(ECBPPOrientations in_pointOrientatio
 		case ECBPPOrientations::YAXIS_SOUTHEAST: { std::cout << "YAXIS_SOUTHEAST" << std::endl; break; }
 	}
 }
+
+ECBPolyPoint IndependentUtils::findNormalizedPoint(ECBPolyPoint in_pointA)
+{
+	ECBPolyPoint returnPoint;
+	// make sure x is not 0
+	if (!((in_pointA.x) == 0.0f))
+	{
+		returnPoint.x = (in_pointA.x) / abs(in_pointA.x);
+	}
+	else
+	{
+		returnPoint.x = 0.0f;
+	}
+
+	// make sure y is not 0
+	if (!((in_pointA.y) == 0.0f))
+	{
+		returnPoint.y = (in_pointA.y) / abs(in_pointA.y);
+	}
+	else
+	{
+		returnPoint.y = 0.0f;
+	}
+
+	// make sure z is not 0
+	if (!((in_pointA.z) == 0.0f))
+	{
+		returnPoint.z = (in_pointA.z) / abs(in_pointA.z);
+	}
+	else
+	{
+		returnPoint.z = 0.0f;
+	}
+	return returnPoint;
+}

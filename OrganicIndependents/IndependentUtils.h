@@ -23,6 +23,7 @@ class IndependentUtils
 		static ECBPolyPoint roundPolyPointToHundredths(ECBPolyPoint in_pointToCheck);
 		static BorderMDFaceList getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
+		static ECBPolyPoint findNormalizedPoint(ECBPolyPoint in_pointA);
 		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
 		static float roundToHundredth(float in_float);
 };
