@@ -15,7 +15,7 @@ class DynamicBorderLineList
 			dimLength = in_dimLength;
 			setBorders();
 		}
-	private:
+
 		// Type 1 borders (corners)
 		DynamicBorderCornerPoint  corner_UpperNW;
 		DynamicBorderCornerPoint  corner_UpperSW;

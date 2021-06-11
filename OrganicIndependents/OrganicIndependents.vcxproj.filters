@@ -150,6 +150,15 @@
     <ClInclude Include="ECBPolyPointTri.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicEndpointMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinePointSynchronizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicLinePointSynchronizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,6 +201,12 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="DynamicBorderLineList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinePointSynchronizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicLinePointSynchronizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

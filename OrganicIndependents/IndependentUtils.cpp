@@ -1790,6 +1790,52 @@ void IndependentUtils::printOrientationEnum(ECBPPOrientations in_pointOrientatio
 	}
 }
 
+ECBPolyPoint IndependentUtils::snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit)
+{
+	std::cout << "::::: original point is: " << in_polyPoint.x << ", " << in_polyPoint.y << ", " << in_polyPoint.z << std::endl;
+	ECBPolyPoint originalPoint = in_polyPoint;
+	float up_scaled_x = originalPoint.x * 100.0f;
+	float up_scaled_y = originalPoint.y * 100.0f;
+	float up_scaled_z = originalPoint.z * 100.0f;
+	float new_x = ((floor(up_scaled_x) ) + 0.5f) / 100;
+	float new_y = ((floor(up_scaled_y) ) + 0.5f) / 100;
+	float new_z = ((floor(up_scaled_z) ) + 0.5f) / 100;
+
+	std::cout << "::::: new point is: " << new_x << ", " << new_y << ", " << new_z << std::endl;
+
+	// calibrate x against limits
+	if (new_x > in_gridLimit)
+	{
+		new_x = in_gridLimit;
+	}
+	else if (new_x < 0.0f)
+	{
+		new_x = 0.0f;
+	}
+
+	// calibrate y against limits
+	if (new_y > in_gridLimit)
+	{
+		new_y = in_gridLimit;
+	}
+	else if (new_y < 0.0f)
+	{
+		new_y = 0.0f;
+	}
+
+	// calibrate z against limits
+	if (new_z > in_gridLimit)
+	{
+		new_z = in_gridLimit;
+	}
+	else if (new_z < 0.0f)
+	{
+		new_z = 0.0f;
+	}
+
+	return ECBPolyPoint(new_x, new_y, new_z);
+}
+
 ECBPolyPoint IndependentUtils::findNormalizedPoint(ECBPolyPoint in_pointA)
 {
 	ECBPolyPoint returnPoint;

@@ -25,6 +25,7 @@ class IndependentUtils
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static ECBPolyPoint findNormalizedPoint(ECBPolyPoint in_pointA);
 		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
+		static ECBPolyPoint snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit);
 		static float roundToHundredth(float in_float);
 };
 
