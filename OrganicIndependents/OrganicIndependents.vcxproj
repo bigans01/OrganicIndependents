@@ -168,6 +168,9 @@
     <ClInclude Include="DynamicBorderLineList.h" />
     <ClInclude Include="DynamicEndpointMeta.h" />
     <ClInclude Include="DynamicLinePointSynchronizer.h" />
+    <ClInclude Include="DynamicLineSyncResult.h" />
+    <ClInclude Include="DynamicLineSyncType.h" />
+    <ClInclude Include="DynamicSyncExclusionOption.h" />
     <ClInclude Include="ECBBorder.h" />
     <ClInclude Include="ECBBorderCornerPoint.h" />
     <ClInclude Include="ECBBorderLine.h" />
