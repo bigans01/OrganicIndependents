@@ -11,6 +11,13 @@
 #include "ECBBorderLineList.h"
 #include "BorderDataMap.h"
 #include "BorderMDFaceList.h"
+#include "EnclaveBlockVertex.h"
+#include "FaceListMeta.h"
+#include "InterceptValidity.h"
+#include "ECBPolyPointTri.h"
+#include "PolyLineEndpointMeta.h"
+#include "LinePointSynchronizer.h"
+#include "PLTracingResult.h"
 
 class IndependentUtils
 {
@@ -24,9 +31,46 @@ class IndependentUtils
 		static BorderMDFaceList getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static ECBPolyPoint findNormalizedPoint(ECBPolyPoint in_pointA);
+		static ECBPolyPoint findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
 		static ECBPolyPoint snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit);
+		static EnclaveBlockVertex convertPolyPointToBlockVertex(ECBPolyPoint in_polyPoint);
+		static ECBPolyPoint roundPolyPointToThousandths(ECBPolyPoint in_polyPoint);
+		static ECBPolyPoint roundPolyPointToTenThousandths(ECBPolyPoint in_polyPoint);
+		static int checkIfFaceListsMatch(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, int in_numberOfMatches);
 		static float roundToHundredth(float in_float);
+		static float roundToThousandths(float in_float);
+		static float roundToTenThousandths(float in_float);
+		static EnclaveKeyDef::EnclaveKey retrieveBorderDirection(ECBPPOrientationResults in_results, BorderDataMap* in_dataMapRef);
+		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
+		static void checkForSecondarySlopeInversion(ECBPolyPoint in_intendedFaces, EnclaveKeyDef::EnclaveKey in_moveVals, ECBPolyPoint* in_xIntRef, ECBPolyPoint* in_yIntRef, ECBPolyPoint* in_zIntRef);
+		static ECBPolyPoint invertSlope(ECBPolyPoint in_polyPoint);
+		static ECBPolyPoint getSlopeToUse(ECBPPOrientations in_interceptType, ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope);
+		static InterceptValidity determineInterceptValidity(ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, ECBPolyPoint in_slopeToCheck, int in_perfectClampValue);
+		static int checkIfPolyPointsMatch(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static ECBPolyPoint getInterceptToUseFromLine(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2, InterceptValidity in_firstInterceptValidity, InterceptValidity in_secondInterceptValidity, EnclaveKeyDef::EnclaveKey in_moveVals);
+		static ECBPolyPoint getInterceptToUseFromLineDebug(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2, InterceptValidity in_firstInterceptValidity, InterceptValidity in_secondInterceptValidity, EnclaveKeyDef::EnclaveKey in_moveVals);
+		static ECBPolyPoint getInterceptToUseFromCorner(ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope, int in_perfectClampValue, EnclaveKeyDef::EnclaveKey in_moveVals);
+		static bool checkIfInterceptIsValid(ECBPolyPoint in_interceptToCheck);
+		static ECBPolyPoint getBlockTracingEndpoint(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef);
+		static ECBPolyPoint getBlockTracingEndpointDebug(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef);
+
+		// for block endpoints
+		static PolyLineEndpointMeta getCalculatedEndpointMetadata(ECBPolyPoint in_originPoint, BlockBorderLineList* in_blockBorderRef, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slopeDirection, ECBPolyPointTri in_XYZinterceptCoords);
+		static PolyLineEndpointMeta getCalculatedEndpointMetadataDebug(ECBPolyPoint in_originPoint, BlockBorderLineList* in_blockBorderRef, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slopeDirection, ECBPolyPointTri in_XYZinterceptCoords);
+
+		static ECBPolyPoint roundXYZInterceptDistancesToAppropriatePrecision(float in_distX, float in_distY, float in_distZ);
+		static ECBPolyPoint roundXYZInterceptDistancesToAppropriatePrecisionDebug(float in_distX, float in_distY, float in_distZ);
+
+		static ECBPolyPoint roundToNearestBlockLineOrCorner(int in_xoryorz, ECBPolyPoint in_polyPoint, int in_lineOrCorner);
+
+		static PLTracingResult getBlockTracingResult(ECBPolyPoint in_beginPoint, ECBPolyPoint in_interceptToUse, BlockBorderLineList* in_borderLineListRef, BorderDataMap* in_borderDataMapRef, int in_debugFlag);
+
+		static float convertPreciseCoordToFloat(unsigned char in_unsignedCharToCheck);
+
+		static int isUnsignedCharBitSet(unsigned char in_unsignedChar, int in_bitToCheck);
+		static void setUnsignedCharBit(unsigned char* in_unsignedCharPtr, int in_bitToSet, int in_bitValue);		// sets a bit in an unsigned char; 8 = 8th bit, 1 = 1st bit (do not use 0 for a bit)
+
 };
 
 #endif

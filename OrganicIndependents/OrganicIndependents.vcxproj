@@ -157,10 +157,15 @@
     <ClInclude Include="BlockBorderMDCorner.h" />
     <ClInclude Include="BlockBorderMDFace.h" />
     <ClInclude Include="BlockBorderMDLine.h" />
+    <ClInclude Include="BlockCircuit.h" />
+    <ClInclude Include="BlockFlags.h" />
+    <ClInclude Include="BlockFlagStates.h" />
     <ClInclude Include="BlockPolyPoint.h" />
+    <ClInclude Include="BlockSearchMeta.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="BorderDataMap.h" />
     <ClInclude Include="BorderMDFaceList.h" />
+    <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="DynamicBorder.h" />
@@ -179,13 +184,21 @@
     <ClInclude Include="ECBPolyPointTri.h" />
     <ClInclude Include="ECBPPOrientationResults.h" />
     <ClInclude Include="ECBPPOrientations.h" />
+    <ClInclude Include="EnclaveBlock.h" />
+    <ClInclude Include="EnclaveBlockVertex.h" />
     <ClInclude Include="EnclaveBorderLineList.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="ErrorEnum.h" />
     <ClInclude Include="ErrorSensor.h" />
     <ClInclude Include="ErrorUtils.h" />
     <ClInclude Include="EuclideanDirection3D.h" />
+    <ClInclude Include="FaceListMeta.h" />
+    <ClInclude Include="FanBase.h" />
+    <ClInclude Include="FanData.h" />
+    <ClInclude Include="FanManager.h" />
+    <ClInclude Include="FatFan.h" />
     <ClInclude Include="IndependentUtils.h" />
+    <ClInclude Include="InterceptValidity.h" />
     <ClInclude Include="LinePointSynchronizer.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuildResult.h" />
@@ -193,31 +206,57 @@
     <ClInclude Include="MessageInterpreter.h" />
     <ClInclude Include="MessageLocality.h" />
     <ClInclude Include="MessageType.h" />
+    <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="OperableIntSet.h" />
+    <ClInclude Include="OrganicWrappedBBFan.h" />
+    <ClInclude Include="PLTracingResult.h" />
+    <ClInclude Include="PointSearchData.h" />
     <ClInclude Include="PolyDebugLevel.h" />
+    <ClInclude Include="PolyGroupTicker.h" />
+    <ClInclude Include="PolyGroupTickerState.h" />
+    <ClInclude Include="PolyLineEndpointMeta.h" />
     <ClInclude Include="PolyLogger.h" />
+    <ClInclude Include="PolyRunDirection.h" />
+    <ClInclude Include="PrimarySegmentMeta.h" />
+    <ClInclude Include="PrimarySegmentTracker.h" />
     <ClInclude Include="PrintableError.h" />
     <ClInclude Include="PrintableErrorStack.h" />
+    <ClInclude Include="SCircuitSegment.h" />
+    <ClInclude Include="SegmentMeta.h" />
+    <ClInclude Include="SegmentResult.h" />
     <ClInclude Include="SmartIntMap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringToMessageBuilder.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TertiaryTriangleContainer.h" />
+    <ClInclude Include="ThinFan.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
     <ClCompile Include="BlockBorderMDCorner.cpp" />
     <ClCompile Include="BlockBorderMDLine.cpp" />
+    <ClCompile Include="BlockCircuit.cpp" />
+    <ClCompile Include="BlockFlags.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
     <ClCompile Include="BorderDataMap.cpp" />
     <ClCompile Include="BorderMDFaceList.cpp" />
     <ClCompile Include="DynamicBorderLineList.cpp" />
     <ClCompile Include="DynamicLinePointSynchronizer.cpp" />
     <ClCompile Include="ECBBorder.cpp" />
+    <ClCompile Include="EnclaveBlock.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
+    <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
+    <ClCompile Include="MicroPolyPointContainer.cpp" />
+    <ClCompile Include="OrganicWrappedBBFan.cpp" />
+    <ClCompile Include="PLTracingResult.cpp" />
+    <ClCompile Include="PolyGroupTicker.cpp" />
+    <ClCompile Include="PolyLineEndpointMeta.cpp" />
     <ClCompile Include="PolyLogger.cpp" />
+    <ClCompile Include="PrimarySegmentTracker.cpp" />
+    <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -225,6 +264,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringToMessageBuilder.cpp" />
+    <ClCompile Include="TertiaryTriangleContainer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Messages">
+      <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Messages">
+      <UniqueIdentifier>{f37c9a85-18b5-47dc-89be-bad64796766f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ORE">
+      <UniqueIdentifier>{79fc3a03-8412-4b70-95ad-e33abe8fb730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ORE">
+      <UniqueIdentifier>{a1386985-0d03-4e80-a7cf-032816cd8523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ORE\EnclaveBlock">
+      <UniqueIdentifier>{b7dd0cd5-81bc-46cf-8588-0402107d3a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ORE\EnclaveBlock">
+      <UniqueIdentifier>{6f2c4bc6-1094-46be-b89a-bb2176ee665e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -27,22 +45,7 @@
     <ClInclude Include="EuclideanDirection3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MessageCable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageInterpreter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BlueprintScanningCuboid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageLocality.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyPoint.h">
@@ -82,9 +85,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StringToMessageBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageBuildResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlockPolyPoint.h">
@@ -168,13 +168,112 @@
     <ClInclude Include="DynamicLineSyncType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBuildResult.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageCable.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageInterpreter.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageLocality.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageType.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="FanBase.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="FanData.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="ThinFan.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="FatFan.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveBlockVertex.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="TertiaryTriangleContainer.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="SegmentMeta.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimarySegmentTracker.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceListMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InterceptValidity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyLineEndpointMeta.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PLTracingResult.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="CircuitSegmentType.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimarySegmentMeta.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="MicroPolyPointContainer.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="SCircuitSegment.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockCircuit.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="SegmentResult.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicWrappedBBFan.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyRunDirection.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PointSearchData.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSearchMeta.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="FanManager.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockFlagStates.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockFlags.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyGroupTickerState.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyGroupTicker.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveBlock.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageInterpreter.cpp">
-      <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="BlueprintScanningCuboid.cpp">
       <Filter>Resource Files</Filter>
@@ -217,6 +316,45 @@
     </ClCompile>
     <ClCompile Include="DynamicLinePointSynchronizer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageInterpreter.cpp">
+      <Filter>Source Files\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="TertiaryTriangleContainer.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimarySegmentTracker.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyLineEndpointMeta.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="PLTracingResult.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="MicroPolyPointContainer.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="SCircuitSegment.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockCircuit.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicWrappedBBFan.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="FanManager.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockFlags.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyGroupTicker.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveBlock.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
