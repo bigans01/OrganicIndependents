@@ -23,6 +23,7 @@
 #include "ECBPolyPointLocation.h"
 #include "ECBCalibratedPointPair.h"
 #include "ECBIntersectMeta.h"
+#include "ECBPolyType.h"
 
 class IndependentUtils
 {
@@ -43,7 +44,15 @@ class IndependentUtils
 		static ECBBorderValues getBlueprintLimits(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList in_blockBorders);	// default version of GetPointOrientation
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList* in_blockBorders);	// version of GetPointOrientation which takes a pointer instead of a copy of in_blockBorders
+
 		static ECBPPOrientationResults GetEnclavePointOrientation(ECBPolyPoint in_pointToCheck, EnclaveBorderLineList* in_enclaveBorderLineList);
+		static ECBPolyPoint applyEnclaveResetValuesToPoint(ECBPolyPoint in_pointToApplyTo, ECBPolyPoint in_resetValues, ECBPolyPoint in_moveValues);
+		static ECBPolyPointLocation getEnclavePolyPointLocation(ECBPolyPoint in_point, ECBBorderValues in_borderValues);
+
+		static ECBPolyPoint findCommonMoveValues(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB);
+
+		static ECBPolyPoint determineTriangleCentroid(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC);
+
 		static ECBPPOrientationResults GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList);
 		static ECBBorderLineList determineBorderLines(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPolyPoint roundPolyPointToHundredths(ECBPolyPoint in_pointToCheck);
@@ -68,8 +77,14 @@ class IndependentUtils
 		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
 
 		static void checkForSecondarySlopeInversion(ECBPolyPoint in_intendedFaces, EnclaveKeyDef::EnclaveKey in_moveVals, ECBPolyPoint* in_xIntRef, ECBPolyPoint* in_yIntRef, ECBPolyPoint* in_zIntRef);
+
 		static ECBPolyPoint invertSlope(ECBPolyPoint in_polyPoint);
 		static ECBPolyPoint getSlopeToUse(ECBPPOrientations in_interceptType, ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope);
+		static ECBPolyPoint findSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+
+		static ECBPolyType convertIntToPolyType(int in_polyTypeInt);
+
+
 		static InterceptValidity determineInterceptValidity(ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, ECBPolyPoint in_slopeToCheck, int in_perfectClampValue);
 		static int checkIfPolyPointsMatch(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static ECBPolyPoint getInterceptToUseFromLine(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2, InterceptValidity in_firstInterceptValidity, InterceptValidity in_secondInterceptValidity, EnclaveKeyDef::EnclaveKey in_moveVals);
@@ -89,6 +104,7 @@ class IndependentUtils
 		static ECBPolyPoint roundToNearestBlockLineOrCorner(int in_xoryorz, ECBPolyPoint in_polyPoint, int in_lineOrCorner);
 
 		static PLTracingResult getBlockTracingResult(ECBPolyPoint in_beginPoint, ECBPolyPoint in_interceptToUse, BlockBorderLineList* in_borderLineListRef, BorderDataMap* in_borderDataMapRef, int in_debugFlag);
+		static PolyLineEndpointMeta getBlockTracingEndpointMeta(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef);
 
 		static float convertPreciseCoordToFloat(unsigned char in_unsignedCharToCheck);
 
@@ -99,6 +115,9 @@ class IndependentUtils
 		static int calibrateEnclaveBlockKeys(float in_remainder, float in_slope);									// used to calibrate enclave and block keys; used during PrimaryLineT1::calibrate()
 
 		static ECBPolyPoint determineIntendedFaces(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC);
+		static ECBPolyPoint determineIntendedFacesV2(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC, ECBPolyPoint in_xintercept, ECBPolyPoint in_yintercept, ECBPolyPoint in_zintercept);	// needs more clarification on what this does; but is necessary. (6/27/2021)
+		static int determineIntendedFaceValidity(int in_xyorz, float in_suggestedIntendedFace, float in_normalizedDirectionFloat, ECBPolyPoint in_xyorzIntercept, ECBPolyPoint in_slopeOfAB);
+
 };
 
 #endif

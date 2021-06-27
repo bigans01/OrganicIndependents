@@ -184,6 +184,7 @@
     <ClInclude Include="ECBBorderValues.h" />
     <ClInclude Include="ECBCalibratedPointPair.h" />
     <ClInclude Include="ECBIntersectMeta.h" />
+    <ClInclude Include="ECBPoly.h" />
     <ClInclude Include="ECBPolyLine.h" />
     <ClInclude Include="ECBPolyLineSlopes.h" />
     <ClInclude Include="ECBPolyLineSlopesArray.h" />
@@ -191,14 +192,28 @@
     <ClInclude Include="ECBPolyPointLocation.h" />
     <ClInclude Include="ECBPolyPointPair.h" />
     <ClInclude Include="ECBPolyPointTri.h" />
+    <ClInclude Include="ECBPolySkeleton.h" />
+    <ClInclude Include="ECBPolyType.h" />
     <ClInclude Include="ECBPPOrientationResults.h" />
     <ClInclude Include="ECBPPOrientations.h" />
     <ClInclude Include="ECBTrianglePoint.h" />
     <ClInclude Include="ECBTrianglePointArray.h" />
     <ClInclude Include="EnclaveBlock.h" />
+    <ClInclude Include="EnclaveBlockSkeleton.h" />
     <ClInclude Include="EnclaveBlockVertex.h" />
     <ClInclude Include="EnclaveBorderLineList.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
+    <ClInclude Include="EnclaveLineRunner.h" />
+    <ClInclude Include="EnclavePolyFractureResults.h" />
+    <ClInclude Include="EnclaveTriangle.h" />
+    <ClInclude Include="EnclaveTriangleContainer.h" />
+    <ClInclude Include="EnclaveTriangleContainerSupergroup.h" />
+    <ClInclude Include="EnclaveTriangleContainerSupergroupManager.h" />
+    <ClInclude Include="EnclaveTriangleInteriorRunner.h" />
+    <ClInclude Include="EnclaveTriangleSkeleton.h" />
+    <ClInclude Include="EnclaveTriangleSkeletonContainer.h" />
+    <ClInclude Include="EnclaveTriangleSkeletonSupergroup.h" />
+    <ClInclude Include="EnclaveTriangleSkeletonSupergroupManager.h" />
     <ClInclude Include="ErrorEnum.h" />
     <ClInclude Include="ErrorSensor.h" />
     <ClInclude Include="ErrorUtils.h" />
@@ -211,6 +226,7 @@
     <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="InterceptValidity.h" />
     <ClInclude Include="LinePointSynchronizer.h" />
+    <ClInclude Include="LineRunnerState.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuildResult.h" />
     <ClInclude Include="MessageCable.h" />
@@ -219,6 +235,13 @@
     <ClInclude Include="MessageType.h" />
     <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="OperableIntSet.h" />
+    <ClInclude Include="OrganicRawEnclave.h" />
+    <ClInclude Include="OrganicRawEnclaveState.h" />
+    <ClInclude Include="OrganicTransformUtils.h" />
+    <ClInclude Include="OrganicTriangleSecondary.h" />
+    <ClInclude Include="OrganicTriangleSecondarySupergroup.h" />
+    <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
+    <ClInclude Include="OrganicTriangleTertiary.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PointSearchData.h" />
@@ -228,6 +251,7 @@
     <ClInclude Include="PolyLineEndpointMeta.h" />
     <ClInclude Include="PolyLogger.h" />
     <ClInclude Include="PolyRunDirection.h" />
+    <ClInclude Include="PolyUtils.h" />
     <ClInclude Include="PrimaryLineT1Array.h" />
     <ClInclude Include="PrimaryLineT1Link.h" />
     <ClInclude Include="PrimaryLineT1LinkArray.h" />
@@ -242,14 +266,18 @@
     <ClInclude Include="PrimaryLineT1.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
+    <ClInclude Include="SecondarySearchResult.h" />
     <ClInclude Include="SegmentMeta.h" />
     <ClInclude Include="SegmentResult.h" />
     <ClInclude Include="SmartIntMap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringToMessageBuilder.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TerminatingSet.h" />
+    <ClInclude Include="TerminatingSetContainer.h" />
     <ClInclude Include="TertiaryTriangleContainer.h" />
     <ClInclude Include="ThinFan.h" />
+    <ClInclude Include="TriangleLine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
@@ -265,16 +293,25 @@
     <ClCompile Include="ECBBorder.cpp" />
     <ClCompile Include="EnclaveBlock.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
+    <ClCompile Include="EnclaveLineRunner.cpp" />
+    <ClCompile Include="EnclavePolyFractureResults.cpp" />
+    <ClCompile Include="EnclaveTriangle.cpp" />
+    <ClCompile Include="EnclaveTriangleContainer.cpp" />
+    <ClCompile Include="EnclaveTriangleInteriorRunner.cpp" />
     <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="MicroPolyPointContainer.cpp" />
+    <ClCompile Include="OrganicRawEnclave.cpp" />
+    <ClCompile Include="OrganicTransformUtils.cpp" />
+    <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PolyGroupTicker.cpp" />
     <ClCompile Include="PolyLineEndpointMeta.cpp" />
     <ClCompile Include="PolyLogger.cpp" />
+    <ClCompile Include="PolyUtils.cpp" />
     <ClCompile Include="PrimaryLineT1.cpp" />
     <ClCompile Include="PrimaryLineT1Array.cpp" />
     <ClCompile Include="PrimaryLineT1LinkArray.cpp" />
@@ -291,6 +328,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringToMessageBuilder.cpp" />
+    <ClCompile Include="TerminatingSetContainer.cpp" />
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

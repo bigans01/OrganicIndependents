@@ -3239,6 +3239,191 @@ ECBPPOrientationResults IndependentUtils::GetEnclavePointOrientation(ECBPolyPoin
 	return returnResults;
 }
 
+ECBPolyPoint IndependentUtils::applyEnclaveResetValuesToPoint(ECBPolyPoint in_pointToApplyTo, ECBPolyPoint in_resetValues, ECBPolyPoint in_moveValues)
+{
+	ECBPolyPoint returnPoint = in_pointToApplyTo;
+	if ((in_resetValues.x != -1) && (in_moveValues.x != 0))
+	{
+		returnPoint.x = in_resetValues.x;
+	}
+	if ((in_resetValues.y != -1) && (in_moveValues.y != 0))
+	{
+		returnPoint.y = in_resetValues.y;
+	}
+	if ((in_resetValues.z != -1) && (in_moveValues.z != 0))
+	{
+		returnPoint.z = in_resetValues.z;
+	}
+	return returnPoint;
+}
+
+ECBPolyPointLocation IndependentUtils::getEnclavePolyPointLocation(ECBPolyPoint in_point, ECBBorderValues in_borderValues)
+{
+	ECBPolyPointLocation locationToReturn;
+	//::cout << ">>>>>>>>>>>>>>>>>>>>>>>> Test call begins here: " << std::endl;
+	//CursorPathTraceContainer tempContainer = OrganicUtils::testGetPreciseCoordinate(in_point.y);
+	// check borders for X, 
+	//std::cout << "value of x (NEW POLYPOINT CALL): " << in_point.x << std::endl;
+	if (in_point.x == in_borderValues.posXlimit)		// East limit hit
+	{
+		//std::cout << "hey there!!! X hit East border..." << std::endl;
+		locationToReturn.enclaveKey.x = 7;
+		locationToReturn.blockKey.x = 3;
+		locationToReturn.preciseCoord.x = 1.0f;
+
+	}
+	else if (in_point.x == in_borderValues.negXlimit)	// West limit hit
+	{
+		//std::cout << "hey there!!! X hit West border..." << std::endl;
+		locationToReturn.enclaveKey.x = 0;
+		locationToReturn.blockKey.x = 0;
+		locationToReturn.preciseCoord.x = 0.0f;
+	}
+	else
+	{
+		/*
+		//std::cout << "|||| (x) point being passed is: " << in_point.x << std::endl;
+		CursorPathTraceContainer xContainer = OrganicUtils::getPreciseCoordinate(in_point.x);
+		locationToReturn.enclaveKey.x = xContainer.EnclaveCoord;
+		locationToReturn.blockKey.x = xContainer.BlockCoord;
+		locationToReturn.preciseCoord.x = xContainer.ExactBlockCoord;
+		*/
+
+		//std::cout << "|||| (x) point being passed is: " << in_point.x << std::endl;
+		if (in_point.x != 4.0f)
+		{
+			CursorPathTraceContainer xContainer = IndependentUtils::getPreciseCoordinate(in_point.x);
+			locationToReturn.enclaveKey.x = xContainer.EnclaveCoord;
+			locationToReturn.blockKey.x = xContainer.BlockCoord;
+			locationToReturn.preciseCoord.x = xContainer.ExactBlockCoord;
+		}
+		else if (in_point.x == 4.0f)
+		{
+			locationToReturn.blockKey.x = 3.0f;
+			locationToReturn.preciseCoord.x = 1.0f;
+		}
+		//std::cout << "|||| value of precise coord: " << locationToReturn.preciseCoord.x << std::endl;
+		//std::cout << "Chunk and block data for point (" << in_point.x << ", " << in_point.y << ", " << in_point.z << ") " << std::endl;
+		//std::cout << "Chunk location for X: " << locationToReturn.enclaveKey.x << std::endl;
+		//std::cout << "Block location for X: " << locationToReturn.blockKey.x << std::endl;
+
+	}
+
+	// check borders for Y,
+	if (in_point.y == in_borderValues.posYlimit)
+	{
+		locationToReturn.enclaveKey.y = 7;
+		locationToReturn.blockKey.y = 3;
+		locationToReturn.preciseCoord.y = 1.0f;
+	}
+	else if (in_point.y == in_borderValues.negYlimit)
+	{
+		locationToReturn.enclaveKey.y = 0;
+		locationToReturn.blockKey.y = 0;
+		locationToReturn.preciseCoord.y = 0.0f;
+	}
+	else
+	{
+		/*
+		//std::cout << "|||| point being passed is: " << in_point.y << std::endl;
+		CursorPathTraceContainer yContainer = OrganicUtils::getPreciseCoordinate(in_point.y);
+		locationToReturn.enclaveKey.y = yContainer.EnclaveCoord;
+		locationToReturn.blockKey.y = yContainer.BlockCoord;
+		locationToReturn.preciseCoord.y = yContainer.ExactBlockCoord;
+		*/
+
+
+		//std::cout << "|||| (x) point being passed is: " << in_point.x << std::endl;
+		//std::cout << "!!! Y branch hit " << std::endl;
+		if (in_point.y != 4.0f)
+		{
+			CursorPathTraceContainer yContainer = IndependentUtils::getPreciseCoordinate(in_point.y);
+			locationToReturn.enclaveKey.y = yContainer.EnclaveCoord;
+			locationToReturn.blockKey.y = yContainer.BlockCoord;
+			locationToReturn.preciseCoord.y = yContainer.ExactBlockCoord;
+		}
+		else if (in_point.y == 4.0f)
+		{
+			//std::cout << ">>> set for branch 2 " << std::endl;
+			locationToReturn.blockKey.y = 3.0f;
+			locationToReturn.preciseCoord.y = 1.0f;
+		}
+
+	}
+
+	// check borders for Z,
+	if (in_point.z == in_borderValues.posZlimit)
+	{
+		locationToReturn.enclaveKey.z = 7;
+		locationToReturn.blockKey.z = 3;
+		locationToReturn.preciseCoord.z = 1.0f;
+	}
+	else if (in_point.z == in_borderValues.negZlimit)
+	{
+		locationToReturn.enclaveKey.z = 0;
+		locationToReturn.blockKey.z = 0;
+		locationToReturn.preciseCoord.z = 0.0f;
+	}
+	else
+	{
+		/*
+		//std::cout << "|||| point being passed is: " << in_point.z << std::endl;
+		CursorPathTraceContainer zContainer = OrganicUtils::getPreciseCoordinate(in_point.z);
+		locationToReturn.enclaveKey.z = zContainer.EnclaveCoord;
+		locationToReturn.blockKey.z = zContainer.BlockCoord;
+		locationToReturn.preciseCoord.z = zContainer.ExactBlockCoord;
+		*/
+
+		//std::cout << "|||| (x) point being passed is: " << in_point.x << std::endl;
+		if (in_point.z != 4.0f)
+		{
+			CursorPathTraceContainer zContainer = IndependentUtils::getPreciseCoordinate(in_point.z);
+			locationToReturn.enclaveKey.z = zContainer.EnclaveCoord;
+			locationToReturn.blockKey.z = zContainer.BlockCoord;
+			locationToReturn.preciseCoord.z = zContainer.ExactBlockCoord;
+		}
+		else if (in_point.z == 4.0f)
+		{
+			locationToReturn.blockKey.z = 3.0f;
+			locationToReturn.preciseCoord.z = 1.0f;
+		}
+
+	}
+	//locationToReturn.preciseCoord = in_point;
+	//std::cout << "Chunk and block data for point (" << in_point.x << ", " << in_point.y << ", " << in_point.z << ") " << std::endl;
+	//std::cout << "Chunk location: " << locationToReturn.enclaveKey.x << ", " << locationToReturn.enclaveKey.y << ", " << locationToReturn.enclaveKey.z << std::endl;
+	//std::cout << "Block location: " << locationToReturn.blockKey.x << ", " << locationToReturn.blockKey.y << ", " << locationToReturn.blockKey.z << std::endl;
+	//std::cout << "Remainder amount: " << locationToReturn.preciseCoord.x << ", " << locationToReturn.preciseCoord.y << ", " << locationToReturn.preciseCoord.z << std::endl;
+	return locationToReturn;
+}
+
+ECBPolyPoint IndependentUtils::findCommonMoveValues(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB)
+{
+	ECBPolyPoint returnPoint;
+	if (in_polyPointA.x == in_polyPointB.x)		// is x common?
+	{
+		returnPoint.x = in_polyPointA.x;
+	}
+	if (in_polyPointA.y == in_polyPointB.y)
+	{
+		returnPoint.y = in_polyPointA.y;
+	}
+	if (in_polyPointA.z == in_polyPointB.z)
+	{
+		returnPoint.z = in_polyPointA.z;
+	}
+	return returnPoint;
+}
+
+ECBPolyPoint IndependentUtils::determineTriangleCentroid(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC)
+{
+	ECBPolyPoint returnPoint;
+	returnPoint.x = ((in_pointA.x) + (in_pointB.x) + (in_pointC.x)) / 3;
+	returnPoint.y = ((in_pointA.y) + (in_pointB.y) + (in_pointC.y)) / 3;
+	returnPoint.z = ((in_pointA.z) + (in_pointB.z) + (in_pointC.z)) / 3;
+	return returnPoint;
+}
+
 ECBPPOrientationResults IndependentUtils::GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList)
 {
 	ECBPPOrientationResults returnResults;
@@ -4439,6 +4624,38 @@ ECBPolyPoint IndependentUtils::getSlopeToUse(ECBPPOrientations in_interceptType,
 		return badPoint;	// ++should never return, makes compiler happy (won't produce a warning)
 	}
 }
+
+ECBPolyPoint IndependentUtils::findSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB)
+{
+	ECBPolyPoint returnPoint;
+	returnPoint.x = in_pointB.x - in_pointA.x;
+	returnPoint.y = in_pointB.y - in_pointA.y;
+	returnPoint.z = in_pointB.z - in_pointA.z;
+	return returnPoint;
+}
+
+ECBPolyType IndependentUtils::convertIntToPolyType(int in_polyTypeInt)
+{
+	ECBPolyType returnPolyType = ECBPolyType::FREE;		// default, will be overwritten
+	if (in_polyTypeInt == 0)
+	{
+		returnPolyType = ECBPolyType::FREE;
+	}
+	else if (in_polyTypeInt == 1)
+	{
+		returnPolyType = ECBPolyType::ROGUE;
+	}
+	else if (in_polyTypeInt == 2)
+	{
+		returnPolyType = ECBPolyType::SHELL;
+	}
+	else if (in_polyTypeInt == 3)
+	{
+		returnPolyType = ECBPolyType::SHELL_MASSDRIVER;
+	}
+	return returnPolyType;
+}
+
 
 InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, ECBPolyPoint in_slopeToCheck, int in_perfectClampValue)
 {
@@ -7596,6 +7813,200 @@ PLTracingResult IndependentUtils::getBlockTracingResult(ECBPolyPoint in_beginPoi
 	return resultToReturn;
 }
 
+PolyLineEndpointMeta IndependentUtils::getBlockTracingEndpointMeta(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef)
+{
+	ECBPolyPoint pointToReturn;
+	//std::cout << "OrganicUtils::getBlockTracingEndpoint begin point is: " << in_beginPoint.x << ", " << in_beginPoint.y << ", " << in_beginPoint.z << std::endl;
+	ECBPolyPoint slopeDirection = IndependentUtils::findNormalizedPoint(in_slope); // get normalized slope
+	ECBPolyPoint lineSlope = in_slope;
+	ECBPolyPoint currentIterationBeginPoint = in_beginPoint;
+
+	// flags for determining what the direction of x/y/z is; if they remain 0, there is no slope (perfectly flat for the line on that axis)
+	int x_dir = int(slopeDirection.x);
+	int y_dir = int(slopeDirection.y);
+	int z_dir = int(slopeDirection.z);
+
+	float x_interceptCoord = 0.0f;
+	float y_interceptCoord = 0.0f;
+	float z_interceptCoord = 0.0f;
+
+	// calculate total line length, which is the square root of the sum of x/y/z squared (pythagorean theorem)
+	float powSlopeX = pow(lineSlope.x, 2.0f);
+	float powSlopeY = pow(lineSlope.y, 2.0f);
+	float powSlopeZ = pow(lineSlope.z, 2.0f);
+	float fullLineLength = sqrt(powSlopeX + powSlopeY + powSlopeZ);
+
+	// check slope direction, and calculate distance for x ********************************************************************************************************************************************************************
+	float time_to_complete_x_traversal = 0.0f; // initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+	float time_to_complete_y_traversal = 0.0f;
+	float time_to_complete_z_traversal = 0.0f;
+
+	ECBPolyPoint calculatedPoint_for_x;		// initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+	ECBPolyPoint calculatedPoint_for_y;
+	ECBPolyPoint calculatedPoint_for_z;
+	//std::cout << ">>>>>>>>> Current iter begin point: " << currentIterationBeginPoint.x << ", " << currentIterationBeginPoint.y << ", " << currentIterationBeginPoint.z << std::endl;
+	//std::cout << ">>>>>> Current iteration point values are: " << currentIterationBeginPoint.x << ", " << currentIterationBeginPoint.y << ", " << currentIterationBeginPoint.z << std::endl;
+	//std::cout << ">>>>> Slope directions: " << slopeDirection.x << ", " << slopeDirection.y << ", " << slopeDirection.z << std::endl;
+	//std::cout << "Line slopes: " << lineSlope.x << ", " << lineSlope.y << ", " << lineSlope.z << std::endl;
+	// calculate distance to intercept for x-plane
+	if (slopeDirection.x > 0)
+	{
+		x_dir = 1;			// going towards positive x 
+		x_interceptCoord = 1.0f;								// x_interceptCoord is equal to 1.0f (EAST block border)
+		float origin_to_border_x_diff = (x_interceptCoord - currentIterationBeginPoint.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
+																											//std::cout << "line slope vals: " << lineSlope.x << ", " << lineSlope.y << ", " << lineSlope.z << std::endl;
+		time_to_complete_x_traversal = origin_to_border_x_diff / lineSlope.x;	// get the distance that the ray has to travel to get to this value of x
+																				//ECBPolyPoint calculatedPoint_for_x;					// the actual point as it would exist on the EAST face
+																				//std::cout << "current iter begin point x: " << currentIterationBeginPoint.x << std::endl;
+																				//std::cout << "current iter begin point y: " << currentIterationBeginPoint.y << std::endl;
+																				//std::cout << "current iter begin point z: " << currentIterationBeginPoint.z << std::endl;
+																				//std::cout << "time for x traversal: " << time_to_complete_x_traversal << std::endl;
+		calculatedPoint_for_x.x = x_interceptCoord;
+		calculatedPoint_for_x.y = currentIterationBeginPoint.y + (lineSlope.y * time_to_complete_x_traversal);
+		calculatedPoint_for_x.z = currentIterationBeginPoint.z + (lineSlope.z * time_to_complete_x_traversal);
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_x.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_x.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_x.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+		//std::cout << "Calc'd point for x is: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+		//std::cout << "(pos) calc'd point for x is: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+	}
+	else if (slopeDirection.x < 0)
+	{
+		x_dir = -1;			// going towards negative x
+		x_interceptCoord = 0.0f;								// x_interceptCoord is equal to 0.0f (WEST block border)
+		float origin_to_border_x_diff = abs(x_interceptCoord - currentIterationBeginPoint.x);					// make sure to get absolute value for these two lines (WEST border)
+		time_to_complete_x_traversal = abs(origin_to_border_x_diff / lineSlope.x);	// ""
+																					//ECBPolyPoint calculatedPoint;					// the actual point as it would exist on the WEST face
+		calculatedPoint_for_x.x = x_interceptCoord;
+		calculatedPoint_for_x.y = currentIterationBeginPoint.y + (lineSlope.y * time_to_complete_x_traversal);	// "" 
+		calculatedPoint_for_x.z = currentIterationBeginPoint.z + (lineSlope.z * time_to_complete_x_traversal);	// ""
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_x.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_x.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_x.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+		//std::cout << "(neg) calc'd point for x is: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+	}
+
+	// ... for y plane
+	if (slopeDirection.y > 0)
+	{
+		y_dir = 1;		// going towards positive y
+		y_interceptCoord = 1.0f;								// y_interceptCoord is the precise location of y at the TOP face border
+		float origin_to_border_y_diff = y_interceptCoord - currentIterationBeginPoint.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
+		time_to_complete_y_traversal = origin_to_border_y_diff / lineSlope.y;	// get the distance this ray has to travel to get to this value of y
+																				//ECBPolyPoint calculatedPoint;					// the actual point as it would exist on the TOP face
+		calculatedPoint_for_y.x = currentIterationBeginPoint.x + (lineSlope.x * time_to_complete_y_traversal);
+		calculatedPoint_for_y.y = y_interceptCoord;
+		calculatedPoint_for_y.z = currentIterationBeginPoint.z + (lineSlope.z * time_to_complete_y_traversal);
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_y.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_y.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_y.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+
+
+	}
+	else if (slopeDirection.y < 0)
+	{
+		y_dir = -1;
+		y_interceptCoord = 0.0f;
+		float origin_to_border_y_diff = abs(y_interceptCoord - currentIterationBeginPoint.y);
+		time_to_complete_y_traversal = abs(origin_to_border_y_diff / lineSlope.y);
+		//ECBPolyPoint calculatedPoint;
+		calculatedPoint_for_y.x = currentIterationBeginPoint.x + (lineSlope.x * time_to_complete_y_traversal);
+		calculatedPoint_for_y.y = y_interceptCoord;
+		calculatedPoint_for_y.z = currentIterationBeginPoint.z + (lineSlope.z * time_to_complete_y_traversal);
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_y.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_y.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_y.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+
+	}
+
+	// ... for z plane
+	if (slopeDirection.z > 0)
+	{
+		z_dir = 1;
+		z_interceptCoord = 1.0f;
+		float origin_to_border_z_diff = z_interceptCoord - currentIterationBeginPoint.z;
+		time_to_complete_z_traversal = origin_to_border_z_diff / lineSlope.z;
+		//std::cout << "Z intercept coord: " << z_interceptCoord << std::endl;
+		//std::cout << "Current iteration begin point: " << currentIterationBeginPoint.z << std::endl;
+		//std::cout << "Line slope z: " << lineSlope.z << std::endl;
+		//ECBPolyPoint calculatedPoint;
+
+		//std::cout << "beginPoint.x: " << currentIterationBeginPoint.x << std::endl;
+		//std::cout << "line slope.x: " << lineSlope.x << std::endl;
+		//std::cout << "time to complete z traversal: " << time_to_complete_z_traversal << std::endl;
+
+		calculatedPoint_for_z.x = currentIterationBeginPoint.x + (lineSlope.x * time_to_complete_z_traversal);
+		calculatedPoint_for_z.y = currentIterationBeginPoint.y + (lineSlope.y * time_to_complete_z_traversal);
+		calculatedPoint_for_z.z = z_interceptCoord;
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_z.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_z.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_z.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+		//std::cout << "(POS Z) Calc'd point for z is: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
+
+	}
+	else if (slopeDirection.z < 0)
+	{
+		z_dir = -1;
+		z_interceptCoord = 0.0f;
+		float origin_to_border_z_diff = abs(z_interceptCoord - currentIterationBeginPoint.z);
+		time_to_complete_z_traversal = abs(origin_to_border_z_diff / lineSlope.z);
+		//ECBPolyPoint calculatedPoint;
+		calculatedPoint_for_z.x = currentIterationBeginPoint.x + (lineSlope.x * time_to_complete_z_traversal);
+		calculatedPoint_for_z.y = currentIterationBeginPoint.y + (lineSlope.y * time_to_complete_z_traversal);
+		calculatedPoint_for_z.z = z_interceptCoord;
+
+		ECBPolyPoint distanceToCalculatedPoint;
+		distanceToCalculatedPoint.x = calculatedPoint_for_z.x - currentIterationBeginPoint.x;
+		distanceToCalculatedPoint.y = calculatedPoint_for_z.y - currentIterationBeginPoint.y;
+		distanceToCalculatedPoint.z = calculatedPoint_for_z.z - currentIterationBeginPoint.z;
+		float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+		float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+		float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+		//std::cout << "(NEG Z) Calc'd point for z is: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
+	}
+
+
+
+	ECBPolyPointTri triPointParam;
+	triPointParam.triPoints[0] = calculatedPoint_for_x;
+	triPointParam.triPoints[1] = calculatedPoint_for_y;
+	triPointParam.triPoints[2] = calculatedPoint_for_z;
+	ECBPolyPoint distanceValues;
+	distanceValues.x = time_to_complete_x_traversal;
+	distanceValues.y = time_to_complete_y_traversal;
+	distanceValues.z = time_to_complete_z_traversal;
+
+	// std::cout << "Calc'd point x: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+
+	PolyLineEndpointMeta returnEndpointData = IndependentUtils::getCalculatedEndpointMetadata(currentIterationBeginPoint, in_blockBorderRef, distanceValues, slopeDirection, triPointParam);
+	return returnEndpointData;
+}
+
 float IndependentUtils::convertPreciseCoordToFloat(unsigned char in_unsignedCharToCheck)
 {
 	float floatToReturn = 0.0f;
@@ -7860,4 +8271,152 @@ ECBPolyPoint IndependentUtils::determineIntendedFaces(ECBPolyPoint in_polyPointA
 
 	return returnPoint;
 
+}
+
+ECBPolyPoint IndependentUtils::determineIntendedFacesV2(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC, ECBPolyPoint in_xintercept, ECBPolyPoint in_yintercept, ECBPolyPoint in_zintercept)
+{
+	ECBPolyPoint returnPoint;
+	//std::cout << "!!!~~~~~~~~~~~~~~~~~~~~~~(V2) Intended faces: calculatling slope: " << std::endl;
+	//std::cout << ">> ! First point: " << in_polyPointA.x << ", " << in_polyPointA.y << ", " << in_polyPointA.z << std::endl;
+	//std::cout << ">> ! Second point: " << in_polyPointB.x << ", " << in_polyPointB.y << ", " << in_polyPointB.z << std::endl;
+	//std::cout << ">> ! Third point: " << in_polyPointC.x << ", " << in_polyPointC.y << ", " << in_polyPointC.z << std::endl;
+	//std::cout << "X: " << in_polyPointB.x - in_polyPointA.x << std::endl;
+	//std::cout << "Y: " << in_polyPointB.y - in_polyPointA.y << std::endl;
+	//std::cout << "Z: " << in_polyPointB.z - in_polyPointA.z << std::endl;
+	// set default initial values
+
+
+	returnPoint.x = in_polyPointB.x - in_polyPointA.x;
+	returnPoint.y = in_polyPointB.y - in_polyPointA.y;
+	returnPoint.z = in_polyPointB.z - in_polyPointA.z;
+
+	ECBPolyPoint slopePoint = returnPoint;		// not sure about the 3 lines above this???
+	// check for X intention:
+	if (in_polyPointB.x == in_polyPointA.x)		// x of A and B must equal each other
+	{
+		if (in_polyPointC.x != in_polyPointA.x)	// only do the following operation if C's x is not equal to either
+		{
+			returnPoint.x = ((in_polyPointC.x - in_polyPointA.x) / abs(in_polyPointC.x - in_polyPointA.x)) * -1.0f;	// subtract either A or B's x here (it doesnt matter), and invert the value
+			//std::cout << "Intended x face is: " << returnPoint.x << std::endl;
+
+			// perform face validity
+			float normalizedDirectionX = ((in_polyPointC.x - in_polyPointA.x) / abs(in_polyPointC.x - in_polyPointA.x));
+			if (determineIntendedFaceValidity(0, returnPoint.x, normalizedDirectionX, in_xintercept, slopePoint) == 0)	// if this is 0, the intention is invalid; we must revert it back.
+			{
+				//std::cout << "Reverting!!! " << std::endl;
+				returnPoint.x *= -1;
+			}
+		}
+		else if (in_polyPointC.x == in_polyPointA.x)	// if C.x == A.x and  B.x == C.x, it is perfectly clamped, set to 0
+		{
+			returnPoint.x = 0.0f;
+		}
+	}
+	else if (in_polyPointB.x != in_polyPointA.x)
+	{
+		returnPoint.x = ((in_polyPointB.x - in_polyPointA.x) / abs(in_polyPointB.x - in_polyPointA.x));
+	}
+
+
+
+	// check for Y intention:
+	if (in_polyPointB.y == in_polyPointA.y)
+	{
+		if (in_polyPointC.y != in_polyPointA.y)
+		{
+			returnPoint.y = ((in_polyPointC.y - in_polyPointA.y) / abs(in_polyPointC.y - in_polyPointA.y)) * -1.0f;
+			//std::cout << "Intended y face is: " << returnPoint.y << std::endl;
+
+			// perform face validity
+			float normalizedDirectionY = ((in_polyPointC.y - in_polyPointA.y) / abs(in_polyPointC.y - in_polyPointA.y));
+			if (determineIntendedFaceValidity(0, returnPoint.y, normalizedDirectionY, in_yintercept, slopePoint) == 0)	// if this is 0, the intention is invalid; we must revert it back.
+			{
+				//std::cout << "Reverting!!! " << std::endl;
+				returnPoint.y *= -1;
+			}
+		}
+		else if (in_polyPointC.y == in_polyPointA.y)
+		{
+			returnPoint.y = 0.0f;
+		}
+	}
+	else if (in_polyPointB.y != in_polyPointA.y)
+	{
+		returnPoint.y = ((in_polyPointB.y - in_polyPointA.y) / abs(in_polyPointB.y - in_polyPointA.y));
+	}
+
+	// check for Z intention:
+	if (in_polyPointB.z == in_polyPointA.z)
+	{
+		if (in_polyPointC.z != in_polyPointA.z)
+		{
+			returnPoint.z = ((in_polyPointC.z - in_polyPointA.z) / abs(in_polyPointC.z - in_polyPointA.z)) * -1.0f;
+			//std::cout << "Intended z face is: " << returnPoint.z << std::endl;
+
+			float normalizedDirectionZ = ((in_polyPointC.z - in_polyPointA.z) / abs(in_polyPointC.z - in_polyPointA.z));
+			if (determineIntendedFaceValidity(0, returnPoint.z, normalizedDirectionZ, in_zintercept, slopePoint) == 0)	// if this is 0, the intention is invalid; we must revert it back.
+			{
+				//std::cout << "Reverting!!! " << std::endl;
+				returnPoint.z *= -1;
+			}
+		}
+		else if (in_polyPointC.z == in_polyPointA.z)
+		{
+			returnPoint.z = 0.0f;
+		}
+	}
+	else if (in_polyPointB.z != in_polyPointA.z)
+	{
+		returnPoint.z = ((in_polyPointB.z - in_polyPointA.z) / abs(in_polyPointB.z - in_polyPointA.z));
+	}
+
+	//std::cout << "Calculated intended faces are: " << std::endl;
+	//std::cout << "X: " << returnPoint.x << std::endl;
+	//std::cout << "Y: " << returnPoint.y << std::endl;
+	//std::cout << "Z: " << returnPoint.z << std::endl;
+
+	return returnPoint;
+}
+
+int IndependentUtils::determineIntendedFaceValidity(int in_xyorz, float in_suggestedIntendedFace, float in_normalizedDirectionFloat, ECBPolyPoint in_xyorzIntercept, ECBPolyPoint in_slopeOfAB)
+{
+	int isValid = 1;	// we will assume it will be valid, but this will be set to 0 if it is not.
+	if (in_xyorz == 0) // x calcs
+	{
+		// Part A: first, determine the slope that will be used:
+		// compare the suggested face to the normalized direction float
+		ECBPolyPoint interceptSlope = in_xyorzIntercept;
+		if (in_suggestedIntendedFace != in_normalizedDirectionFloat)
+		{
+			interceptSlope = invertSlope(in_xyorzIntercept);	// invert the slope
+		}
+
+		ECBPolyPoint normalizedInterceptSlope = findNormalizedPoint(interceptSlope);	// get the normalized directions of the intercept slope
+		ECBPolyPoint normalizedAB = findNormalizedPoint(in_slopeOfAB);
+		if
+			(
+			(normalizedInterceptSlope.x == normalizedAB.x)
+				&&
+				(normalizedInterceptSlope.y == normalizedAB.y)
+				&&
+				(normalizedInterceptSlope.z == normalizedAB.z)
+				)
+		{
+			isValid = 0;
+			//std::cout << "###### Face validity check: this face is invalid, will return 0..." << std::endl;
+		}
+
+	}
+
+	else if (in_xyorz == 1) // y calcs
+	{
+
+	}
+
+	else if (in_xyorz == 2) // z calcs
+	{
+
+	}
+
+	return isValid;
 }

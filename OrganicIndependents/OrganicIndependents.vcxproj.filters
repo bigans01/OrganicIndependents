@@ -34,9 +34,6 @@
     <Filter Include="Header Files\ORE\EnclaveTriangle">
       <UniqueIdentifier>{2c18ef40-f3e6-45b8-ad08-62dde6e8ec49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ORE\EnclaveTriangle\NewFilter1">
-      <UniqueIdentifier>{f74cada9-4592-4e84-a433-870f9a2c659b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\ORE\EnclaveTriangle">
       <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
     </Filter>
@@ -339,6 +336,90 @@
     <ClInclude Include="PrimaryLineT1Array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SecondarySearchResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerminatingSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerminatingSetContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangleTertiary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRunnerState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveLineRunner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPoly.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolySkeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleInteriorRunner.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangle.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleSkeletonSupergroupManager.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleSkeleton.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleSkeletonContainer.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleSkeletonSupergroup.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleContainer.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleContainerSupergroup.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveTriangleContainerSupergroupManager.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicRawEnclaveState.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangleSecondary.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangleSecondarySupergroup.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveBlockSkeleton.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTransformUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicRawEnclave.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclavePolyFractureResults.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -445,6 +526,36 @@
     </ClCompile>
     <ClCompile Include="PrimaryLineT1Array.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TerminatingSetContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveLineRunner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangleInteriorRunner.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangle.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangleContainer.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicTriangleSecondary.cpp">
+      <Filter>Source Files\ORE</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicTransformUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclavePolyFractureResults.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicRawEnclave.cpp">
+      <Filter>Source Files\ORE</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
