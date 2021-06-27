@@ -31,6 +31,15 @@
     <Filter Include="Source Files\ORE\EnclaveBlock">
       <UniqueIdentifier>{6f2c4bc6-1094-46be-b89a-bb2176ee665e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ORE\EnclaveTriangle">
+      <UniqueIdentifier>{2c18ef40-f3e6-45b8-ad08-62dde6e8ec49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ORE\EnclaveTriangle\NewFilter1">
+      <UniqueIdentifier>{f74cada9-4592-4e84-a433-870f9a2c659b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ORE\EnclaveTriangle">
+      <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -270,6 +279,39 @@
     <ClInclude Include="EnclaveBlock.h">
       <Filter>Header Files\ORE\EnclaveBlock</Filter>
     </ClInclude>
+    <ClInclude Include="SecondaryLineType.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="CursorPathTraceContainer.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyPointLocation.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT1.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBTrianglePoint.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBTrianglePointArray.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyLine.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyLineSlopes.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyLineSlopesArray.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT2.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT2Array.h">
+      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -355,6 +397,15 @@
     </ClCompile>
     <ClCompile Include="EnclaveBlock.cpp">
       <Filter>Source Files\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT1.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT2.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT2Array.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

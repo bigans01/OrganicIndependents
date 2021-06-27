@@ -18,6 +18,7 @@
 #include "PolyLineEndpointMeta.h"
 #include "LinePointSynchronizer.h"
 #include "PLTracingResult.h"
+#include "CursorPathTraceContainer.h"
 
 class IndependentUtils
 {
@@ -32,6 +33,7 @@ class IndependentUtils
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static ECBPolyPoint findNormalizedPoint(ECBPolyPoint in_pointA);
 		static ECBPolyPoint findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static float findNormalizedDirection(float in_dimValueA, float in_dimValueB);
 		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
 		static ECBPolyPoint snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit);
 		static EnclaveBlockVertex convertPolyPointToBlockVertex(ECBPolyPoint in_polyPoint);
@@ -71,6 +73,10 @@ class IndependentUtils
 		static int isUnsignedCharBitSet(unsigned char in_unsignedChar, int in_bitToCheck);
 		static void setUnsignedCharBit(unsigned char* in_unsignedCharPtr, int in_bitToSet, int in_bitValue);		// sets a bit in an unsigned char; 8 = 8th bit, 1 = 1st bit (do not use 0 for a bit)
 
+		static CursorPathTraceContainer getPreciseCoordinate(float x);
+		static int calibrateEnclaveBlockKeys(float in_remainder, float in_slope);									// used to calibrate enclave and block keys; used during PrimaryLineT1::calibrate()
+
+		static ECBPolyPoint determineIntendedFaces(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC);
 };
 
 #endif

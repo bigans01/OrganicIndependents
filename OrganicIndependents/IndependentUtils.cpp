@@ -2759,6 +2759,20 @@ ECBPolyPoint IndependentUtils::findNormalizedSlope(ECBPolyPoint in_pointA, ECBPo
 	return returnPoint;
 }
 
+float IndependentUtils::findNormalizedDirection(float in_dimValueA, float in_dimValueB)
+{
+	float returnPoint;
+	if (!((in_dimValueB - in_dimValueA) == 0.0f))
+	{
+		returnPoint = (in_dimValueB - in_dimValueA) / abs(in_dimValueB - in_dimValueA);	// " y
+	}
+	else
+	{
+		returnPoint = 0.0f;
+	}
+	return returnPoint;
+}
+
 ECBPolyPoint IndependentUtils::getBlockTracingEndpoint(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef)
 {
 	ECBPolyPoint pointToReturn;
@@ -5252,4 +5266,214 @@ void IndependentUtils::setUnsignedCharBit(unsigned char* in_unsignedCharPtr, int
 	int testbit = 1;
 	int finalbit = testbit << 0;
 	//std::cout << "test bit is: " << finalbit << std::endl;
+}
+
+CursorPathTraceContainer IndependentUtils::getPreciseCoordinate(float x)
+{
+	CursorPathTraceContainer tempPathTrace;
+	float x_divide = (x / 32);							// here, 32 is the length of an entire collection (8 chunks = 32 blocks width)
+	// std::cout << "test of x divide is: " << x_divide << std::endl;
+	int collection_x = 0;								// the coordinate of the collection that will be returned (x or y or z)
+	int chunk_x = 0;									// the coordinate of the chunk that will be returned (x or y or z)
+	int block_x = 0;									// the coordinate of the block that will be returned (x or y or z)
+	float dist_to_pos = 0;								// distance from the camera's point to the nearest positive axis block border
+	float dist_to_neg = 0;								// distance from the camera's point to the nearest negative axis block border
+	float exact_xyz = 0.0f;								// start exact_xyz at 1.0f
+	float remainder = 0.0f;								// the modulo left after dividing by 4 (chunk width) and 1 (block size)
+	int on_border = 0;
+
+
+	//std::cout << "value of x is: " << x << std::endl;
+
+	if (x < 0)											// operations to be performed when the input value is less than 0.
+	{
+		collection_x = 0;
+		if ((x_divide < 0) && x >= -32)
+		{
+			//cout << "x_divide entry. " << endl;
+			if (fmod(x, 32) != 0)
+			{
+				collection_x = -1;  // collection_x = (x_divide - 1);
+			}
+			else
+			{
+				collection_x = int(x_divide);
+				on_border = 1;
+			}
+
+
+		}
+		else if ((x_divide < 0) && x < -32)
+		{
+			if (fmod(x, 32) != 0)
+			{
+				collection_x = int(x_divide) - 1;
+			}
+			else
+			{
+				collection_x = int(x_divide);
+				on_border = 1;
+			}
+		}
+
+		// STEP 2: get remainder
+		float negModResult = float(fmod(x, 32));
+		//std::cout << "negModResult is: " << negModResult << std::endl;
+		float baseWidth = 32.0f;
+		float truePosition = baseWidth + negModResult;
+		chunk_x = int((fmod(truePosition, 32) / 4));					// old:  chunk_x = ((x % 32) / 4);
+																		//cout << "chunk_x: " << chunk_x << endl;
+		block_x = int((fmod(fmod(truePosition, 32), 4)));				// old : block_x = ((x % 32) % 4);
+																		//cout << "block_x: " << block_x << endl;
+		float nearest_floor = floor(truePosition);
+		exact_xyz = abs(nearest_floor - truePosition);
+		//std::cout << "true position is: " << truePosition << std::endl;
+		//std::cout << "chunk is: " << chunk_x << std::endl;
+		//std::cout << "block is: " << block_x << std::endl;
+		//std::cout << "exact_xyz position is: " << exact_xyz << std::endl;																	//cout << "exact_neg_x: " << dist_to_neg << endl;
+
+	}
+	else if (x > 0)										// operations t be performed when the input value is greater than/equal to 0
+	{
+		float nearest_floor = floor(x);
+		exact_xyz = abs(nearest_floor - x);
+		collection_x = 0;
+		if ((x_divide > 0) && x > 32)
+		{
+			if (fmod(x, 32) != 0)
+			{
+				collection_x = int(x_divide);  // collection_x = (x_divide + 1);
+			}
+			else
+			{
+				collection_x = int(x_divide);
+			}
+		}
+		//else if ((x_divide > 0) && x <= 32)
+		//{
+		//collection_x = 1;
+		//}
+		//cout << "collection_x: " << collection_x << endl;
+		chunk_x = int((fmod(x, 32) / 4));					// old:  chunk_x = ((x % 32) / 4);
+															//cout << "chunk_x: " << chunk_x << endl;
+		block_x = int((fmod(fmod(x, 32), 4)));				// old : block_x = ((x % 32) % 4);
+															//cout << "block_x: " << block_x << endl;
+
+		dist_to_pos = float(ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4)));
+		dist_to_neg = float((fmod(fmod(x, 32), 4)) - block_x);
+		//exact_xyz = 0.0f + float(fmod(fmod(fmod(x, 32), 4), 1));									// set the exact point in the block to be 1.0f - the distance to get to 1.0f. // OLD: exact_xyz = 1.0f - dist_to_pos;
+																									//cout << "ceil of fmod x2: " << ceil(fmod(fmod(x, 32), 4)) << endl;
+																									//cout << "without ceil: " << fmod(fmod(x, 32), 4) << endl;
+																									//cout << "fmod test 1: " << fmod(x, 32) << endl;
+																									//cout << "fmod test 2: " << fmod(fmod(x, 32), 4) << endl;
+																									//cout << " exact_xyz (pos): " << exact_xyz << endl;
+
+																									//cout << "NoOfCollections passed: " << NoOfCollections << endl;
+	}
+	tempPathTrace.CollectionCoord = collection_x;		// set the return value for the Collection coordinate
+	tempPathTrace.EnclaveCoord = chunk_x;					// set the return value for the Chunk coordinate
+	tempPathTrace.BlockCoord = block_x;					// set the return value for the block coordinate
+	tempPathTrace.distance_to_pos = dist_to_pos;
+	tempPathTrace.distance_to_neg = dist_to_neg;
+	//std::cout << "Final value of exact_xyz: " << exact_xyz << std::endl;
+	//std::cout << " | >>> chunk coord: " << tempPathTrace.EnclaveCoord << std::endl;
+	//std::cout << " | >>> block coord: " << tempPathTrace.BlockCoord << std::endl;
+	tempPathTrace.ExactBlockCoord = exact_xyz;				// the exact block coord
+
+
+	return tempPathTrace;
+}
+
+int IndependentUtils::calibrateEnclaveBlockKeys(float in_remainder, float in_slope)
+{
+	if (in_remainder == 0.0f)
+	{
+		if (in_slope == -1.0f)
+		{
+			//std::cout << "Shift detected! " << std::endl;
+			return -1;		// return -1
+		}
+	}
+	return 0;	// if there is no match, return 0
+}
+
+ECBPolyPoint IndependentUtils::determineIntendedFaces(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC)
+{
+	ECBPolyPoint returnPoint;
+	//std::cout << "!!!~~~~~~~~~~~~~~~~~~~~~~Intended faces: calculatling slope: " << std::endl;
+	//std::cout << ">> First point: " << in_polyPointA.x << ", " << in_polyPointA.y << ", " << in_polyPointA.z << std::endl;
+	//std::cout << ">> Second point: " << in_polyPointB.x << ", " << in_polyPointB.y << ", " << in_polyPointB.z << std::endl;
+	//std::cout << ">> Third point: " << in_polyPointC.x << ", " << in_polyPointC.y << ", " << in_polyPointC.z << std::endl;
+	//std::cout << "X: " << in_polyPointB.x - in_polyPointA.x << std::endl;
+	//std::cout << "Y: " << in_polyPointB.y - in_polyPointA.y << std::endl;
+	//std::cout << "Z: " << in_polyPointB.z - in_polyPointA.z << std::endl;
+	// set default initial values
+	returnPoint.x = in_polyPointB.x - in_polyPointA.x;
+	returnPoint.y = in_polyPointB.y - in_polyPointA.y;
+	returnPoint.z = in_polyPointB.z - in_polyPointA.z;
+
+
+	// check for X intention:
+	if (in_polyPointB.x == in_polyPointA.x)		// x of A and B must equal each other
+	{
+		if (in_polyPointC.x != in_polyPointA.x)	// only do the following operation if C's x is not equal to either
+		{
+			returnPoint.x = ((in_polyPointC.x - in_polyPointA.x) / abs(in_polyPointC.x - in_polyPointA.x)) * -1.0f;	// subtract either A or B's x here (it doesnt matter), and invert the value
+			//std::cout << "Intended x face is: " << returnPoint.x << std::endl;
+		}
+		else if (in_polyPointC.x == in_polyPointA.x)	// if C.x == A.x and  B.x == C.x, it is perfectly clamped, set to 0
+		{
+			returnPoint.x = 0.0f;
+		}
+	}
+	else if (in_polyPointB.x != in_polyPointA.x)
+	{
+		returnPoint.x = ((in_polyPointB.x - in_polyPointA.x) / abs(in_polyPointB.x - in_polyPointA.x));
+	}
+
+
+
+	// check for Y intention:
+	if (in_polyPointB.y == in_polyPointA.y)
+	{
+		if (in_polyPointC.y != in_polyPointA.y)
+		{
+			returnPoint.y = ((in_polyPointC.y - in_polyPointA.y) / abs(in_polyPointC.y - in_polyPointA.y)) * -1.0f;
+			//std::cout << "Intended y face is: " << returnPoint.y << std::endl;
+		}
+		else if (in_polyPointC.y == in_polyPointA.y)
+		{
+			returnPoint.y = 0.0f;
+		}
+	}
+	else if (in_polyPointB.y != in_polyPointA.y)
+	{
+		returnPoint.y = ((in_polyPointB.y - in_polyPointA.y) / abs(in_polyPointB.y - in_polyPointA.y));
+	}
+
+	// check for Z intention:
+	if (in_polyPointB.z == in_polyPointA.z)
+	{
+		if (in_polyPointC.z != in_polyPointA.z)
+		{
+			returnPoint.z = ((in_polyPointC.z - in_polyPointA.z) / abs(in_polyPointC.z - in_polyPointA.z)) * -1.0f;
+			//std::cout << "Intended z face is: " << returnPoint.z << std::endl;
+		}
+		else if (in_polyPointC.z == in_polyPointA.z)
+		{
+			returnPoint.z = 0.0f;
+		}
+	}
+	else if (in_polyPointB.z != in_polyPointA.z)
+	{
+		returnPoint.z = ((in_polyPointB.z - in_polyPointA.z) / abs(in_polyPointB.z - in_polyPointA.z));
+	}
+
+	//std::cout << "Calculated intended faces are: " << std::endl;
+	//std::cout << "X: " << returnPoint.x << std::endl;
+	//std::cout << "Y: " << returnPoint.y << std::endl;
+	//std::cout << "Z: " << returnPoint.z << std::endl;
+
+	return returnPoint;
+
 }
