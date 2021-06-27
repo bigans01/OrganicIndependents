@@ -19,10 +19,28 @@
 #include "LinePointSynchronizer.h"
 #include "PLTracingResult.h"
 #include "CursorPathTraceContainer.h"
+#include "ECBBorderValues.h"
+#include "ECBPolyPointLocation.h"
+#include "ECBCalibratedPointPair.h"
+#include "ECBIntersectMeta.h"
 
 class IndependentUtils
 {
 	public:
+		static int checkIfPointsExistOnSameFace(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, BorderMDFaceList in_faceListC, int in_debugFlag);
+		static ECBPolyPointLocation getPolyPointLocation(ECBPolyPoint in_point, ECBBorderValues in_borderValues);
+		static ECBCalibratedPointPair compareAndCalibrateDistances(ECBPolyPointTri* in_polyPointTriRef, ECBPolyPoint in_distanceValues, ECBPolyPoint in_currentLineSlope, EnclaveKeyDef::EnclaveKey in_currentBlueprintKey);
+		static ECBIntersectMeta findBlueprintBorderMoveMeta(EnclaveKeyDef::EnclaveKey in_Key1, ECBPolyPoint in_originPoint, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slope, ECBPolyPointTri in_XYZinterceptCoords);		// determines the full key shift, by checking if the poly point's slope is on a border line or a border corner point; called by findClosestBlueprintIntersection
+		static ECBPolyPoint roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey);		// rounds a point to appropriate precision, based off blueprint coords
+		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
+		static ECBPolyPoint roundToNearestBlueprintLineOrCorner(int in_xoryorz, ECBPolyPoint in_polyPoint, int in_lineOrCorner, ECBBorderValues* in_blueprintBorderValuesRef);
+		static ECBPolyPoint determinePolyPointPrecisionLimits(ECBPolyPoint in_polyPoint);
+		static EnclaveKeyDef::EnclaveKey getBlueprintCalibratedKey(ECBPolyPoint in_pointToCheckA, ECBPolyPoint in_pointToCheckB, ECBBorderLineList* in_borderLineListRef);
+		static EnclaveKeyDef::EnclaveKey lookupBlueprintBorderKey(ECBPPOrientationResults in_results, ECBBorderLineList* in_borderLineListRef, ECBPolyPoint in_originPoint, ECBPolyPoint in_interceptPoint);
+		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static ECBPolyPoint getBlueprintTracingEndpointForIsolatedPrimaryT2(ECBPolyPoint in_pointA, ECBPolyPoint in_slope, ECBBorderLineList* in_borderLineList, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+
+		static ECBBorderValues getBlueprintLimits(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList in_blockBorders);	// default version of GetPointOrientation
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList* in_blockBorders);	// version of GetPointOrientation which takes a pointer instead of a copy of in_blockBorders
 		static ECBPPOrientationResults GetEnclavePointOrientation(ECBPolyPoint in_pointToCheck, EnclaveBorderLineList* in_enclaveBorderLineList);
@@ -44,7 +62,11 @@ class IndependentUtils
 		static float roundToThousandths(float in_float);
 		static float roundToTenThousandths(float in_float);
 		static EnclaveKeyDef::EnclaveKey retrieveBorderDirection(ECBPPOrientationResults in_results, BorderDataMap* in_dataMapRef);
+
+		static ECBPolyPoint getAppropriateSlopeToUse(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag);
+		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheck(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
 		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
+
 		static void checkForSecondarySlopeInversion(ECBPolyPoint in_intendedFaces, EnclaveKeyDef::EnclaveKey in_moveVals, ECBPolyPoint* in_xIntRef, ECBPolyPoint* in_yIntRef, ECBPolyPoint* in_zIntRef);
 		static ECBPolyPoint invertSlope(ECBPolyPoint in_polyPoint);
 		static ECBPolyPoint getSlopeToUse(ECBPPOrientations in_interceptType, ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope);

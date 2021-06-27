@@ -312,6 +312,33 @@
     <ClInclude Include="PrimaryLineT2Array.h">
       <Filter>Header Files\ORE\EnclaveTriangle</Filter>
     </ClInclude>
+    <ClInclude Include="ECBBorderValues.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBCalibratedPointPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBIntersectMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT2IsolatedTracer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBPolyPointPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT1Link.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT1LinkArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT2MultiTracer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimaryLineT1Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -406,6 +433,18 @@
     </ClCompile>
     <ClCompile Include="PrimaryLineT2Array.cpp">
       <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT2IsolatedTracer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT1LinkArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT2MultiTracer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimaryLineT1Array.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
