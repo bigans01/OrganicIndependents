@@ -47,8 +47,12 @@ bool OrganicRawEnclave::checkIfFull()
 	if (blockSkeletonMap.size() == 64)	// a full ORE has exactly 64 skeletons
 	{
 		returnValue = true;
-		// if the ORE is full, we should empty the skeletonSGM.
+		// if the ORE is full, we should empty the skeletonSGM, etcSGM, and organicTriangleSecondarySGM's managed contents;
+		// However, we want the enclave block skeletons to remain.
+
 		skeletonSGM.triangleSkeletonSupergroups.clear();
+		etcSGM.enclaveTriangleSupergroups.clear();
+		organicTriangleSecondarySGM.secondarySupergroups.clear();
 		currentState = OrganicRawEnclaveState::FULL;
 	}
 	return returnValue;
