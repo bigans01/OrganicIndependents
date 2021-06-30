@@ -28,6 +28,22 @@ public:
 		return appendedSet;
 	}
 
+	bool containsRenderableTriangles()
+	{
+		bool hasRenderables = false;
+		auto superGroupsBegin = triangleSkeletonSupergroups.begin();
+		auto superGroupsEnd = triangleSkeletonSupergroups.end();
+		for (; superGroupsBegin != superGroupsEnd; superGroupsBegin++)
+		{
+			if (superGroupsBegin->second.skeletonMap.size() != 0)
+			{
+				hasRenderables = true;
+				break;
+			}
+		}
+		return hasRenderables;
+	}
+
 	void printMetadata()
 	{
 		auto groupManagerBSupergroupsBegin = triangleSkeletonSupergroups.begin();

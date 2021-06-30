@@ -56,6 +56,33 @@ public:
 		}
 	}
 
+	bool willSecondariesProduceFans()
+	{
+		bool willSecondariesProduce = false;
+
+		auto supergroupsBegin = secondarySupergroups.begin();
+		auto supergroupsEnd = secondarySupergroups.end();
+		for (; supergroupsBegin != supergroupsEnd; supergroupsBegin++)		// iterate through each super group.
+		{
+			auto subgroupsBegin = supergroupsBegin->second.secondarySubgroups.begin();
+			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
+			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
+			{
+				auto tertiariesBegin = subgroupsBegin->second.secondaryMapContainer.begin();
+				auto tertiariesEnd = subgroupsBegin->second.secondaryMapContainer.end();
+				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
+				{
+					if (tertiariesBegin->second.triangleMap.size() != 0)
+					{
+						willSecondariesProduce = true;
+						break;
+					}
+				}
+			}
+		}
+		return willSecondariesProduce;
+	}
+
 	std::set<int> generateTouchedBlockList()
 	{
 		std::set<int> touchedSet;	// the set to return

@@ -58,9 +58,66 @@ bool OrganicRawEnclave::checkIfFull()
 	return returnValue;
 }
 
+bool OrganicRawEnclave::doesOREContainRenderableData()
+{
+	bool containsData = false;
+	switch(currentState)
+	{
+		case OrganicRawEnclaveState::LOD_ENCLAVE:
+		{
+			//containsData = organicTriangleSecondarySGM.willSecondariesProduceFans();
+			containsData = skeletonSGM.containsRenderableTriangles();
+			break;
+		};
+		case OrganicRawEnclaveState::LOD_BLOCK:
+		{
+			break;
+		};
+		case OrganicRawEnclaveState::FULL:
+		{
+			containsData = false;
+			break;
+		}
+	}
+	return containsData;
+}
+
+OrganicRawEnclaveState OrganicRawEnclave::getState()
+{
+	return currentState;
+}
+
 int OrganicRawEnclave::getNumberOfBlockSkeletons()
 {
 	return blockSkeletonMap.size();
+}
+
+void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
+{
+	switch (currentState)
+	{
+		case OrganicRawEnclaveState::LOD_ENCLAVE:
+		{
+			// will spawn all renderable blocks via stored EnclaveTriangles.
+			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			break;
+		};
+		case OrganicRawEnclaveState::LOD_BLOCK:
+		{
+			break;
+		};
+		case OrganicRawEnclaveState::FULL:
+		{
+
+			break;
+		}
+	}
+}
+
+int OrganicRawEnclave::getTotalTriangles()
+{
+	return total_triangles;
 }
 
 void OrganicRawEnclave::printMapData()
