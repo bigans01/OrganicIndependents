@@ -223,6 +223,7 @@
     <ClInclude Include="FanData.h" />
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
+    <ClInclude Include="GroupSetPair.h" />
     <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="InterceptValidity.h" />
     <ClInclude Include="LinePointSynchronizer.h" />
@@ -235,8 +236,9 @@
     <ClInclude Include="MessageType.h" />
     <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="OperableIntSet.h" />
+    <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
-    <ClInclude Include="OrganicRawEnclaveState.h" />
+    <ClInclude Include="ORELodState.h" />
     <ClInclude Include="OrganicTransformUtils.h" />
     <ClInclude Include="OrganicTriangleSecondary.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroup.h" />

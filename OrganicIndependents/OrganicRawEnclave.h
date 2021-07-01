@@ -10,7 +10,7 @@
 #include "EnclaveBlock.h"
 #include "EnclaveTriangleContainer.h"
 #include "EnclaveTriangleSkeletonContainer.h"
-#include "OrganicRawEnclaveState.h"
+#include "ORELodState.h"
 #include "OrganicTransformUtils.h"
 #include "EnclaveBlockSkeleton.h"
 #include <mutex>
@@ -19,17 +19,21 @@
 #include "OrganicTriangleSecondarySupergroupManager.h"
 #include "EnclaveTriangleContainerSupergroupManager.h"
 #include "EnclaveTriangleSkeletonSupergroupManager.h"
+#include "GroupSetPair.h"
+#include "ORELodState.h"
+#include "OREAppendedState.h"
 
 class OrganicRawEnclave
 {
 public:
 
 	OrganicRawEnclave();
-	OrganicRawEnclave(OrganicRawEnclaveState in_organicRawEnclavestate);
+	OrganicRawEnclave(ORELodState in_ORELodState);
 
 	OrganicRawEnclave& operator=(const OrganicRawEnclave& resultsContainer_b)
 	{
-		currentState = resultsContainer_b.currentState;
+		currentLodState = resultsContainer_b.currentLodState;
+		currentAppendedState = resultsContainer_b.currentAppendedState;
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
 		//finalizerBlocks = resultsContainer_b.finalizerBlocks;
@@ -60,7 +64,6 @@ public:
 		return *this;
 	}
 
-	OrganicRawEnclaveState currentState = OrganicRawEnclaveState::LOD_ENCLAVE;	// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 1: For storing "Deflated" data;
 
@@ -110,22 +113,21 @@ public:
 	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
 	bool doesOREContainRenderableData();															// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
-	OrganicRawEnclaveState getState();																// returns the state of the ORE.
+	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
+	OREAppendedState getAppendedState();													// retures the appended state of the ORE.
 	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
+	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
+																													// set 
 private:
-	enum AppendedState
-	{
-		NONE,
-		SINGLE_APPEND,
-		MULTIPLE_APPEND
-	};
-	AppendedState currentAppendedState = NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
+	ORELodState currentLodState = ORELodState::LOD_ENCLAVE;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
+	OREAppendedState currentAppendedState = OREAppendedState::NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
 
 	void resetBlockData();																							// clears the blockMap, and resets triangle count
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
+	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 
 	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;
 	std::map<int, EnclaveBlock> finalizerBlocks;							// unused for now	

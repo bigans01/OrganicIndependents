@@ -1,9 +1,9 @@
 #pragma once
 
-#ifndef ORGANICRAWENCLAVESTATE_H
+#ifndef ORELodState_H
 #define ORGANICRAWENCALVESTATE_H
 
-enum class OrganicRawEnclaveState
+enum class ORELodState
 {
 	LOD_ENCLAVE,		// the ORE is renderable, produces all of it's blocks and mass from EnclaveTriangles, and is at shallowest LOD (enclave); this the initial value 
 						// if the second constructor of the ORE isn't used.

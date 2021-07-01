@@ -396,9 +396,6 @@
     <ClInclude Include="EnclaveTriangleContainerSupergroupManager.h">
       <Filter>Header Files\ORE\EnclaveTriangle</Filter>
     </ClInclude>
-    <ClInclude Include="OrganicRawEnclaveState.h">
-      <Filter>Header Files\ORE</Filter>
-    </ClInclude>
     <ClInclude Include="OrganicTriangleSecondary.h">
       <Filter>Header Files\ORE</Filter>
     </ClInclude>
@@ -419,6 +416,15 @@
     </ClInclude>
     <ClInclude Include="EnclavePolyFractureResults.h">
       <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupSetPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ORELodState.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="OREAppendedState.h">
+      <Filter>Header Files\ORE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
