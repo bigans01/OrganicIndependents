@@ -22,6 +22,7 @@
 #include "GroupSetPair.h"
 #include "ORELodState.h"
 #include "OREAppendedState.h"
+#include <vector>
 
 class OrganicRawEnclave
 {
@@ -119,6 +120,8 @@ public:
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
 	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
 																													// set 
+	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
+																											// EnclaveTriangleContainerSupergroup with a given ID.
 private:
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 	OREAppendedState currentAppendedState = OREAppendedState::NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.

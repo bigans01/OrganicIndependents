@@ -163,6 +163,27 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 	return returnPair;
 }
 
+std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID)
+{
+	std::vector<EnclaveTriangle> triangleVector;
+	auto idFinder = etcSGM.enclaveTriangleSupergroups.find(in_superGroupID);
+	if (idFinder != etcSGM.enclaveTriangleSupergroups.end())
+	{
+		auto supergroupContainersBegin = idFinder->second.containerMap.begin();
+		auto supergroupContainersEnd = idFinder->second.containerMap.end();
+		for (; supergroupContainersBegin != supergroupContainersEnd; supergroupContainersBegin++)
+		{
+			auto currentContainerTrianglesBegin = supergroupContainersBegin->second.triangles.begin();
+			auto currentContainerTrianglesEnd = supergroupContainersBegin->second.triangles.end();
+			for (; currentContainerTrianglesBegin != currentContainerTrianglesEnd; currentContainerTrianglesBegin++)
+			{
+				triangleVector.push_back(currentContainerTrianglesBegin->second);
+			}
+		}
+	}
+	return triangleVector;
+}
+
 void OrganicRawEnclave::printMapData()
 {
 	if (currentLodState == ORELodState::LOD_ENCLAVE)
