@@ -5,7 +5,6 @@
 
 #include "PrimaryLineT1.h"
 #include "EnclaveKeyDef.h"
-#include "IndependentUtils.h"
 #include "ECBTrianglePointArray.h"
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyLineSlopesArray.h"
@@ -16,6 +15,7 @@
 #include "ECBPolyPoint.h"
 #include <map>
 
+class IndependentUtils;
 class PrimaryLineT1Array
 {
 public:

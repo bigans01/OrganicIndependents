@@ -3,18 +3,16 @@
 #ifndef ORGANICWRAPPEDBBFAN_H
 #define ORGANICWRAPPEDBBFAN_H
 
-//#include "BBFan.h"
 #include "EnclaveBlockVertex.h"
 #include "PrimarySegmentTracker.h"
 #include "BlockCircuit.h"
-//#include "OrganicUtils.h"
-#include "IndependentUtils.h"
 #include "BlockBorderLineList.h"
 #include "BorderDataMap.h"
 #include "PolyRunDirection.h"
 #include "SegmentResult.h"
 #include "FatFan.h"
 
+class IndependentUtils;
 class OrganicWrappedBBFan
 {
 public:

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "IndependentUtils.h"
+#include "EnclaveTriangle.h"
 
 int IndependentUtils::checkIfPointsExistOnSameFace(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, BorderMDFaceList in_faceListC, int in_debugFlag)
 {
@@ -8419,4 +8420,20 @@ int IndependentUtils::determineIntendedFaceValidity(int in_xyorz, float in_sugge
 	}
 
 	return isValid;
+}
+
+
+ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, ECBPolyPoint in_ECBPolyMRP)
+{
+	ECBPoly returnPoly;
+	for (int x = 0; x < 3; x++)
+	{
+		returnPoly.lineMap[x] = in_enclaveTriangle.lineArray[x];
+	}
+	returnPoly.materialID = in_enclaveTriangle.materialID;
+	returnPoly.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
+	returnPoly.mrp = in_ECBPolyMRP;
+	//returnPoly.mrp = in_enclaveTriangle.mrp;
+	returnPoly.emptyNormal = in_enclaveTriangle.emptyNormal;
+	return returnPoly;
 }

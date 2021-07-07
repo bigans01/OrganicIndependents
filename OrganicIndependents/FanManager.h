@@ -12,9 +12,8 @@
 #include <iostream>
 #include "OrganicWrappedBBFan.h"
 #include "BlockSearchMeta.h"
-//#include "OrganicUtils.h"
-#include "IndependentUtils.h"
 
+class IndependentUtils;
 class FanManager
 {
 public:

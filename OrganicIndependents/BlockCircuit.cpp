@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BlockCircuit.h"
+#include "IndependentUtils.h"
 
 BlockCircuit::BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, BorderDataMap* in_borderDataMapRef, int in_perfectClampValue, PolyDebugLevel in_debugLevel)
 {

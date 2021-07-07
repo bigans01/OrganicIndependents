@@ -4,13 +4,13 @@
 #define POLYUTILS_H
 
 #include "TriangleLine.h"
-#include "IndependentUtils.h"
 #include "PrimaryLineT1.h"
 #include "PrimaryLineT2.h"
 #include "EnclaveKeyDef.h"
 #include "ECBPoly.h"
 #include "ECBPolySkeleton.h"
 
+class IndependentUtils;
 class PolyUtils
 {
 public:

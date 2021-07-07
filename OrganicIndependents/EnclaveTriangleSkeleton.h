@@ -6,8 +6,8 @@
 #include "ECBPolyPoint.h"
 #include "EnclaveTriangle.h"
 #include "TriangleLine.h"
-#include "IndependentUtils.h"
 
+class IndependentUtils;
 class EnclaveTriangleSkeleton
 {
 public:

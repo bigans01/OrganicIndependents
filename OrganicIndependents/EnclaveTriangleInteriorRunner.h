@@ -8,11 +8,11 @@
 #include "BlockBorderLineList.h"
 #include "BorderDataMap.h"
 #include "OrganicTriangleTertiary.h"
-//#include "OrganicUtils.h"
-#include "IndependentUtils.h"
 #include "PolyUtils.h"
+#include "PolyLineEndpointMeta.h"
 #include <unordered_set>
 
+class IndependentUtils;
 class EnclaveTriangleInteriorRunner
 {
 public:

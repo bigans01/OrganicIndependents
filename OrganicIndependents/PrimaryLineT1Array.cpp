@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PrimaryLineT1Array.h"
+#include "IndependentUtils.h"
 
 PrimaryLineT1Array::PrimaryLineT1Array()
 {

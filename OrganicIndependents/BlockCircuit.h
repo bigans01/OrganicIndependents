@@ -12,9 +12,8 @@
 #include "MicroPolyPointContainer.h"
 #include "TertiaryTriangleContainer.h"
 #include "PolyLogger.h"
-//#include "OrganicUtils.h"
-#include "IndependentUtils.h"
 
+class IndependentUtils;
 class BlockCircuit
 {
 public:

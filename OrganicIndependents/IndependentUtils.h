@@ -24,7 +24,10 @@
 #include "ECBCalibratedPointPair.h"
 #include "ECBIntersectMeta.h"
 #include "ECBPolyType.h"
+//#include "EnclaveTriangle.h"
+#include "ECBPoly.h"
 
+class EnclaveTriangle;
 class IndependentUtils
 {
 	public:
@@ -117,6 +120,8 @@ class IndependentUtils
 		static ECBPolyPoint determineIntendedFaces(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC);
 		static ECBPolyPoint determineIntendedFacesV2(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB, ECBPolyPoint in_polyPointC, ECBPolyPoint in_xintercept, ECBPolyPoint in_yintercept, ECBPolyPoint in_zintercept);	// needs more clarification on what this does; but is necessary. (6/27/2021)
 		static int determineIntendedFaceValidity(int in_xyorz, float in_suggestedIntendedFace, float in_normalizedDirectionFloat, ECBPolyPoint in_xyorzIntercept, ECBPolyPoint in_slopeOfAB);
+
+		static ECBPoly buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, ECBPolyPoint in_ECBPolyMRP);
 
 };
 

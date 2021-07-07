@@ -5,10 +5,10 @@
 
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyPoint.h"
-#include "IndependentUtils.h"
 #include "EnclaveKeyDef.h"
 #include <iostream>
 
+class IndependentUtils;
 class PrimaryLineT1
 {
 public:

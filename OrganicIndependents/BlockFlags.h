@@ -4,8 +4,8 @@
 #define BLOCKFLAGS_H
 
 #include "BlockFlagStates.h"
-#include "IndependentUtils.h"
 
+class IndependentUtils;
 class BlockFlags
 {
 public:

@@ -7,21 +7,21 @@
 #include "ECBPolyLine.h"
 #include "OrganicWrappedBBFan.h"
 #include "PolyRunDirection.h"
-#include "PrimaryLineT1Array.h"
 #include "PrimarySegmentMeta.h"
 #include "BorderDataMap.h"
 #include "BlockBorderLineList.h"
 #include "BlockCircuit.h"
 #include "EnclaveLineRunner.h"
 #include "PolyUtils.h"
-#include "IndependentUtils.h"
 #include "SecondarySearchResult.h"
 #include "OrganicTriangleTertiary.h"
 #include "EnclaveTriangleInteriorRunner.h"
 #include "TerminatingSetContainer.h"
 #include "SegmentResult.h"
-#include "IndependentUtils.h"
+//#include "PrimaryLineT1Array.h"
 
+class PrimaryLineT1Array;	// this class forwarding could be cleaned up later.
+class IndependentUtils;
 class EnclaveTriangle
 {
 public:

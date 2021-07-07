@@ -19,10 +19,10 @@
 #include "FanBase.h"
 #include "ThinFan.h"
 #include "FanManager.h"
-#include "IndependentUtils.h"
 
 // moved to OrganicPolyOperationsLib (along with other classes) from OrganicCoreLib on 5/1/2020**
 
+class IndependentUtils;
 class EnclaveBlock
 {
 public:

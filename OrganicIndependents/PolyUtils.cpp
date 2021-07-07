@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PolyUtils.h"
+#include "IndependentUtils.h"
 
 void PolyUtils::determineLineInterceptSlopes(TriangleLine* in_LinePtr, ECBPolyPoint in_thirdPoint)
 {

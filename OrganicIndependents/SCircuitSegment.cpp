@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SCircuitSegment.h"
+#include "IndependentUtils.h"
 
 void SCircuitSegment::setAsStandaloneSegment()
 {

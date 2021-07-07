@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "EnclaveBlock.h"
+#include "IndependentUtils.h"
 
 int EnclaveBlock::getNumberOfBBFans()
 {

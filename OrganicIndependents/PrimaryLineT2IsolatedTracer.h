@@ -12,8 +12,9 @@
 #include "PrimaryLineT2.h"
 #include "EnclaveKeyDef.h"
 #include "PLTracingResult.h"
-#include "IndependentUtils.h"
+#include "ECBBorderLineList.h"
 
+class IndependentUtils;
 class PrimaryLineT2IsolatedTracer
 {
 public:

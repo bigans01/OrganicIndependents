@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OrganicWrappedBBFan.h"
+#include "IndependentUtils.h"
 
 void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_materialID, ECBPolyPoint in_emptyNormal)
 {

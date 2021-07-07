@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PrimaryLineT2IsolatedTracer.h"
+#include "IndependentUtils.h"
 
 PrimaryLineT2IsolatedTracer::PrimaryLineT2IsolatedTracer(int in_lineID,
 	EnclaveKeyDef::EnclaveKey in_blueprintKey,

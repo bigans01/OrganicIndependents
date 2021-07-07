@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "EnclaveTriangle.h"
+#include "IndependentUtils.h"
+#include "PrimaryLineT1Array.h"
 
 void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
 {

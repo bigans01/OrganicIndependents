@@ -6,15 +6,16 @@
 #include "PrimarySegmentMeta.h"
 #include "CircuitSegmentType.h"
 #include "ECBPolyPoint.h"
-//#include "OrganicUtils.h"
-#include "IndependentUtils.h"
 #include "MicroPolyPointContainer.h"
 #include "ECBPPOrientationResults.h"
 #include "EnclaveKeyDef.h"
 #include "BorderMDFaceList.h"
 #include "PolyLogger.h"
+#include "BlockBorderLineList.h"
+#include "BorderDataMap.h"
 #include <string>
 
+class IndependentUtils;
 class SCircuitSegment
 {
 public:
