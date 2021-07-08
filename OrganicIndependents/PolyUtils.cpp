@@ -2,7 +2,7 @@
 #include "PolyUtils.h"
 #include "IndependentUtils.h"
 
-void PolyUtils::determineLineInterceptSlopes(TriangleLine* in_LinePtr, ECBPolyPoint in_thirdPoint)
+void PolyUtils::determineLineInterceptSlopes(OrganicLineBase* in_LinePtr, ECBPolyPoint in_thirdPoint)
 {
 	// Get the normalized slope values
 	ECBPolyPoint currentSlopeNormalized;

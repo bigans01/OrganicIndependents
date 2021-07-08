@@ -9,12 +9,13 @@
 #include "EnclaveKeyDef.h"
 #include "ECBPoly.h"
 #include "ECBPolySkeleton.h"
+#include "OrganicLineBase.h"
 
 class IndependentUtils;
 class PolyUtils
 {
 public:
-	static void determineLineInterceptSlopes(TriangleLine* in_LinePtr, ECBPolyPoint in_thirdPoint);
+	static void determineLineInterceptSlopes(OrganicLineBase* in_LinePtr, ECBPolyPoint in_thirdPoint);
 	static void determineLineInterceptSlopesDebug(TriangleLine* in_LinePtr, ECBPolyPoint in_thirdPoint, int in_lineID);
 	static bool determineLineInterceptSlopesDebugForEnclaveTriangle(TriangleLine* in_LinePtr, ECBPolyPoint in_thirdPoint, ECBPolyPoint in_point0Original, ECBPolyPoint in_point1Original, ECBPolyPoint in_point2Original);
 	static TriangleLine convertT1toSimpleTriangleLine(PrimaryLineT1 in_T1Line);

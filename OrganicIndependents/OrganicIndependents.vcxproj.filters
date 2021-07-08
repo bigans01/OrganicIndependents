@@ -426,6 +426,9 @@
     <ClInclude Include="OREAppendedState.h">
       <Filter>Header Files\ORE</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicLineBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

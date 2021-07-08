@@ -8423,17 +8423,54 @@ int IndependentUtils::determineIntendedFaceValidity(int in_xyorz, float in_sugge
 }
 
 
-ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, ECBPolyPoint in_ECBPolyMRP)
+ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, 
+														  ECBPolyPoint in_ECBPolyMRP, 
+														  EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
+														  EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation)
 {
 	ECBPoly returnPoly;
-	for (int x = 0; x < 3; x++)
-	{
-		returnPoly.lineMap[x] = in_enclaveTriangle.lineArray[x];
-	}
+
+	ECBPolyPoint translatedPoint0, translatedPoint1, translatedPoint2;
+	translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[0].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[1].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[2].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+
+	ECBPolyLine polyLine0, polyLine1, polyLine2;
+
+	polyLine0.pointA = translatedPoint0;
+	polyLine0.pointB = translatedPoint1;
+	polyLine0.pointC = translatedPoint2;
+
+	polyLine1.pointA = translatedPoint1;
+	polyLine1.pointB = translatedPoint2;
+	polyLine1.pointC = translatedPoint0;
+
+	polyLine2.pointA = translatedPoint2;
+	polyLine2.pointB = translatedPoint0;
+	polyLine2.pointC = translatedPoint1;
+
+	// determine the slopes for each line
+	PolyUtils::determineLineInterceptSlopes(&polyLine0, translatedPoint2);
+	PolyUtils::determineLineInterceptSlopes(&polyLine1, translatedPoint0);
+	PolyUtils::determineLineInterceptSlopes(&polyLine2, translatedPoint1);
+
+	returnPoly.lineMap[0] = polyLine0;
+	returnPoly.lineMap[1] = polyLine1;
+	returnPoly.lineMap[2] = polyLine2;
 	returnPoly.materialID = in_enclaveTriangle.materialID;
 	returnPoly.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
 	returnPoly.mrp = in_ECBPolyMRP;
-	//returnPoly.mrp = in_enclaveTriangle.mrp;
 	returnPoly.emptyNormal = in_enclaveTriangle.emptyNormal;
 	return returnPoly;
+}
+
+ECBPolyPoint IndependentUtils::translateEnclavePointToWorldSpace(ECBPolyPoint in_pointToTranslate,
+	EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
+	EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation)
+{
+	ECBPolyPoint translatedPoint;
+	translatedPoint.x = (in_blueprintKeyForTranslation.x*32.0f) + (in_oreKeyForTranslation.x*4.0f) + in_pointToTranslate.x;
+	translatedPoint.y = (in_blueprintKeyForTranslation.y*32.0f) + (in_oreKeyForTranslation.y*4.0f) + in_pointToTranslate.y;
+	translatedPoint.z = (in_blueprintKeyForTranslation.z*32.0f) + (in_oreKeyForTranslation.z*4.0f) + in_pointToTranslate.z;
+	return translatedPoint;
 }
