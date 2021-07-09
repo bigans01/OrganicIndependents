@@ -165,9 +165,30 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 
 std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID)
 {
+	// first, build a temporary instance of EnclaveTriangleContainerSupergroupManager
+	EnclaveTriangleContainerSupergroupManager tempManager;
+	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+	auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+	for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+	{
+		auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+		auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+		for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+		{
+			auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
+			auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
+			for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
+			{
+				EnclaveTriangle enclaveTriangle = OrganicTransformUtils::inflateEnclaveTriangle(currentSkeletonBegin->second);
+				tempManager.insertEnclaveTriangleDirectIntoSuperGroup(skeletonSGMBegin->first, currentSkeletonContainerBegin->first, currentSkeletonBegin->first, enclaveTriangle);
+			}
+		}
+	}
+
+
 	std::vector<EnclaveTriangle> triangleVector;
-	auto idFinder = etcSGM.enclaveTriangleSupergroups.find(in_superGroupID);
-	if (idFinder != etcSGM.enclaveTriangleSupergroups.end())
+	auto idFinder = tempManager.enclaveTriangleSupergroups.find(in_superGroupID);
+	if (idFinder != tempManager.enclaveTriangleSupergroups.end())
 	{
 		auto supergroupContainersBegin = idFinder->second.containerMap.begin();
 		auto supergroupContainersEnd = idFinder->second.containerMap.end();
@@ -243,6 +264,11 @@ EnclaveTriangleSkeletonSupergroupManager OrganicRawEnclave::spawnEnclaveTriangle
 	EnclaveTriangleSkeletonSupergroupManager producedGroupManager = etcSGM.produceEnclaveTriangleSkeletons();
 	return producedGroupManager;
 
+}
+
+void OrganicRawEnclave::loadSkeletonContainersFromEnclaveContainers()
+{
+	skeletonSGM = etcSGM.produceEnclaveTriangleSkeletons();
 }
 
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)

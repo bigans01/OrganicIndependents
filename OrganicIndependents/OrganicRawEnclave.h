@@ -122,6 +122,7 @@ public:
 																													// set 
 	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
 																											// EnclaveTriangleContainerSupergroup with a given ID.
+	void loadSkeletonContainersFromEnclaveContainers();
 private:
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 	OREAppendedState currentAppendedState = OREAppendedState::NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
