@@ -429,6 +429,12 @@
     <ClInclude Include="OrganicLineBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveBlockVertexTri.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TertiaryTriangleProducer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -565,6 +571,9 @@
     </ClCompile>
     <ClCompile Include="OrganicRawEnclave.cpp">
       <Filter>Source Files\ORE</Filter>
+    </ClCompile>
+    <ClCompile Include="TertiaryTriangleProducer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

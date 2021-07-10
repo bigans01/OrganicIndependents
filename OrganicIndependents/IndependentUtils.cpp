@@ -8474,3 +8474,51 @@ ECBPolyPoint IndependentUtils::translateEnclavePointToWorldSpace(ECBPolyPoint in
 	translatedPoint.z = (in_blueprintKeyForTranslation.z*32.0f) + (in_oreKeyForTranslation.z*4.0f) + in_pointToTranslate.z;
 	return translatedPoint;
 }
+
+ECBPolyPoint IndependentUtils::convertEnclaveBlockVertexToFloats(EnclaveBlockVertex in_vertex)
+{
+	ECBPolyPoint returnPoint;
+	returnPoint.x = convertPreciseCoordToFloat(in_vertex.x);
+	returnPoint.y = convertPreciseCoordToFloat(in_vertex.y);
+	returnPoint.z = convertPreciseCoordToFloat(in_vertex.z);
+	return returnPoint;
+}
+
+ECBPolyPointTri IndependentUtils::convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri)
+{
+	ECBPolyPointTri returnTri;
+	returnTri.triPoints[0].x = convertPreciseCoordToFloat(in_vertexTri.pointA.x);
+	returnTri.triPoints[0].y = convertPreciseCoordToFloat(in_vertexTri.pointA.y);
+	returnTri.triPoints[0].z = convertPreciseCoordToFloat(in_vertexTri.pointA.z);
+
+	returnTri.triPoints[1].x = convertPreciseCoordToFloat(in_vertexTri.pointB.x);
+	returnTri.triPoints[1].y = convertPreciseCoordToFloat(in_vertexTri.pointB.y);
+	returnTri.triPoints[1].z = convertPreciseCoordToFloat(in_vertexTri.pointB.z);
+
+	returnTri.triPoints[2].x = convertPreciseCoordToFloat(in_vertexTri.pointC.x);
+	returnTri.triPoints[2].y = convertPreciseCoordToFloat(in_vertexTri.pointC.y);
+	returnTri.triPoints[2].z = convertPreciseCoordToFloat(in_vertexTri.pointC.z);
+	return returnTri;
+
+}
+
+ECBPolyPointTri IndependentUtils::combineClampedCoordsWithPrecise(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey)
+{
+	ECBPolyPointTri actualCoords;
+	ECBPolyPoint blockClampedVals;
+	blockClampedVals.x = (in_blueprintKey.x*32.0f) + (in_enclaveKey.x*4.0f) + in_blockKey.x;
+	blockClampedVals.y = (in_blueprintKey.y*32.0f) + (in_enclaveKey.y*4.0f) + in_blockKey.y;
+	blockClampedVals.z = (in_blueprintKey.z*32.0f) + (in_enclaveKey.z*4.0f) + in_blockKey.z;
+	actualCoords.triPoints[0].x = blockClampedVals.x + in_precisePolyPointTri.triPoints[0].x;
+	actualCoords.triPoints[0].y = blockClampedVals.y + in_precisePolyPointTri.triPoints[0].y;
+	actualCoords.triPoints[0].z = blockClampedVals.z + in_precisePolyPointTri.triPoints[0].z;
+
+	actualCoords.triPoints[1].x = blockClampedVals.x + in_precisePolyPointTri.triPoints[1].x;
+	actualCoords.triPoints[1].y = blockClampedVals.y + in_precisePolyPointTri.triPoints[1].y;
+	actualCoords.triPoints[1].z = blockClampedVals.z + in_precisePolyPointTri.triPoints[1].z;
+
+	actualCoords.triPoints[2].x = blockClampedVals.x + in_precisePolyPointTri.triPoints[2].x;
+	actualCoords.triPoints[2].y = blockClampedVals.y + in_precisePolyPointTri.triPoints[2].y;
+	actualCoords.triPoints[2].z = blockClampedVals.z + in_precisePolyPointTri.triPoints[2].z;
+	return actualCoords;
+}

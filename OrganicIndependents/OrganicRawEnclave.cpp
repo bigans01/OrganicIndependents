@@ -137,6 +137,44 @@ void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKe
 	}
 }
 
+int OrganicRawEnclave::getNumberOfTrianglesByLOD()
+{
+	int triangleCount = 0;
+	switch (currentLodState)
+	{
+		case ORELodState::LOD_ENCLAVE:
+		{
+			// if LOD_ENCLAVE, simply look at the skeletonSGM
+			auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+			auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+			for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+			{
+				auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+				auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+				for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+				{
+					auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
+					auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
+					for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
+					{
+						triangleCount++;
+					}
+				}
+			}
+			break;
+		};
+		case ORELodState::LOD_BLOCK:
+		{
+			break;
+		};
+		case ORELodState::FULL:
+		{
+			break;
+		}
+	}
+	return triangleCount;
+}
+
 int OrganicRawEnclave::getTotalTriangles()
 {
 	return total_triangles;
@@ -270,6 +308,7 @@ void OrganicRawEnclave::loadSkeletonContainersFromEnclaveContainers()
 {
 	skeletonSGM = etcSGM.produceEnclaveTriangleSkeletons();
 }
+
 
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {

@@ -201,6 +201,7 @@
     <ClInclude Include="EnclaveBlock.h" />
     <ClInclude Include="EnclaveBlockSkeleton.h" />
     <ClInclude Include="EnclaveBlockVertex.h" />
+    <ClInclude Include="EnclaveBlockVertexTri.h" />
     <ClInclude Include="EnclaveBorderLineList.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="EnclaveLineRunner.h" />
@@ -279,6 +280,7 @@
     <ClInclude Include="TerminatingSet.h" />
     <ClInclude Include="TerminatingSetContainer.h" />
     <ClInclude Include="TertiaryTriangleContainer.h" />
+    <ClInclude Include="TertiaryTriangleProducer.h" />
     <ClInclude Include="ThinFan.h" />
     <ClInclude Include="TriangleLine.h" />
   </ItemGroup>
@@ -333,6 +335,7 @@
     <ClCompile Include="StringToMessageBuilder.cpp" />
     <ClCompile Include="TerminatingSetContainer.cpp" />
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
+    <ClCompile Include="TertiaryTriangleProducer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
