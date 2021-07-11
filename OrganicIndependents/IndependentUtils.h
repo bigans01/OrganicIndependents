@@ -132,6 +132,7 @@ class IndependentUtils
 		static ECBPolyPoint convertEnclaveBlockVertexToFloats(EnclaveBlockVertex in_vertex);
 		static ECBPolyPointTri convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri);
 		static ECBPolyPointTri combineClampedCoordsWithPrecise(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+		static ECBPolyPointTri adjustEnclaveTriangleCoordsToWorldSpace(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
 };
 
 #endif

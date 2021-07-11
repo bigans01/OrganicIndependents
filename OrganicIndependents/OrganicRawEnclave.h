@@ -128,6 +128,7 @@ public:
 																											// the etcSGM. This function should NOT
 
 	int getNumberOfTrianglesByLOD();	// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
+	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 
 private:
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
@@ -137,7 +138,6 @@ private:
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
-	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 
 	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;
 	std::map<int, EnclaveBlock> finalizerBlocks;							// unused for now	

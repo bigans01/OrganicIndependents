@@ -8522,3 +8522,24 @@ ECBPolyPointTri IndependentUtils::combineClampedCoordsWithPrecise(ECBPolyPointTr
 	actualCoords.triPoints[2].z = blockClampedVals.z + in_precisePolyPointTri.triPoints[2].z;
 	return actualCoords;
 }
+
+ECBPolyPointTri IndependentUtils::adjustEnclaveTriangleCoordsToWorldSpace(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey)
+{
+	ECBPolyPointTri actualCoords;
+	ECBPolyPoint enclavePointAdjustmentValue;
+	enclavePointAdjustmentValue.x = (in_blueprintKey.x*32.0f) + (in_enclaveKey.x*4.0f);
+	enclavePointAdjustmentValue.y = (in_blueprintKey.y*32.0f) + (in_enclaveKey.y*4.0f);
+	enclavePointAdjustmentValue.z = (in_blueprintKey.z*32.0f) + (in_enclaveKey.z*4.0f);
+	actualCoords.triPoints[0].x = enclavePointAdjustmentValue.x + in_precisePolyPointTri.triPoints[0].x;
+	actualCoords.triPoints[0].y = enclavePointAdjustmentValue.y + in_precisePolyPointTri.triPoints[0].y;
+	actualCoords.triPoints[0].z = enclavePointAdjustmentValue.z + in_precisePolyPointTri.triPoints[0].z;
+
+	actualCoords.triPoints[1].x = enclavePointAdjustmentValue.x + in_precisePolyPointTri.triPoints[1].x;
+	actualCoords.triPoints[1].y = enclavePointAdjustmentValue.y + in_precisePolyPointTri.triPoints[1].y;
+	actualCoords.triPoints[1].z = enclavePointAdjustmentValue.z + in_precisePolyPointTri.triPoints[1].z;
+
+	actualCoords.triPoints[2].x = enclavePointAdjustmentValue.x + in_precisePolyPointTri.triPoints[2].x;
+	actualCoords.triPoints[2].y = enclavePointAdjustmentValue.y + in_precisePolyPointTri.triPoints[2].y;
+	actualCoords.triPoints[2].z = enclavePointAdjustmentValue.z + in_precisePolyPointTri.triPoints[2].z;
+	return actualCoords;
+}
