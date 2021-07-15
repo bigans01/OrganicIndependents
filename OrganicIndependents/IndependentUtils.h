@@ -27,6 +27,7 @@
 //#include "EnclaveTriangle.h"
 #include "ECBPoly.h"
 #include "EnclaveBlockVertexTri.h"
+#include "DynamicBorderLineList.h"
 
 class EnclaveTriangle;
 class IndependentUtils
@@ -48,6 +49,7 @@ class IndependentUtils
 		static ECBBorderValues getBlueprintLimits(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList in_blockBorders);	// default version of GetPointOrientation
 		static ECBPPOrientationResults GetPointOrientation(ECBPolyPoint in_pointToCheck, BlockBorderLineList* in_blockBorders);	// version of GetPointOrientation which takes a pointer instead of a copy of in_blockBorders
+		static ECBPPOrientationResults getDynamicPointOrientation(ECBPolyPoint in_pointToCheck, DynamicBorderLineList* in_dynamicBorderLineListRef);
 
 		static ECBPPOrientationResults GetEnclavePointOrientation(ECBPolyPoint in_pointToCheck, EnclaveBorderLineList* in_enclaveBorderLineList);
 		static ECBPolyPoint applyEnclaveResetValuesToPoint(ECBPolyPoint in_pointToApplyTo, ECBPolyPoint in_resetValues, ECBPolyPoint in_moveValues);
