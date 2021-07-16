@@ -3157,7 +3157,7 @@ ECBPPOrientationResults IndependentUtils::getDynamicPointOrientation(ECBPolyPoin
 	}
 
 	// East face check
-	else if ((in_pointToCheck.x == 1.0f)
+	else if ((in_pointToCheck.x == in_dynamicBorderLineListRef->corner_LowerNE.pointXYZ.x)
 		&&
 		(in_pointToCheck.y > in_dynamicBorderLineListRef->corner_LowerNW.pointXYZ.y)
 		&&
@@ -3174,7 +3174,7 @@ ECBPPOrientationResults IndependentUtils::getDynamicPointOrientation(ECBPolyPoin
 	}
 
 	// South face check
-	else if ((in_pointToCheck.z == 1.0f)
+	else if ((in_pointToCheck.z == in_dynamicBorderLineListRef->corner_LowerSE.pointXYZ.z)
 		&&
 		(in_pointToCheck.x > in_dynamicBorderLineListRef->corner_LowerNW.pointXYZ.x)
 		&&
@@ -3190,7 +3190,7 @@ ECBPPOrientationResults IndependentUtils::getDynamicPointOrientation(ECBPolyPoin
 	}
 
 	// Top face check
-	else if ((in_pointToCheck.y == 1.0f)
+	else if ((in_pointToCheck.y == in_dynamicBorderLineListRef->corner_UpperNW.pointXYZ.y)
 		&&
 		(in_pointToCheck.x > in_dynamicBorderLineListRef->corner_LowerNW.pointXYZ.x)
 		&&
@@ -5478,6 +5478,17 @@ void IndependentUtils::printOrientationEnum(ECBPPOrientations in_pointOrientatio
 {
 	switch (in_pointOrientation)
 	{
+		// corners
+		case ECBPPOrientations::CORNER_LOWERNE: { std::cout << "CORNER_LOWERNE" << std::endl; break; }
+		case ECBPPOrientations::CORNER_LOWERNW: { std::cout << "CORNER_LOWERNW" << std::endl; break; }
+		case ECBPPOrientations::CORNER_LOWERSE: { std::cout << "CORNER_LOWERSE" << std::endl; break; }
+		case ECBPPOrientations::CORNER_LOWERSW: { std::cout << "CORNER_LOWERSW" << std::endl; break; }
+		case ECBPPOrientations::CORNER_UPPERNE: { std::cout << "CORNER_UPPERNE" << std::endl; break; }
+		case ECBPPOrientations::CORNER_UPPERNW: { std::cout << "CORNER_UPPERNW" << std::endl; break; }
+		case ECBPPOrientations::CORNER_UPPERSE: { std::cout << "CORNER_UPPERSE" << std::endl; break; }
+		case ECBPPOrientations::CORNER_UPPERSW: { std::cout << "CORNER_UPPERSW" << std::endl; break; }
+
+		// lines
 		case ECBPPOrientations::ZAXIS_LOWERWEST: { std::cout << "ZAXIS_LOWERWEST" << std::endl; break; }
 		case ECBPPOrientations::ZAXIS_LOWEREAST: { std::cout << "ZAXIS_LOWEREAST" << std::endl; break; }
 		case ECBPPOrientations::ZAXIS_UPPERWEST: { std::cout << "ZAXIS_UPPERWEST" << std::endl; break; }
@@ -5490,6 +5501,17 @@ void IndependentUtils::printOrientationEnum(ECBPPOrientations in_pointOrientatio
 		case ECBPPOrientations::YAXIS_NORTHEAST: { std::cout << "YAXIS_NORTHEAST" << std::endl; break; }
 		case ECBPPOrientations::YAXIS_SOUTHWEST: { std::cout << "YAXIS_SOUTHWEST" << std::endl; break; }
 		case ECBPPOrientations::YAXIS_SOUTHEAST: { std::cout << "YAXIS_SOUTHEAST" << std::endl; break; }
+
+		// faces
+		case ECBPPOrientations::NORTHFACE: {std::cout << "NORTHFACE" << std::endl; break; }
+		case ECBPPOrientations::EASTFACE: {std::cout << "EASTFACE" << std::endl; break; }
+		case ECBPPOrientations::SOUTHFACE: {std::cout << "SOUTHFACE" << std::endl; break; }
+		case ECBPPOrientations::WESTFACE: {std::cout << "WESTFACE" << std::endl; break; }
+		case ECBPPOrientations::TOPFACE: {std::cout << "TOPFACE" << std::endl; break; }
+		case ECBPPOrientations::BOTTOMFACE: {std::cout << "BOTTOMFACE" << std::endl; break; }
+
+		// interior
+		case ECBPPOrientations::FREE: {std::cout << "FREE" << std::endl; break; }
 	}
 }
 
