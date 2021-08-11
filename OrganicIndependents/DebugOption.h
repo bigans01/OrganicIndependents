@@ -175,8 +175,12 @@ enum class DebugOption
 	REFERENCED_CUTTINGTRIANGLE_CUT_TRIANGLE_PRODUCTION,		// for CuttableTriangle::produceCutTriangles (OrganicGLWinLib)
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by class STriangleCutter (OrganicGLWinLib)
-	STRIANGLECUTTER_BASIC									// for showing output of a particular STriangleCutter run; set by SPolySet::setDOTrackedSPolySTriangle (OrganicGLWinLib)
+	STRIANGLECUTTER_BASIC,									// for showing output of a particular STriangleCutter run; set by SPolySet::setDOTrackedSPolySTriangle (OrganicGLWinLib)
 															// also shows output of remaining/spawned SCuttableTriangles after a comparison to a specific SCuttingTriangle.
+
+	// RPoly
+	RPOLY_RTRIANGLE_TRACING,		// shows how an RTriangle is traced through a Rasterized3DMassGrid
+	RPOLY_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup.
 };
 
 #endif
