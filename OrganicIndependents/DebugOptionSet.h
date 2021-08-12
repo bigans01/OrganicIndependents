@@ -5,6 +5,7 @@
 
 #include <set>
 #include "DebugOption.h"
+#include "PolyDebugLevel.h"
 
 class DebugOptionSet
 {
@@ -62,6 +63,17 @@ class DebugOptionSet
 				wasFound = true;
 			}
 			return wasFound;
+		}
+
+		PolyDebugLevel returnDebugLevelIfFound(DebugOption in_optionToFind)
+		{
+			PolyDebugLevel returnValue = PolyDebugLevel::NONE;
+			auto finder = debugOptionSet.find(in_optionToFind);
+			if (finder != debugOptionSet.end())
+			{
+				returnValue = PolyDebugLevel::DEBUG;
+			}
+			return returnValue;
 		}
 	private:
 		std::set<DebugOption> debugOptionSet;

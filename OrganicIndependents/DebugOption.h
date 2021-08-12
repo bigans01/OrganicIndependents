@@ -179,8 +179,11 @@ enum class DebugOption
 															// also shows output of remaining/spawned SCuttableTriangles after a comparison to a specific SCuttingTriangle.
 
 	// RPoly
-	RPOLY_RTRIANGLE_TRACING,		// shows how an RTriangle is traced through a Rasterized3DMassGrid
-	RPOLY_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup.
+	RPOLY_RTRIANGLE_TRACING,										// shows how an RTriangle is traced through a Rasterized3DMassGrid
+	RMORPHABLEAREASCANNER_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS,		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup, when calling RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
+	RMORPHABLEAREASCANNER_PRINT_MESHES_CONTAINING_MASS,				// prints any RMorphableMesh that contains mass, when calling the function RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
+	RMORPHABLEAREASCANNER_MESH_GROUP_CONSTRUCTION,					// shows output data in RMorphableAreaScanner, for when it attempts to build RMorphableMeshGroups.
+	RMORPHABLEMESHGROUP_SPECIFIC_MESH_FACE_GENERATION				// shows output data for a call to generateRProductFaces() in a specific RMorphableMesh, in the function RMorphableMeshGroup::generateRProductFacesInRemainingMeshes().
 };
 
 #endif
