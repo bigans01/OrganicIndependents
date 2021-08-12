@@ -183,7 +183,8 @@ enum class DebugOption
 	RMORPHABLEAREASCANNER_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS,		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup, when calling RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_PRINT_MESHES_CONTAINING_MASS,				// prints any RMorphableMesh that contains mass, when calling the function RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_MESH_GROUP_CONSTRUCTION,					// shows output data in RMorphableAreaScanner, for when it attempts to build RMorphableMeshGroups.
-	RMORPHABLEMESHGROUP_SPECIFIC_MESH_FACE_GENERATION				// shows output data for a call to generateRProductFaces() in a specific RMorphableMesh, in the function RMorphableMeshGroup::generateRProductFacesInRemainingMeshes().
+	RMORPHABLEMESHGROUP_SPECIFIC_MESH_FACE_GENERATION,				// shows output data for a call to generateRProductFaces() in a specific RMorphableMesh, in the function RMorphableMeshGroup::generateRProductFacesInRemainingMeshes().
+	RMORPHABLEMESHGROUP_SPECIFIC_MESH_SUCTION
 };
 
 #endif
