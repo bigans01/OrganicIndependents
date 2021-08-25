@@ -80,16 +80,25 @@ bool OrganicRawEnclave::doesOREContainRenderableData()
 	bool containsData = false;
 	switch(currentLodState)
 	{
-		case ORELodState::LOD_ENCLAVE:
+		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			//containsData = organicTriangleSecondarySGM.willSecondariesProduceFans();
 			containsData = skeletonSGM.containsRenderableTriangles();
 			break;
 		};
+
+		case ORELodState::LOD_ENCLAVE_RMATTER:
+		{
+			containsData = skeletonSGM.containsRenderableTriangles();
+			break;
+		};
+
+
 		case ORELodState::LOD_BLOCK:
 		{
 			break;
 		};
+
 		case ORELodState::FULL:
 		{
 			containsData = false;
@@ -114,17 +123,32 @@ int OrganicRawEnclave::getNumberOfBlockSkeletons()
 	return blockSkeletonMap.size();
 }
 
+void OrganicRawEnclave::updateOREForRMass()
+{
+	currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
+	blockSkeletonMap.clear();
+}
+
 void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
 	switch (currentLodState)
 	{
-		case ORELodState::LOD_ENCLAVE:
+		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
 			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
 			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
 			break;
 		};
+
+		case ORELodState::LOD_ENCLAVE_RMATTER:
+		{
+			// will spawn all renderable blocks via stored EnclaveTriangles.
+			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			break;
+		};
+
 		case ORELodState::LOD_BLOCK:
 		{
 			break;
@@ -142,7 +166,7 @@ int OrganicRawEnclave::getNumberOfTrianglesByLOD()
 	int triangleCount = 0;
 	switch (currentLodState)
 	{
-		case ORELodState::LOD_ENCLAVE:
+		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			// if LOD_ENCLAVE, simply look at the skeletonSGM
 			auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
@@ -163,6 +187,29 @@ int OrganicRawEnclave::getNumberOfTrianglesByLOD()
 			}
 			break;
 		};
+
+		case ORELodState::LOD_ENCLAVE_RMATTER:
+		{
+			// if LOD_ENCLAVE, simply look at the skeletonSGM
+			auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+			auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+			for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+			{
+				auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+				auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+				for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+				{
+					auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
+					auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
+					for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
+					{
+						triangleCount++;
+					}
+				}
+			}
+			break;
+		};
+
 		case ORELodState::LOD_BLOCK:
 		{
 			break;
@@ -245,10 +292,15 @@ std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSup
 
 void OrganicRawEnclave::printMapData()
 {
-	if (currentLodState == ORELodState::LOD_ENCLAVE)
+	if (currentLodState == ORELodState::LOD_ENCLAVE_SMATTER)
 	{
-		std::cout << "++State: LOD_ENCLAVE " << std::endl;
+		std::cout << "++State: LOD_ENCLAVE_SMATTER " << std::endl;
 	}
+	else if (currentLodState == ORELodState::LOD_ENCLAVE_RMATTER)
+	{
+		std::cout << "++State: LOD_ENCLAVE_RMATTER " << std::endl;
+	}
+
 	else if (currentLodState == ORELodState::FULL)
 	{
 		std::cout << "++State: FULL " << std::endl;

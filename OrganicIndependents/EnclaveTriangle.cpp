@@ -62,6 +62,12 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, Bo
 		}
 		//std::cout << "######## Reverse direction interior run complete. " << std::endl;
 	}
+	else if (isTriangleValid == false)
+	{
+		std::cout << "!!! Notice, invalid EnclaveTriangle detected, in Enclave with key: " << currentEnclaveKey.x << ", " << currentEnclaveKey.y << ", " << currentEnclaveKey.z << std::endl;
+		int invalid = 3;
+		std::cin >> invalid;
+	}
 	//runInteriorRunnerReverse(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::REVERSE);
 
 	//printExteriorBlocks();

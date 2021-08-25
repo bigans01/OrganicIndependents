@@ -65,6 +65,39 @@ public:
 		return *this;
 	}
 
+	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFratureResults);
+	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
+	void insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton);
+																													// OrganicTriangleSecondaries to be present.			
+	void printMapData();
+	void printEnclaveTriangleContainers();
+	bool checkIfFull();
+	int getNumberOfBlockSkeletons();
+	void updateOREForRMass();
+	bool doesOREContainRenderableData();															// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
+	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);
+	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
+	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
+																											// populates the skeletonSGM of this ore, by spawning skeletons from
+																											// the etcSGM. This function should NOT
+
+	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
+	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
+	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
+	std::set<int> getTouchedBlockList();																			// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
+
+	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
+	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
+																											// a different instance of OrganicRawEnclave, using the function appendSpawnedEnclaveTriangleSkeletonContainers; see usage in 
+																											// spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.
+	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
+																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
+	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
+	OREAppendedState getAppendedState();													// retures the appended state of the ORE.
+	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
+																													// set 
+	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
+																											// EnclaveTriangleContainerSupergroup with a given ID.
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 1: For storing "Deflated" data;
 
@@ -97,41 +130,8 @@ public:
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 
-	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFratureResults);
-	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
-	void insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton);
-	std::set<int> getTouchedBlockList();																			// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
-																													// OrganicTriangleSecondaries to be present.			
-	void printMapData();
-	void printEnclaveTriangleContainers();
-	bool checkIfFull();
-	int getNumberOfBlockSkeletons();
-	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
-	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
-																											// a different instance of OrganicRawEnclave, using the function appendSpawnedEnclaveTriangleSkeletonContainers; see usage in 
-																											// spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.
-	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);
-	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
-	bool doesOREContainRenderableData();															// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
-																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
-	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
-	OREAppendedState getAppendedState();													// retures the appended state of the ORE.
-	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
-	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
-	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
-																													// set 
-	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
-																											// EnclaveTriangleContainerSupergroup with a given ID.
-
-	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
-																											// populates the skeletonSGM of this ore, by spawning skeletons from
-																											// the etcSGM. This function should NOT
-
-	int getNumberOfTrianglesByLOD();	// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
-	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
-
 private:
-	ORELodState currentLodState = ORELodState::LOD_ENCLAVE;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
+	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 	OREAppendedState currentAppendedState = OREAppendedState::NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
 
 	void resetBlockData();																							// clears the blockMap, and resets triangle count
