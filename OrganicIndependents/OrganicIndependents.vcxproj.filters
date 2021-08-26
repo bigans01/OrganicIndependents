@@ -435,6 +435,12 @@
     <ClInclude Include="TertiaryTriangleProducer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StringTracer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicLinePointSyncExclusionFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

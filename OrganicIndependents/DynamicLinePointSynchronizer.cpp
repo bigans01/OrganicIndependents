@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "DynamicLinePointSynchronizer.h"
 
-DynamicLinePointSynchronizer::DynamicLinePointSynchronizer(ECBPolyPoint in_pointToSync, int in_coordToSyncTo, float in_dimLength)
+DynamicLinePointSynchronizer::DynamicLinePointSynchronizer(ECBPolyPoint in_pointToSync, 
+														int in_coordToSyncTo, 
+														float in_dimLength,
+														DynamicLinePointSyncExclusionFlags in_exclusionFlag)
 {
 	basePoint = in_pointToSync;
 	coordToSyncTo = in_coordToSyncTo;
 	dimLimit = in_dimLength;
+	exclusionFlag = in_exclusionFlag;
 }
 
 ECBPolyPoint DynamicLinePointSynchronizer::sync()
@@ -52,29 +56,35 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToX()
 	int matchCount = 0;				// this value must be 1 for a valid return value
 
 	// check for y
-	if (pointToReturn.y > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Y)
 	{
-		pointToReturn.y = dimLimit;
-		matchCount++;
-	}
-	else if (pointToReturn.y < lowBarrier)
-	{
-		pointToReturn.y = 0.0f;
-		matchCount++;
+		if (pointToReturn.y > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+		{
+			pointToReturn.y = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.y < lowBarrier)
+		{
+			pointToReturn.y = 0.0f;
+			matchCount++;
+		}
 	}
 
 	// check for z
-	if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 	{
-		//std::cout << "high bar z hit. " << std::endl;
-		pointToReturn.z = dimLimit;
-		matchCount++;
-	}
-	else if (pointToReturn.z < lowBarrier)
-	{
-		//std::cout << "low bar z hit. " << std::endl;
-		pointToReturn.z = 0.0f;
-		matchCount++;
+		if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+		{
+			//std::cout << "high bar z hit. " << std::endl;
+			pointToReturn.z = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.z < lowBarrier)
+		{
+			//std::cout << "low bar z hit. " << std::endl;
+			pointToReturn.z = 0.0f;
+			matchCount++;
+		}
 	}
 
 	// did it match? if so, return.
@@ -104,34 +114,39 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToX()
 			lowBarrier = dimLimitDifference;
 			//matchCount = 0;
 			// check for y
-			if (pointToReturn.y > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Y)
 			{
-				//std::cout << " y > high " << std::endl;
-				pointToReturn.y = dimLimit;
-				matchCount++;
-				foundY = true;
-			}
-			else if (pointToReturn.y < lowBarrier)
-			{
-				pointToReturn.y = 0.0f;
-				matchCount++;
-				foundY = true;
+				if (pointToReturn.y > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+				{
+					//std::cout << " y > high " << std::endl;
+					pointToReturn.y = dimLimit;
+					matchCount++;
+					foundY = true;
+				}
+				else if (pointToReturn.y < lowBarrier)
+				{
+					pointToReturn.y = 0.0f;
+					matchCount++;
+					foundY = true;
+				}
 			}
 
 			// check for z
-			if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 			{
-				pointToReturn.z = dimLimit;
-				matchCount++;
-				foundZ = true;
+				if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+				{
+					pointToReturn.z = dimLimit;
+					matchCount++;
+					foundZ = true;
+				}
+				else if (pointToReturn.z < lowBarrier)
+				{
+					pointToReturn.z = 0.0f;
+					matchCount++;
+					foundZ = true;
+				}
 			}
-			else if (pointToReturn.z < lowBarrier)
-			{
-				pointToReturn.z = 0.0f;
-				matchCount++;
-				foundZ = true;
-			}
-
 			// iterate the dimLimitDifference.
 			dimLimitDifference += dimLimitAdd;
 
@@ -180,29 +195,33 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToY()
 	float lowBarrier = 0.0001f;
 	int matchCount = 0;
 	// check for x
-	if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_X)
 	{
-		pointToReturn.x = dimLimit;
-		matchCount++;
+		if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+		{
+			pointToReturn.x = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.x < lowBarrier)
+		{
+			pointToReturn.x = 0.0f;
+			matchCount++;
+		}
 	}
-	else if (pointToReturn.x < lowBarrier)
-	{
-		pointToReturn.x = 0.0f;
-		matchCount++;
-	}
-
 	// check for z
-	if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 	{
-		pointToReturn.z = dimLimit;
-		matchCount++;
+		if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+		{
+			pointToReturn.z = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.z < lowBarrier)
+		{
+			pointToReturn.z = 0.0f;
+			matchCount++;
+		}
 	}
-	else if (pointToReturn.z < lowBarrier)
-	{
-		pointToReturn.z = 0.0f;
-		matchCount++;
-	}
-
 	// did it match? if so, return.
 	if (matchCount == 1)
 	{
@@ -229,32 +248,37 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToY()
 			lowBarrier = dimLimitDifference;
 			//matchCount = 0;
 			// check for y
-			if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_X)
 			{
-				//std::cout << " y > high " << std::endl;
-				pointToReturn.x = dimLimit;
-				matchCount++;
-				foundX = true;
+				if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+				{
+					//std::cout << " y > high " << std::endl;
+					pointToReturn.x = dimLimit;
+					matchCount++;
+					foundX = true;
+				}
+				else if (pointToReturn.x < lowBarrier)
+				{
+					pointToReturn.x = 0.0f;
+					matchCount++;
+					foundX = true;
+				}
 			}
-			else if (pointToReturn.x < lowBarrier)
-			{
-				pointToReturn.x = 0.0f;
-				matchCount++;
-				foundX = true;
-			}
-
 			// check for z
-			if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 			{
-				pointToReturn.z = dimLimit;
-				matchCount++;
-				foundZ = true;
-			}
-			else if (pointToReturn.z < lowBarrier)
-			{
-				pointToReturn.z = 0.0f;
-				matchCount++;
-				foundZ = true;
+				if (pointToReturn.z > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+				{
+					pointToReturn.z = dimLimit;
+					matchCount++;
+					foundZ = true;
+				}
+				else if (pointToReturn.z < lowBarrier)
+				{
+					pointToReturn.z = 0.0f;
+					matchCount++;
+					foundZ = true;
+				}
 			}
 
 			// iterate the dimLimitDifference.
@@ -304,29 +328,33 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToZ()
 	float lowBarrier = 0.0001f;
 	int matchCount = 0;
 	// check for x
-	if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_X)
 	{
-		pointToReturn.x = dimLimit;
-		matchCount++;
+		if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+		{
+			pointToReturn.x = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.x < lowBarrier)
+		{
+			pointToReturn.x = 0.0f;
+			matchCount++;
+		}
 	}
-	else if (pointToReturn.x < lowBarrier)
-	{
-		pointToReturn.x = 0.0f;
-		matchCount++;
-	}
-
 	// check for z
-	if (pointToReturn.y > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+	if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 	{
-		pointToReturn.y = dimLimit;
-		matchCount++;
+		if (pointToReturn.y > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+		{
+			pointToReturn.y = dimLimit;
+			matchCount++;
+		}
+		else if (pointToReturn.y < lowBarrier)
+		{
+			pointToReturn.y = 0.0f;
+			matchCount++;
+		}
 	}
-	else if (pointToReturn.y < lowBarrier)
-	{
-		pointToReturn.y = 0.0f;
-		matchCount++;
-	}
-
 	// did it match? if so, return.
 	if (matchCount == 1)
 	{
@@ -352,34 +380,38 @@ DynamicLineSyncResult DynamicLinePointSynchronizer::syncToZ()
 			lowBarrier = dimLimitDifference;
 			//matchCount = 0;
 			// check for y
-			if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_X)
 			{
-				//std::cout << " y > high " << std::endl;
-				pointToReturn.x = dimLimit;
-				matchCount++;
-				foundX = true;
+				if (pointToReturn.x > highBarrier)	// is y greater than 0.5f? if yes, then round to dimLimit
+				{
+					//std::cout << " y > high " << std::endl;
+					pointToReturn.x = dimLimit;
+					matchCount++;
+					foundX = true;
+				}
+				else if (pointToReturn.x < lowBarrier)
+				{
+					pointToReturn.x = 0.0f;
+					matchCount++;
+					foundX = true;
+				}
 			}
-			else if (pointToReturn.x < lowBarrier)
-			{
-				pointToReturn.x = 0.0f;
-				matchCount++;
-				foundX = true;
-			}
-
 			// check for z
-			if (pointToReturn.y > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+			if (exclusionFlag != DynamicLinePointSyncExclusionFlags::EXCLUDE_Z)
 			{
-				pointToReturn.y = dimLimit;
-				matchCount++;
-				foundY = true;
+				if (pointToReturn.y > highBarrier) // is z greater than 0.5f? if yes, then round to dimLimit
+				{
+					pointToReturn.y = dimLimit;
+					matchCount++;
+					foundY = true;
+				}
+				else if (pointToReturn.y < lowBarrier)
+				{
+					pointToReturn.y = 0.0f;
+					matchCount++;
+					foundY = true;
+				}
 			}
-			else if (pointToReturn.y < lowBarrier)
-			{
-				pointToReturn.y = 0.0f;
-				matchCount++;
-				foundY = true;
-			}
-
 			// iterate the dimLimitDifference.
 			dimLimitDifference += dimLimitAdd;
 

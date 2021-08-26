@@ -1,0 +1,14 @@
+#pragma once
+
+#ifndef DYNAMICLINEPOINTSYNCEXCLUSIONFLAGS_H
+#define DYNAMICLINEPOINTSYNCEXCLUSIONFLAGS_H
+
+enum class DynamicLinePointSyncExclusionFlags
+{
+	NOVAL,
+	EXCLUDE_X,
+	EXCLUDE_Y,
+	EXCLUDE_Z
+};
+
+#endif

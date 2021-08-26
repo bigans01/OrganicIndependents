@@ -173,6 +173,7 @@
     <ClInclude Include="DynamicBorderCornerPoint.h" />
     <ClInclude Include="DynamicBorderLineList.h" />
     <ClInclude Include="DynamicEndpointMeta.h" />
+    <ClInclude Include="DynamicLinePointSyncExclusionFlags.h" />
     <ClInclude Include="DynamicLinePointSynchronizer.h" />
     <ClInclude Include="DynamicLineSyncResult.h" />
     <ClInclude Include="DynamicLineSyncType.h" />
@@ -276,6 +277,7 @@
     <ClInclude Include="SmartIntMap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringToMessageBuilder.h" />
+    <ClInclude Include="StringTracer.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerminatingSet.h" />
     <ClInclude Include="TerminatingSetContainer.h" />
