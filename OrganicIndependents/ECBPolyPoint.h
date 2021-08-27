@@ -3,6 +3,8 @@
 #ifndef ECBPOLYPOINT_NEW_H
 #define ECBPOLYPOINT_NEW_H
 
+#include <iostream>
+
 class ECBPolyPoint
 {
 public:
@@ -40,6 +42,11 @@ public:
 			&&
 			z == 0.0f
 		);
+	}
+
+	void printPointCoords()
+	{
+		std::cout << " (" << x << ", " << y << ", " << z << ") ";
 	}
 };
 

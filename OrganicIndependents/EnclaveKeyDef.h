@@ -92,6 +92,11 @@ public:
 			}
 			return equalsValue;
 		}
+
+		void printKey()
+		{
+			std::cout << " (" << x << ", " << y << ", " << z << ") ";
+		}
 	};
 
 	struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
@@ -123,6 +128,11 @@ public:
 				&&
 				b == other.b
 				);
+		}
+
+		void printKey()
+		{
+			std::cout << " (" << a << ", " << b << ") ";
 		}
 	};
 
