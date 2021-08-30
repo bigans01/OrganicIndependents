@@ -163,6 +163,7 @@
     <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlockSearchMeta.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
+    <ClInclude Include="BlueprintTransformRefs.h" />
     <ClInclude Include="BorderDataMap.h" />
     <ClInclude Include="BorderMDFaceList.h" />
     <ClInclude Include="CircuitSegmentType.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PointSearchData.h" />
     <ClInclude Include="PolyDebugLevel.h" />
+    <ClInclude Include="PolyGroupRange.h" />
     <ClInclude Include="PolyGroupTicker.h" />
     <ClInclude Include="PolyGroupTickerState.h" />
     <ClInclude Include="PolyLineEndpointMeta.h" />

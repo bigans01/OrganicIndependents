@@ -441,6 +441,12 @@
     <ClInclude Include="DynamicLinePointSyncExclusionFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BlueprintTransformRefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyGroupRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
