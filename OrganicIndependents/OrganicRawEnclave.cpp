@@ -337,6 +337,32 @@ void OrganicRawEnclave::printEnclaveTriangleContainers()
 	}
 }
 
+void OrganicRawEnclave::printTriangleMetadata()
+{
+	std::cout << "+++++Printing meta data about triangles in this ORE..." << std::endl;
+	int numberOfTriangles = 0;
+
+	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+	auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+	for (; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+	{
+		auto skelContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+		auto skelContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+		for (; skelContainerBegin != skelContainerEnd; skelContainerBegin++)
+		{
+			auto skeletonsBegin = skelContainerBegin->second.skeletons.begin();
+			auto skeletonsEnd = skelContainerBegin->second.skeletons.end();
+			for (; skeletonsBegin != skeletonsEnd; skeletonsBegin++)
+			{
+				skeletonsBegin->second.printSkeletonTriangle();
+				numberOfTriangles++;
+			}
+		}
+	}
+
+	std::cout << "+++++Finished printing metedata of EnclaveTriangleSkeletons in this ORE; count was: " << numberOfTriangles << std::endl;
+}
+
 void OrganicRawEnclave::resetBlockData()
 {
 	blockMap.clear();		// reset the blocks
@@ -365,6 +391,14 @@ void OrganicRawEnclave::loadSkeletonContainersFromEnclaveContainers()
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
+}
+
+void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	skeletonSGM.triangleSkeletonSupergroups.clear();					// clear out existing skeletons
+	existingEnclaveTriangleSkeletonContainerTracker.intSet.clear();		// because we will be reloading the tracker entirely, wipe it clean. Used by OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib, when an RMatter mass has been produced.
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
 }
 

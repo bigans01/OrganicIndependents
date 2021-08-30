@@ -44,6 +44,17 @@ public:
 
 		return returnTriangle;
 	};
+
+	void printSkeletonTriangle()
+	{
+		std::cout << "Material: " << materialID << " | Empty normal: "; emptyNormal.printPointCoords();
+		for (int x = 0; x < 3; x++)
+		{
+			std::cout << " | point " << x << ": ";
+			points[x].printPointCoords();
+		}
+		std::cout << std::endl;
+	}
 };
 
 #endif

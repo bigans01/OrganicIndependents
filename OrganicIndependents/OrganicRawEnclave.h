@@ -71,11 +71,17 @@ public:
 																													// OrganicTriangleSecondaries to be present.			
 	void printMapData();
 	void printEnclaveTriangleContainers();
+	void printTriangleMetadata();
+
 	bool checkIfFull();
 	int getNumberOfBlockSkeletons();
 	void updateOREForRMass();
-	bool doesOREContainRenderableData();															// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
-	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);
+	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
+	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones
+	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
+																																									// and wipes out the existing skeletons in skeletonSGM, 
+																																									// before appending an entirely new series of skeleton containers. Needed by 
+																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
 	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
 																											// populates the skeletonSGM of this ore, by spawning skeletons from
