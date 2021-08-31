@@ -447,6 +447,9 @@
     <ClInclude Include="PolyGroupRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OREDependencyState.h">
+      <Filter>Header Files\ORE</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

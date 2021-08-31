@@ -23,6 +23,7 @@
 #include "ORELodState.h"
 #include "OREAppendedState.h"
 #include <vector>
+#include "OREDependencyState.h"
 
 class OrganicRawEnclave
 {
@@ -35,8 +36,11 @@ public:
 	{
 		currentLodState = resultsContainer_b.currentLodState;
 		currentAppendedState = resultsContainer_b.currentAppendedState;
+		currentDependencyState = resultsContainer_b.currentDependencyState;
+
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
+		appendedUpdateCount = resultsContainer_b.appendedUpdateCount;
 		//finalizerBlocks = resultsContainer_b.finalizerBlocks;
 		if (!resultsContainer_b.finalizerBlocks.empty())												// copy finalizer blocks
 		{																								// "" 
@@ -72,6 +76,7 @@ public:
 	void printMapData();
 	void printEnclaveTriangleContainers();
 	void printTriangleMetadata();
+	void printMetadata();
 
 	bool checkIfFull();
 	int getNumberOfBlockSkeletons();
@@ -88,9 +93,10 @@ public:
 																											// the etcSGM. This function should NOT
 
 	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
-	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
-	std::set<int> getTouchedBlockList();																			// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
+	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
+																											// in OrganicServerLib.
+	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
 	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
@@ -99,7 +105,9 @@ public:
 	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
 																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
 	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
-	OREAppendedState getAppendedState();													// retures the appended state of the ORE.
+	OREAppendedState getAppendedState();													// returns the appended state of the ORE.
+	OREDependencyState getDependencyState();												// returns the current dependency state of the ORE; needed by the function OrganicRawManifest::getNumberOfTrianglesFromModifiedOREs
+																							// in OrganicCoreLib.
 	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
 																													// set 
 	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
@@ -137,9 +145,12 @@ public:
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 
 private:
-	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;			// the state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
-	OREAppendedState currentAppendedState = OREAppendedState::NONE;	// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
+	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;							// the level-of-detail state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
+	OREAppendedState currentAppendedState = OREAppendedState::NONE;							// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
+	OREDependencyState currentDependencyState = OREDependencyState::DEPENDENT_ON_PARENTS;	// this state determines whether or not this ORE should be rendered when trying to render the entire blueprint's contents;
+																							// if this state is INDEPENDENT, the ORE will be rendere when trying to render side-by-side with a blueprint's ECBPolys.
 
+	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void resetBlockData();																							// clears the blockMap, and resets triangle count
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
@@ -150,6 +161,7 @@ private:
 	OperableIntSet existingEnclaveTriangleSkeletonContainerTracker;			// returns a set that represents the unique IDs of EnclaveTriangles; used by OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint,
 																			// in order to distinguish between "old" and "new" sets of an SPolySet.
 	int total_triangles = 0;								// the total number of renderable triangles; incremented/decremented according to the number of triangles per BBFan; determined at run time
+	int appendedUpdateCount = 0;							// the total number of times the appended state has been updated in the ORE.
 };
 
 #endif

@@ -35,6 +35,7 @@ void OrganicRawEnclave::createBlocksFromOrganicTriangleSecondaries(std::mutex* i
 
 void OrganicRawEnclave::updateCurrentAppendedState()
 {
+
 	switch (currentAppendedState)
 	{
 		case (OREAppendedState::NONE):
@@ -48,6 +49,12 @@ void OrganicRawEnclave::updateCurrentAppendedState()
 			break;
 		}
 	}
+	appendedUpdateCount++;
+}
+
+void OrganicRawEnclave::setOREasIndependent()
+{
+	currentDependencyState = OREDependencyState::INDEPENDENT;
 }
 
 std::set<int> OrganicRawEnclave::getTouchedBlockList()
@@ -118,6 +125,11 @@ OREAppendedState OrganicRawEnclave::getAppendedState()
 	return currentAppendedState;
 }
 
+OREDependencyState OrganicRawEnclave::getDependencyState()
+{
+	return currentDependencyState;
+}
+
 int OrganicRawEnclave::getNumberOfBlockSkeletons()
 {
 	return blockSkeletonMap.size();
@@ -126,6 +138,7 @@ int OrganicRawEnclave::getNumberOfBlockSkeletons()
 void OrganicRawEnclave::updateOREForRMass()
 {
 	currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
+	currentDependencyState = OREDependencyState::INDEPENDENT;	// all RMatter is INDEPENDENT
 	blockSkeletonMap.clear();
 }
 
@@ -231,17 +244,17 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 {
 	GroupSetPair returnPair;
 	OperableIntSet preAddSet = getExistingEnclaveTriangleSkeletonContainerTracker();
-	std::cout << "---Set contents, before add: " << std::endl;
-	preAddSet.printSet();
+	//std::cout << "---Set contents, before add: " << std::endl;
+	//preAddSet.printSet();
 	appendSpawnedEnclaveTriangleSkeletonContainers(in_mutexRef, in_otherEnclave->spawnEnclaveTriangleSkeletonContainers());
 	updateCurrentAppendedState();
 	OperableIntSet postAddSet = getExistingEnclaveTriangleSkeletonContainerTracker();
-	std::cout << "---Set contents, post add: " << std::endl;
-	postAddSet.printSet();
+	//std::cout << "---Set contents, post add: " << std::endl;
+	//postAddSet.printSet();
 	postAddSet -= preAddSet;	// subtract what was previously there (preAddSet), from what is there afer the call to spawnEnclaveTriangleSkeletonContainers() above (which goes into postAddSet)
 								// to get the new set of polys that were just added.	The old set (preAddSet) would be group 1 (what was previously there), and (postAddSet) would be group 2.
 								// When the ORE reformer is called to set up, we can pass these in as the arguments to its constructor.
-	std::cout << "---Set contents, after subtraction: " << std::endl;
+	//std::cout << "---Set contents, after subtraction: " << std::endl;
 	postAddSet.printSet();
 	returnPair.group0Set = preAddSet;
 	returnPair.group1Set = postAddSet;
@@ -361,6 +374,19 @@ void OrganicRawEnclave::printTriangleMetadata()
 	}
 
 	std::cout << "+++++Finished printing metedata of EnclaveTriangleSkeletons in this ORE; count was: " << numberOfTriangles << std::endl;
+}
+
+void OrganicRawEnclave::printMetadata()
+{
+	std::string appendedState;
+	switch (currentAppendedState)
+	{
+		case OREAppendedState::NONE: { appendedState = "NONE"; break; };
+		case OREAppendedState::SINGLE_APPEND: { appendedState = "SINGLE_APPEND"; break; };
+		case OREAppendedState::MULTIPLE_APPEND: { appendedState = "MULTIPLE_APPEND"; break; };
+	}
+	std::cout << "value of currentAppendedState: " << appendedState << std::endl;
+	std::cout << "appended update count: " << appendedUpdateCount << std::endl;
 }
 
 void OrganicRawEnclave::resetBlockData()

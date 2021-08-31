@@ -240,6 +240,7 @@
     <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
+    <ClInclude Include="OREDependencyState.h" />
     <ClInclude Include="OrganicLineBase.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
     <ClInclude Include="ORELodState.h" />
