@@ -180,6 +180,8 @@ enum class DebugOption
 
 	// RPoly family options (OrganicGLWinLib)
 	RPOLY_RTRIANGLE_TRACING,										// shows how an RTriangle is traced through a Rasterized3DMassGrid
+	RTRIANGLE_MASS_FILL,											// will show the steps as an RTriangle fills the mass in a MassGridArray.
+	RMORPHABLEAREASCANNER_PRINT_RTRIANGLE_POINTS,					// prints all points of all RTriangles that are currrently in the scanner.
 	RMORPHABLEAREASCANNER_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS,		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup, when calling RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_PRINT_MESHES_CONTAINING_MASS,				// prints any RMorphableMesh that contains mass, when calling the function RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_MESH_GROUP_CONSTRUCTION,					// shows output data in RMorphableAreaScanner, for when it attempts to build RMorphableMeshGroups.
