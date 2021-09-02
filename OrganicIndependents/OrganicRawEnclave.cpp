@@ -255,7 +255,7 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 								// to get the new set of polys that were just added.	The old set (preAddSet) would be group 1 (what was previously there), and (postAddSet) would be group 2.
 								// When the ORE reformer is called to set up, we can pass these in as the arguments to its constructor.
 	//std::cout << "---Set contents, after subtraction: " << std::endl;
-	postAddSet.printSet();
+	//postAddSet.printSet();
 	returnPair.group0Set = preAddSet;
 	returnPair.group1Set = postAddSet;
 	return returnPair;

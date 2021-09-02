@@ -178,13 +178,19 @@ enum class DebugOption
 	STRIANGLECUTTER_BASIC,									// for showing output of a particular STriangleCutter run; set by SPolySet::setDOTrackedSPolySTriangle (OrganicGLWinLib)
 															// also shows output of remaining/spawned SCuttableTriangles after a comparison to a specific SCuttingTriangle.
 
-	// RPoly
+	// RPoly family options (OrganicGLWinLib)
 	RPOLY_RTRIANGLE_TRACING,										// shows how an RTriangle is traced through a Rasterized3DMassGrid
 	RMORPHABLEAREASCANNER_PRINT_RMORPHABLEMESHGROUP_MESH_KEYS,		// prints the EnclaveKey value of each RMorphableMesh in each RMorphableMeshGroup, when calling RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_PRINT_MESHES_CONTAINING_MASS,				// prints any RMorphableMesh that contains mass, when calling the function RMorphableAreaScanner::scanGridMass() in OrganicGLWinLib.
 	RMORPHABLEAREASCANNER_MESH_GROUP_CONSTRUCTION,					// shows output data in RMorphableAreaScanner, for when it attempts to build RMorphableMeshGroups.
+	RMATTERGENERATOR_PRINT_MASS_SHELL_BUILD_TIMES,					// prints the total time it took for a call to RMorphableAreaScanner::buildGridMassShell() to complete (if it completes), in the RMatterGenerator's RMorphableAreaScanner instance
 	RMORPHABLEMESHGROUP_SPECIFIC_MESH_FACE_GENERATION,				// shows output data for a call to generateRProductFaces() in a specific RMorphableMesh, in the function RMorphableMeshGroup::generateRProductFacesInRemainingMeshes().
-	RMORPHABLEMESHGROUP_SPECIFIC_MESH_SUCTION
+	RMORPHABLEMESHGROUP_SPECIFIC_MESH_SUCTION,						// writes output from RMorphableMesh::runSuctionByXSlice, and RCollisionPointModifer (class)
+
+	// ||||||||||||||||||||||||||||||||||||||||||||||||| Options used by BorderSPolyProducer (OrganicGLWinLib)
+	BORDERSPOLYPRODUCER_SHOW_EXTRACTABLE_SHELL_OUTPUT,				// shows output of the MassZone::produceExtractableMassZoneShellSPolys function, for the MassZone in the producer.
+	BORDERSPOLYPRODUCER_PRINT_OUTPUT_SPOLYS,						// prints any output SPolys produced by BorderSPolyProducer::produceBorderSPolys.
+	BORDERSPOLYPRODUCER_PRINT_MASSZONEBOX_TOUCHED_FACES				// prints the resulting touched faces produced by the function MassZoneBox::generateTouchedBoxFacesList
 };
 
 #endif
