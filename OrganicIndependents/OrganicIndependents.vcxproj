@@ -234,6 +234,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuildResult.h" />
     <ClInclude Include="MessageCable.h" />
+    <ClInclude Include="MessageContainer.h" />
     <ClInclude Include="MessageInterpreter.h" />
     <ClInclude Include="MessageLocality.h" />
     <ClInclude Include="MessageType.h" />

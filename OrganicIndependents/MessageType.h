@@ -43,7 +43,10 @@ enum class MessageType
 
 	// OpenGLManager / JobTriggerBase messages
 	OPENGLMANAGER_UPDATE_CAMERA_ENCLAVE_HIGHLIGHT,
-	OPENGLMANAGER_DISABLE_CAMERA_ENCLAVE_HIGHLIGHT
+	OPENGLMANAGER_DISABLE_CAMERA_ENCLAVE_HIGHLIGHT,
+
+	// cleave sequence error handling
+	CLEAVESEQUENCEFACTORY_SEQUENCE_INCOMPLETE			// indicates that there was at least one incomplete cleave sequence 
 };
 
 #endif

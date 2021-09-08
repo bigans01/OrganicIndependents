@@ -314,6 +314,7 @@ bool BlockCircuit::gatherCircuitPointsWithString(std::string in_optionalString, 
 	//std::cout << "!!! (BlockCircuit) Gather complete... " << std::endl;
 	if (finalCircuitPoints.numberOfPoints == 2)
 	{
+		/*
 		std::cout << "!!!! WARNING: MicroPolyPointContainer contains only two points; halting. " << std::endl;
 		std::cout << "! Current segment count was: " << currentSegmentCount << std::endl;
 
@@ -323,6 +324,7 @@ bool BlockCircuit::gatherCircuitPointsWithString(std::string in_optionalString, 
 			std::cout << "Begin point: " << segmentArray[x].segment.startPoint.x << ", " << segmentArray[x].segment.startPoint.y << ", " << segmentArray[x].segment.startPoint.z << std::endl;
 			std::cout << "End   point: " << segmentArray[x].segment.endPoint.x << ", " << segmentArray[x].segment.endPoint.y << ", " << segmentArray[x].segment.endPoint.z << std::endl;
 		}
+		*/
 
 		//int someVal = 3;
 		//std::cin >> someVal;

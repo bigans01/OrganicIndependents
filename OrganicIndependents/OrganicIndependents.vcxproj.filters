@@ -450,6 +450,9 @@
     <ClInclude Include="OREDependencyState.h">
       <Filter>Header Files\ORE</Filter>
     </ClInclude>
+    <ClInclude Include="MessageContainer.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -423,7 +423,7 @@ void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mute
 void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
-	skeletonSGM.triangleSkeletonSupergroups.clear();					// clear out existing skeletons
+	skeletonSGM.resetSupergroups();		// clear out existing skeletons, reset the group counter
 	existingEnclaveTriangleSkeletonContainerTracker.intSet.clear();		// because we will be reloading the tracker entirely, wipe it clean. Used by OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib, when an RMatter mass has been produced.
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
 }

@@ -881,7 +881,7 @@ void EnclaveTriangle::generateExteriorLineSegments(PrimaryLineT1Array* in_linkAr
 		fillCircuitMetaDataV2(&circuit, in_blockBorderLineList, in_borderDataMap, in_key);
 		if (isTriangleValid == false)
 		{
-			std::cout << "Triangle detected as invalid, stopping run of EnclaveTriangle. " << std::endl;
+			//std::cout << "Triangle detected as invalid, stopping run of EnclaveTriangle. " << std::endl;
 			break;
 		}
 

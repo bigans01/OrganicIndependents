@@ -22,8 +22,9 @@ public:
 		auto groupManagerBSupergroupsEnd = in_groupManagerB->triangleSkeletonSupergroups.end();
 		for (; groupManagerBSupergroupsBegin != groupManagerBSupergroupsEnd; groupManagerBSupergroupsBegin++)
 		{
-			triangleSkeletonSupergroups[groupManagerBSupergroupsBegin->first] = groupManagerBSupergroupsBegin->second;
-			appendedSet += groupManagerBSupergroupsBegin->first;
+			triangleSkeletonSupergroups[currentGroupCounter] = groupManagerBSupergroupsBegin->second;
+			appendedSet += currentGroupCounter;
+			currentGroupCounter++;
 		}
 		return appendedSet;
 	}
@@ -44,6 +45,12 @@ public:
 		return hasRenderables;
 	}
 
+	void resetSupergroups()
+	{
+		triangleSkeletonSupergroups.clear();
+		currentGroupCounter = 0;
+	}
+
 	void printMetadata()
 	{
 		auto groupManagerBSupergroupsBegin = triangleSkeletonSupergroups.begin();
@@ -53,6 +60,8 @@ public:
 			std::cout << "[Poly ID -> " << groupManagerBSupergroupsBegin->first << "],[Number of EnclaveTriangleSkeletonContainers -> " << groupManagerBSupergroupsBegin->second.skeletonMap.size() << std::endl;
 		}
 	}
+private:
+	int currentGroupCounter = 0;
 };
 
 #endif
