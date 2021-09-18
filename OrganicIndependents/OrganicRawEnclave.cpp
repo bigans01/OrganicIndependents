@@ -401,6 +401,21 @@ EnclaveBlock* OrganicRawEnclave::getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKe
 	return &blockMap[keyToSingle];
 }
 
+std::map<int, EnclaveBlock>::iterator OrganicRawEnclave::getBlockMapBeginIter()
+{
+	return blockMap.begin();
+}
+std::map<int, EnclaveBlock>::iterator OrganicRawEnclave::getBlockMapEndIter()
+{
+	return blockMap.end();
+}
+
+std::map<int, EnclaveBlock>::iterator OrganicRawEnclave::getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	int keyToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
+	return blockMap.find(keyToSingle);
+}
+
 EnclaveTriangleSkeletonSupergroupManager OrganicRawEnclave::spawnEnclaveTriangleSkeletonContainers()
 {
 	EnclaveTriangleSkeletonSupergroupManager producedGroupManager = etcSGM.produceEnclaveTriangleSkeletons();
