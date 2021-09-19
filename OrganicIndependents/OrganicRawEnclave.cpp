@@ -15,6 +15,14 @@ void OrganicRawEnclave::insertOrganicTriangleSecondary(int in_polyID, int in_clu
 	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
 }
 
+void OrganicRawEnclave::insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,
+	int in_polyID,
+	int in_clusterID,
+	OrganicTriangleSecondary in_enclavePolyFractureResults)
+{
+	in_refedManager->insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
+}
+
 void OrganicRawEnclave::insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer)
 {
 	etcSGM.insertEnclaveTriangle(in_polyID, in_clusterID, in_enclaveTriangleContainer);
@@ -323,7 +331,7 @@ void OrganicRawEnclave::printMapData()
 	//dumbPoint.isAllZero();
 }
 
-void OrganicRawEnclave::printEnclaveTriangleContainers()
+void OrganicRawEnclave::printEnclaveTriangleContainers(bool in_pauseBetweenTrianglesFlag)
 {
 
 	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
@@ -345,6 +353,13 @@ void OrganicRawEnclave::printEnclaveTriangleContainers()
 				{
 					std::cout << skeletonsBegin->second.points[x].x << ", " << skeletonsBegin->second.points[x].y << ", " << skeletonsBegin->second.points[x].z << std::endl;
 				}
+			}
+
+			if (in_pauseBetweenTrianglesFlag == true)
+			{
+				std::cout << "Enter number to iterate to next triangle..." << std::endl;
+				int someNumber = 3;
+				std::cin >> someNumber;
 			}
 		}
 	}
@@ -387,6 +402,17 @@ void OrganicRawEnclave::printMetadata()
 	}
 	std::cout << "value of currentAppendedState: " << appendedState << std::endl;
 	std::cout << "appended update count: " << appendedUpdateCount << std::endl;
+}
+
+void OrganicRawEnclave::printTrianglesPerBlock()
+{
+	auto blocksBegin = blockMap.begin();
+	auto blocksEnd = blockMap.end();
+	for (; blocksBegin != blocksEnd; blocksBegin++)
+	{
+		auto currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+		std::cout << "Key "; currentKey.printKey(); std::cout << " has " << blocksBegin->second.getNumberOfBBFans() << " fans. " << std::endl;
+	}
 }
 
 void OrganicRawEnclave::resetBlockData()
@@ -534,6 +560,118 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 
 	}
 
+}
+
+void OrganicRawEnclave::simulateBlockProduction()
+{
+	BorderDataMap borderDataMap; // for getting trace results in enclaves
+	BlockBorderLineList blockBorderLineList;
+
+
+	// part 1: inflate the triangle containers, into the temporary etcSGM.
+	EnclaveTriangleContainerSupergroupManager temporaryETCSgm;
+	OrganicTriangleSecondarySupergroupManager tempSecondarySGM;
+
+	std::cout << "(OrganicRawEnclave): Running simulation step 1. " << std::endl;
+	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+	auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+	for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+	{
+		auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+		auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+		for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+		{
+			auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
+			auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
+			for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
+			{
+				EnclaveTriangle enclaveTriangle = OrganicTransformUtils::inflateEnclaveTriangle(currentSkeletonBegin->second);
+				temporaryETCSgm.insertEnclaveTriangleDirectIntoSuperGroup(skeletonSGMBegin->first, currentSkeletonContainerBegin->first, currentSkeletonBegin->first, enclaveTriangle);
+			}
+		}
+	}
+
+	// part 2: execute the runs for the triangles; delete/move EnclaveTriangles that are invalid, so that they don't run.
+	// it should be noted, that if not erased, invalid EnclaveTriangles can still produce BBFan data that secondaries can read. It's just that all of them stop upon the first invalid detection.
+
+	std::cout << "(OrganicRawEnclave): Running simulation step 2. " << std::endl;
+	auto etcSGMBegin1 = temporaryETCSgm.enclaveTriangleSupergroups.begin();
+	auto etcSGMEnd1 = temporaryETCSgm.enclaveTriangleSupergroups.end();
+	for (etcSGMBegin1; etcSGMBegin1 != etcSGMEnd1; etcSGMBegin1++)
+	{
+		auto currentTriangleContainerBegin = etcSGMBegin1->second.containerMap.begin();
+		auto currentTriangleContainerEnd = etcSGMBegin1->second.containerMap.end();
+		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
+		{
+			auto currentTrianglesBegin = currentTriangleContainerBegin->second.triangles.begin();
+			auto currentTrianglesEnd = currentTriangleContainerBegin->second.triangles.end();
+			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
+			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
+			{
+				std::cout << "(OrganicRawEnclave): current simulation enclave triangle points: " << std::endl;
+					currentTrianglesBegin->second.printPoints();
+				std::cout << "(OrganicRawEnclave): current simulation enclave triangle empty normal: " << currentTrianglesBegin->second.emptyNormal.x << ", "
+					<< currentTrianglesBegin->second.emptyNormal.y << ", "
+					<< currentTrianglesBegin->second.emptyNormal.z << std::endl;
+				int waitVal = 3;
+				std::cin >> waitVal;
+
+				//if (currentTrianglesBegin->first == 0)
+				//{
+				//currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0));
+				currentTrianglesBegin->second.executeRunNoInteriorFill(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
+
+				// is this triangle INVALID?
+				if (currentTrianglesBegin->second.isTriangleValid == false)
+				{
+
+
+					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
+				}
+				//}
+			}
+
+
+			if (!removalSet.empty())
+			{
+				//std::cout << "Removal set not empty; removing identified invalids...";
+				auto removalSetBegin = removalSet.begin();
+				auto removalSetEnd = removalSet.end();
+				for (; removalSetBegin != removalSetEnd; removalSetBegin++)
+				{
+					//etcSGMBegin1->second.triangles.erase(*removalSetBegin);		// remove the INVALID triangle from the corresponding container.
+				}
+			}
+		}
+	}
+
+	// part 3:
+	std::cout << "(OrganicRawEnclave): Running simulation step 3. " << std::endl;
+	auto etcSGMBegin2 = temporaryETCSgm.enclaveTriangleSupergroups.begin();
+	auto etcSGMEnd2 = temporaryETCSgm.enclaveTriangleSupergroups.end();
+	for (etcSGMBegin2; etcSGMBegin2 != etcSGMEnd2; etcSGMBegin2++)
+	{
+
+		auto currentTriangleContainerBegin = etcSGMBegin2->second.containerMap.begin();
+		auto currentTriangleContainerEnd = etcSGMBegin2->second.containerMap.end();
+		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
+		{
+			bool doBlocksExistAtY = currentTriangleContainerBegin->second.checkForYSliceBlocks(0);
+			if (doBlocksExistAtY == true)
+			{
+				std::cout << "(OrganicRawEnclave): notice, found an EnclaveTriangleContainer that has blocks at 0! Printing triangles..." << std::endl;
+				currentTriangleContainerBegin->second.printTrianglesInContainer();
+				currentTriangleContainerBegin->second.printTouchedBlocksPerTriangle();
+			}
+
+			OrganicTriangleSecondary container;
+			container.loadDataFromEnclaveTriangleContainer(&currentTriangleContainerBegin->second);
+			//insertOrganicTriangleSecondary(etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
+			insertOrganicTriangleSecondaryIntoRefedManager(&tempSecondarySGM, etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
+			// need to insert from a temp OrganicTriangleSecondarySupergroupManager...
+		}
+
+	}
 }
 
 OperableIntSet OrganicRawEnclave::getExistingEnclaveTriangleSkeletonContainerTracker()

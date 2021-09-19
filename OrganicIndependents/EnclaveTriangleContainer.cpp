@@ -11,3 +11,39 @@ void EnclaveTriangleContainer::insertTriangleDirect(int in_triangleID, EnclaveTr
 	triangles[in_triangleID] = in_enclaveTriangle;
 	triangleCount = triangles.size();
 }
+
+bool EnclaveTriangleContainer::checkForYSliceBlocks(int in_yCoord)
+{
+	bool wereSlicesFoundAtY = false;
+	auto trianglesBegin = triangles.begin();
+	auto trianglesEnd = triangles.end();
+	for (; trianglesBegin != trianglesEnd; trianglesBegin++)
+	{
+		if (trianglesBegin->second.doBlocksExistAtY(in_yCoord) == true)
+		{
+			wereSlicesFoundAtY = true;
+		}
+	}
+	return wereSlicesFoundAtY;
+}
+
+void EnclaveTriangleContainer::printTrianglesInContainer()
+{
+	auto trianglesBegin = triangles.begin();
+	auto trianglesEnd = triangles.end();
+	for (; trianglesBegin != trianglesEnd; trianglesBegin++)
+	{
+		trianglesBegin->second.printPoints();
+	}
+}
+
+void EnclaveTriangleContainer::printTouchedBlocksPerTriangle()
+{
+	auto trianglesBegin = triangles.begin();
+	auto trianglesEnd = triangles.end();
+	for (; trianglesBegin != trianglesEnd; trianglesBegin++)
+	{
+		std::cout << "Printing blocks for triangle: " << trianglesBegin->first << std::endl;
+		trianglesBegin->second.printBlockKeys();
+	}
+}

@@ -339,6 +339,7 @@ void FanManager::listSecondaries()
 {
 	if (currentMode == FanArrayMode::LOCALIZED)
 	{
+		std::cout << ">>> Printing LOCALIZED mode array...; totalFans value is: " << totalFans << std::endl;
 		for (int x = 0; x < totalFans; x++)
 		{
 			triangleArray[x].printPoints();
@@ -355,6 +356,7 @@ void FanManager::listSecondaries()
 	}
 	else if (currentMode == FanArrayMode::FAT)
 	{
+		std::cout << ">>> Printing FAT mode array..." << std::endl;
 		for (int x = 0; x < totalFans; x++)
 		{
 			expandedFatFanArray[x].printPoints();

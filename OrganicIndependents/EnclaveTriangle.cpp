@@ -17,6 +17,9 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, Bo
 	//std::cout << "!!!!!!!!!!!!!!!!!!!! !!! Producing reverse array " << std::endl;
 	PrimaryLineT1Array reversePrimaryLineArray = generatePrimaryLineT1Array(PolyRunDirection::REVERSE);						// " " the (REVERSE) run array
 
+	forwardPrimaryLineArray.adjustForEnclavePerfectClamping(isEnclaveTrianglePolyPerfectlyClamped);
+	reversePrimaryLineArray.adjustForEnclavePerfectClamping(isEnclaveTrianglePolyPerfectlyClamped);
+
 	//runPolyLinesThroughEnclave(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap);							// generate the exterior segments using the forward array
 	//runPolyLinesForReverseTerminatingContainer(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);			// run the exterior segments using the reverse array, to produce the reverse terminating set
 
@@ -72,6 +75,78 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, Bo
 
 	//printExteriorBlocks();
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
+}
+
+void EnclaveTriangle::executeRunNoInteriorFill(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
+{
+	//  ************ used for debug only *****************
+	// prepare poly data
+	currentEnclaveKey = in_key;
+
+	//std::cout << "############### Executing run for triangle, with points: [" << lineArray[0].pointA.x << ", " << lineArray[0].pointA.y << ", " << lineArray[0].pointA.z << "] [ "
+																			 // << lineArray[1].pointA.x << ", " << lineArray[1].pointA.y << ", " << lineArray[1].pointA.z << "] [ " 
+																			  //<< lineArray[2].pointA.x << ", " << lineArray[2].pointA.y << ", " << lineArray[2].pointA.z << "]" << std::endl;
+
+	//std::cout << "!!!!!!!!!!!!!!!!!!!! !!! Producing forward array " << std::endl;
+	PrimaryLineT1Array forwardPrimaryLineArray = generatePrimaryLineT1Array(PolyRunDirection::NORMAL);						// generate the forward (NORMAL) run array
+	//std::cout << "!!!!!!!!!!!!!!!!!!!! !!! Producing reverse array " << std::endl;
+	PrimaryLineT1Array reversePrimaryLineArray = generatePrimaryLineT1Array(PolyRunDirection::REVERSE);						// " " the (REVERSE) run array
+
+	forwardPrimaryLineArray.adjustForEnclavePerfectClamping(isEnclaveTrianglePolyPerfectlyClamped);
+	reversePrimaryLineArray.adjustForEnclavePerfectClamping(isEnclaveTrianglePolyPerfectlyClamped);
+
+	//runPolyLinesThroughEnclave(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap);							// generate the exterior segments using the forward array
+	//runPolyLinesForReverseTerminatingContainer(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);			// run the exterior segments using the reverse array, to produce the reverse terminating set
+
+	executeForwardRunTest(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap);
+	executeForwardRunTest(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);
+
+	//std::cout << "##### Passed run tests... " << std::endl;
+
+	/*
+	if
+	(
+		(in_key.x == 0)
+		&&
+		(in_key.y == 0)
+		&&
+		(in_key.z == 1)
+	)
+	{
+		std::cout << "+++ Enclave to be analyzed found: (" << in_key.x << ", " << in_key.y << ", " << in_key.z << ") " << std::endl;
+	}
+	*/
+
+	if (isTriangleValid == true)	// don't bother running if its invalid
+	{
+		//std::cout << "######## Run of poly lines complete.. " << std::endl;
+		runPolyLinesThroughEnclave(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap);							// generate the exterior segments using the forward array
+		runPolyLinesForReverseTerminatingContainer(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);			// run the exterior segments using the reverse array, to produce the reverse terminating set
+
+		//runPolyLinesThroughEnclaveReverse(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);
+
+		forwardTerminatingContainer.buildTerminatingSets();		// build the terminating sets (required before an interior run.)
+		reverseTerminatingContainer.buildTerminatingSets();
+
+		generateExteriorLineSegments(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key);						// build the exterior segments, fill the circuit data for them, using the forward array
+		//std::cout << "######## Exterior line segment generation complete.. " << std::endl;
+		if (isTriangleValid == true)	// don't bother running if its invalid
+		{
+
+			runInteriorRunnersDebug(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::NORMAL);
+			//std::cout << "######## Normal direction interior run complete. " << std::endl;
+
+			runInteriorRunnersDebug(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::REVERSE);
+		}
+		//std::cout << "######## Reverse direction interior run complete. " << std::endl;
+	}
+	else if (isTriangleValid == false)
+	{
+		std::cout << "!!! Notice, invalid EnclaveTriangle detected, in Enclave with key: " << currentEnclaveKey.x << ", " << currentEnclaveKey.y << ", " << currentEnclaveKey.z << std::endl;
+		int invalid = 3;
+		std::cin >> invalid;
+	}
+
 }
 
 PrimaryLineT1Array EnclaveTriangle::generatePrimaryLineT1Array(PolyRunDirection in_polyRunDirection)
@@ -195,6 +270,19 @@ void EnclaveTriangle::printPoints()
 	{
 		std::cout << x << ": " << lineArray[x].pointA.x << ", " << lineArray[x].pointA.y << ", " << lineArray[x].pointA.z << std::endl;
 	}
+}
+
+void EnclaveTriangle::printBlockKeys()
+{
+	auto blocksBegin = secondaryMap.triangleMap.begin();
+	auto blocksEnd = secondaryMap.triangleMap.end();
+	for (; blocksBegin != blocksEnd; blocksBegin++)
+	{
+		auto currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+		std::cout << "Found block key: "; currentKey.printKey(); std::cout << std::endl;
+	}
+
+	printExteriorBlocks();
 }
 
 void EnclaveTriangle::executeForwardRunTest(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap)
@@ -507,10 +595,231 @@ void EnclaveTriangle::runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, Bl
 
 		EnclaveLineRunner currentLineRunner(in_linkArrayRef->linkArray[x], in_blockBorderLineList, x);
 
-		while (currentLineRunner.isRunComplete == 0)
+		while 
+		(
+			(currentLineRunner.isRunComplete == 0)				// only run interior tracing if the run isn't complete, 
+			&&													// --AND--
+			(currentLineRunner.isRunSingleIteration == 0)		// as long as the run is NOT a single iteration 
+																// (single iteration means the line's begin and end points are confined to the same block)
+		)
 		{
 			currentLineRunner.checkForCompletion();
 			EnclaveKeyDef::EnclaveKey currentBlockKey = currentLineRunner.currentIterationMeta.blockKey;		// get the current block key the runner is using
+			int convertedBlockCoords = PolyUtils::convertBlockCoordsToSingle(currentBlockKey.x, currentBlockKey.y, currentBlockKey.z);
+			OrganicWrappedBBFan* bbFanRef = &secondaryMap.triangleMap[convertedBlockCoords];		// get a ref to the fan.
+
+
+
+			if (bbFanRef->blockSegmentTracker.currentLineSegmentIndex == 1)	// if it only contains 1 segment, do the run.
+			{
+
+				//std::cout << "Performing interior run from block: " << currentBlockKey.x << ", " << currentBlockKey.y << ", " << currentBlockKey.z << std::endl;
+				//if (in_polyRunDirection == PolyRunDirection::REVERSE)
+				//{
+					//std::cout << "!!! Attempting run for REVERSE! " << std::endl;
+				//}
+
+				//std::cout << "Terminating set contents: " << std::endl;
+				//auto termSetBegin = terminatingSetRef->terminatingSetMap[x].set.begin();
+				//auto termSetEnd = terminatingSetRef->terminatingSetMap[x].set.end();
+				//for (termSetBegin; termSetBegin != termSetEnd; termSetBegin++)
+				//{
+					//std::cout << "(" << termSetBegin->x << ", " << termSetBegin->y << ", " << termSetBegin->z << ") " << std::endl;
+				//}
+
+				//std::cout << "!!! Attempting interior run from: " << currentBlockKey.x << ", " << currentBlockKey.y << ", " << currentBlockKey.z << std::endl;
+				ECBPolyPoint currentBeginPoint = currentLineRunner.currentIterationEndPoint;	// get the current endpoint.
+				ECBPPOrientationResults currentBeginOrientation = IndependentUtils::GetPointOrientation(currentBeginPoint, in_blockBorderLineList);
+				EnclaveKeyDef::EnclaveKey moveVals = IndependentUtils::retrieveBorderDirection(currentBeginOrientation, in_borderDataMap);
+
+				//std::cout << "!!! Intended faces are: " << in_linkArrayRef->linkArray[x].intendedFaces.x << ", " << in_linkArrayRef->linkArray[x].intendedFaces.y << ", " << in_linkArrayRef->linkArray[x].intendedFaces.z << std::endl;
+				//std::cout << "!!! ++ Line points are: " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.x << ", " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.y << ", " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.z << " | "
+													 //<< in_linkArrayRef->linkArray[x].endPointRealXYZ.x << ", " << in_linkArrayRef->linkArray[x].endPointRealXYZ.y << ", " << in_linkArrayRef->linkArray[x].endPointRealXYZ.z << std::endl;
+				//ECBPolyPoint interceptToUse = OrganicUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(in_borderDataMap, currentBeginOrientation, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int, moveVals, IsEnclaveTrianglePolyPerfectlyClamped, 0, in_linkArrayRef->linkArray[x].intendedFaces);
+				//if (IndependentUtils::checkIfInterceptIsValid(interceptToUse) == false)
+				//{
+					//std::cout << "!! Warning, slope invalid! " << std::endl;
+				//}
+
+
+				ECBPolyPoint interceptToUse = IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(in_borderDataMap, currentBeginOrientation, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int, moveVals, isEnclaveTrianglePolyPerfectlyClamped, 0, in_linkArrayRef->linkArray[x].intendedFaces);
+				if (IndependentUtils::checkIfInterceptIsValid(interceptToUse) == false)
+				{
+					std::cout << "Triangle flagged as invalid, in EnclaveTriangle::runInteriorRunners (1 segment); flagging as INVALID. " << std::endl;
+					isTriangleValid = false;
+					break;
+				}
+
+
+				PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
+
+				//EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &secondaryMap.triangleMap, &exteriorTracedBlocks, &allTracedBlocks, materialID, IsEnclaveTrianglePolyPerfectlyClamped, emptyNormal, currentBlockKey);
+				if (in_polyRunDirection == PolyRunDirection::REVERSE)
+				{
+					//std::cout << "Beginning interior run from block: " << currentBlockKey.x << ",  " << currentBlockKey.y << ",  " << currentBlockKey.z << std::endl;
+					//std::cout << "Current begin point is: " << currentBeginPoint.x << ",  " << currentBeginPoint.y << ",  " << currentBeginPoint.z << std::endl;
+					//std::cout << "Current end point is: " << tracingResult.resultingEndPoint.x << ",  " << tracingResult.resultingEndPoint.y << ",  " << tracingResult.resultingEndPoint.z << std::endl;
+
+					ECBPolyPoint testIntended = IndependentUtils::determineIntendedFacesV2(in_linkArrayRef->linkArray[x].beginPointRealXYZ, in_linkArrayRef->linkArray[x].endPointRealXYZ, in_linkArrayRef->linkArray[x].thirdPointRealXYZ, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int);
+					//std::cout << "Test of intended faces: " << testIntended.x << ", " << testIntended.y << ", " << testIntended.z << std::endl;
+				}
+
+				EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &secondaryMap.triangleMap, &terminatingSetRef->terminatingSetMap[x].set, &allTracedBlocks, materialID, isEnclaveTrianglePolyPerfectlyClamped, emptyNormal, currentBlockKey, 1, false);
+				//EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, &in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &secondaryMap.triangleMap);
+
+			}
+
+
+
+			if (bbFanRef->blockSegmentTracker.currentLineSegmentIndex == 2)
+			{
+
+				if (in_polyRunDirection == PolyRunDirection::NORMAL)
+				{
+					//int isRunValid = bbFanRef->checkIfRunIsValidForTwoSegments(in_linkArrayRef->linkArray[x].IDofLine, in_blockBorderLineList, in_borderDataMap);
+					//if (isRunValid == 1)
+
+
+					SegmentResult result = bbFanRef->checkIfRunIsValidForTwoSegmentsSpecial(in_linkArrayRef->linkArray[x].IDofLine, in_blockBorderLineList, in_borderDataMap);
+					if (result.isValid == 1)
+					{
+						//std::cout << "!!! Attempting interior run from: " << currentBlockKey.x << ", " << currentBlockKey.y << ", " << currentBlockKey.z << std::endl;
+						ECBPolyPoint currentBeginPoint = currentLineRunner.currentIterationEndPoint;	// get the current endpoint.
+						ECBPPOrientationResults currentBeginOrientation = IndependentUtils::GetPointOrientation(currentBeginPoint, in_blockBorderLineList);
+						EnclaveKeyDef::EnclaveKey moveVals = IndependentUtils::retrieveBorderDirection(currentBeginOrientation, in_borderDataMap);
+
+						//std::cout << "!!! Intended faces are: " << in_linkArrayRef->linkArray[x].intendedFaces.x << ", " << in_linkArrayRef->linkArray[x].intendedFaces.y << ", " << in_linkArrayRef->linkArray[x].intendedFaces.z << std::endl;
+						//std::cout << "!!! ++ Line points are: " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.x << ", " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.y << ", " << in_linkArrayRef->linkArray[x].beginPointRealXYZ.z << " | "
+															 //<< in_linkArrayRef->linkArray[x].endPointRealXYZ.x << ", " << in_linkArrayRef->linkArray[x].endPointRealXYZ.y << ", " << in_linkArrayRef->linkArray[x].endPointRealXYZ.z << std::endl;
+						//ECBPolyPoint interceptToUse = OrganicUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(in_borderDataMap, currentBeginOrientation, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int, moveVals, IsEnclaveTrianglePolyPerfectlyClamped, 0, in_linkArrayRef->linkArray[x].intendedFaces);
+
+						ECBPolyPoint interceptToUse = IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(in_borderDataMap, currentBeginOrientation, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int, moveVals, isEnclaveTrianglePolyPerfectlyClamped, 0, in_linkArrayRef->linkArray[x].intendedFaces);
+						if (IndependentUtils::checkIfInterceptIsValid(interceptToUse) == false)
+						{
+							std::cout << "Triangle flagged as invalid, in EnclaveTriangle::runInteriorRunners (2 segments); flagging as INVALID. " << std::endl;
+							//isTriangleValid = false;
+							//break;
+						}
+
+
+						bool finder = isSegmentAndSlopeParallel(result.otherSegment, interceptToUse);
+						std::map<int, TerminatingSet> tempSet;
+
+						if
+							(
+							(finder == true)						// only do this if there is a parallel detection.
+								&&
+								(isEnclaveTrianglePolyPerfectlyClamped == 0)			// it's unnecessary to do this check if the triangle is in true 2 dimensions, and not 3d. 
+								)
+						{
+
+
+							//std::cout << "!! +++++Entering true branch. +++++" << std::endl;
+							//std::cout << "!! This segment's LINE id is: " << int(in_linkArrayRef->linkArray[x].IDofLine) << std::endl;
+							//std::cout << "!! Other segment ID was: " << int(result.otherSegment.lineID) << std::endl;
+							tempSet = terminatingSetRef->constructSpecialSet(in_linkArrayRef->linkArray[x].IDofLine, int(result.otherSegment.lineID));
+							auto firstVal = tempSet.begin();
+							auto secondVal = firstVal->second.set.begin();
+
+							//std::cout << "!! The new map has the following line as a terminating line: " << firstVal->first << std::endl;
+							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
+							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
+								tracingResult.resultingEndPoint,
+								in_linkArrayRef->linkArray[x],
+								in_blockBorderLineList,
+								in_borderDataMap,
+								&secondaryMap.triangleMap,
+								&tempSet[in_linkArrayRef->linkArray[x].IDofLine].set,
+								&allTracedBlocks,
+								materialID,
+								isEnclaveTrianglePolyPerfectlyClamped,
+								emptyNormal,
+								currentBlockKey,
+								2,
+								false
+							);
+						}
+						else
+						{
+							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
+							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
+								tracingResult.resultingEndPoint,
+								in_linkArrayRef->linkArray[x],
+								in_blockBorderLineList,
+								in_borderDataMap,
+								&secondaryMap.triangleMap,
+								&terminatingSetRef->terminatingSetMap[x].set,
+								&allTracedBlocks, materialID,
+								isEnclaveTrianglePolyPerfectlyClamped,
+								emptyNormal,
+								currentBlockKey,
+								2,
+								false);
+						}
+						//}
+					}
+				}
+			}
+
+			// new code goes here (for interior runner)
+			// ...
+			// ...
+			// ...
+			currentLineRunner.iterateToNextBlock();
+		}
+	}
+}
+
+void EnclaveTriangle::runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PolyRunDirection in_polyRunDirection)
+{
+	//std::cout << "Poly perfect clamp value is: " << IsEnclaveTrianglePolyPerfectlyClamped << std::endl;
+
+	//std::cout << "#################### spawning EnclaveLineRunners from EnclaveTriangle::runInteriorRunners" << std::endl;
+
+	TerminatingSetContainer* terminatingSetRef = NULL;	// will be one of two values below
+	if (in_polyRunDirection == PolyRunDirection::NORMAL)
+	{
+		terminatingSetRef = &forwardTerminatingContainer;
+	}
+	else if (in_polyRunDirection == PolyRunDirection::REVERSE)
+	{
+		terminatingSetRef = &reverseTerminatingContainer;
+	}
+
+	for (int x = 0; x < 3; x++)
+	{
+		std::cout << "(EnclaveTriangle::runInteriorRunnersDebug) ################## Attempting interior runner from line: " << x << std::endl;
+
+		EnclaveLineRunner currentLineRunner(in_linkArrayRef->linkArray[x], in_blockBorderLineList, x);
+
+		while
+		(
+			(currentLineRunner.isRunComplete == 0)				// only run interior tracing if the run isn't complete, 
+			&&													// --AND--
+			(currentLineRunner.isRunSingleIteration == 0)		// as long as the run is NOT a single iteration 
+																// (single iteration means the line's begin and end points are confined to the same block)
+		)
+		{
+			currentLineRunner.checkForCompletion();
+			EnclaveKeyDef::EnclaveKey currentBlockKey = currentLineRunner.currentIterationMeta.blockKey;		// get the current block key the runner is using
+
+			if (currentBlockKey.y == 0)
+			{
+				std::cout << "!! Notice, special debug value found, printing keys...." << std::endl;
+
+				std::cout << "Enclave triangle empty normal: " << emptyNormal.x << ", " << emptyNormal.y << ", " << emptyNormal.z << std::endl;
+				std::cout << "Perfect clamp value: " << isEnclaveTrianglePolyPerfectlyClamped << std::endl;
+
+				std::cout << "Begin point enclave key: "; in_linkArrayRef->linkArray[x].beginPointMeta.enclaveKey.printKey(); std::cout << std::endl;
+				std::cout << "Begin point block key: "; in_linkArrayRef->linkArray[x].beginPointMeta.blockKey.printKey(); std::cout << std::endl;
+
+				std::cout << "End point enclave key: "; in_linkArrayRef->linkArray[x].endPointMeta.enclaveKey.printKey(); std::cout << std::endl;
+				std::cout << "End point block key: "; in_linkArrayRef->linkArray[x].endPointMeta.blockKey.printKey(); std::cout << std::endl;
+
+				int waitVal = 3;
+				std::cin >> waitVal;
+			}
+
 			int convertedBlockCoords = PolyUtils::convertBlockCoordsToSingle(currentBlockKey.x, currentBlockKey.y, currentBlockKey.z);
 			OrganicWrappedBBFan* bbFanRef = &secondaryMap.triangleMap[convertedBlockCoords];		// get a ref to the fan.
 
@@ -704,6 +1013,23 @@ bool EnclaveTriangle::isSegmentAndSlopeParallel(SegmentMeta in_segment, ECBPolyP
 	}
 
 	return result;
+}
+
+bool EnclaveTriangle::doBlocksExistAtY(int in_y)
+{
+	bool blocksExistAtY = false;
+	auto existingTertiaryBlocksBegin = secondaryMap.triangleMap.begin();
+	auto existingTertiaryBlocksEnd = secondaryMap.triangleMap.end();
+	for (; existingTertiaryBlocksBegin != existingTertiaryBlocksEnd; existingTertiaryBlocksBegin++)
+	{
+		EnclaveKeyDef::EnclaveKey convertedKey = PolyUtils::convertSingleToBlockKey(existingTertiaryBlocksBegin->first);
+		if (convertedKey.y == in_y)
+		{
+			std::cout << "! Found key at y " << in_y; convertedKey.printKey(); std::cout << std::endl;
+			blocksExistAtY = true;
+		}
+	}
+	return blocksExistAtY;
 }
 
 void EnclaveTriangle::reform(ECBPolyPoint in_polyPoint0, ECBPolyPoint in_polyPoint1, ECBPolyPoint in_polyPoint2)

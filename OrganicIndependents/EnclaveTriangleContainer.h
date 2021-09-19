@@ -15,6 +15,10 @@ public:
 
 	void insertTriangle(EnclaveTriangle in_enclaveTriangle);							// used by EnclavePolyFracturer::EnclavePolyFracturer
 	void insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle);	// used by OrganicRawEnclave::spawnEnclaveTriangleContainers
+
+	bool checkForYSliceBlocks(int in_yCoord);
+	void printTrianglesInContainer();
+	void printTouchedBlocksPerTriangle();
 };
 
 #endif

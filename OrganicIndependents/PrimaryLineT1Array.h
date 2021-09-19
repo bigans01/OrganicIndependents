@@ -22,6 +22,12 @@ public:
 	PrimaryLineT1Array();
 	PrimaryLineT1 linkArray[3];	// contains up to 3 instances of PrimaryLineT1
 	BorderDataMap* borderDataMapRef;	// initialized during call to produceT2Lines
+
+	void adjustForEnclavePerfectClamping(short in_perfectClampValue);	// needed by EnclaveTriangle, when calling
+																		// EnclaveTriangle::executeRun; "pulls back" EnclaveTriangles that exist on the 
+																		// border of positive X/Y/Z in an Enclave.
+																		
+
 	bool areLinesValid = true;		// default is true, 99.99% of the time
 	void addNewPrimaryLine(PrimaryLineT1 in_Link);
 	int checkForTrianglePoints(ECBTrianglePointArray* in_trianglePointArrayPtr);		// cycles through the array, comparing begin points and end points to determine if there is a triangle corner point here; returns a value equal to the number of points found

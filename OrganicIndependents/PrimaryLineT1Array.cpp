@@ -114,6 +114,76 @@ int PrimaryLineT1Array::checkForTrianglePoints(ECBTrianglePointArray* in_triangl
 	return pointCount;
 }
 
+void PrimaryLineT1Array::adjustForEnclavePerfectClamping(short in_perfectClampValue)
+{
+	//std::cout << "!!! Attempting adjust for perfect clamping... " << std::endl;
+	switch (in_perfectClampValue)
+	{
+		// perfect clamp on X
+		case 1: 
+		{
+			if (linkArray[0].beginPointMeta.enclaveKey.x == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
+			{
+				//std::cout << "!! X adjustment qualification met. " << std::endl;
+				for (int x = 0; x < 3; x++)
+				{
+					linkArray[x].beginPointMeta.enclaveKey.x = 0;
+					linkArray[x].endPointMeta.enclaveKey.x = 0;
+
+					linkArray[x].beginPointMeta.blockKey.x = 3;
+					linkArray[x].endPointMeta.blockKey.x = 3;
+
+					linkArray[x].beginPointMeta.preciseCoord.x = 1.0f;
+					linkArray[x].endPointMeta.preciseCoord.x = 1.0f;
+				}
+			}
+			break;
+		}
+
+		// perfect clamp on Y
+		case 2:
+		{
+			if (linkArray[0].beginPointMeta.enclaveKey.y == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
+			{
+				//std::cout << "!! Y adjustment qualification met. " << std::endl;
+				for (int x = 0; x < 3; x++)
+				{
+					linkArray[x].beginPointMeta.enclaveKey.y = 0;
+					linkArray[x].endPointMeta.enclaveKey.y = 0;
+
+					linkArray[x].beginPointMeta.blockKey.y = 3;
+					linkArray[x].endPointMeta.blockKey.y = 3;
+
+					linkArray[x].beginPointMeta.preciseCoord.y = 1.0f;
+					linkArray[x].endPointMeta.preciseCoord.y = 1.0f;
+				}
+			}
+			break;
+		}
+
+		// perfect clamp on Z
+		case 3:
+		{
+			if (linkArray[0].beginPointMeta.enclaveKey.z == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
+			{
+				//std::cout << "!! Z adjustment qualification met. " << std::endl;
+				for (int x = 0; x < 3; x++)
+				{
+					linkArray[x].beginPointMeta.enclaveKey.z = 0;
+					linkArray[x].endPointMeta.enclaveKey.z = 0;
+
+					linkArray[x].beginPointMeta.blockKey.z = 3;
+					linkArray[x].endPointMeta.blockKey.z = 3;
+
+					linkArray[x].beginPointMeta.preciseCoord.z = 1.0f;
+					linkArray[x].endPointMeta.preciseCoord.z = 1.0f;
+				}
+			}
+			break;
+		}
+	}
+}
+
 void PrimaryLineT1Array::produceT2Lines(EnclaveKeyDef::EnclaveKey in_key, int in_perfectClampFlag, ECBPolyLineSlopesArray* in_polyLineSlopesPtr, ECBBorderLineList* in_blueprintBorderLines, PrimaryLineT2Array* in_primaryLineT2ArrayRef, BorderDataMap* in_borderDataMapRef)
 {
 	borderDataMapRef = in_borderDataMapRef;	// set the border data map

@@ -44,6 +44,7 @@ public:
 	TerminatingSetContainer reverseTerminatingContainer;
 
 	void executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
+	void executeRunNoInteriorFill(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
 	EnclaveKeyDef::EnclaveKey currentEnclaveKey;
 
 	// functions for ensuring the triangle will run OK
@@ -56,8 +57,12 @@ public:
 	void runPolyLinesThroughEnclave(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);	// run the exterior lines.
 	void runPolyLinesThroughEnclaveReverse(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);	// run the exterior lines.
 	void runPolyLinesForReverseTerminatingContainer(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
+
 	void runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PolyRunDirection in_polyRunDirection);
 	void runInteriorRunnerReverse(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PolyRunDirection in_polyRunDirection);
+
+	void runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PolyRunDirection in_polyRunDirection);
+
 	void generateExteriorLineSegments(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);									// fill the SegmentTrackers for the outer lines
 	void performCentroidBlockCheck(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC);
 
@@ -74,8 +79,12 @@ public:
 	PrimaryLineT1Array generatePrimaryLineT1Array(PolyRunDirection in_polyRunDirection);
 	void printExteriorBlocks();
 	void printPoints();
+	void printBlockKeys();
 
 	bool isSegmentAndSlopeParallel(SegmentMeta in_segment, ECBPolyPoint in_slope);
+
+	bool doBlocksExistAtY(int in_y);
+
 private:
 	bool isEndpointValidForFreeSelection(int in_lineID, BlockCircuit* in_circuitRef);
 

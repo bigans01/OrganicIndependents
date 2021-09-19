@@ -69,14 +69,15 @@ public:
 		return *this;
 	}
 
-	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFratureResults);
+	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
 	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
 	void insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton);
 																													// OrganicTriangleSecondaries to be present.			
 	void printMapData();
-	void printEnclaveTriangleContainers();
+	void printEnclaveTriangleContainers(bool in_pauseBetweenTrianglesFlag);
 	void printTriangleMetadata();
 	void printMetadata();
+	void printTrianglesPerBlock();
 
 	bool checkIfFull();
 	int getNumberOfBlockSkeletons();
@@ -96,6 +97,8 @@ public:
 	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
+
+	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
@@ -159,6 +162,11 @@ private:
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
+
+	void insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,	// inserts OrganicTriangleSecondaries into a refed OrganicTriangleSecondarySupergroupManager;
+														int in_polyID,												// needed by the function, simulateBlockProduction(). 
+														int in_clusterID, 
+														OrganicTriangleSecondary in_enclavePolyFractureResults);
 
 	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;
 	std::map<int, EnclaveBlock> finalizerBlocks;							// unused for now	
