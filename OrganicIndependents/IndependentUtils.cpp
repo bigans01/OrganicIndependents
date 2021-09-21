@@ -8865,7 +8865,7 @@ ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enc
 	returnPoly.lineMap[0] = polyLine0;
 	returnPoly.lineMap[1] = polyLine1;
 	returnPoly.lineMap[2] = polyLine2;
-	returnPoly.materialID = in_enclaveTriangle.materialID;
+	returnPoly.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnPoly.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
 	returnPoly.mrp = in_ECBPolyMRP;
 	returnPoly.emptyNormal = in_enclaveTriangle.emptyNormal;

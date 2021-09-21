@@ -8,7 +8,7 @@ EnclaveTriangleSkeleton OrganicTransformUtils::deflateEnclaveTriangle(EnclaveTri
 	{
 		returnSkeleton.points[x] = in_enclaveTriangle.lineArray[x].pointA;
 	}
-	returnSkeleton.materialID = in_enclaveTriangle.materialID;
+	returnSkeleton.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnSkeleton.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
 	returnSkeleton.emptyNormal = in_enclaveTriangle.emptyNormal;
 
@@ -58,7 +58,7 @@ EnclaveTriangle OrganicTransformUtils::inflateEnclaveTriangle(EnclaveTriangleSke
 	returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);
 	returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
 	returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
-	returnTriangle.materialID = in_enclaveTriangleSkeleton.materialID;
+	returnTriangle.enclaveTriangleMaterialID = in_enclaveTriangleSkeleton.materialID;
 	returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = in_enclaveTriangleSkeleton.isPolyPerfectlyClamped;
 	returnTriangle.emptyNormal = in_enclaveTriangleSkeleton.emptyNormal;
 	//returnTriangle.

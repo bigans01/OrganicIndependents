@@ -10,7 +10,7 @@
 class OrganicTriangleSecondary
 {
 public:
-	std::map<int, OrganicTriangleTertiary> secondaryMapContainer;
+	std::map<int, OrganicTriangleTertiary> enclaveTriangleTertiaryContainer;
 	void loadDataFromEnclaveTriangleContainer(EnclaveTriangleContainer* in_containerRef);
 };
 

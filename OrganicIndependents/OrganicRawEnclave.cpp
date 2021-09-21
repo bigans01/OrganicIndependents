@@ -619,7 +619,7 @@ void OrganicRawEnclave::simulateBlockProduction()
 				//if (currentTrianglesBegin->first == 0)
 				//{
 				//currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0));
-				currentTrianglesBegin->second.executeRunNoInteriorFill(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
+				currentTrianglesBegin->second.executeRunDebug(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)

@@ -38,7 +38,7 @@ public:
 		returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
 		returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
 
-		returnTriangle.materialID = materialID;
+		returnTriangle.enclaveTriangleMaterialID = materialID;
 		returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = isPolyPerfectlyClamped;
 		returnTriangle.emptyNormal = emptyNormal;
 

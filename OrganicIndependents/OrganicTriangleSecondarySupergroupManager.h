@@ -32,8 +32,8 @@ public:
 			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
 			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
 			{
-				auto tertiariesBegin = subgroupsBegin->second.secondaryMapContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.secondaryMapContainer.end();
+				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
+				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
 				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
 				{
 					auto wrappedBBFanBegin = tertiariesBegin->second.triangleMap.begin();
@@ -68,8 +68,8 @@ public:
 			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
 			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
 			{
-				auto tertiariesBegin = subgroupsBegin->second.secondaryMapContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.secondaryMapContainer.end();
+				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
+				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
 				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
 				{
 					if (tertiariesBegin->second.triangleMap.size() != 0)
@@ -94,8 +94,8 @@ public:
 			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
 			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
 			{
-				auto tertiariesBegin = subgroupsBegin->second.secondaryMapContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.secondaryMapContainer.end();
+				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
+				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
 				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
 				{
 					auto wrappedBBFanBegin = tertiariesBegin->second.triangleMap.begin();

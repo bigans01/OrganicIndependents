@@ -175,7 +175,7 @@ void EnclaveTriangleInteriorRunner::attemptIteration()
 				// NEW CODE END
 
 			}
-			//secondaryMap.triangleMap[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, currentLineRunner.currentIterationEndPoint, x);
+			//enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, currentLineRunner.currentIterationEndPoint, x);
 
 			// ...
 			// ...
