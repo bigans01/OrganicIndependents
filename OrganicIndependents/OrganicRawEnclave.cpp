@@ -37,7 +37,7 @@ void OrganicRawEnclave::insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKe
 void OrganicRawEnclave::createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);				// must be used because we will be modifying an OrganicRawEnclave that exists in an EnclaveFractureorganicTriangleSecondarySGM, which itself is in its own map, etc...
-	resetBlockData();											// the number of triangles added to the block must be reset.
+	resetBlockDataAndTriangleCount();							// the number of triangles added to the block must be reset.
 	organicTriangleSecondarySGM.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &blockMap, &total_triangles);
 }
 
@@ -111,6 +111,16 @@ bool OrganicRawEnclave::doesOREContainRenderableData()
 
 		case ORELodState::LOD_BLOCK:
 		{
+			auto blocksBegin = blockMap.begin();
+			auto blocksEnd = blockMap.end();
+			for (; blocksBegin != blocksEnd; blocksBegin++)
+			{
+				if (blocksBegin->second.getNumberOfTotalTriangles() != 0)
+				{
+					containsData = true;
+					break;
+				}
+			}
 			break;
 		};
 
@@ -148,6 +158,41 @@ void OrganicRawEnclave::updateOREForRMass()
 	currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
 	currentDependencyState = OREDependencyState::INDEPENDENT;	// all RMatter is INDEPENDENT
 	blockSkeletonMap.clear();
+}
+
+void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
+{
+	// first, generate the blocks.
+	switch (currentLodState)
+	{
+		case ORELodState::LOD_ENCLAVE_SMATTER:
+		{
+			// will spawn all renderable blocks via stored EnclaveTriangles.
+			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			break;
+		};
+
+		case ORELodState::LOD_ENCLAVE_RMATTER:
+		{
+			// will spawn all renderable blocks via stored EnclaveTriangles.
+			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			break;
+		};
+	}
+
+	currentLodState = ORELodState::LOD_BLOCK;					// switch to block mode
+	currentDependencyState = OREDependencyState::INDEPENDENT;	// block mode is always independent
+	currentAppendedState = OREAppendedState::NONE;				// appended state isn't applicable when in block mode
+
+	// all maps that don't contain block data should be cleared; there is no need to have this data from this point forward,
+	// as any data that exists should come from blocks, and blocks alone; if this ORE is read from a file, the part of the file for that ORE 
+	// needs to only have block data.
+	skeletonSGM.triangleSkeletonSupergroups.clear();
+	etcSGM.enclaveTriangleSupergroups.clear();
+	organicTriangleSecondarySGM.secondarySupergroups.clear();
+
 }
 
 void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
@@ -233,6 +278,13 @@ int OrganicRawEnclave::getNumberOfTrianglesByLOD()
 
 		case ORELodState::LOD_BLOCK:
 		{
+			// if LOD_BLOCK, iterate through the block map, get the total triangle count from each block.
+			auto blocksBegin = blockMap.begin();
+			auto blocksEnd = blockMap.end();
+			for (; blocksBegin != blocksEnd; blocksBegin++)
+			{
+				triangleCount += blocksBegin->second.getNumberOfTotalTriangles();
+			}
 			break;
 		};
 		case ORELodState::FULL:
@@ -415,7 +467,7 @@ void OrganicRawEnclave::printTrianglesPerBlock()
 	}
 }
 
-void OrganicRawEnclave::resetBlockData()
+void OrganicRawEnclave::resetBlockDataAndTriangleCount()
 {
 	blockMap.clear();		// reset the blocks
 	total_triangles = 0;	// reset triangle count
@@ -454,6 +506,11 @@ void OrganicRawEnclave::loadSkeletonContainersFromEnclaveContainers()
 	skeletonSGM = etcSGM.produceEnclaveTriangleSkeletons();
 }
 
+void OrganicRawEnclave::clearBlockSkeletons(std::mutex* in_mutexRef)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	blockSkeletonMap.clear();
+}
 
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {

@@ -49,6 +49,7 @@ public:
 	void listSecondaries();
 	void listPoints();												// retrieves the number of secondaries, from either LOCAL or OUTSOURCED data
 	int getNumberOfBBFans();
+	int getNumberOfTotalTriangles();
 	FanBase* retrieveSecondaryFromIndex(int in_index);				// retrieves a secondary from a particular index (LOCAL or OUTSOURCED)
 	int getNumberOfTertiariesInTriangleAtIndex(int in_index);
 	ECBPolyPoint getEmptyNormalFromTriangle(int in_index);

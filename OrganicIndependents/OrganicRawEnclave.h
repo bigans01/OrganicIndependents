@@ -41,7 +41,6 @@ public:
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
 		appendedUpdateCount = resultsContainer_b.appendedUpdateCount;
-		//finalizerBlocks = resultsContainer_b.finalizerBlocks;
 		if (!resultsContainer_b.finalizerBlocks.empty())												// copy finalizer blocks
 		{																								// "" 
 			auto b_containerBegin = resultsContainer_b.finalizerBlocks.begin();							// ""
@@ -81,7 +80,13 @@ public:
 
 	bool checkIfFull();
 	int getNumberOfBlockSkeletons();
-	void updateOREForRMass();
+	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
+												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 
+												// and clears out the blockSkeletonMap; the skeleton map must be cleared, because it's possible that an OrganicMassDriverElevator can produce
+												// skeleton blocks before this function is called (see how it is used in ContouredMountain::runMassDrivers in the OrganicServerLib)
+
+	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from LOD_ENCLAVE_RMATTER or LOD_ENCLAVE_SMATTER.
+												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones
 	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
@@ -99,6 +104,7 @@ public:
 																											// in OrganicServerLib.
 
 	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
+	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
@@ -158,7 +164,7 @@ private:
 																							// if this state is INDEPENDENT, the ORE will be rendere when trying to render side-by-side with a blueprint's ECBPolys.
 
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
-	void resetBlockData();																							// clears the blockMap, and resets triangle count
+	void resetBlockDataAndTriangleCount();																							// clears the blockMap, and resets triangle count
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED

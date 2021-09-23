@@ -26,6 +26,7 @@ public:
 			emptyNormal);
 		return returnData;
 	}
+
 	void printPoints()
 	{
 		{

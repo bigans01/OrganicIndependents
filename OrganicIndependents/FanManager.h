@@ -150,6 +150,7 @@ public:
 	void listSecondaries();										// used by EnclaveBlock::listSecondaries() -- NOT CRITICAL, for debugging.
 	void listPoints();											// used by EnclaveBlock::listPoints() -- NOT CRITICAL, for debugging.
 	int getNumberOfTotalFans();									// used by EnclaveBlock::getNumberOfBBFans(); returns the number of total fans.
+	int getNumberOfTotalTriangles();							
 	FanBase* retrieveSecondaryFromIndex(int in_index);			// retrieves a secondary from a particular index; dependent on FanArrayMode to determine where to get the data from.
 	int getNumberOfTertiariesInTriangleAtIndex(int in_index);	// used by EnclaveBlock::getNumberOfTertiariesInTriangleAtIndex.
 	ECBPolyPoint getEmptyNormalFromTriangle(int in_index);		// used by EnclaveBlock::getEmptyNormalFromTriangle

@@ -387,6 +387,21 @@ int FanManager::getNumberOfTotalFans()
 	return totalFans;
 }
 
+int FanManager::getNumberOfTotalTriangles()
+{
+	int total = 0;
+	for (int x = 0; x < totalFans; x++)
+	{
+		switch (currentMode)
+		{
+			case FanArrayMode::LOCALIZED: { total += triangleArray[x].getNumberOfTrianglesInFan(); break; };
+			case FanArrayMode::THIN: { total += expandedThinFanArray[x].getNumberOfTrianglesInFan(); break; };
+			case FanArrayMode::FAT: { total += expandedFatFanArray[x].getNumberOfTrianglesInFan(); break; };
+		};
+	}
+	return total;
+}
+
 FanBase* FanManager::retrieveNextAvailableSecondary()
 {
 	// remember, the current value of totalFans also represents the nextIndex to retrieve from.

@@ -7,6 +7,11 @@ int EnclaveBlock::getNumberOfBBFans()
 	return manager.getNumberOfTotalFans();
 }
 
+int EnclaveBlock::getNumberOfTotalTriangles()
+{
+	return manager.getNumberOfTotalTriangles();
+}
+
 int EnclaveBlock::getNumberOfTertiariesInTriangleAtIndex(int in_index)
 {
 	return manager.getNumberOfTertiariesInTriangleAtIndex(in_index);
