@@ -86,6 +86,7 @@ public:
 												// skeleton blocks before this function is called (see how it is used in ContouredMountain::runMassDrivers in the OrganicServerLib)
 
 	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from LOD_ENCLAVE_RMATTER or LOD_ENCLAVE_SMATTER.
+	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)VicViper304!
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones

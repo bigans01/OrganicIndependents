@@ -195,6 +195,15 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 
 }
 
+void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef); // lock while deleting the block.
+	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
+	int erasedTriangles = blockMap[blockCoordsToSingle].getNumberOfTotalTriangles();	// get the number of triangles that existed in the block we're about to erase.
+	blockMap.erase(blockCoordsToSingle);
+	total_triangles -= erasedTriangles;
+}
+
 void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
 	switch (currentLodState)
