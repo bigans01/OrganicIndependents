@@ -41,6 +41,9 @@ public:
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
 		appendedUpdateCount = resultsContainer_b.appendedUpdateCount;
+
+		eraseCounter = resultsContainer_b.eraseCounter;
+
 		if (!resultsContainer_b.finalizerBlocks.empty())												// copy finalizer blocks
 		{																								// "" 
 			auto b_containerBegin = resultsContainer_b.finalizerBlocks.begin();							// ""
@@ -157,6 +160,7 @@ public:
 	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
+	int eraseCounter = 0;
 
 private:
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;							// the level-of-detail state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)

@@ -202,6 +202,7 @@ void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::Encla
 	int erasedTriangles = blockMap[blockCoordsToSingle].getNumberOfTotalTriangles();	// get the number of triangles that existed in the block we're about to erase.
 	blockMap.erase(blockCoordsToSingle);
 	total_triangles -= erasedTriangles;
+	eraseCounter++;
 }
 
 void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
@@ -226,6 +227,7 @@ void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKe
 
 		case ORELodState::LOD_BLOCK:
 		{
+
 			break;
 		};
 		case ORELodState::FULL:
