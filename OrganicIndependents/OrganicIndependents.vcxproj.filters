@@ -453,6 +453,9 @@
     <ClInclude Include="MessageContainer.h">
       <Filter>Header Files\Messages</Filter>
     </ClInclude>
+    <ClInclude Include="Cycle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

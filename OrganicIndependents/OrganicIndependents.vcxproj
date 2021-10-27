@@ -168,6 +168,7 @@
     <ClInclude Include="BorderMDFaceList.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
+    <ClInclude Include="Cycle.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="DynamicBorder.h" />
