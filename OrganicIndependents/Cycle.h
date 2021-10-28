@@ -5,33 +5,69 @@
 
 //#include <unordered_set>
 #include <map>
+#include <mutex>
 #include <iostream>
 
-template <typename V> class Cycle {
+template <typename CycleKey, typename CycleValue> class Cycle {
 	public:
-		typename std::map<int, V>::iterator begin() { return cycleMap.begin(); }
-		typename std::map<int, V>::iterator end() { return cycleMap.end(); }
-		typename std::map<int, V>::iterator find(V in_indexToFind) { return cycleMap.find(in_indexToFind); }
-
-		void erase(V in_elementToErase) {
-			cycleMap.erase(in_elementToErase);
+		typename std::map<CycleKey, CycleValue>::iterator begin() 
+		{ 
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.begin(); 
 		}
-		void size() {
+
+		typename std::map<CycleKey, CycleValue>::reverse_iterator rbegin() 
+		{ 
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.rbegin();
+		}
+		
+		typename std::map<CycleKey, CycleValue>::iterator end() 
+		{ 
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.end(); 
+		}
+
+		typename std::map<CycleKey, CycleValue>::iterator find(CycleKey in_indexToFind) 
+		{ 
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.find(in_indexToFind); 
+		}
+
+		CycleValue erase(CycleKey in_elementToErase) {
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			cycleMap.erase(in_elementToErase);
+			resetBeginAndEndIters();
+		}
+		CycleValue size() {
+			std::lock_guard<std::mutex> guard(cycleMutex);
 			return cycleMap.size();
 		}
 
-		V& operator[](const int& in_key)
+		CycleValue& operator[](const CycleKey& in_key)
 		{
-			return	(*((this->cycleMap.insert(std::make_pair(in_key, V()))).first)).second;
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return	(*((this->cycleMap.insert(std::make_pair(in_key, CycleValue()))).first)).second;
 		}
 
-		void insert(int in_key, V in_insertValue)
+		void insert(CycleKey in_key, CycleValue in_insertCycleValuealue)
 		{
-			cycleMap[in_key] = in_insertValue;
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			cycleMap[in_key] = in_insertCycleValuealue;
+			resetBeginAndEndIters();
 		}
 
 	private:
-		std::map<int, V> cycleMap;
+		std::map<CycleKey, CycleValue> cycleMap;
+		typename std::map<CycleKey, CycleValue>::iterator currentBeginIter;
+		typename std::map<CycleKey, CycleValue>::iterator currentEndIter;
+		std::mutex cycleMutex;
+
+		void resetBeginAndEndIters()
+		{
+			currentBeginIter = cycleMap.begin();
+			currentEndIter = cycleMap.end();
+		}
 };
 
 #endif
