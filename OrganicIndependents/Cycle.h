@@ -38,7 +38,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			return cycleMap.end(); 
 		}
 
-		typename std::map<CycleKey, CycleValue>::iterator findViaKey(CycleKey in_indexToFind) 
+		typename std::map<CycleKey, CycleValue>::iterator find(CycleKey in_indexToFind) 
 		{ 
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			return cycleMap.find(in_indexToFind); 
@@ -62,9 +62,14 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 
 		CycleValue& operator[](const CycleKey& in_key)
 		{
+			// For usage cases such as cycle[x] = value, the "value" would be equivalent to CycleValue&, and the second parameter used in std::make_pair.
+			// See this for reference: https://en.cppreference.com/w/cpp/container/map/operator_at
+
 			std::lock_guard<std::mutex> guard(cycleMutex);
-			return	(*((this->cycleMap.insert(std::make_pair(in_key, CycleValue()))).first)).second;
-			resetBeginAndEndIters();
+			auto insertedValueIter = this->cycleMap.insert(std::make_pair(in_key, CycleValue()));	// attempt to insert the key/value pair if it doesn't exist, 
+																									// and return the iterator to that
+			resetBeginAndEndIters();	// reset the beginning and ending element iterators, before we return
+			return (*insertedValueIter.first).second;		// return a reference to the data value that exists at the key value
 		}
 
 		void insert(CycleKey in_key, CycleValue in_insertCycleValue)	// insert a key at the specified "in_key" location, if it doesn't exist.
@@ -122,13 +127,11 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 					(currentCycleElement != currentElementStartIter)
 				)
 				{
-					//std::cout << "!!! First reverse condition met." << std::endl;
 					// get the reverse iterator, increment by one, and use that iterator's key in a normal iterator find operation.
 					auto reverseIter = findReverseIter(currentCycleElement->first);
 					reverseIter++;
 					CycleKey foundReverseIterKey = reverseIter->first;
 					currentCycleElement = cycleMap.find(foundReverseIterKey);
-					//std::cout << "TEST: first-> " << currentCycleElement->first << std::endl;
 				}
 
 				// CASE 2: currentCycleElement is the the beginning element; the next element in the cycle is the end of the map.
@@ -137,7 +140,6 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 					(currentCycleElement == currentElementStartIter)
 				)
 				{
-					//std::cout << "!!! Second reverse condition met." << std::endl;
 					currentCycleElement = currentElementEndIter;
 				}
 			}
@@ -153,10 +155,6 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			currentCycleElement = cycleMap.find(in_keyToSet);
-			if (currentCycleElement == cycleMap.end())
-			{
-				//std::cout << "!!! Warning, key to find NOT found! " << std::endl;
-			}
 		}
 
 	private:
@@ -169,7 +167,6 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		void resetBeginAndEndIters()
 		{
 			currentElementStartIter = cycleMap.begin();
-			//currentElementEndIter = cycleMap.end(
 			if (cycleMap.size() == 1)
 			{
 				currentElementEndIter = currentElementStartIter;
@@ -177,16 +174,11 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			else if (cycleMap.size() > 1)
 			{
 				currentElementEndIter = cycleMap.begin();
-				//std::cout << "!!! cycleMap.size() is: " << cycleMap.size() << std::endl;
 				for (int x = 0; x < (cycleMap.size() - 1); x++)
 				{
 					currentElementEndIter++;
-					//std::cout << "iteraating currentElementEndIter..." << std::endl;
 				}
 			}
-
-			//std::cout << "**** begin / end iter's reset ****" << std::endl;
-			//std::cout << ">>> begin.first -> " << currentElementStartIter->first << " | end.first-> " << currentElementEndIter->first << std::endl;
 		}
 
 		bool doesCycleValueExist(CycleValue in_cycleValueToFind)
