@@ -10,6 +10,16 @@
 
 template <typename CycleKey, typename CycleValue> class Cycle {
 	public:
+		bool empty()
+		{
+			bool isEmpty = false;
+			if (cycleMap.empty() == false)
+			{
+				isEmpty = true;
+			}
+			return isEmpty;
+		}
+
 		typename std::map<CycleKey, CycleValue>::iterator begin() 
 		{ 
 			std::lock_guard<std::mutex> guard(cycleMutex);
@@ -28,13 +38,19 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			return cycleMap.end(); 
 		}
 
-		typename std::map<CycleKey, CycleValue>::iterator find(CycleKey in_indexToFind) 
+		typename std::map<CycleKey, CycleValue>::iterator findViaKey(CycleKey in_indexToFind) 
 		{ 
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			return cycleMap.find(in_indexToFind); 
 		}
 
-		CycleValue erase(CycleKey in_elementToErase) {
+		typename std::map<CycleKey, CycleValue>::iterator getCurrentElementIter()
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return currentCycleElement;
+		}
+
+		CycleValue eraseViaBegin(CycleKey in_elementToErase) {
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			cycleMap.erase(in_elementToErase);
 			resetBeginAndEndIters();
@@ -48,26 +64,161 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			return	(*((this->cycleMap.insert(std::make_pair(in_key, CycleValue()))).first)).second;
+			resetBeginAndEndIters();
 		}
 
-		void insert(CycleKey in_key, CycleValue in_insertCycleValuealue)
+		void insert(CycleKey in_key, CycleValue in_insertCycleValue)	// insert a key at the specified "in_key" location, if it doesn't exist.
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
-			cycleMap[in_key] = in_insertCycleValuealue;
-			resetBeginAndEndIters();
+			if (doesCycleValueExist(in_insertCycleValue) == false)
+			{
+				cycleMap[in_key] = in_insertCycleValue;
+				resetBeginAndEndIters();
+			}
+		}
+
+		typename std::map<CycleKey, CycleValue>::iterator getNextElement()
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			if (cycleMap.size() >= 2)
+			{
+				// CASE 1: currentCycleElement isn't equal to the end; just get the next element.
+				if
+				(
+					(currentCycleElement != currentElementEndIter)
+				)
+				{
+					//std::cout << "!!! First normal condition met." << std::endl;
+					currentCycleElement++;
+				}
+
+				// CASE 2: currentCycleElement is the the ending element; the next element in the cycle is the beginning of the map.
+				else if
+				(
+					currentCycleElement == currentElementEndIter
+				)
+				{
+					//std::cout << "!!! Second normal condition met." << std::endl;
+					currentCycleElement = currentElementStartIter;
+				}
+			}
+			else
+			{
+				return currentCycleElement;	// if there's just one element, jsut return this
+			}
+			
+			return currentCycleElement;
+		}
+
+		typename std::map<CycleKey, CycleValue>::iterator getPreviousElement()
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			//typename std::map<CycleKey, CycleValue>::reverse_iterator returnIter = cycleMap.find(0);
+			if (cycleMap.size() >= 2)
+			{
+				// CASE 1: currentCycleElement isn't equal to the beginning; just get the previous element.
+				if
+				(
+					(currentCycleElement != currentElementStartIter)
+				)
+				{
+					//std::cout << "!!! First reverse condition met." << std::endl;
+					// get the reverse iterator, increment by one, and use that iterator's key in a normal iterator find operation.
+					auto reverseIter = findReverseIter(currentCycleElement->first);
+					reverseIter++;
+					CycleKey foundReverseIterKey = reverseIter->first;
+					currentCycleElement = cycleMap.find(foundReverseIterKey);
+					//std::cout << "TEST: first-> " << currentCycleElement->first << std::endl;
+				}
+
+				// CASE 2: currentCycleElement is the the beginning element; the next element in the cycle is the end of the map.
+				else if
+				(
+					(currentCycleElement == currentElementStartIter)
+				)
+				{
+					//std::cout << "!!! Second reverse condition met." << std::endl;
+					currentCycleElement = currentElementEndIter;
+				}
+			}
+			else
+			{
+				return currentCycleElement;	// if there's just one element, jsut return this
+			}
+
+			return currentCycleElement;
+		}
+
+		void setCurrentElementByKey(CycleKey in_keyToSet)
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			currentCycleElement = cycleMap.find(in_keyToSet);
+			if (currentCycleElement == cycleMap.end())
+			{
+				//std::cout << "!!! Warning, key to find NOT found! " << std::endl;
+			}
 		}
 
 	private:
 		std::map<CycleKey, CycleValue> cycleMap;
-		typename std::map<CycleKey, CycleValue>::iterator currentBeginIter;
-		typename std::map<CycleKey, CycleValue>::iterator currentEndIter;
+		typename std::map<CycleKey, CycleValue>::iterator currentElementStartIter;
+		typename std::map<CycleKey, CycleValue>::iterator currentCycleElement;
+		typename std::map<CycleKey, CycleValue>::iterator currentElementEndIter;
 		std::mutex cycleMutex;
 
 		void resetBeginAndEndIters()
 		{
-			currentBeginIter = cycleMap.begin();
-			currentEndIter = cycleMap.end();
+			currentElementStartIter = cycleMap.begin();
+			//currentElementEndIter = cycleMap.end(
+			if (cycleMap.size() == 1)
+			{
+				currentElementEndIter = currentElementStartIter;
+			}
+			else if (cycleMap.size() > 1)
+			{
+				currentElementEndIter = cycleMap.begin();
+				//std::cout << "!!! cycleMap.size() is: " << cycleMap.size() << std::endl;
+				for (int x = 0; x < (cycleMap.size() - 1); x++)
+				{
+					currentElementEndIter++;
+					//std::cout << "iteraating currentElementEndIter..." << std::endl;
+				}
+			}
+
+			//std::cout << "**** begin / end iter's reset ****" << std::endl;
+			//std::cout << ">>> begin.first -> " << currentElementStartIter->first << " | end.first-> " << currentElementEndIter->first << std::endl;
 		}
+
+		bool doesCycleValueExist(CycleValue in_cycleValueToFind)
+		{
+			bool exists = false;
+			auto cyclesBegin = cycleMap.begin();
+			auto cyclesEnd = cycleMap.end();
+			for (; cyclesBegin != cyclesEnd; cyclesBegin++)
+			{
+				if (cyclesBegin->second == in_cycleValueToFind)
+				{
+					exists = true;
+					break;
+				}
+			}
+			return exists;
+		}
+
+		
+		typename std::map<CycleKey, CycleValue>::reverse_iterator findReverseIter(CycleKey in_keyToSearchFor)
+		{
+			typename std::map<CycleKey, CycleValue>::reverse_iterator returnIter = cycleMap.rbegin();
+			for (; returnIter != cycleMap.rend(); returnIter++)
+			{
+				if (returnIter->first == in_keyToSearchFor)
+				{
+					return returnIter;
+				}
+			}
+			return returnIter;
+		}
+		
 };
 
 #endif
