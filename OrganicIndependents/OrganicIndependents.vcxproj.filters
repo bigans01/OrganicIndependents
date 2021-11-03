@@ -37,6 +37,9 @@
     <Filter Include="Source Files\ORE\EnclaveTriangle">
       <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Fusion">
+      <UniqueIdentifier>{08745979-707c-4600-ae46-ea5508ce1f62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -455,6 +458,12 @@
     </ClInclude>
     <ClInclude Include="Cycle.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FusableArea.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="FusableAreaState.h">
+      <Filter>Header Files\Fusion</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

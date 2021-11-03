@@ -52,6 +52,11 @@ class OperableIntSet
 			return *this;
 		}
 
+		int size()
+		{
+			return intSet.size();
+		}
+
 
 		std::set<int> intSet;
 		std::set<int> getSet() 

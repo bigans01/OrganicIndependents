@@ -227,6 +227,8 @@
     <ClInclude Include="FanData.h" />
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
+    <ClInclude Include="FusableArea.h" />
+    <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GroupSetPair.h" />
     <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="InterceptValidity.h" />

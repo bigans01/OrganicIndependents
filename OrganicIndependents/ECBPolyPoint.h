@@ -27,6 +27,14 @@ public:
 		return *this;
 	}
 
+	bool operator==(const ECBPolyPoint& in_otherPoint)
+	{
+		return (x == in_otherPoint.x
+			&&
+			y == in_otherPoint.y
+			&&
+			z == in_otherPoint.z);
+	}
 
 	float x = 0.0f;
 	float y = 0.0f;
