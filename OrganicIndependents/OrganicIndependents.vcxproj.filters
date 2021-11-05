@@ -465,6 +465,15 @@
     <ClInclude Include="FusableAreaState.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
+    <ClInclude Include="PAtomBase.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="PMass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PAtomState.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

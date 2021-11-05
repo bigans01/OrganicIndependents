@@ -254,7 +254,10 @@
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
     <ClInclude Include="OrganicTriangleTertiary.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
+    <ClInclude Include="PAtomBase.h" />
+    <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PLTracingResult.h" />
+    <ClInclude Include="PMass.h" />
     <ClInclude Include="PointSearchData.h" />
     <ClInclude Include="PolyDebugLevel.h" />
     <ClInclude Include="PolyGroupRange.h" />

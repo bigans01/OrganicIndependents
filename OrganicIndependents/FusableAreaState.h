@@ -5,8 +5,8 @@
 
 enum class FusableAreaState
 {
-	SINGULAR,
-	MULTIPLE
+	UNFUSED,
+	FUSED
 };
 
 #endif

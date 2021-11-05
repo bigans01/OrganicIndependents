@@ -14,14 +14,14 @@ class FusableArea
 			pointAgent(in_pointAgent)
 		{
 			atomicIdRegister += in_originAtomID;	// when initially constructed, we must always add the ID of the originating atom.
-		};
+		}
 
 		FusableArea& operator+= (const FusableArea& in_fusableAreaB)
 		{
 			atomicIdRegister += in_fusableAreaB.atomicIdRegister;	// copy the atomic ID register values from the other FusableArea
 			if (atomicIdRegister.size() > 1)
 			{
-				currentAreaState = FusableAreaState::MULTIPLE;
+				currentAreaState = FusableAreaState::FUSED;
 			}
 			return *this;
 		}
@@ -33,7 +33,7 @@ class FusableArea
 
 	private:
 		ECBPolyPoint pointAgent;
-		FusableAreaState currentAreaState = FusableAreaState::SINGULAR;	// always singular by default
+		FusableAreaState currentAreaState = FusableAreaState::UNFUSED;	// always UNFUSED by default
 		OperableIntSet atomicIdRegister;	// stores a record of all Atoms that share this space
 };
 
