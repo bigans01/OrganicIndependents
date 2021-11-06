@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Fusion">
       <UniqueIdentifier>{08745979-707c-4600-ae46-ea5508ce1f62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Fusion">
+      <UniqueIdentifier>{9b0d0786-6073-469d-b34d-326aede8f891}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -468,10 +471,13 @@
     <ClInclude Include="PAtomBase.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
-    <ClInclude Include="PMass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PAtomState.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="PMass.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="PAtom2D.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
   </ItemGroup>
@@ -613,6 +619,12 @@
     </ClCompile>
     <ClCompile Include="TertiaryTriangleProducer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PAtom2D.cpp">
+      <Filter>Source Files\Fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="PMass.cpp">
+      <Filter>Source Files\Fusion</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

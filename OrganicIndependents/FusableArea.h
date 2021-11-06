@@ -10,6 +10,7 @@
 class FusableArea
 {
 	public:
+		FusableArea() {};
 		FusableArea(int in_originAtomID, ECBPolyPoint in_pointAgent) :
 			pointAgent(in_pointAgent)
 		{

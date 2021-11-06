@@ -42,8 +42,14 @@ class PAtomBase
 			}
 		}
 
+		void insertFusableAreaAtKey(EnclaveKeyDef::EnclaveKey in_enclaveKey, ECBPolyPoint in_fusedPoint)
+		{
+			FusableArea newArea(originalMassID, in_fusedPoint);
+			fusableAreaMap[in_enclaveKey] = newArea;
+		}
+
 		virtual void expand() = 0;
-	private:
+	protected:
 		friend class PMass;
 		int originalMassID = 0;				// the original mass ID of this instance of PAtomBase, 
 		ECBPolyPoint atomCorePoint;			// the "core point" of the atom's nucleus

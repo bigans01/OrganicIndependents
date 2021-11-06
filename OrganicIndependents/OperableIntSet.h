@@ -57,6 +57,16 @@ class OperableIntSet
 			return intSet.size();
 		}
 
+		std::set<int>::iterator begin()
+		{
+			return intSet.begin();
+		}
+
+		std::set<int>::iterator end()
+		{
+			return intSet.end();
+		}
+
 
 		std::set<int> intSet;
 		std::set<int> getSet() 
