@@ -326,6 +326,7 @@
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
     <ClCompile Include="PAtom2D.cpp" />
+    <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />
     <ClCompile Include="PolyGroupTicker.cpp" />

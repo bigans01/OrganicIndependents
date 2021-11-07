@@ -28,6 +28,17 @@ std::map<int, PAtomBase*> PMass::fetchAtomPointers()
 	return returnMap;
 }
 
+void PMass::printFusedAreas()
+{
+	std::cout << "(PMass): printing fused areas: " << std::endl;
+	auto areasBegin = fusedAreas.begin();
+	auto areasEnd = fusedAreas.end();
+	for (; areasBegin != areasEnd; areasBegin++)
+	{
+		areasBegin->second.printAtomicIDRegister();
+	}
+}
+
 void PMass::collideAtomIntoExistingMass(int in_idToCollide)
 {
 	// populate a set that contains the existing atom IDs, and then subtract the idToCollide from it; 

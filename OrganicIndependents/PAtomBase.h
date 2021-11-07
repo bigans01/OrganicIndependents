@@ -12,43 +12,14 @@
 class PAtomBase
 {
 	public:
-		void materialize(int in_originalMassID, ECBPolyPoint in_atomCorePoint, float in_expansionInterval)
-		{
-			originalMassID = in_originalMassID;
-			atomCorePoint = in_atomCorePoint;
-			expansionInterval = in_expansionInterval;
-		}
+		void materialize(int in_originalMassID, ECBPolyPoint in_atomCorePoint, float in_expansionInterval);
+		void detachFusableArea(FusableArea in_fusableArea);
+		void insertFusableAreaAtKey(EnclaveKeyDef::EnclaveKey in_enclaveKey, ECBPolyPoint in_fusedPoint);
+		void printRegistersInFusableAreas();
 
-		void detachFusableArea(FusableArea in_fusableArea)
-		{
-			bool wasDetachableAreaFound = false;
-			EnclaveKeyDef::EnclaveKey removableKey;
-			auto existingFusablesBegin = fusableAreaMap.begin();
-			auto existingFusablesEnd = fusableAreaMap.end();
-			for (; existingFusablesBegin != existingFusablesEnd; existingFusablesBegin++)
-			{
-				if (in_fusableArea == existingFusablesBegin->second)	// match was found
-				{
-					wasDetachableAreaFound = true;
-					removableKey = existingFusablesBegin->first;
-				}
-			}
+		// required virtual functions
+		virtual void expand() = 0;		// expands a PAtom's fusable area layer by one -- it's virtual because 2D and 3D are done differently.
 
-			if (wasDetachableAreaFound == true)
-			{
-				// as soon as an area is removed, it means a bond between another atom must exist.
-				fusableAreaMap.erase(removableKey);
-				atomState = PAtomState::BONDED;
-			}
-		}
-
-		void insertFusableAreaAtKey(EnclaveKeyDef::EnclaveKey in_enclaveKey, ECBPolyPoint in_fusedPoint)
-		{
-			FusableArea newArea(originalMassID, in_fusedPoint);
-			fusableAreaMap[in_enclaveKey] = newArea;
-		}
-
-		virtual void expand() = 0;
 	protected:
 		friend class PMass;
 		int originalMassID = 0;				// the original mass ID of this instance of PAtomBase, 

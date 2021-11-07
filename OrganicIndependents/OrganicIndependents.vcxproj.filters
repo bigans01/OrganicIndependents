@@ -626,5 +626,8 @@
     <ClCompile Include="PMass.cpp">
       <Filter>Source Files\Fusion</Filter>
     </ClCompile>
+    <ClCompile Include="PAtomBase.cpp">
+      <Filter>Source Files\Fusion</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

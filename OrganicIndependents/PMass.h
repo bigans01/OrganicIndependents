@@ -16,6 +16,7 @@ class PMass
 	public:
 		void insertAtom(std::shared_ptr<PAtomBase> in_atom);
 		std::map<int, PAtomBase*> fetchAtomPointers();
+		void printFusedAreas();
 	private:
 		std::map<int, std::shared_ptr<PAtomBase>> atoms;
 		std::map<int, FusableArea> fusedAreas;
