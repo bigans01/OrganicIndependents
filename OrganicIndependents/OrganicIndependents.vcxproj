@@ -259,6 +259,7 @@
     <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
+    <ClInclude Include="PointResolutionMethod.h" />
     <ClInclude Include="PointSearchData.h" />
     <ClInclude Include="PolyDebugLevel.h" />
     <ClInclude Include="PolyGroupRange.h" />
@@ -280,6 +281,9 @@
     <ClInclude Include="PrintableError.h" />
     <ClInclude Include="PrintableErrorStack.h" />
     <ClInclude Include="PrimaryLineT1.h" />
+    <ClInclude Include="PRMA2DResolverBase.h" />
+    <ClInclude Include="PRMAtomic2D.h" />
+    <ClInclude Include="PRResult.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
     <ClInclude Include="SecondarySearchResult.h" />
@@ -341,6 +345,7 @@
     <ClCompile Include="PrimaryLineT2IsolatedTracer.cpp" />
     <ClCompile Include="PrimaryLineT2MultiTracer.cpp" />
     <ClCompile Include="PrimarySegmentTracker.cpp" />
+    <ClCompile Include="PRMAtomic2D.cpp" />
     <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

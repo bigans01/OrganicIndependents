@@ -43,6 +43,21 @@
     <Filter Include="Source Files\Fusion">
       <UniqueIdentifier>{9b0d0786-6073-469d-b34d-326aede8f891}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Fusion\PointResolution">
+      <UniqueIdentifier>{0d7ff70c-759f-428b-bae6-197d4f015cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fusion\PointResolution\Methods">
+      <UniqueIdentifier>{74b4de5a-1fbb-44ef-91c6-b1f7e89016cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fusion\PointResolution">
+      <UniqueIdentifier>{7adf53b5-4886-4176-ad0e-fb5822251781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fusion\PointResolution\Methods">
+      <UniqueIdentifier>{abfd4db6-6873-4c71-8bb5-a3b1e2c932c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fusion\PointResolution\Methods\Resolvers">
+      <UniqueIdentifier>{64ad570c-df56-45eb-bb18-c83615f61d75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -480,6 +495,18 @@
     <ClInclude Include="PAtom2D.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
+    <ClInclude Include="PRMAtomic2D.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods</Filter>
+    </ClInclude>
+    <ClInclude Include="PRMA2DResolverBase.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="PointResolutionMethod.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods</Filter>
+    </ClInclude>
+    <ClInclude Include="PRResult.h">
+      <Filter>Header Files\Fusion\PointResolution</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -628,6 +655,9 @@
     </ClCompile>
     <ClCompile Include="PAtomBase.cpp">
       <Filter>Source Files\Fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="PRMAtomic2D.cpp">
+      <Filter>Source Files\Fusion\PointResolution\Methods</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
