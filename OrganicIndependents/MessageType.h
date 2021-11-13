@@ -51,7 +51,12 @@ enum class MessageType
 	OPENGLMANAGER_DISABLE_CAMERA_ENCLAVE_HIGHLIGHT,
 
 	// cleave sequence error handling
-	CLEAVESEQUENCEFACTORY_SEQUENCE_INCOMPLETE			// indicates that there was at least one incomplete cleave sequence 
+	CLEAVESEQUENCEFACTORY_SEQUENCE_INCOMPLETE,			// indicates that there was at least one incomplete cleave sequence 
+
+	// PRMA2D Resolution (XY, XZ, YZ)
+	PRMA2DRESOLVER_XY,
+	PRMA2DRESOLVER_XZ,
+	PRMA2DRESOLVER_YZ
 };
 
 #endif

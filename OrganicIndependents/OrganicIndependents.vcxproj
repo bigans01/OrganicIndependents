@@ -248,6 +248,7 @@
     <ClInclude Include="OrganicLineBase.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
     <ClInclude Include="ORELodState.h" />
+    <ClInclude Include="OrganicSystemRunMode.h" />
     <ClInclude Include="OrganicTransformUtils.h" />
     <ClInclude Include="OrganicTriangleSecondary.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroup.h" />
@@ -282,8 +283,11 @@
     <ClInclude Include="PrintableErrorStack.h" />
     <ClInclude Include="PrimaryLineT1.h" />
     <ClInclude Include="PRMA2DResolverBase.h" />
+    <ClInclude Include="PRMA2DResolverXY.h" />
     <ClInclude Include="PRMAtomic2D.h" />
     <ClInclude Include="PRResult.h" />
+    <ClInclude Include="ResolverLink.h" />
+    <ClInclude Include="ResolverLinkMap.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
     <ClInclude Include="SecondarySearchResult.h" />
@@ -345,6 +349,8 @@
     <ClCompile Include="PrimaryLineT2IsolatedTracer.cpp" />
     <ClCompile Include="PrimaryLineT2MultiTracer.cpp" />
     <ClCompile Include="PrimarySegmentTracker.cpp" />
+    <ClCompile Include="PRMA2DResolverBase.cpp" />
+    <ClCompile Include="PRMA2DResolverXY.cpp" />
     <ClCompile Include="PRMAtomic2D.cpp" />
     <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">

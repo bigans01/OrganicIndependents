@@ -58,6 +58,9 @@
     <Filter Include="Header Files\Fusion\PointResolution\Methods\Resolvers">
       <UniqueIdentifier>{64ad570c-df56-45eb-bb18-c83615f61d75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Fusion\PointResolution\Methods\Resolvers">
+      <UniqueIdentifier>{e91dffa5-2f69-494e-b2cc-c93f1018e434}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -507,6 +510,18 @@
     <ClInclude Include="PRResult.h">
       <Filter>Header Files\Fusion\PointResolution</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicSystemRunMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PRMA2DResolverXY.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolverLink.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolverLinkMap.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -658,6 +673,12 @@
     </ClCompile>
     <ClCompile Include="PRMAtomic2D.cpp">
       <Filter>Source Files\Fusion\PointResolution\Methods</Filter>
+    </ClCompile>
+    <ClCompile Include="PRMA2DResolverXY.cpp">
+      <Filter>Source Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="PRMA2DResolverBase.cpp">
+      <Filter>Source Files\Fusion\PointResolution\Methods\Resolvers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
