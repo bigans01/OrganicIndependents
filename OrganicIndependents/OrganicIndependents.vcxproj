@@ -257,6 +257,7 @@
     <ClInclude Include="OrganicWrappedBBFan.h" />
     <ClInclude Include="PAtom2D.h" />
     <ClInclude Include="PAtomBase.h" />
+    <ClInclude Include="PAtomDimType.h" />
     <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
@@ -285,6 +286,7 @@
     <ClInclude Include="PRMA2DResolverBase.h" />
     <ClInclude Include="PRMA2DResolverXY.h" />
     <ClInclude Include="PRMAtomic2D.h" />
+    <ClInclude Include="PRMTypeEnum.h" />
     <ClInclude Include="PRResult.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />

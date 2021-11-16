@@ -17,6 +17,8 @@ class PMass
 		void insertAtom(std::shared_ptr<PAtomBase> in_atom);
 		std::map<int, PAtomBase*> fetchAtomPointers();
 		void printFusedAreas();
+		std::shared_ptr<PAtomBase> getFirstAtomPtr();	// needed because all PMass starts 
+														// with exactly 1 atom; this makes our life easier.
 	private:
 		std::map<int, std::shared_ptr<PAtomBase>> atoms;
 		std::map<int, FusableArea> fusedAreas;

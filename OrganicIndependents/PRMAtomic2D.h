@@ -14,7 +14,7 @@
 class PRMAtomic2D : public PointResolutionMethod
 {
 	public:
-		void setupMethod(Message in_message, ResolverLinkMap in_linkMap);		// 1. Call this first, so that the resolverPtr can be set appropriately.
+		void setupMethod(Message in_message);		// 1. Call this first, so that the resolverPtr can be set appropriately.
 		void run();																// 2. Once all the links are loaded into the underlying resolverPtr's instance, go ahead and run it.
 		PRResult getResult();
 	private:

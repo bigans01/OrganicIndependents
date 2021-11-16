@@ -522,6 +522,12 @@
     <ClInclude Include="ResolverLinkMap.h">
       <Filter>Header Files\Fusion\PointResolution\Methods\Resolvers</Filter>
     </ClInclude>
+    <ClInclude Include="PRMTypeEnum.h">
+      <Filter>Header Files\Fusion\PointResolution\Methods</Filter>
+    </ClInclude>
+    <ClInclude Include="PAtomDimType.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

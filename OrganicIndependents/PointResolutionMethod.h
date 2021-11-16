@@ -6,14 +6,16 @@
 #include "Message.h"
 #include "PRResult.h"
 #include "ResolverLinkMap.h"
+#include "PRMTypeEnum.h"
 
 class PointResolutionMethod
 {
 	public:
-		virtual void setupMethod(Message in_message, ResolverLinkMap in_linkMap) = 0;
+		virtual void setupMethod(Message in_message) = 0;
 		virtual void run() = 0;
 		virtual PRResult getResult() = 0;
-	private:
+	protected:
+		PRMTypeEnum resolverType = PRMTypeEnum::NOTYPE;	// must be configured in the derivative class' setupMethod function
 
 };
 

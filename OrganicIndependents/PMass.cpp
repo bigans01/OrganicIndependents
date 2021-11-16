@@ -39,6 +39,12 @@ void PMass::printFusedAreas()
 	}
 }
 
+std::shared_ptr<PAtomBase> PMass::getFirstAtomPtr()
+{
+	// NOTE: this function assumes that the PAtom already exists.
+	return atoms.begin()->second;
+}
+
 void PMass::collideAtomIntoExistingMass(int in_idToCollide)
 {
 	// populate a set that contains the existing atom IDs, and then subtract the idToCollide from it; 
