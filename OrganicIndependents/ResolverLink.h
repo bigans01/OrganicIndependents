@@ -33,6 +33,11 @@ class ResolverLink
 			pMassPtr->getFirstAtomPtr()->materialize(in_uniqueAtomID, in_atomCorePoint, in_expansionInterval);
 		}
 
+		std::shared_ptr<PMass> getPMassPtr()
+		{
+			return pMassPtr;
+		}
+
 		ECBPolyPoint originalPoint;
 		ECBPolyPoint resolvedPoint;
 		std::shared_ptr<PMass> pMassPtr;

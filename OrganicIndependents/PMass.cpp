@@ -39,6 +39,22 @@ void PMass::printFusedAreas()
 	}
 }
 
+PAtomState PMass::returnAtomStates()
+{
+	PAtomState returnState = PAtomState::UNBONDED;
+	auto atomsBegin = atoms.begin();
+	auto atomsEnd = atoms.end();
+	for (; atomsBegin != atomsEnd; atomsBegin++)
+	{
+		if (atomsBegin->second->atomState == PAtomState::BONDED)
+		{
+			returnState = PAtomState::BONDED;
+			break;
+		}
+	}
+	return returnState;
+}
+
 std::shared_ptr<PAtomBase> PMass::getFirstAtomPtr()
 {
 	// NOTE: this function assumes that the PAtom already exists.

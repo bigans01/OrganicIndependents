@@ -19,6 +19,7 @@ class PMass
 		void printFusedAreas();
 		std::shared_ptr<PAtomBase> getFirstAtomPtr();	// needed because all PMass starts 
 														// with exactly 1 atom; this makes our life easier.
+		PAtomState returnAtomStates();	// all atoms in a PMass should have the same PAtomState, at the end of a bonding pass (BONDED, UNBONDED)
 	private:
 		std::map<int, std::shared_ptr<PAtomBase>> atoms;
 		std::map<int, FusableArea> fusedAreas;
