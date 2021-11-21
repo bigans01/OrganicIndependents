@@ -41,39 +41,88 @@ ECBPolyPoint PRMA2DResolverXY::generateExpandedPoint(float in_dimA, float in_dim
 
 void PRMA2DResolverXY::runResolutionAttempt()
 {
-	compareMasses();
-
-	// loop until each PMass that is pointed-to by the entries in pMassPtrMap contain > 1 atom;
-	// this indicates that the pointed-to PMass has collided with something.
-	int numberOfAttempts = 10;
-	bool isRunComplete = false;
-	for (int x = 0; x < numberOfAttempts; x++)
+	generateComparisonCount();	// generate the initial comparison count
+	while (areComparisonsDone() == false) // continue until comparisons are not done; i.e, 
+		                                  // while the counter is not 0 and the resolutionAcquired flag is false
 	{
-		// do logic here...
-		// ...
-		// ...
-
-
-		if (isRunComplete == true)
+		std::cout << "Running comparison loop iteration..." << std::endl;
+		bool collisionDetected = compareUnbondedMasses();
+		if (collisionDetected == true)	// if a collision was detected, it means that a new PMass was created, and at least one PAtom is no longer bonded.
+										// we must now check the status of all atoms to see if they are ALL bonded. If this is true, 
+										// the comparison run is complete.
 		{
-			break;	// break out of the loop if complete.
+			checkIfResolutionAchieved();	// if there are no unbonded masses, we are done, and can exit the loop.
 		}
+		comparisonsRemaining--;	// comparisons remaining should always be decremented at end of loop, if we didn't break out of it.
 	}
-	
 }
 
-void PRMA2DResolverXY::compareMasses()
+bool PRMA2DResolverXY::areComparisonsDone()
 {
-	// first, find all PMass that has isn't bound yet.
+	bool comparisonsDone = false;
+	if
+	(
+		(comparisonsRemaining == 0)		// if there are no more loop iterations, we're done.
+		||
+		(resolutionAcquired == true)	// if the resolution was acquired, we're done.
+	)
+	{
+		comparisonsDone = true;
+	}
+
+	return comparisonsDone;
+}
+
+void PRMA2DResolverXY::generateComparisonCount()
+{
+	comparisonsRemaining = pMassPtrMap.size();	// the number of comparisons is always equal to the initial number of pMass ptrs.
+}
+
+
+bool PRMA2DResolverXY::compareUnbondedMasses()
+{
+	// bool value that indicates if collision was detected.
+	bool collisionDetected = false;
+
+	// first, find all PMass that has isn't bound yet; put these into an OperableIntSet. Additionally, create another OperableIntSet of all 
+	// masses, regardless of the value of returnAtomStates for that PMass.
 	int numberOfUnbondedMasses = 0;
+	OperableIntSet unbondedMassSet;
+	OperableIntSet allMassSet;
 	auto massesBegin = pMassPtrMap.begin();
 	auto massesEnd = pMassPtrMap.end();
 	for (; massesBegin != massesEnd; massesBegin++)
 	{
 		if (massesBegin->second->returnAtomStates() == PAtomState::UNBONDED)
 		{
+			unbondedMassSet += massesBegin->first;
 			numberOfUnbondedMasses++;
 		}
+		allMassSet += massesBegin->first;
 	}
 	std::cout << ">> Number of unbonded masses is: " << numberOfUnbondedMasses << std::endl;
+
+	return collisionDetected;
+}
+
+void PRMA2DResolverXY::checkIfResolutionAchieved()
+{
+	bool unbondedDetected = false;
+	auto massCheckBegin = pMassPtrMap.begin();
+	auto massCheckEnd = pMassPtrMap.end();
+	for (; massCheckBegin != massCheckEnd; massCheckBegin++)
+	{
+		// break out of this loop on detection of any unbonded atoms.
+		if (massCheckBegin->second->returnAtomStates() == PAtomState::UNBONDED)
+		{
+			unbondedDetected = true;
+			break;
+		}
+	}
+
+	// if no unbonded atoms were detected, we are done. Set the completion flag to indicate there should be no more comparisons done.
+	if (unbondedDetected == false)
+	{
+		resolutionAcquired = true;
+	}
 }

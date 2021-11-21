@@ -10,6 +10,7 @@
 #include <map>
 #include <mutex>
 #include <iostream>
+#include "OperableIntSet.h"
 
 class PRMA2DResolverXY : public PRMA2DResolverBase
 {
@@ -21,7 +22,15 @@ class PRMA2DResolverXY : public PRMA2DResolverBase
 		ResolverLinkMap resolverLinks;
 		std::map<int, std::shared_ptr<PMass>> pMassPtrMap;
 
-		void compareMasses();
+		// comparison loop variables
+		int comparisonsRemaining = 0;
+		bool resolutionAcquired = false;
+
+		void generateComparisonCount();
+		bool areComparisonsDone();
+		bool compareUnbondedMasses();	// compares PMasses to each other; returns true when a collision is found between two PMasses.
+		void checkIfResolutionAchieved();	// needs to be called whenever a collision is detected, after the collision logic is done.
+
 };
 
 #endif
