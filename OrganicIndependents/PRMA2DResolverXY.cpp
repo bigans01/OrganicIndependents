@@ -84,7 +84,7 @@ bool PRMA2DResolverXY::compareUnbondedMasses()
 	// bool value that indicates if collision was detected.
 	bool collisionDetected = false;
 
-	// first, find all PMass that has isn't bound yet; put these into an OperableIntSet. Additionally, create another OperableIntSet of all 
+	// First, find all PMass that has isn't bound yet; put these into an OperableIntSet. Additionally, create another OperableIntSet of all 
 	// masses, regardless of the value of returnAtomStates for that PMass.
 	int numberOfUnbondedMasses = 0;
 	OperableIntSet unbondedMassSet;
@@ -100,6 +100,18 @@ bool PRMA2DResolverXY::compareUnbondedMasses()
 		}
 		allMassSet += massesBegin->first;
 	}
+
+	// Next, pass in the OperableIntSets to a new function that compares each PMass with the ID found in the unbondedMassSet, 
+	// against all values in allMassSet (minus the ID found). If there is ANY collision, return a class/struct that has a bool flag of TRUE 
+	// set to indicate that there was a collision. If a collision wasn't detected, run X number of attempts, until either:
+	// 
+	// A.) the number of attempts is reached
+	// --OR
+	// B.) a collision was detected.
+	//
+	// If a collision was detected, we would then set the value of collisionDetected to true. 
+	produceAndRunComparisonSets(unbondedMassSet, allMassSet);
+
 	std::cout << ">> Number of unbonded masses is: " << numberOfUnbondedMasses << std::endl;
 
 	return collisionDetected;
@@ -125,4 +137,46 @@ void PRMA2DResolverXY::checkIfResolutionAchieved()
 	{
 		resolutionAcquired = true;
 	}
+}
+
+bool PRMA2DResolverXY::produceAndRunComparisonSets(OperableIntSet in_unbondedMassSet, OperableIntSet in_allMassSet)
+{
+	bool wasCollisionDetected = false;
+
+	// create each comparison set, by iterating through unbonded mass set, and creating a new set that is 
+	// equal to the allMassSet minus the current value we are at in the unbonded mass set.
+	std::map<int, OperableIntSet> comparisonSetMap;
+	auto unbondedBegin = in_unbondedMassSet.begin();
+	auto unbondedEnd = in_unbondedMassSet.end();
+	for (; unbondedBegin != unbondedEnd; unbondedBegin++)
+	{
+		OperableIntSet newSetBase = in_allMassSet;
+		newSetBase -= *unbondedBegin;
+		comparisonSetMap[*unbondedBegin] = newSetBase;
+	}
+
+	// testing only: print out the points to compare against.
+	auto comparisonsBegin = comparisonSetMap.begin();
+	auto comparisonsEnd = comparisonSetMap.end();
+	for (; comparisonsBegin != comparisonsEnd; comparisonsBegin++)
+	{
+		//std::cout << "PMass with ID " << comparisonsBegin->first << " will be compared to these values: ";
+		auto currentComparisonSetBegin = comparisonsBegin->second.begin();
+		auto currentComparisonSetEnd = comparisonsBegin->second.end();
+		for (; currentComparisonSetBegin != currentComparisonSetEnd; currentComparisonSetBegin++)
+		{
+			//std::cout << " " << *currentComparisonSetBegin;
+
+			int selectedUnbonded = comparisonsBegin->first;
+			int indexToCompareTo = *currentComparisonSetBegin;
+
+			// run the comparison, by temporarily adding the atom into the mass;
+			// if returning struct contains true bool value, do appropriate logic and return out of
+			// this call to produceAndRonComparisonSets.
+			pMassPtrMap[selectedUnbonded]->checkForCollisionAgainstOtherMass(pMassPtrMap[indexToCompareTo]);
+		}
+		//std::cout << std::endl;
+	}
+
+	return wasCollisionDetected;
 }

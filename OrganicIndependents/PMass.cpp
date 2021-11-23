@@ -61,8 +61,18 @@ std::shared_ptr<PAtomBase> PMass::getFirstAtomPtr()
 	return atoms.begin()->second;
 }
 
-void PMass::collideAtomIntoExistingMass(int in_idToCollide)
+bool PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMass> in_otherMassPtr)
 {
+	bool collisionReturnResult = false;
+	// should only be done if all the atoms in this PMass have a return value of
+	// UNBONDED when returnAtomStates() is called.
+	return collisionReturnResult;
+}
+
+bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
+{
+	bool collisionReturnResult = false;
+
 	// populate a set that contains the existing atom IDs, and then subtract the idToCollide from it; 
 	// this will be the set of IDs that the id to collide will be compared against.
 	OperableIntSet existingAtomIDs;
@@ -114,6 +124,7 @@ void PMass::collideAtomIntoExistingMass(int in_idToCollide)
 					fusableAreastoRemove.push_back(newArea);				// use this vector after we exit these nested loops, 
 																			// to appropriately erase each existing FusableArea with a FusedAreaState::FUSED value from each involved atom.
 					collisionDetected = true;								// signal that a collision was detected; we won't need to check fused areas.
+					collisionReturnResult = true;
 				}
 			}
 		}
@@ -134,6 +145,8 @@ void PMass::collideAtomIntoExistingMass(int in_idToCollide)
 																						// already exists in fusedAreas.
 					//insertNewFusedArea(collidingAtomMapBegin->second);
 					fusableAreastoRemove.push_back(collidingAtomMapBegin->second);
+
+					collisionReturnResult = true;
 				}
 			}
 		}
@@ -154,6 +167,8 @@ void PMass::collideAtomIntoExistingMass(int in_idToCollide)
 	}
 
 	std::cout << "!! Size of exiting fusable areas: " << fusedAreas.size() << std::endl;
+
+	return collisionReturnResult;
 }
 
 void PMass::insertNewFusedArea(FusableArea in_fusableArea)
