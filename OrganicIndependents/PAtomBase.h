@@ -20,9 +20,9 @@ class PAtomBase
 		// required virtual functions
 		virtual void expand() = 0;		// expands a PAtom's fusable area layer by one -- it's virtual because 2D and 3D are done differently.
 
+		int originalMassID = 0;				// the original mass ID of this instance of PAtomBase, 
 	protected:
 		friend class PMass;
-		int originalMassID = 0;				// the original mass ID of this instance of PAtomBase, 
 		ECBPolyPoint atomCorePoint;			// the "core point" of the atom's nucleus
 		float expansionInterval = 0.0f;		// the expansion interval that represents how much the atom expands whenever the expand() function is called.
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FusableArea, EnclaveKeyDef::KeyHasher> fusableAreaMap;

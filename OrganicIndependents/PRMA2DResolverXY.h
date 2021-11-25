@@ -32,6 +32,7 @@ class PRMA2DResolverXY : public PRMA2DResolverBase
 		void checkIfResolutionAchieved();	// needs to be called whenever a collision is detected, after the collision logic is done.
 		bool produceAndRunComparisonSets(OperableIntSet in_unbondedMassSet, OperableIntSet in_allMassSet);
 
+		int getHighestMassPtrMapKeyPlusOne();
 };
 
 #endif

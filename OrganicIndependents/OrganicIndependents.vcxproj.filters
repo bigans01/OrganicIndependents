@@ -528,6 +528,9 @@
     <ClInclude Include="PAtomDimType.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
+    <ClInclude Include="AtomicBondingResult.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

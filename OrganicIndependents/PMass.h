@@ -10,11 +10,12 @@
 #include <unordered_map>
 #include "EnclaveKeyDef.h"
 #include <iostream>
+#include "AtomicBondingResult.h"
 
 class PMass
 {
 	public:
-		bool checkForCollisionAgainstOtherMass(std::shared_ptr<PMass> in_otherMassPtr);
+		AtomicBondingResult checkForCollisionAgainstOtherMass(std::shared_ptr<PMass> in_otherMassPtr);
 		void insertAtom(std::shared_ptr<PAtomBase> in_atom);
 		std::map<int, PAtomBase*> fetchAtomPointers();
 		void printFusedAreas();
@@ -23,6 +24,8 @@ class PMass
 		PAtomState returnAtomStates();	// all atoms in a PMass should have the same PAtomState, at the end of a bonding pass (BONDED, UNBONDED)
 		bool collideAtomIntoExistingMass(int in_idToCollide);
 		void insertNewFusedArea(FusableArea in_fusableArea);
+		void printAtomIDs();
+		std::set<int> getAtomIds();
 	private:
 		std::map<int, std::shared_ptr<PAtomBase>> atoms;
 		std::map<int, FusableArea> fusedAreas;

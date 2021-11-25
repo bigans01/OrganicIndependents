@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AtomicBondingResult.h" />
     <ClInclude Include="BlockBorder.h" />
     <ClInclude Include="BlockBorderCornerPoint.h" />
     <ClInclude Include="BlockBorderLineList.h" />

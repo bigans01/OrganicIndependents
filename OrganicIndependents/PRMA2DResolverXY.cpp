@@ -21,12 +21,17 @@ void PRMA2DResolverXY::initializeFromMessage(Message in_messageToInitializeFrom)
 		ECBPolyPoint linkPoint = in_messageToInitializeFrom.readPoint();
 		ResolverLink newLink(linkPoint);
 		resolverLinks.links[linkID] = newLink;	// create the link
-		resolverLinks.links[linkID].initializeMassPtrAndFirstAtom(PAtomDimType::TWO_D);	// initialize its mass, and an initial unmaterialized atom.
-		resolverLinks.links[linkID].materializeInitialAtom(linkID, linkPoint, .1f);	// initialize the first atom
+		resolverLinks.links[linkID].initializeMassPtrAndFirstAtom(PAtomDimType::TWO_D, linkID, linkPoint, .1f);	// initialize its mass, and an initial unmaterialized atom.
+		//resolverLinks.links[linkID].materializeInitialAtom(linkID, linkPoint, .1f);	// initialize the first atom
 
 		pMassPtrMap[linkID] = resolverLinks.links[linkID].getPMassPtr();			// store a reference to the PMass, in the pMassPtrMap; 
 																					// we will be iterating through the pMassPtrMap when doing comparisons
 																					// of one mass to another.
+		std::cout << "++++ printing initial atom IDs in the PMass with ID " << linkID << std::endl;
+		resolverLinks.links[linkID].getPMassPtr()->printAtomIDs();
+		pMassPtrMap[linkID]->printAtomIDs();
+		std::cout << "++++ done printing." << std::endl;
+
 		std::cout << "Number of shared_ptr counts for " << linkID << ": " << pMassPtrMap[linkID].use_count() << std::endl;
 	}
 
@@ -110,7 +115,7 @@ bool PRMA2DResolverXY::compareUnbondedMasses()
 	// B.) a collision was detected.
 	//
 	// If a collision was detected, we would then set the value of collisionDetected to true. 
-	produceAndRunComparisonSets(unbondedMassSet, allMassSet);
+	bool collisionFound = produceAndRunComparisonSets(unbondedMassSet, allMassSet);
 
 	std::cout << ">> Number of unbonded masses is: " << numberOfUnbondedMasses << std::endl;
 
@@ -156,27 +161,115 @@ bool PRMA2DResolverXY::produceAndRunComparisonSets(OperableIntSet in_unbondedMas
 	}
 
 	// testing only: print out the points to compare against.
+	int selectedUnbonded = 0;
+	int indexToCompareTo = 0;
+	PMass rightPMassCopy;
+
 	auto comparisonsBegin = comparisonSetMap.begin();
 	auto comparisonsEnd = comparisonSetMap.end();
 	for (; comparisonsBegin != comparisonsEnd; comparisonsBegin++)
 	{
-		//std::cout << "PMass with ID " << comparisonsBegin->first << " will be compared to these values: ";
+		//std::cout << "|| PMass with ID " << comparisonsBegin->first << " will be compared to these values: ";
 		auto currentComparisonSetBegin = comparisonsBegin->second.begin();
 		auto currentComparisonSetEnd = comparisonsBegin->second.end();
 		for (; currentComparisonSetBegin != currentComparisonSetEnd; currentComparisonSetBegin++)
 		{
-			//std::cout << " " << *currentComparisonSetBegin;
+			//std::cout << " " << *currentComparisonSetBegin << std::endl;
 
-			int selectedUnbonded = comparisonsBegin->first;
-			int indexToCompareTo = *currentComparisonSetBegin;
+			selectedUnbonded = comparisonsBegin->first;
+			indexToCompareTo = *currentComparisonSetBegin;
+
+			std::cout << "Comparing unbonded PMass with ID " << selectedUnbonded << " to PMass with ID " << indexToCompareTo << std::endl;
+			pMassPtrMap[indexToCompareTo]->printAtomIDs();
+			std::cout << "----" << std::endl;
 
 			// run the comparison, by temporarily adding the atom into the mass;
 			// if returning struct contains true bool value, do appropriate logic and return out of
 			// this call to produceAndRonComparisonSets.
-			pMassPtrMap[selectedUnbonded]->checkForCollisionAgainstOtherMass(pMassPtrMap[indexToCompareTo]);
+			auto collisionResult = pMassPtrMap[selectedUnbonded]->checkForCollisionAgainstOtherMass(pMassPtrMap[indexToCompareTo]);
+			if (collisionResult.bondingResultExists == true)
+			{
+				std::cout << ">>>>> !! Collision result found as true; left PMass atom will be collided into a copy of right-hand PMass. " << std::endl;
+				//std::cout << ">>>> Printing right mass IDs one final time..." << std::endl;
+				//pMassPtrMap[indexToCompareTo]->printAtomIDs();
+				//std::cout << ">>>> Done printing final time..." << std::endl;
+				
+				rightPMassCopy = *pMassPtrMap[indexToCompareTo];
+				auto leftAtomPtr = pMassPtrMap[selectedUnbonded]->getFirstAtomPtr();
+				//rightPMassCopy.printAtomIDs();
+				//std::cout << "!! >> Done with first print call..." << std::endl;
+				rightPMassCopy.insertAtom(leftAtomPtr);
+				rightPMassCopy.printAtomIDs();
+				std::cout << ">>>> Finished print of atom ids for PMass copy..." << std::endl;
+
+				int waitVal = 3;
+				std::cin >> waitVal;
+
+				wasCollisionDetected = true;
+				goto quickEnd;
+			}
+
+			
 		}
-		//std::cout << std::endl;
+		std::cout << std::endl;
+	}
+
+	quickEnd:
+	// if a collision was detected, insert the new PMass into pMassPtrMap, and update the resolverLinks (having IDs equal to selectedUnbonded and indexToCompareTo)
+	// to have their PMass ptrs point to this new map.
+	if (wasCollisionDetected == true)
+	{
+		int newPMassKeyValue = getHighestMassPtrMapKeyPlusOne();
+		//std::cout << ">>> new PMass key value is: " << std::endl;
+
+		// first, insert the new PMass.
+		std::shared_ptr<PMass> newMassPtr(new PMass());
+		*newMassPtr = rightPMassCopy;
+		pMassPtrMap[newPMassKeyValue] = newMassPtr;
+		//std::cout << ">>> new Mass at key " << newPMassKeyValue << " has the following atom data: " << std::endl;
+		pMassPtrMap[newPMassKeyValue]->printAtomIDs();
+
+		// remove the existing pMassPtrs at keys having selectedUnbonded and indexToCompareTo.
+		pMassPtrMap.erase(selectedUnbonded);
+		pMassPtrMap.erase(indexToCompareTo);
+
+		// get the IDs of the atoms from the new pMass; use these to update the links.
+		auto newPMassAtomIDs = pMassPtrMap[newPMassKeyValue]->getAtomIds();
+		auto newIDsBegin = newPMassAtomIDs.begin();
+		auto newIDsEnd = newPMassAtomIDs.end();
+		for (; newIDsBegin != newIDsEnd; newIDsBegin++)
+		{
+			if (resolverLinks.links.find(*newIDsBegin) != resolverLinks.links.end())
+			{
+				//std::cout << ">> Updating link with ID " << *newIDsBegin << std::endl;
+				resolverLinks.links[*newIDsBegin].setPMassPtr(pMassPtrMap[newPMassKeyValue]);
+			}
+		}
+
+		
+		std::cout << "!! Size of resolver links: " << resolverLinks.links.size() << std::endl;
+		std::cout << "!! Size of pMassMptr map: " << pMassPtrMap.size() << std::endl;
+
+		// quick debug check: let's print the IDs of each atom in the PMass that is pointed to by the links:
+		auto linksBegin = resolverLinks.links.begin();
+		auto linksEnd = resolverLinks.links.end();
+		for (; linksBegin != linksEnd; linksBegin++)
+		{
+			std::cout << "Link ID " << linksBegin->first << ": " << std::endl;
+			linksBegin->second.getPMassPtr()->printAtomIDs();
+		}
+		
+		
+		std::cout << ">>> Collision logic complete; Press any number to continue... " << std::endl;
+		int continueVal = 3;
+		std::cin >> continueVal;
 	}
 
 	return wasCollisionDetected;
+}
+
+int PRMA2DResolverXY::getHighestMassPtrMapKeyPlusOne()
+{
+	// get the value of the highest key in the map; this + 1 will be equal to the key value that represents the newest PMass that is inserted.
+	return pMassPtrMap.rbegin()->first + 1;
 }

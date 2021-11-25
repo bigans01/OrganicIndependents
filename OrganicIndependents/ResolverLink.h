@@ -15,7 +15,7 @@ class ResolverLink
 		ResolverLink() {};
 		ResolverLink(ECBPolyPoint in_originalPoint) : originalPoint(in_originalPoint), resolvedPoint(in_originalPoint) {};
 		
-		void initializeMassPtrAndFirstAtom(PAtomDimType in_pAtomDimType)
+		void initializeMassPtrAndFirstAtom(PAtomDimType in_pAtomDimType, int in_uniqueAtomID, ECBPolyPoint in_atomCorePoint, float in_expansionInterval)
 		{
 			pMassPtr = std::shared_ptr<PMass>(new PMass());		// create a new mass
 			switch (in_pAtomDimType)	// use a switch to etermine the type (1D, 2D, 3D)
@@ -23,6 +23,7 @@ class ResolverLink
 				case PAtomDimType::TWO_D:
 				{
 					std::shared_ptr<PAtomBase> twoDAtom(new (PAtom2D));
+					twoDAtom->materialize(in_uniqueAtomID, in_atomCorePoint, in_expansionInterval);
 					pMassPtr->insertAtom(twoDAtom);	// insert a single unmaterialized atom into the mass
 				}
 			}	
@@ -36,6 +37,11 @@ class ResolverLink
 		std::shared_ptr<PMass> getPMassPtr()
 		{
 			return pMassPtr;
+		}
+
+		void setPMassPtr(std::shared_ptr<PMass> in_pMassPtr)
+		{
+			pMassPtr = in_pMassPtr;
 		}
 
 		ECBPolyPoint originalPoint;

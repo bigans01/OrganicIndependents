@@ -3,9 +3,21 @@
 
 void PMass::insertAtom(std::shared_ptr<PAtomBase> in_atom)
 {
+	/*
+	std::cout << "!!! Size of atoms before insert: " << atoms.size() << std::endl;
+	std::cout << "IDs of atoms before insert: " << std::endl;
+	auto printAtomsBegin = atoms.begin();
+	auto printAtomsEnd = atoms.end();
+	for (; printAtomsBegin != printAtomsEnd; printAtomsBegin++)
+	{
+		std::cout << printAtomsBegin->first << std::endl;
+	}
+	*/
 	int newAtomID = in_atom->originalMassID;
+	//std::cout << "!!-> New Atom ID is: " << newAtomID << std::endl;
 	atoms[newAtomID] = in_atom;
 
+	//std::cout << "!!! ID of atom to fuse: " << newAtomID << std::endl;
 	std::cout << "!!! number of fusable areas in inserted atom: " << atoms[newAtomID]->fusableAreaMap.size() << std::endl;
 
 	if (atoms.size() > 1)	// if there is more than one atom, they must be appropriately collided.
@@ -61,11 +73,58 @@ std::shared_ptr<PAtomBase> PMass::getFirstAtomPtr()
 	return atoms.begin()->second;
 }
 
-bool PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMass> in_otherMassPtr)
+AtomicBondingResult PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMass> in_otherMassPtr)
 {
-	bool collisionReturnResult = false;
+	AtomicBondingResult collisionReturnResult;	// if there is no match, the value of bondingResultExists is false.
 	// should only be done if all the atoms in this PMass have a return value of
-	// UNBONDED when returnAtomStates() is called.
+	// UNBONDED when returnAtomStates() is called; we will get the only existing atom in the mass for the "left" comparison.
+	auto leftAtom = atoms.begin();
+	auto leftAtomID = leftAtom->second->originalMassID;
+
+	bool coreCollisionDetected = false;
+
+	// Pass 1: Core collision test
+	auto otherMassAtomsBegin = in_otherMassPtr->atoms.begin();
+	auto otherMassAtomsEnd = in_otherMassPtr->atoms.end();
+	for (; otherMassAtomsBegin != otherMassAtomsEnd; otherMassAtomsBegin++)
+	{
+		if (leftAtom->second->atomCorePoint == otherMassAtomsBegin->second->atomCorePoint)
+		{
+			coreCollisionDetected = true;
+			std::cout << "!! Core point collision detected between two atoms..." << std::endl;
+			collisionReturnResult = AtomicBondingResult(leftAtom->second);
+		}
+	}
+
+	// Pass 2: fusable area testing; done if nothing is matched in pass 1.
+	if (coreCollisionDetected == false)
+	{
+		auto leftFusableAreasBegin = leftAtom->second->fusableAreaMap.begin();
+		auto leftFusableAreasEnd = leftAtom->second->fusableAreaMap.end();
+		for (; leftFusableAreasBegin != leftFusableAreasEnd; leftFusableAreasBegin++)
+		{
+			// each of the current right atom's FusableArea entrants need to be compared against the left atom's FusableArea entrants.  
+			auto currentRightAtomsBegin = in_otherMassPtr->atoms.begin();
+			auto currentRightAtomsEnd = in_otherMassPtr->atoms.end();
+			for (; currentRightAtomsBegin != currentRightAtomsEnd; currentRightAtomsBegin++)
+			{
+				auto currentRightAtomFusableAreasBegin = currentRightAtomsBegin->second->fusableAreaMap.begin();
+				auto currentRightAtomFusableAreasEnd = currentRightAtomsBegin->second->fusableAreaMap.end();
+				for (; currentRightAtomFusableAreasBegin != currentRightAtomFusableAreasEnd; currentRightAtomFusableAreasBegin++)
+				{
+					if (leftFusableAreasBegin->second == currentRightAtomFusableAreasBegin->second)	// the fusable areas match; do the logic.
+					{
+						collisionReturnResult = AtomicBondingResult(leftAtom->second);	// return the pointer to the left atom, to signifiy it collided.
+						std::cout << "!! Left atom collision detected. " << std::endl;
+						goto quickEnd;	// use goto to exit this nested loop set.
+					}
+				}
+			}
+		}
+
+	}
+	quickEnd:	// for quick exit.
+
 	return collisionReturnResult;
 }
 
@@ -83,6 +142,8 @@ bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
 		existingAtomIDs += atomIDsBegin->first;
 	}
 	existingAtomIDs -= in_idToCollide;
+
+	std::cout << "ID to collide is: " << in_idToCollide << std::endl;
 
 	std::cout << "Printing values of existing atomIDs: " << std::endl;
 	existingAtomIDs.printSet();
@@ -166,7 +227,7 @@ bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
 		}
 	}
 
-	std::cout << "!! Size of exiting fusable areas: " << fusedAreas.size() << std::endl;
+	std::cout << "!! Size of existing fusable areas: " << fusedAreas.size() << std::endl;
 
 	return collisionReturnResult;
 }
@@ -176,3 +237,31 @@ void PMass::insertNewFusedArea(FusableArea in_fusableArea)
 	int currentFusedAreaSize = fusedAreas.size();
 	fusedAreas[currentFusedAreaSize] = in_fusableArea;
 };
+
+void PMass::printAtomIDs()
+{
+	std::cout << "Unique atomic for this PMass are: ";
+	auto atomsBegin = atoms.begin();
+	auto atomsEnd = atoms.end();
+	for (; atomsBegin != atomsEnd; atomsBegin++)
+	{
+		std::cout << "First key: " << atomsBegin->first << " ";
+		std::cout << atomsBegin->second->originalMassID << " | point: " 
+			<< atomsBegin->second->atomCorePoint.x 
+			<< ", " << atomsBegin->second->atomCorePoint.y
+			<< ", " << atomsBegin->second->atomCorePoint.z << "| expansion interval: " << atomsBegin->second->expansionInterval << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+std::set<int> PMass::getAtomIds()
+{
+	std::set<int> returnSet;
+	auto atomsBegin = atoms.begin();
+	auto atomsEnd = atoms.end();
+	for (; atomsBegin != atomsEnd; atomsBegin++)
+	{
+		returnSet.insert(atomsBegin->first);
+	}
+	return returnSet;
+}
