@@ -26,6 +26,7 @@ class PMass
 		void insertNewFusedArea(FusableArea in_fusableArea);
 		void printAtomIDs();
 		std::set<int> getAtomIds();
+		void expandAllAtoms();
 	private:
 		std::map<int, std::shared_ptr<PAtomBase>> atoms;
 		std::map<int, FusableArea> fusedAreas;

@@ -495,9 +495,6 @@
     <ClInclude Include="PMass.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
-    <ClInclude Include="PAtom2D.h">
-      <Filter>Header Files\Fusion</Filter>
-    </ClInclude>
     <ClInclude Include="PRMAtomic2D.h">
       <Filter>Header Files\Fusion\PointResolution\Methods</Filter>
     </ClInclude>
@@ -529,6 +526,9 @@
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
     <ClInclude Include="AtomicBondingResult.h">
+      <Filter>Header Files\Fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="PAtom2DXY.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
   </ItemGroup>
@@ -671,9 +671,6 @@
     <ClCompile Include="TertiaryTriangleProducer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PAtom2D.cpp">
-      <Filter>Source Files\Fusion</Filter>
-    </ClCompile>
     <ClCompile Include="PMass.cpp">
       <Filter>Source Files\Fusion</Filter>
     </ClCompile>
@@ -688,6 +685,9 @@
     </ClCompile>
     <ClCompile Include="PRMA2DResolverBase.cpp">
       <Filter>Source Files\Fusion\PointResolution\Methods\Resolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="PAtom2DXY.cpp">
+      <Filter>Source Files\Fusion</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

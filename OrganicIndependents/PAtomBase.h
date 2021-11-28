@@ -8,6 +8,7 @@
 #include "FusableArea.h"
 #include "ECBPolyPoint.h"
 #include "PAtomState.h"
+#include "IndependentUtils.h"
 
 class PAtomBase
 {
@@ -28,6 +29,8 @@ class PAtomBase
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FusableArea, EnclaveKeyDef::KeyHasher> fusableAreaMap;
 		PAtomState atomState = PAtomState::UNBONDED;	// an atom will always start out as UNBONDED until BONDS with another atom.
 														// Which atoms are bonded-to isn't kept track here.
+		int currentExpansionIteration = 1;				// the current expansion interval that an atom will use when calling expand(); needs to be incremented
+														// by one at the end of the call to expand().
 };
 
 #endif

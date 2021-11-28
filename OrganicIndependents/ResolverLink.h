@@ -7,7 +7,7 @@
 #include "PMass.h"
 #include <mutex>
 #include "PAtomDimType.h"
-#include "PAtom2D.h"
+#include "PAtom2DXY.h"
 
 class ResolverLink
 {
@@ -20,9 +20,9 @@ class ResolverLink
 			pMassPtr = std::shared_ptr<PMass>(new PMass());		// create a new mass
 			switch (in_pAtomDimType)	// use a switch to etermine the type (1D, 2D, 3D)
 			{
-				case PAtomDimType::TWO_D:
+				case PAtomDimType::TWO_D_XY:
 				{
-					std::shared_ptr<PAtomBase> twoDAtom(new (PAtom2D));
+					std::shared_ptr<PAtomBase> twoDAtom(new (PAtom2DXY));
 					twoDAtom->materialize(in_uniqueAtomID, in_atomCorePoint, in_expansionInterval);
 					pMassPtr->insertAtom(twoDAtom);	// insert a single unmaterialized atom into the mass
 				}

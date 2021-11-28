@@ -6,7 +6,7 @@
 enum class PAtomDimType
 {
 	ONE_D,
-	TWO_D,
+	TWO_D_XY,
 	THREE_D
 };
 

@@ -256,7 +256,7 @@
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
     <ClInclude Include="OrganicTriangleTertiary.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
-    <ClInclude Include="PAtom2D.h" />
+    <ClInclude Include="PAtom2DXY.h" />
     <ClInclude Include="PAtomBase.h" />
     <ClInclude Include="PAtomDimType.h" />
     <ClInclude Include="PAtomState.h" />
@@ -336,7 +336,7 @@
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
-    <ClCompile Include="PAtom2D.cpp" />
+    <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />

@@ -93,6 +93,10 @@ AtomicBondingResult PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMa
 			coreCollisionDetected = true;
 			std::cout << "!! Core point collision detected between two atoms..." << std::endl;
 			collisionReturnResult = AtomicBondingResult(leftAtom->second);
+
+			// because the cores are the same, both involved atoms should have a state of bonded, if it wasn't set already.
+			leftAtom->second->atomState = PAtomState::BONDED;
+			otherMassAtomsBegin->second->atomState = PAtomState::BONDED;
 		}
 	}
 
@@ -112,6 +116,16 @@ AtomicBondingResult PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMa
 				auto currentRightAtomFusableAreasEnd = currentRightAtomsBegin->second->fusableAreaMap.end();
 				for (; currentRightAtomFusableAreasBegin != currentRightAtomFusableAreasEnd; currentRightAtomFusableAreasBegin++)
 				{
+					/*
+					std::cout << "Comparing left fusable point (" << leftFusableAreasBegin->second.pointAgent.x << ", "
+						<< leftFusableAreasBegin->second.pointAgent.y << ", "
+						<< leftFusableAreasBegin->second.pointAgent.z << ") to Right atom fusable point ("
+
+						<< currentRightAtomFusableAreasBegin->second.pointAgent.x << ", "
+						<< currentRightAtomFusableAreasBegin->second.pointAgent.y << ", "
+						<< currentRightAtomFusableAreasBegin->second.pointAgent.z << ") " << std::endl;
+					*/
+
 					if (leftFusableAreasBegin->second == currentRightAtomFusableAreasBegin->second)	// the fusable areas match; do the logic.
 					{
 						collisionReturnResult = AtomicBondingResult(leftAtom->second);	// return the pointer to the left atom, to signifiy it collided.
@@ -264,4 +278,14 @@ std::set<int> PMass::getAtomIds()
 		returnSet.insert(atomsBegin->first);
 	}
 	return returnSet;
+}
+
+void PMass::expandAllAtoms()
+{
+	auto atomsBegin = atoms.begin();
+	auto atomsEnd = atoms.end();
+	for (; atomsBegin != atomsEnd; atomsBegin++)
+	{
+		atomsBegin->second->expand();
+	}
 }

@@ -14,7 +14,8 @@ class FusableArea
 		FusableArea(int in_originAtomID, ECBPolyPoint in_pointAgent) :
 			pointAgent(in_pointAgent)
 		{
-			atomicIdRegister += in_originAtomID;	// when initially constructed, we must always add the ID of the originating atom.
+			atomicIdRegister += in_originAtomID;	// when initially constructed, we must always add the ID of the originating atom to the operable int set, 
+													// so that it's value is registered.
 		}
 
 		FusableArea& operator+= (const FusableArea& in_fusableAreaB)
@@ -44,8 +45,8 @@ class FusableArea
 			}
 		}
 
-	private:
 		ECBPolyPoint pointAgent;
+	private:
 		FusableAreaState currentAreaState = FusableAreaState::UNFUSED;	// always UNFUSED by default
 		OperableIntSet atomicIdRegister;	// stores a record of all Atoms that share this space
 };

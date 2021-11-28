@@ -16,7 +16,6 @@ class PRMA2DResolverXY : public PRMA2DResolverBase
 {
 	public:
 		void initializeFromMessage(Message in_messageToInitializeFrom);
-		ECBPolyPoint generateExpandedPoint(float in_dimA, float in_dimB);
 		void runResolutionAttempt();
 	private:
 		ResolverLinkMap resolverLinks;
@@ -31,6 +30,7 @@ class PRMA2DResolverXY : public PRMA2DResolverBase
 		bool compareUnbondedMasses();	// compares PMasses to each other; returns true when a collision is found between two PMasses.
 		void checkIfResolutionAchieved();	// needs to be called whenever a collision is detected, after the collision logic is done.
 		bool produceAndRunComparisonSets(OperableIntSet in_unbondedMassSet, OperableIntSet in_allMassSet);
+		void expandedUnbondedMasses();
 
 		int getHighestMassPtrMapKeyPlusOne();
 };
