@@ -17,12 +17,15 @@ enum class MessageType
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_TARGETED_BLOCK,
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_TEXT_INPUTS,
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_SLIDERS,
+	REQUEST_FROM_CLIENT_INPUT_GENERATED,			// used when a OrganicSystem detects input from user and sends it to server; MESSAGE CHAIN: clientSendsInput, 1 of 2.
 
 	// response from server
 	RESPONSE_FROM_SERVER_PROCESS_BLUEPRINT_WHEN_RECEIVED,
 	RESPONSE_FROM_SERVER_BLUEPRINT_T1_FOUND,
 	RESPONSE_FROM_SERVER_BLUEPRINT_T2_FOUND,
 	RESPONSE_FROM_SERVER_TOGGLE_IMGUI_WORLD_LOCATION,
+	RESPONSE_FROM_SERVER_INPUT_GENERATED,			// used when an OrganicSystem sever sends a Message back to an OrganicSystem instance, indicating whether or not the 
+													// the received input was valid/OK; MESSAGE CHAIN: clientSendsInput, 2 of 2.
 	NOVAL,
 
 	// request from server
