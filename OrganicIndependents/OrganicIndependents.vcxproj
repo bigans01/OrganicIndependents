@@ -243,6 +243,12 @@
     <ClInclude Include="MessageLocality.h" />
     <ClInclude Include="MessageType.h" />
     <ClInclude Include="MicroPolyPointContainer.h" />
+    <ClInclude Include="NeighboringBlockLocation.h" />
+    <ClInclude Include="NeighboringBlockLocationSet.h" />
+    <ClInclude Include="NeighboringBlueprintLocation.h" />
+    <ClInclude Include="NeighboringBlueprintLocationSet.h" />
+    <ClInclude Include="NeighboringORELocation.h" />
+    <ClInclude Include="NeighboringORELocationSet.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OREDependencyState.h" />
@@ -332,6 +338,9 @@
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="MicroPolyPointContainer.cpp" />
+    <ClCompile Include="NeighboringBlockLocationSet.cpp" />
+    <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
+    <ClCompile Include="NeighboringORELocationSet.cpp" />
     <ClCompile Include="OrganicRawEnclave.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
