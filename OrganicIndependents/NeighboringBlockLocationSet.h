@@ -5,6 +5,7 @@
 
 #include "NeighboringBlockLocation.h"
 #include "EnclaveKeyDef.h"
+#include "EuclideanDirection3D.h"
 
 class NeighboringBlockLocationSet
 {
@@ -25,8 +26,17 @@ class NeighboringBlockLocationSet
 		EnclaveKeyDef::EnclaveKey setBlockKey;
 
 		NeighboringBlockLocation setArray[6];	// an array containing all 6 possible values.
+		NeighboringBlockLocation calculatePosX(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+												EnclaveKeyDef::EnclaveKey in_originOREKey,
+												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+		NeighboringBlockLocation calculateNegX(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+												EnclaveKeyDef::EnclaveKey in_originOREKey,
+												EnclaveKeyDef::EnclaveKey in_originBlockKey);
 	private:
 		void determineNeighbors();
+											
+											
+											
 };
 
 #endif
