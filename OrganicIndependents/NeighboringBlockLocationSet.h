@@ -26,12 +26,40 @@ class NeighboringBlockLocationSet
 		EnclaveKeyDef::EnclaveKey setBlockKey;
 
 		NeighboringBlockLocation setArray[6];	// an array containing all 6 possible values.
+
+		
+		// EAST
 		NeighboringBlockLocation calculatePosX(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
 												EnclaveKeyDef::EnclaveKey in_originOREKey,
 												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		// WEST
 		NeighboringBlockLocation calculateNegX(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
 												EnclaveKeyDef::EnclaveKey in_originOREKey,
 												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		// ABOVE
+		NeighboringBlockLocation calculatePosY(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+												EnclaveKeyDef::EnclaveKey in_originOREKey,
+												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		// BELOW
+		NeighboringBlockLocation calculateNegY(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+												EnclaveKeyDef::EnclaveKey in_originOREKey,
+												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		// NORTH
+		NeighboringBlockLocation calculatePosZ(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+												EnclaveKeyDef::EnclaveKey in_originOREKey,
+												EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		// SOUTH
+		NeighboringBlockLocation calculateNegZ(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
+			EnclaveKeyDef::EnclaveKey in_originOREKey,
+			EnclaveKeyDef::EnclaveKey in_originBlockKey);
+
+		NeighboringBlockLocation fetchSetByEuclideanDirection(EuclideanDirection3D in_direction);
+
 	private:
 		void determineNeighbors();
 											
