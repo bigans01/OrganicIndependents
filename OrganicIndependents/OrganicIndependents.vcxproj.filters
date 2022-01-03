@@ -67,6 +67,9 @@
     <Filter Include="Source Files\Neighbors">
       <UniqueIdentifier>{f1e21349-75af-4478-aba7-4ffedefb98aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\TerrainFormations">
+      <UniqueIdentifier>{1c8e5073-f50e-4e33-a3f7-dde3dc828951}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -554,6 +557,9 @@
     </ClInclude>
     <ClInclude Include="NeighboringBlueprintLocationSet.h">
       <Filter>Header Files\Neighbors</Filter>
+    </ClInclude>
+    <ClInclude Include="OSTerrainFormation.h">
+      <Filter>Header Files\TerrainFormations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -262,6 +262,7 @@
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
     <ClInclude Include="OrganicTriangleTertiary.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
+    <ClInclude Include="OSTerrainFormation.h" />
     <ClInclude Include="PAtom2DXY.h" />
     <ClInclude Include="PAtomBase.h" />
     <ClInclude Include="PAtomDimType.h" />
