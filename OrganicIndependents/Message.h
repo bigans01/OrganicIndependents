@@ -40,6 +40,7 @@ class Message
 
 		int messageID = 0;				// set by the constructor.
 
+		// ------------------------------------------------- insertion functions
 		void insertEnclaveKey(EnclaveKeyDef::EnclaveKey in_key)
 		{
 			intVector.push_back(in_key.x);
@@ -69,6 +70,36 @@ class Message
 			stringVector.push_back(in_string);
 		}
 
+		// ------------------------------------------------- removal functions
+		void removeIntsFromFrontAndResetIter(int in_numberOfIntsToRemove)
+		{
+			for (int x = 0; x < in_numberOfIntsToRemove; x++)
+			{
+				intVector.erase(intVector.begin());
+			}
+			intVectorIter = intVector.begin();
+		}
+
+		void removeFloatsFromFrontAndResetIter(int in_numberOfFloatsToRemove)
+		{
+			for (int x = 0; x < in_numberOfFloatsToRemove; x++)
+			{
+				floatVector.erase(floatVector.begin());
+			}
+			floatVectorIter = floatVector.begin();
+		}
+
+		void removeStringsFromFrontAndResetIter(int in_numberOfStringsToRemove)
+		{
+			for (int x = 0; x < in_numberOfStringsToRemove; x++)
+			{
+				stringVector.erase(stringVector.begin());
+			}
+			stringVectorIter = stringVector.begin();
+		}
+
+
+		// ------------------------------------------------- read functions
 		EnclaveKeyDef::EnclaveKey readEnclaveKey()
 		{
 			EnclaveKeyDef::EnclaveKey returnKey;
