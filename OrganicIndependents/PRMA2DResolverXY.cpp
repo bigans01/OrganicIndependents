@@ -12,7 +12,11 @@ void PRMA2DResolverXY::initializeFromMessage(Message in_messageToInitializeFrom)
 	// Subsequent ints/ECBPolyPoints of message are the IDs and ECBPolyPoints for each new link.
 	//
 	in_messageToInitializeFrom.open();
-	int numberOfLinks = in_messageToInitializeFrom.readInt();
+	expansionsPerUnbondedComparisonRun = in_messageToInitializeFrom.readInt();		// the first int determines how many expansion attempts to do, per call of 
+																					// compareUnbondedMasses()/
+	int numberOfLinks = in_messageToInitializeFrom.readInt();	// the second value determines the number of links that are being processed.
+
+	// read the corresponding point for each link.
 	for (int x = 0; x < numberOfLinks; x++)
 	{
 		int linkID = in_messageToInitializeFrom.readInt();
@@ -125,12 +129,12 @@ bool PRMA2DResolverXY::compareUnbondedMasses()
 	// --OR
 	// B.) a collision was detected.
 	//
-	// The logic would be as follows; run x attempts, and call produceAndRunComparisonSets each time. If collisionFound if true,
+	// The logic would be as follows; run x attempts (based off the value of expansionsPerUnbondedComparisonRun), and call produceAndRunComparisonSets each time. If collisionFound if true,
 	// stop looping via break. If false, expand all atoms in each PMass (unbonded only), at the end of that iteration, then attempt again.
 	// 
 	//bool collisionFound = produceAndRunComparisonSets(unbondedMassSet, allMassSet);
 	bool collisionFound = false;
-	for (int x = 0; x < 5; x++)	
+	for (int x = 0; x < expansionsPerUnbondedComparisonRun; x++)
 	{
 		collisionFound = produceAndRunComparisonSets(unbondedMassSet, allMassSet);
 		if (collisionFound == true)
@@ -348,17 +352,21 @@ int PRMA2DResolverXY::getHighestMassPtrMapKeyPlusOne()
 	return pMassPtrMap.rbegin()->first + 1;
 }
 
-PRResult PRMA2DResolverXY::generateResolverResult()
+ResolverLinkMap PRMA2DResolverXY::generateResolverResult()
 {
-	PRResult returnResult;
-	// load the results from eaching new PMass.
-	auto massBegin = pMassPtrMap.begin();
-	auto massEnd = pMassPtrMap.end();
-	for (; massBegin != massEnd; massBegin++)
+	std::cout << ":::::::::::::::::::: Contents of Links: " << std::endl;
+	auto resolverLinksBegin = resolverLinks.links.begin();
+	auto resolverLinksEnd = resolverLinks.links.end();
+	for (; resolverLinksBegin != resolverLinksEnd; resolverLinksBegin++)
 	{
-		PMassResult currentResult = massBegin->second->determineAndReturnResult();
-		currentResult.printResult();
-		//returnResult.insertResult(currentResult);
+		std::cout << "Link [" << resolverLinksBegin->first << "]" << std::endl;
+		std::cout << "Original point: "; resolverLinksBegin->second.originalPoint.printPointCoords();
+
+		PMassResult currentLinkResult = resolverLinksBegin->second.pMassPtr->determineAndReturnResult();
+		ECBPolyPoint currentLinkFinalPoint = currentLinkResult.resultingPoint;
+
+		std::cout << "| New point: "; currentLinkFinalPoint.printPointCoords(); std::cout << std::endl;
 	}
-	return returnResult;
+
+	return resolverLinks;
 }

@@ -24,13 +24,9 @@ void PRMAtomic2D::run()
 	resolverPtr->runResolutionAttempt();
 }
 
-PRResult PRMAtomic2D::getResult()
+ResolverLinkMap PRMAtomic2D::getResult()
 {
-	PRResult returnResult;
 	resolverPtr->printPMassData();
-
 	std::cout << "******************************** Producing PMassResults: " << std::endl;
-	returnResult = resolverPtr->generateResolverResult();
-
-	return returnResult;
+	return resolverPtr->generateResolverResult();
 }

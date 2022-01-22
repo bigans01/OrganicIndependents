@@ -22,7 +22,7 @@ class PRMAtomic2D : public PointResolutionMethod
 													//		PRMA2DRESOLVER_YZ
 											
 		void run();																// 2. Once all the links are loaded into the underlying resolverPtr's instance, go ahead and run it.
-		PRResult getResult();
+		ResolverLinkMap getResult();		// 3. Return the final product
 	private:
 		std::unique_ptr<PRMA2DResolverBase> resolverPtr = nullptr;	// type of resolver base will be determined by the value of the Message
 };

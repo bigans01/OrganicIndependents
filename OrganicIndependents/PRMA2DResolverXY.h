@@ -15,13 +15,32 @@
 class PRMA2DResolverXY : public PRMA2DResolverBase
 {
 	public:
+		/*
+		
+		Remember, all Messages expect data in a particular order; 
+		the Message format for the initializeFromMessage() function below MUST be:
+
+		**ints**
+
+		[0] = number of unbonded expansions per call of comparisonUnbondedMasses()
+		[1] = number of points sent into this resolver
+		[2 through [value at 1]-1] = the point IDs; 1 ID per point
+		
+		**ECBPolyPoint**
+
+		N number of points, where N is the equivalent of the int at vector index [1] above
+
+		
+		*/
 		void initializeFromMessage(Message in_messageToInitializeFrom);
 		void runResolutionAttempt();
 		void printPMassData();
-		PRResult generateResolverResult();
+		ResolverLinkMap generateResolverResult();
 	private:
 		ResolverLinkMap resolverLinks;
 		std::map<int, std::shared_ptr<PMass>> pMassPtrMap;
+		int expansionsPerUnbondedComparisonRun = 0;	// determines how many atomic expansions are done, per call of compareUnbondedMasses() below;
+													// this value must be set by the call to initializeFromMessage()
 
 		// comparison loop variables
 		int comparisonsRemaining = 0;

@@ -305,6 +305,14 @@ PMassResult PMass::determineAndReturnResult()
 	std::cout << "::-> START: Calling determine result..." << std::endl;
 	switch (currentMassState)
 	{
+		case PMassState::UNDETERMINED:
+		{
+			std::cout << "::-> PMass wasn't affected at all..." << std::endl;
+			PMassResult foundResult(getFirstAtomPtr()->atomCorePoint, true, getAtomIds());
+			returnResult = foundResult;
+			break;
+		}
+
 		case PMassState::POINT_AT_CORE:
 		{
 			std::cout << "::-> found point at core!" << std::endl;
