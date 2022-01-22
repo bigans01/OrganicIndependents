@@ -27,5 +27,10 @@ void PRMAtomic2D::run()
 PRResult PRMAtomic2D::getResult()
 {
 	PRResult returnResult;
+	resolverPtr->printPMassData();
+
+	std::cout << "******************************** Producing PMassResults: " << std::endl;
+	returnResult = resolverPtr->generateResolverResult();
+
 	return returnResult;
 }

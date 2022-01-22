@@ -42,12 +42,16 @@ std::map<int, PAtomBase*> PMass::fetchAtomPointers()
 
 void PMass::printFusedAreas()
 {
-	std::cout << "(PMass): printing fused areas: " << std::endl;
-	auto areasBegin = fusedAreas.begin();
-	auto areasEnd = fusedAreas.end();
-	for (; areasBegin != areasEnd; areasBegin++)
+	if (fusedAreas.empty() == false)
 	{
-		areasBegin->second.printAtomicIDRegister();
+		std::cout << "(PMass): printing fused areas: " << std::endl;
+		auto areasBegin = fusedAreas.begin();
+		auto areasEnd = fusedAreas.end();
+		for (; areasBegin != areasEnd; areasBegin++)
+		{
+			areasBegin->second.pointAgent.printPointCoords();
+			areasBegin->second.printAtomicIDRegister();
+		}
 	}
 }
 
@@ -97,6 +101,7 @@ AtomicBondingResult PMass::checkForCollisionAgainstOtherMass(std::shared_ptr<PMa
 			// because the cores are the same, both involved atoms should have a state of bonded, if it wasn't set already.
 			leftAtom->second->atomState = PAtomState::BONDED;
 			otherMassAtomsBegin->second->atomState = PAtomState::BONDED;
+			currentMassState = PMassState::POINT_AT_CORE;	
 		}
 	}
 
@@ -200,7 +205,8 @@ bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
 																			// to appropriately erase each existing FusableArea with a FusedAreaState::FUSED value from each involved atom.
 					collisionDetected = true;								// signal that a collision was detected; we won't need to check fused areas.
 					collisionReturnResult = true;
-				}
+					currentMassState = PMassState::POINT_IN_FUSABLE_AREA;			// whenever two atoms collide in a fusable area, 
+				}															// the point to return will be somewhere in there.
 			}
 		}
 
@@ -213,15 +219,17 @@ bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
 			auto existingFusedAreasEnd = fusedAreas.end();
 			for (; existingFusedAreasBegin != existingFusedAreasEnd; existingFusedAreasBegin++)
 			{
-				if (collidingAtomMapBegin->second == existingFusedAreasBegin->second)
+				if (collidingAtomMapBegin->second == existingFusedAreasBegin->second)	// if the colliding atoms' fused area merges with this one, do the following
 				{
-					std::cout << "!! Found match against existing fused area! " << std::endl;
+					std::cout << "!! ################################################### Found match against existing fused area! " << std::endl;
 					existingFusedAreasBegin->second += collidingAtomMapBegin->second;	// append the collding FusableArea into the one that 
 																						// already exists in fusedAreas.
 					//insertNewFusedArea(collidingAtomMapBegin->second);
 					fusableAreastoRemove.push_back(collidingAtomMapBegin->second);
 
 					collisionReturnResult = true;
+					currentMassState = PMassState::POINT_IN_FUSABLE_AREA;				// whenever two atoms collide in a fusable area, 
+																						// the point to return will be somewhere in there.
 				}
 			}
 		}
@@ -254,19 +262,20 @@ void PMass::insertNewFusedArea(FusableArea in_fusableArea)
 
 void PMass::printAtomIDs()
 {
-	std::cout << "Unique atomic for this PMass are: ";
+	std::cout << "Unique atomic for this PMass are: " << std::endl;
 	auto atomsBegin = atoms.begin();
 	auto atomsEnd = atoms.end();
 	for (; atomsBegin != atomsEnd; atomsBegin++)
 	{
 		std::cout << "First key: " << atomsBegin->first << " ";
-		std::cout << atomsBegin->second->originalMassID << " | point: " 
+		std::cout << "Original mass ID: " << atomsBegin->second->originalMassID << " | point: " 
 			<< atomsBegin->second->atomCorePoint.x 
 			<< ", " << atomsBegin->second->atomCorePoint.y
 			<< ", " << atomsBegin->second->atomCorePoint.z << "| expansion interval: " << atomsBegin->second->expansionInterval << std::endl;
 	}
 	std::cout << std::endl;
 }
+
 
 std::set<int> PMass::getAtomIds()
 {
@@ -288,4 +297,30 @@ void PMass::expandAllAtoms()
 	{
 		atomsBegin->second->expand();
 	}
+}
+
+PMassResult PMass::determineAndReturnResult()
+{
+	PMassResult returnResult;	// remember, by default the bool value is false.
+	std::cout << "::-> START: Calling determine result..." << std::endl;
+	switch (currentMassState)
+	{
+		case PMassState::POINT_AT_CORE:
+		{
+			std::cout << "::-> found point at core!" << std::endl;
+			PMassResult foundResult(getFirstAtomPtr()->atomCorePoint, true, getAtomIds());
+			returnResult = foundResult;
+			break;
+		}
+		case PMassState::POINT_IN_FUSABLE_AREA:
+		{
+			// for now (1/21/2022), we'll just use the point of the first fusable area we find.
+			auto firstFusableArea = fusedAreas.begin();
+			PMassResult foundResult(firstFusableArea->second.pointAgent, true, getAtomIds());
+			returnResult = foundResult;
+			break;
+		}
+	}
+	std::cout << "::-> FINISHED: Calling determine result..." << std::endl;
+	return returnResult;
 }

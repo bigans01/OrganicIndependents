@@ -17,6 +17,8 @@ class PRMA2DResolverXY : public PRMA2DResolverBase
 	public:
 		void initializeFromMessage(Message in_messageToInitializeFrom);
 		void runResolutionAttempt();
+		void printPMassData();
+		PRResult generateResolverResult();
 	private:
 		ResolverLinkMap resolverLinks;
 		std::map<int, std::shared_ptr<PMass>> pMassPtrMap;

@@ -269,6 +269,8 @@
     <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
+    <ClInclude Include="PMassResult.h" />
+    <ClInclude Include="PMassState.h" />
     <ClInclude Include="PointResolutionMethod.h" />
     <ClInclude Include="PointSearchData.h" />
     <ClInclude Include="PolyDebugLevel.h" />

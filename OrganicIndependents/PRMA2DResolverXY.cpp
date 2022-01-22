@@ -60,6 +60,18 @@ void PRMA2DResolverXY::runResolutionAttempt()
 	}
 }
 
+void PRMA2DResolverXY::printPMassData()
+{
+	auto pMassBegin = pMassPtrMap.begin();
+	auto pMassEnd = pMassPtrMap.end();
+	for (; pMassBegin != pMassEnd; pMassBegin++)
+	{
+		std::cout << ">> PMass with ID " << pMassBegin->first << " has the following atoms: " << std::endl;
+		pMassBegin->second->printAtomIDs();
+		pMassBegin->second->printFusedAreas();
+	}
+}
+
 bool PRMA2DResolverXY::areComparisonsDone()
 {
 	bool comparisonsDone = false;
@@ -189,14 +201,20 @@ bool PRMA2DResolverXY::produceAndRunComparisonSets(OperableIntSet in_unbondedMas
 	auto unbondedEnd = in_unbondedMassSet.end();
 	for (; unbondedBegin != unbondedEnd; unbondedBegin++)
 	{
-		OperableIntSet newSetBase = in_allMassSet;
-		newSetBase -= *unbondedBegin;
-		comparisonSetMap[*unbondedBegin] = newSetBase;
+		OperableIntSet newSetBase = in_allMassSet;		// get a copy of the all mass
+		newSetBase -= *unbondedBegin;					// subtract our current ID from it 
+		comparisonSetMap[*unbondedBegin] = newSetBase;	// the resulting set is what we will compare this unbonded mass to
+
+		// Example: for unbonded masses 0, 1 and 2:
+		//	 comparisonSetMap[0] = 1, 2 
+		//	 comparisonSetMap[1] = 0, 2
+		//   comparisonSetMap[2] = 0, 1
+
 	}
 
-	// testing only: print out the points to compare against.
-	int selectedUnbonded = 0;
-	int indexToCompareTo = 0;
+	// the below two values will get set below, but zero-initialize them for now
+	int leftUnbonded = 0;
+	int rightUnbonded = 0;
 	PMass rightPMassCopy;
 
 	auto comparisonsBegin = comparisonSetMap.begin();
@@ -208,31 +226,32 @@ bool PRMA2DResolverXY::produceAndRunComparisonSets(OperableIntSet in_unbondedMas
 		auto currentComparisonSetEnd = comparisonsBegin->second.end();
 		for (; currentComparisonSetBegin != currentComparisonSetEnd; currentComparisonSetBegin++)
 		{
-			//std::cout << " " << *currentComparisonSetBegin << std::endl;
+			leftUnbonded = comparisonsBegin->first;			// the ID of the "left" unbonded mass is equal to the comparisonBegin iter, which is outside of this loop
+																// one level. 
 
-			selectedUnbonded = comparisonsBegin->first;
-			indexToCompareTo = *currentComparisonSetBegin;
-
-			std::cout << "Comparing unbonded PMass with ID " << selectedUnbonded << " to PMass with ID " << indexToCompareTo << std::endl;
-			pMassPtrMap[indexToCompareTo]->printAtomIDs();
+			rightUnbonded = *currentComparisonSetBegin;		// the ID Of the "right" unbonded mass for this comparison, we will compare the current "left" to the current "right" (currentComparisonBegin)
+			std::cout << "Comparing unbonded PMass with ID " << leftUnbonded << " to PMass with ID " << rightUnbonded << std::endl;
+			pMassPtrMap[rightUnbonded]->printAtomIDs();
 			std::cout << "----" << std::endl;
 
-			// run the comparison, by temporarily adding the atom into the mass;
+			// run the comparison, by temporarily adding the "right mass" (rightUnbonded) atom into the ""left mass" (leftUnbonded);
 			// if returning struct contains true bool value, do appropriate logic and return out of
-			// this call to produceAndRonComparisonSets.
-			auto collisionResult = pMassPtrMap[selectedUnbonded]->checkForCollisionAgainstOtherMass(pMassPtrMap[indexToCompareTo]);
+			// this call to produceAndRunComparisonSets. If the result of the below function is true, the currentMassState will be set to 
+			// PMassState::POINT_IN_FUSABLE_AREA
+			auto collisionResult = pMassPtrMap[leftUnbonded]->checkForCollisionAgainstOtherMass(pMassPtrMap[rightUnbonded]);
 			if (collisionResult.bondingResultExists == true)
 			{
 				std::cout << ">>>>> !! Collision result found as true; left PMass atom will be collided into a copy of right-hand PMass. " << std::endl;
 				//std::cout << ">>>> Printing right mass IDs one final time..." << std::endl;
-				//pMassPtrMap[indexToCompareTo]->printAtomIDs();
+				//pMassPtrMap[rightUnbonded]->printAtomIDs();
 				//std::cout << ">>>> Done printing final time..." << std::endl;
 				
-				rightPMassCopy = *pMassPtrMap[indexToCompareTo];
-				auto leftAtomPtr = pMassPtrMap[selectedUnbonded]->getFirstAtomPtr();
+				rightPMassCopy = *pMassPtrMap[rightUnbonded];		// the new mass will be a copy of the right mass, so it will have all it's atoms.
+				auto leftAtomPtr = pMassPtrMap[leftUnbonded]->getFirstAtomPtr();
 				//rightPMassCopy.printAtomIDs();
 				//std::cout << "!! >> Done with first print call..." << std::endl;
-				rightPMassCopy.insertAtom(leftAtomPtr);
+				rightPMassCopy.insertAtom(leftAtomPtr);					// inserted the matched atom from the left mass, into the new mass; the left mass should have one atom.
+																		// The total number of atoms in the rightPMassCopy should now be it's previous total + 1.
 				rightPMassCopy.printAtomIDs();
 				std::cout << ">>>> Finished print of atom ids for PMass copy..." << std::endl;
 
@@ -249,23 +268,35 @@ bool PRMA2DResolverXY::produceAndRunComparisonSets(OperableIntSet in_unbondedMas
 	}
 
 	quickEnd:
-	// if a collision was detected, insert the new PMass into pMassPtrMap, and update the resolverLinks (having IDs equal to selectedUnbonded and indexToCompareTo)
-	// to have their PMass ptrs point to this new map.
+	// if a collision was detected, insert the new PMass into pMassPtrMap, and update the resolverLinks (having IDs equal to leftUnbonded and rightUnbonded)
+	// to have their PMass ptrs point to this new map. Otherwise, just leave the function.
 	if (wasCollisionDetected == true)
 	{
 		int newPMassKeyValue = getHighestMassPtrMapKeyPlusOne();
 		//std::cout << ">>> new PMass key value is: " << std::endl;
 
-		// first, insert the new PMass.
+		// grab a pointer to the right-side PMass copy (rightPMassCopy); remember,
+		// we just finsished insertingAtoms into there, so the PMassState of the rightPMassCopy will be 
+		// PMassState::POINT_IN_FUSABLE_AREA...
 		std::shared_ptr<PMass> newMassPtr(new PMass());
-		*newMassPtr = rightPMassCopy;
-		pMassPtrMap[newPMassKeyValue] = newMassPtr;
+		*newMassPtr = rightPMassCopy;		
+											
+		pMassPtrMap[newPMassKeyValue] = newMassPtr; // insert the new mass at the index of newPMassKeyValue
+
+		// ...However, we must check if the original left-side PMass -- which hasn't been edited at all, and was what we were comparing to --
+		// had a flag of PMassState::POINT_AT_CORE. Because POINT_AT_CORE overrides POINT_IN_FUSABLE_AREA (which is what the rightPMassCopy is currently set to),
+		// we must update the value directly, in new mass we just entered (at index newPMassKeyValue)
+		if (pMassPtrMap[leftUnbonded]->currentMassState == PMassState::POINT_AT_CORE)
+		{
+			pMassPtrMap[newPMassKeyValue]->currentMassState = pMassPtrMap[leftUnbonded]->currentMassState;	// we must be sure to copy the left-hand mass state
+		}
+																											// into the new pMass.
 		//std::cout << ">>> new Mass at key " << newPMassKeyValue << " has the following atom data: " << std::endl;
 		pMassPtrMap[newPMassKeyValue]->printAtomIDs();
 
-		// remove the existing pMassPtrs at keys having selectedUnbonded and indexToCompareTo.
-		pMassPtrMap.erase(selectedUnbonded);
-		pMassPtrMap.erase(indexToCompareTo);
+		// remove the existing pMassPtrs at keys having leftUnbonded and rightUnbonded.
+		pMassPtrMap.erase(leftUnbonded);
+		pMassPtrMap.erase(rightUnbonded);
 
 		// get the IDs of the atoms from the new pMass; use these to update the links.
 		auto newPMassAtomIDs = pMassPtrMap[newPMassKeyValue]->getAtomIds();
@@ -315,4 +346,19 @@ int PRMA2DResolverXY::getHighestMassPtrMapKeyPlusOne()
 {
 	// get the value of the highest key in the map; this + 1 will be equal to the key value that represents the newest PMass that is inserted.
 	return pMassPtrMap.rbegin()->first + 1;
+}
+
+PRResult PRMA2DResolverXY::generateResolverResult()
+{
+	PRResult returnResult;
+	// load the results from eaching new PMass.
+	auto massBegin = pMassPtrMap.begin();
+	auto massEnd = pMassPtrMap.end();
+	for (; massBegin != massEnd; massBegin++)
+	{
+		PMassResult currentResult = massBegin->second->determineAndReturnResult();
+		currentResult.printResult();
+		//returnResult.insertResult(currentResult);
+	}
+	return returnResult;
 }

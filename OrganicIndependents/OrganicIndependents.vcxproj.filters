@@ -561,6 +561,12 @@
     <ClInclude Include="OSTerrainFormation.h">
       <Filter>Header Files\TerrainFormations</Filter>
     </ClInclude>
+    <ClInclude Include="PMassState.h">
+      <Filter>Header Files\Fusion\PointResolution</Filter>
+    </ClInclude>
+    <ClInclude Include="PMassResult.h">
+      <Filter>Header Files\Fusion\PointResolution</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
