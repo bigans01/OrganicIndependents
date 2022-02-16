@@ -24,6 +24,7 @@
 #include "OREAppendedState.h"
 #include <vector>
 #include "OREDependencyState.h"
+#include "Operable3DEnclaveKeySet.h"
 
 class OrganicRawEnclave
 {
@@ -86,7 +87,9 @@ public:
 	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
 												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 
 												// and clears out the blockSkeletonMap; the skeleton map must be cleared, because it's possible that an OrganicMassDriverElevator can produce
-												// skeleton blocks before this function is called (see how it is used in ContouredMountain::runMassDrivers in the OrganicServerLib)
+												// skeleton blocks before this function is called (see how it is used in ContouredMountain::runMassDrivers in the OrganicServerLib).
+												// It will then set the value of the blockSkeletonMap to be the rMassSolidMap, which is the only way 
+												// to update the blockSkeletonMap with new solid blocks, when in an ORELodState::LOD_ENCLAVE_RMATTER.
 
 	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from LOD_ENCLAVE_RMATTER or LOD_ENCLAVE_SMATTER.
 	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)VicViper304!
@@ -109,6 +112,10 @@ public:
 
 	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
 	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
+	void setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet);		// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
+																											// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
+																											// before the call to updateOREForRmass.																										
+
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
@@ -179,7 +186,8 @@ private:
 														int in_clusterID, 
 														OrganicTriangleSecondary in_enclavePolyFractureResults);
 
-	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;
+	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;	// stores the keys of any blocks considered to be "solid" blocks. (aka, skeletons)
+	std::map<int, EnclaveBlockSkeleton> rMassSolidsMap;		// used by OREMatterCollider::extractResultsAndSendtoORE (OrganicCoreLib), to store solid blocks formed during the conversion to ORELodState::LOD_ENCLAVE_RMATTER.
 	std::map<int, EnclaveBlock> finalizerBlocks;							// unused for now	
 	OperableIntSet existingEnclaveTriangleSkeletonContainerTracker;			// returns a set that represents the unique IDs of EnclaveTriangles; used by OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint,
 																			// in order to distinguish between "old" and "new" sets of an SPolySet.

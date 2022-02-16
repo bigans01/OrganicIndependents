@@ -25,17 +25,25 @@ class MessageContainer
 		{
 			return messages.begin();
 		};
+
 		std::vector<Message>::iterator end()
 		{
 			return messages.end();
 		};
+
 		void insertMessage(Message in_message)
 		{
 			messages.push_back(in_message);
 		};
+
 		bool empty()
 		{
 			return messages.empty();
+		}
+
+		int size()
+		{
+			return int(messages.size());
 		}
 
 		// append operations, that append to all Messages in a container

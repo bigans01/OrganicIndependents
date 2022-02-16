@@ -70,6 +70,9 @@
     <Filter Include="Header Files\TerrainFormations">
       <UniqueIdentifier>{1c8e5073-f50e-4e33-a3f7-dde3dc828951}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Operable">
+      <UniqueIdentifier>{26a40a78-8dc8-42cb-a29a-11ea9c3de734}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -88,9 +91,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OperableIntSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugOption.h">
@@ -566,6 +566,12 @@
     </ClInclude>
     <ClInclude Include="PMassResult.h">
       <Filter>Header Files\Fusion\PointResolution</Filter>
+    </ClInclude>
+    <ClInclude Include="OperableIntSet.h">
+      <Filter>Header Files\Operable</Filter>
+    </ClInclude>
+    <ClInclude Include="Operable3DEnclaveKeySet.h">
+      <Filter>Header Files\Operable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

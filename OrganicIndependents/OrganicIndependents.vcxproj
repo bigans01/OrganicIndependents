@@ -249,6 +249,7 @@
     <ClInclude Include="NeighboringBlueprintLocationSet.h" />
     <ClInclude Include="NeighboringORELocation.h" />
     <ClInclude Include="NeighboringORELocationSet.h" />
+    <ClInclude Include="Operable3DEnclaveKeySet.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OREDependencyState.h" />

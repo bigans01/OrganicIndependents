@@ -158,6 +158,23 @@ void OrganicRawEnclave::updateOREForRMass()
 	currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
 	currentDependencyState = OREDependencyState::INDEPENDENT;	// all RMatter is INDEPENDENT
 	blockSkeletonMap.clear();
+	blockSkeletonMap = rMassSolidsMap;	// assumes that setBlockSkeletons has been called before this function.
+}
+
+void OrganicRawEnclave::setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet)
+{
+	// this function will eventually need to be edited to set the metadata for the EnclaveBlockSkeletons that will go into
+	// rMassSolidMap. (Noted on 2/15/2022)
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	rMassSolidsMap.clear();	
+	auto skeletonsBegin = in_skeletonBlockSet.begin();
+	auto skeletonsEnd = in_skeletonBlockSet.end();
+	for (; skeletonsBegin != skeletonsEnd; skeletonsBegin++)
+	{
+		EnclaveBlockSkeleton newSkeleton;
+		int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle((*skeletonsBegin).x, (*skeletonsBegin).y, (*skeletonsBegin).z);
+		rMassSolidsMap[blockCoordsToSingle] = newSkeleton;
+	}
 }
 
 void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
@@ -522,6 +539,8 @@ void OrganicRawEnclave::clearBlockSkeletons(std::mutex* in_mutexRef)
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
 	blockSkeletonMap.clear();
 }
+
+
 
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {
