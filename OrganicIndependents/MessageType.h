@@ -17,7 +17,8 @@ enum class MessageType
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_TARGETED_BLOCK,
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_TEXT_INPUTS,
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_SLIDERS,
-	REQUEST_FROM_CLIENT_INPUT_GENERATED,			// used when a OrganicSystem detects input from user and sends it to server; MESSAGE CHAIN: clientSendsInput, 1 of 2.
+	REQUEST_FROM_CLIENT_INPUT_GENERATED,				// used when a OrganicSystem detects input from user and sends it to server; MESSAGE CHAIN: clientSendsInput, 1 of 2.
+	REQUEST_FROM_CLIENT_MOUSE_SCROLL_INPUT_GENERATED,	// used to identify that the message pertains to positive or negative mouse scroll input
 
 	// response from server
 	RESPONSE_FROM_SERVER_PROCESS_BLUEPRINT_WHEN_RECEIVED,
