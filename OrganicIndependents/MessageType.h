@@ -25,8 +25,10 @@ enum class MessageType
 	RESPONSE_FROM_SERVER_BLUEPRINT_T1_FOUND,
 	RESPONSE_FROM_SERVER_BLUEPRINT_T2_FOUND,
 	RESPONSE_FROM_SERVER_TOGGLE_IMGUI_WORLD_LOCATION,
-	RESPONSE_FROM_SERVER_INPUT_GENERATED,			// used when an OrganicSystem sever sends a Message back to an OrganicSystem instance, indicating whether or not the 
+	RESPONSE_FROM_SERVER_INPUT_GENERATED,			// used when an OrganicServer sends a Message back to an OrganicSystem instance, indicating whether or not the 
 													// the received input was valid/OK; MESSAGE CHAIN: clientSendsInput, 2 of 2.
+	RESPONSE_FROM_SERVER_MOUSE_SCROLL_INPUT_GENERATED,	// used when an OrganicServer sends a Message back to an OrganicSystem instance, indicating whether or not the 
+														// the received mouse scroll was valid/OK; MESSAGE CHAIN: clientSendsMouseScroll, 2 of 2.
 	NOVAL,
 
 	// request from server
