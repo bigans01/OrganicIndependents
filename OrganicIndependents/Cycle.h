@@ -50,12 +50,13 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			return currentCycleElement;
 		}
 
-		CycleValue eraseViaBegin(CycleKey in_elementToErase) {
+		void erase(CycleKey in_elementToErase) {
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			cycleMap.erase(in_elementToErase);
 			resetBeginAndEndIters();
 		}
-		CycleValue size() {
+
+		int size() {
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			return cycleMap.size();
 		}
