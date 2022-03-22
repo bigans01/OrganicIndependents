@@ -110,7 +110,6 @@ public:
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
 
-	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
 	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
 	void setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet);		// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
 																											// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
@@ -136,6 +135,19 @@ public:
 	std::map<int, EnclaveBlock>::iterator getBlockMapBeginIter();		// fetch a begin iterator for the blockMap.
 	std::map<int, EnclaveBlock>::iterator getBlockMapEndIter();			// fetch a end iterator for the blockMap.
 	std::map<int, EnclaveBlock>::iterator getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey);	// attempts to find a specific iterator in blockMap.
+
+	// **************************** START DEBUG FUNCTIONS *********************************************
+
+	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
+	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
+														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
+														// Currently only used by printBlockCategorizations below, but can be used elsewhere.
+	void printBlockCategorizations();
+
+	// **************************** END DEBUG FUNCTIONS *********************************************
+
+
+
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 1: For storing "Deflated" data;
 

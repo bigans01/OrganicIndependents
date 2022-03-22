@@ -649,6 +649,33 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 
 }
 
+void OrganicRawEnclave::printBlockCategorizations()
+{
+	// print surrounded/cube (UNEXPOSED) blocks (skeletons)
+	std::cout << "Printing UNEXPOSED blocks (skeletons): " << std::endl;
+	auto blockSkeletonsBegin = blockSkeletonMap.begin();
+	auto blockSkeletonsEnd = blockSkeletonMap.end();
+	for (; blockSkeletonsBegin != blockSkeletonsEnd; blockSkeletonsBegin++)
+	{
+		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blockSkeletonsBegin->first);
+		currentKey.printKey();
+		std::cout << std::endl;
+	}
+
+	std::cout << "Printing EXPOSED blocks (non-skeletons): " << std::endl;
+	auto fetchedExposedBlockMap = produceBlockCopies();
+
+	// iterate through the exposed blocks we just created and print the block's EnclaveKey.
+	auto blocksBegin = fetchedExposedBlockMap.begin();
+	auto blocksEnd = fetchedExposedBlockMap.end();
+	for (; blocksBegin != blocksEnd; blocksBegin++)
+	{
+		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+		currentKey.printKey();
+		std::cout << std::endl;
+	}
+}
+
 void OrganicRawEnclave::simulateBlockProduction()
 {
 	BorderDataMap borderDataMap; // for getting trace results in enclaves
@@ -759,6 +786,92 @@ void OrganicRawEnclave::simulateBlockProduction()
 		}
 
 	}
+}
+
+std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
+{
+	OrganicTriangleSecondarySupergroupManager tempOtsSGM;
+	EnclaveTriangleContainerSupergroupManager tempEtcSGM;
+	BorderDataMap borderDataMap; // for getting trace results in enclaves
+	BlockBorderLineList blockBorderLineList;
+
+	// part 1: inflate the triangle containers, into the tempEtcSGM.
+	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
+	auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
+	for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+	{
+		auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
+		auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
+		for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+		{
+			auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
+			auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
+			for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
+			{
+				EnclaveTriangle enclaveTriangle = OrganicTransformUtils::inflateEnclaveTriangle(currentSkeletonBegin->second);
+				tempEtcSGM.insertEnclaveTriangleDirectIntoSuperGroup(skeletonSGMBegin->first, currentSkeletonContainerBegin->first, currentSkeletonBegin->first, enclaveTriangle);
+			}
+		}
+	}
+
+	// part 2: execute the runs for the triangles; delete/move EnclaveTriangles that are invalid, so that they don't run.
+	// it should be noted, that if not erased, invalid EnclaveTriangles can still produce BBFan data that secondaries can read. It's just that all of them stop upon the first invalid detection.
+	auto etcSGMBegin1 = tempEtcSGM.enclaveTriangleSupergroups.begin();
+	auto etcSGMEnd1 = tempEtcSGM.enclaveTriangleSupergroups.end();
+	for (etcSGMBegin1; etcSGMBegin1 != etcSGMEnd1; etcSGMBegin1++)
+	{
+		auto currentTriangleContainerBegin = etcSGMBegin1->second.containerMap.begin();
+		auto currentTriangleContainerEnd = etcSGMBegin1->second.containerMap.end();
+		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
+		{
+			auto currentTrianglesBegin = currentTriangleContainerBegin->second.triangles.begin();
+			auto currentTrianglesEnd = currentTriangleContainerBegin->second.triangles.end();
+			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
+			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
+			{
+				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
+
+				// is this triangle INVALID?
+				if (currentTrianglesBegin->second.isTriangleValid == false)
+				{
+					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
+				}
+			}
+
+			// Need to figure out why this below area is needed; possibly deprecated? (3/22/2022)
+			if (!removalSet.empty())
+			{
+				//std::cout << "Removal set not empty; removing identified invalids...";
+				auto removalSetBegin = removalSet.begin();
+				auto removalSetEnd = removalSet.end();
+				for (; removalSetBegin != removalSetEnd; removalSetBegin++)
+				{
+					//etcSGMBegin1->second.triangles.erase(*removalSetBegin);		// remove the INVALID triangle from the corresponding container.
+				}
+			}
+		}
+	}
+
+	// part 3: load simulated results into into the EnclaveTriangleContainerSupergroupManager.
+	auto etcSGMBegin2 = tempEtcSGM.enclaveTriangleSupergroups.begin();
+	auto etcSGMEnd2 = tempEtcSGM.enclaveTriangleSupergroups.end();
+	for (etcSGMBegin2; etcSGMBegin2 != etcSGMEnd2; etcSGMBegin2++)
+	{
+		auto currentTriangleContainerBegin = etcSGMBegin2->second.containerMap.begin();
+		auto currentTriangleContainerEnd = etcSGMBegin2->second.containerMap.end();
+		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
+		{
+			OrganicTriangleSecondary container;
+			container.loadDataFromEnclaveTriangleContainer(&currentTriangleContainerBegin->second);
+			insertOrganicTriangleSecondaryIntoRefedManager(&tempOtsSGM, etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
+		}
+
+	}
+
+	// part 4: generate the block triangles, and put them into the tempBlockMap before the function returns; these are the "exposed" blocks.
+	std::map<int, EnclaveBlock> exposedBlockMap;
+	tempOtsSGM.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &exposedBlockMap, &total_triangles);
+	return exposedBlockMap;
 }
 
 OperableIntSet OrganicRawEnclave::getExistingEnclaveTriangleSkeletonContainerTracker()
