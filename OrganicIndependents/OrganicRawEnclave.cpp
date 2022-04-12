@@ -676,6 +676,35 @@ void OrganicRawEnclave::printBlockCategorizations()
 	}
 }
 
+std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> OrganicRawEnclave::fetchUnexposedBlockKeys()
+{
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> returnSet;
+	auto blockSkeletonsBegin = blockSkeletonMap.begin();
+	auto blockSkeletonsEnd = blockSkeletonMap.end();
+	for (; blockSkeletonsBegin != blockSkeletonsEnd; blockSkeletonsBegin++)
+	{
+		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blockSkeletonsBegin->first);
+		returnSet.insert(currentKey);
+	}
+	return returnSet;
+}
+
+std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> OrganicRawEnclave::fetchExposedBlockKeys()
+{
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> returnSet;
+
+	// we must generate block copies to produce this list; we will assume that the data needed to do this is already in the skeletonSGM.
+	auto fetchedExposedBlockMap = produceBlockCopies();
+	auto blocksBegin = fetchedExposedBlockMap.begin();
+	auto blocksEnd = fetchedExposedBlockMap.end();
+	for (; blocksBegin != blocksEnd; blocksBegin++)
+	{
+		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+		returnSet.insert(currentKey);
+	}
+	return returnSet;
+}
+
 void OrganicRawEnclave::simulateBlockProduction()
 {
 	BorderDataMap borderDataMap; // for getting trace results in enclaves

@@ -136,6 +136,9 @@ public:
 	std::map<int, EnclaveBlock>::iterator getBlockMapEndIter();			// fetch a end iterator for the blockMap.
 	std::map<int, EnclaveBlock>::iterator getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey);	// attempts to find a specific iterator in blockMap.
 
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
+
 	// **************************** START DEBUG FUNCTIONS *********************************************
 
 	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
