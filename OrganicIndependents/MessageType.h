@@ -50,6 +50,8 @@ enum class MessageType
 	// ORE block composition highlighting (MESSAGE CHAIN: enableORECompositionHighlighting)
 	REQUEST_FROM_CLIENT_ENABLE_ORE_COMPOSITION_HIGHLIGHTING,
 	RESPONSE_FROM_SERVER_ENABLE_ORE_COMPOSITION_HIGHLIGHTING,
+	REQUEST_FROM_CLIENT_DISABLE_ORE_COMPOSITION_HIGHLIGHTING,
+	RESPONSE_FROM_SERVER_DISABLE_ORE_COMPOSITION_HIGHLIGHTING,
 
 	// OpenGL shader machine and gear messages
 	OPENGL_REGISTER_DYN_BUFFER_IN_GEAR,					// will signal an underlying Gear to register a dynamic draw buffer.
