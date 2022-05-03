@@ -19,6 +19,7 @@ enum class MessageType
 	REQUEST_FROM_CLIENT_TOGGLE_IMGUI_SLIDERS,
 	REQUEST_FROM_CLIENT_INPUT_GENERATED,				// used when a OrganicSystem detects input from user and sends it to server; MESSAGE CHAIN: clientSendsInput, 1 of 2.
 	REQUEST_FROM_CLIENT_MOUSE_SCROLL_INPUT_GENERATED,	// used to identify that the message pertains to positive or negative mouse scroll input
+	REQUEST_FROM_CLIENT_REMOVE_BLOCK,					// used to signify that the message contains data for requesting the removal of a block in the world
 
 	// response from server
 	RESPONSE_FROM_SERVER_PROCESS_BLUEPRINT_WHEN_RECEIVED,
@@ -29,6 +30,8 @@ enum class MessageType
 													// the received input was valid/OK; MESSAGE CHAIN: clientSendsInput, 2 of 2.
 	RESPONSE_FROM_SERVER_MOUSE_SCROLL_INPUT_GENERATED,	// used when an OrganicServer sends a Message back to an OrganicSystem instance, indicating whether or not the 
 														// the received mouse scroll was valid/OK; MESSAGE CHAIN: clientSendsMouseScroll, 2 of 2.
+	RESPONSE_FROM_SERVER_REMOVE_BLOCK,				// indicates whether or not the corresponding OrganicServer approves or disapproves of an attempt to 
+													// remove a block at a specified location.
 	NOVAL,
 
 	// request from server
