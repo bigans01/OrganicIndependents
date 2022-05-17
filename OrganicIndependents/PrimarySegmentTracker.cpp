@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PrimarySegmentTracker.h"
 
-void PrimarySegmentTracker::addNewSegment(ECBPolyPoint in_lineSegmentPointA, ECBPolyPoint in_lineSegmentPointB, int in_lineID)
+bool PrimarySegmentTracker::addNewSegment(ECBPolyPoint in_lineSegmentPointA, ECBPolyPoint in_lineSegmentPointB, int in_lineID)
 {
 	//std::cout << "-----> current index will be: (line ID " << in_lineID << ") :" << (int)currentLineSegmentIndex << std::endl;
 	//EnclaveBlockVertex convertedPointA = OrganicUtils::convertPolyPointToBlockVertex(in_lineSegmentPointA);		// convert the points
@@ -10,10 +10,19 @@ void PrimarySegmentTracker::addNewSegment(ECBPolyPoint in_lineSegmentPointA, ECB
 	//{
 		//std::cout << "!!!! Warning -...> segment index is already 2!!! undefined behavior anticipated!!!" << std::endl;
 	//}
-	lineSegments[currentLineSegmentIndex].beginVertex = in_lineSegmentPointA;	// store new vertex values
-	lineSegments[currentLineSegmentIndex].endVertex = in_lineSegmentPointB;
-	lineSegments[currentLineSegmentIndex].lineID = (unsigned char)in_lineID;	// store the lineID
-	currentLineSegmentIndex++;		// increment the index
+	bool isSegmentTrackerValid = true;
+	if (currentLineSegmentIndex < 3)	// anything greater than 3 is a buffer overflow.
+	{
+		lineSegments[currentLineSegmentIndex].beginVertex = in_lineSegmentPointA;	// store new vertex values
+		lineSegments[currentLineSegmentIndex].endVertex = in_lineSegmentPointB;
+		lineSegments[currentLineSegmentIndex].lineID = (unsigned char)in_lineID;	// store the lineID
+		currentLineSegmentIndex++;		// increment the index
+	}
+	else
+	{
+		isSegmentTrackerValid = false;
+	}
+	return isSegmentTrackerValid;
 }
 
 void PrimarySegmentTracker::swapBeginAndEndInSegments()

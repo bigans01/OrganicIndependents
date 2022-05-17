@@ -106,6 +106,11 @@ MicroPolyPointContainer SCircuitSegment::getCircuitPointsV1(EnclaveKeyDef::Encla
 		returnContainer = generatePointsForMultiLast();
 	}
 
+	if (returnContainer.isContainerValid == false)
+	{
+		std::cout << "(SCircuitSegment): !!! NOTICE: about to return an invalid container! (called by function getCircuitPointsV1) " << std::endl;
+	}
+
 	return returnContainer;
 }
 
@@ -179,6 +184,11 @@ MicroPolyPointContainer SCircuitSegment::getCircuitPoints(EnclaveKeyDef::Enclave
 	{
 		//std::cout << "Calling OPEN_MULTI_LAST... " << std::endl;
 		returnContainer = generatePointsForMultiLast();
+	}
+
+	if (returnContainer.isContainerValid == false)
+	{
+		std::cout << "(SCircuitSegment): !!! NOTICE: about to return an invalid container! (called by function getCircuitPoints) " << std::endl;
 	}
 
 	return returnContainer;
@@ -298,6 +308,7 @@ MicroPolyPointContainer SCircuitSegment::generatePointsForStandalone()
 	{
 		container.insertNewPoint(subContainer.pointArray[x]);
 	}
+	container.isContainerValid = subContainer.isContainerValid;
 	return container;
 }
 
@@ -400,6 +411,7 @@ MicroPolyPointContainer SCircuitSegment::generatePointsForMultiFirst()
 	{
 		openMultiContainer.insertNewPoint(subContainer.pointArray[x]);
 	}
+	openMultiContainer.isContainerValid = subContainer.isContainerValid;
 
 	return openMultiContainer;
 }
@@ -420,6 +432,7 @@ MicroPolyPointContainer SCircuitSegment::generatePointsForMulti()
 	{
 		openMultiContainer.insertNewPoint(subContainer.pointArray[x]);
 	}
+	openMultiContainer.isContainerValid = subContainer.isContainerValid;
 
 	return openMultiContainer;
 }
@@ -440,6 +453,7 @@ MicroPolyPointContainer SCircuitSegment::generatePointsForMultiLast()
 	{
 		openMultiContainer.insertNewPoint(subContainer.pointArray[x]);
 	}
+	openMultiContainer.isContainerValid = subContainer.isContainerValid;
 
 	return openMultiContainer;
 }
@@ -659,6 +673,7 @@ MicroPolyPointContainer SCircuitSegment::getNewSegments(PrimarySegmentMeta in_se
 				std::cout << "Segment end  : " << in_segmentMeta.endPoint.x << ", " << in_segmentMeta.endPoint.y << ", " << in_segmentMeta.endPoint.z << std::endl;
 				std::cout << "Intended faces are: " << in_segmentMeta.intendedFaces.x << ", " << in_segmentMeta.intendedFaces.y << ", " << in_segmentMeta.intendedFaces.z << std::endl;
 				std::cout << "Initial move vals are: " << moveValsFromKey.x << ", " << moveValsFromKey.y << ", " << moveValsFromKey.z << std::endl;
+				std::cout << "Perfect clamp value is: " << perfectClampValue << std::endl;
 				std::cout << "X-slope: " << current_x_slope.x << ", " << current_x_slope.y << ", " << current_x_slope.z << std::endl;
 				std::cout << "Y-slope: " << current_y_slope.x << ", " << current_y_slope.y << ", " << current_y_slope.z << std::endl;
 				std::cout << "Z-slope: " << current_z_slope.x << ", " << current_z_slope.y << ", " << current_z_slope.z << std::endl;
@@ -680,7 +695,15 @@ MicroPolyPointContainer SCircuitSegment::getNewSegments(PrimarySegmentMeta in_se
 		}
 
 		// Insert the target point as the last point
+
+		if (returnContainer.isContainerValid == false)
+		{
+			std::cout << "!!! Warning, container to return is FALSE; current point counter is: " << returnContainer.numberOfPoints << std::endl;
+		}
+
 		returnContainer.insertNewPoint(terminatingPoint);
+
+
 
 		/*
 		if (IndependentUtils::checkIfFaceListsMatch(currentFaceList, terminatingFaceList, 1) == 1)

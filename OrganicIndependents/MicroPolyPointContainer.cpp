@@ -3,10 +3,16 @@
 
 void MicroPolyPointContainer::insertNewPoint(ECBPolyPoint in_point)
 {
-	if (numberOfPoints < 16)
+
+	if (numberOfPoints < 8)
 	{
 		pointArray[numberOfPoints++] = in_point;
 		//std::cout << "!!!! BUFFER WARNING (numberOfPoints is: " << numberOfPoints << ") " << std::endl;
+	}
+	else if (numberOfPoints >= 8)
+	{
+		//std::cout << "!!! Too many points attempt to insert; container is now invalid. " << std::endl;
+		isContainerValid = false;
 	}
 }
 

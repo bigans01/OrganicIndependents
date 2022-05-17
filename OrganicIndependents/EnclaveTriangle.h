@@ -34,7 +34,7 @@ public:
 	ECBPolyPoint emptyNormal;							// the empty normal that faces outward towards empty space.
 	OrganicTriangleTertiary enclaveTriangleTertiary;	// stores the actual bb fans that this EnclaveTriangle produced in each block that it touched.
 
-	void executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
+	void executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
 	void executeRunDebug(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
 	void reform(ECBPolyPoint in_polyPoint0, ECBPolyPoint in_polyPoint1, ECBPolyPoint in_polyPoint2);	// reform the triangle, for adhesion; 
 																										// used by AdhesiveRunner in OrganicServerLib.
@@ -46,6 +46,8 @@ public:
 	bool doBlocksExistAtY(int in_y);	// checks if any blocks exist in the enclaveTriangleTeritary, at a specific layer of Y
 
 private:
+	void resetRunMetaData(); // must be called before any run occurs.
+
 	// functions for ensuring the triangle will run OK
 	void executeForwardRunTest(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 	bool isEndpointValidForFreeSelection(int in_lineID, BlockCircuit* in_circuitRef);
@@ -72,7 +74,11 @@ private:
 								PolyRunDirection in_polyRunDirection);
 
 	// segment and circuit-filling functions.
-	void generateExteriorLineSegments(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);									// fill the SegmentTrackers for the outer lines
+	void generateExteriorLineSegmentsET(PrimaryLineT1Array* in_linkArrayRef, 
+										BlockBorderLineList* in_blockBorderLineList, 
+										BorderDataMap* in_borderDataMap, 
+										EnclaveKeyDef::EnclaveKey in_key,
+										bool in_badRunFlag);									// fill the SegmentTrackers for the outer lines
 	void fillCircuitMetaData(BlockCircuit* in_circuitRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
 	void fillCircuitMetaDataAndCheckValidity(BlockCircuit* in_circuitRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
 	void populateOrganicWrappedBBFanWithCircuitData(BlockCircuit* in_circuitRef, int in_secondaryID);
@@ -94,7 +100,6 @@ private:
 	EnclaveKeyDef::EnclaveKey currentEnclaveKey;
 
 	int attemptLimit = 16; // the number of times an EnclaveLineRunner may attempt its completion run before being halted, and the run has to begin again.
-
 };
 
 #endif

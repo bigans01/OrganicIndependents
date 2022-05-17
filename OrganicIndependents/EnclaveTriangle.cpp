@@ -3,8 +3,13 @@
 #include "IndependentUtils.h"
 #include "PrimaryLineT1Array.h"
 
-void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
+void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, 
+								BorderDataMap* in_borderDataMap, 
+								EnclaveKeyDef::EnclaveKey in_key, 
+								bool in_badRunFlag)
 {
+	resetRunMetaData(); // reset run values; should be called before anything else.
+
 	// prepare poly data
 	currentEnclaveKey = in_key;
 
@@ -34,7 +39,7 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, Bo
 		forwardTerminatingContainer.buildTerminatingSets();		// build the terminating sets (required before an interior run.)
 		reverseTerminatingContainer.buildTerminatingSets();
 
-		generateExteriorLineSegments(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key);						// build the exterior segments, fill the circuit data for them, using the forward array
+		generateExteriorLineSegmentsET(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key, in_badRunFlag);						// build the exterior segments, fill the circuit data for them, using the forward array
 		if (isTriangleValid == true)	// don't bother running if its invalid
 		{
 			runInteriorRunners(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::NORMAL);
@@ -50,8 +55,13 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, Bo
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
 }
 
-void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
+void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, 
+									BorderDataMap* in_borderDataMap, 
+									EnclaveKeyDef::EnclaveKey in_key)
 {
+	resetRunMetaData(); // reset run values; should be called before anything else.
+
+
 	//  ************ used for debug only *****************
 	// prepare poly data
 	currentEnclaveKey = in_key;
@@ -82,12 +92,16 @@ void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineLis
 		forwardTerminatingContainer.buildTerminatingSets();		// build the terminating sets (required before an interior run.)
 		reverseTerminatingContainer.buildTerminatingSets();
 
-		generateExteriorLineSegments(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key);						// build the exterior segments, fill the circuit data for them, using the forward array
+		generateExteriorLineSegmentsET(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key, false);						// build the exterior segments, fill the circuit data for them, using the forward array
 		//std::cout << "######## Exterior line segment generation complete.. " << std::endl;
 		if (isTriangleValid == true)	// don't bother running if its invalid
 		{
 			runInteriorRunnersDebug(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::NORMAL);
 			runInteriorRunnersDebug(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::REVERSE);
+		}
+		else if (isTriangleValid == false)
+		{
+			//std::cout << "(EnclaveTriangle): triangle flagged as invalid during call to executeRunDebug. " << std::endl;
 		}
 	}
 
@@ -98,6 +112,19 @@ void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineLis
 		std::cin >> invalid;
 	}
 
+}
+
+void EnclaveTriangle::resetRunMetaData()
+{
+	exteriorTracedBlocks.clear();
+	allTracedBlocks.clear();
+	TerminatingSetContainer resetForForward;
+	forwardTerminatingContainer = resetForForward;
+	TerminatingSetContainer resetForReverse;
+	reverseTerminatingContainer = resetForReverse;
+	currentEnclaveKey = EnclaveKeyDef::EnclaveKey(0, 0, 0);
+	OrganicTriangleTertiary tertiaryReset;
+	enclaveTriangleTertiary = tertiaryReset;
 }
 
 PrimaryLineT1Array EnclaveTriangle::generatePrimaryLineT1Array(PolyRunDirection in_polyRunDirection)
@@ -214,11 +241,11 @@ void EnclaveTriangle::executeForwardRunTest(PrimaryLineT1Array* in_linkArrayRef,
 			currentLineRunner.iterateToNextBlock();
 			limitCount++;
 			if
-				(
-					//(limitCount > 16)											// it surpassed the tick count
-					//||
+			(
+				(limitCount > 16)											// it surpassed the tick count
+				||
 				(currentLineRunner.runState == LineRunnerState::INVALID)	// it was flagged as INVALID
-					)
+			)
 			{
 				std::cout << "!!! ::RunTest:: Warning, anomalous EnclaveTriangle detected. " << std::endl;
 				//int someVal = 3;
@@ -234,8 +261,7 @@ void EnclaveTriangle::executeForwardRunTest(PrimaryLineT1Array* in_linkArrayRef,
 
 void EnclaveTriangle::runPolyLinesThroughEnclave(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap)
 {
-	//BlockBorderLineList borderLineList;
-
+	//BlockBorderLineList borderLineList
 
 	//std::cout << "###################################################################################!!!! Running poly lines through enclave..." << std::endl;
 	for (int x = 0; x < 3; x++)
@@ -274,7 +300,55 @@ void EnclaveTriangle::runPolyLinesThroughEnclave(PrimaryLineT1Array* in_linkArra
 			//std::cout << "::> Begin: " << currentLineRunner.currentIterationBeginPoint.x << ", " << currentLineRunner.currentIterationBeginPoint.y << ", " << currentLineRunner.currentIterationBeginPoint.z
 			//		  << " | End " << currentLineRunner.currentIterationEndPoint.x << ", " << currentLineRunner.currentIterationEndPoint.y << ", " << currentLineRunner.currentIterationEndPoint.z << std::endl;
 			int convertedBlockCoords = PolyUtils::convertBlockCoordsToSingle(currentBlockKey.x, currentBlockKey.y, currentBlockKey.z);
-			enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, currentLineRunner.currentIterationEndPoint, x);
+			bool isSegmentInsertValid = enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, currentLineRunner.currentIterationEndPoint, x);
+			if (isSegmentInsertValid == false)
+			{
+				std::cout << "(EnclaveTriangle): attempt to add segment failed during call to EnclaveTriangle::runPolyLinesThroughEnclave." << std::endl;
+				/*
+				std::cout << "(EnclaveTriangle): calling functions were: " << std::endl;
+				auto callingFunctionsBegin = callingFunctionNames.begin();
+				auto callingFunctionsEnd = callingFunctionNames.end();
+				for (; callingFunctionsBegin != callingFunctionsEnd; callingFunctionsBegin++)
+				{
+					std::cout << *callingFunctionsBegin << std::endl;
+				}
+
+				std::cout << "---> run count is: " << polyLinesThroughEnclaveRunCount << std::endl;
+				std::cout << "!! Points are: " << std::endl;
+				printPoints();
+				std::cout << "(EnclaveTriangle): attempted segment points: begin-> ("
+					<< currentLineRunner.currentIterationBeginPoint.x << ", " << currentLineRunner.currentIterationBeginPoint.y << ", " << currentLineRunner.currentIterationBeginPoint.z << ") | ("
+					<< currentLineRunner.currentIterationEndPoint.x << ", " << currentLineRunner.currentIterationEndPoint.y << ", " << currentLineRunner.currentIterationEndPoint.z << ") " << std::endl;
+
+				std::cout << "(EnclaveTriangle): displaying existing segment data in target bbfan: " << std::endl;
+				for (int x = 0; x < 3; x++)
+				{
+					std::cout << "Existing segment " << x << ": -> begin point | " << enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].beginVertex.x << ", "
+						<< enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].beginVertex.y << ", "
+						<< enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].beginVertex.z
+						<< " | -> end point | "
+						<< enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].endVertex.x << ", "
+						<< enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].endVertex.y << ", "
+						<< enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].endVertex.z
+						<< " | -> line that inserted segment: " << int(enclaveTriangleTertiary.triangleMap[convertedBlockCoords].blockSegmentTracker.lineSegments[x].lineID)
+						<< std::endl;
+				}
+
+				isTriangleValid = false;
+				std::cout << "!! currentLineRunner value of isRunSingleIteration: " << currentLineRunner.isRunSingleIteration << std::endl;
+				std::cout << "!! Line meta begin block key: ";
+				currentLineRunner.lineMeta.beginPointMeta.blockKey.printKey();
+				std::cout << std::endl;
+				std::cout << "!! Line meta end block key: ";
+				currentLineRunner.lineMeta.endPointMeta.blockKey.printKey();
+
+				std::cout << "!! currentIterationMeta block key: ";
+				currentLineRunner.currentIterationMeta.blockKey.printKey();
+				std::cout << std::endl;
+
+				std::cout << "!! current iteration of this while loop is: " << limitCount << std::endl;
+				*/
+			}
 
 			exteriorTracedBlocks.insert(currentBlockKey);	// add a record of the external trace
 			allTracedBlocks.insert(currentBlockKey);		// add a record to the set of all traces
@@ -283,8 +357,8 @@ void EnclaveTriangle::runPolyLinesThroughEnclave(PrimaryLineT1Array* in_linkArra
 
 			if
 			(
-				//(limitCount > 16)											// it surpassed the tick count
-				//||
+				(limitCount > 16)											// it surpassed the tick count
+				||
 				(currentLineRunner.runState == LineRunnerState::INVALID)	// it was flagged as INVALID
 			)
 			{
@@ -315,10 +389,17 @@ void EnclaveTriangle::runPolyLinesThroughEnclaveReverse(PrimaryLineT1Array* in_l
 			// the last argument of the below function should not be the value of x (see previous line),
 			// it should be the ID of the line that is from the corresponding element in the array; 
 			// the value of X and the corresponding ID of the line are not the same when a PrimaryLineT1Array is in REVERSE mode, although they are the same in NORMAL run.
-			enclaveTriangleTertiary.triangleMap[convertedBlockCoords].reverseSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, 
+			bool isSegmentInsertValid = enclaveTriangleTertiary.triangleMap[convertedBlockCoords].reverseSegmentTracker.addNewSegment(currentLineRunner.currentIterationBeginPoint, 
 																										currentLineRunner.currentIterationEndPoint, 
-																										in_linkArrayRef->linkArray[x].IDofLine);																																																																																																																	
-			currentLineRunner.iterateToNextBlock();
+																										in_linkArrayRef->linkArray[x].IDofLine);
+			if (isSegmentInsertValid == true)
+			{
+				currentLineRunner.iterateToNextBlock();
+			}
+			else
+			{
+				isTriangleValid = false;
+			}
 		}
 	}
 }
@@ -822,15 +903,40 @@ void EnclaveTriangle::reform(ECBPolyPoint in_polyPoint0, ECBPolyPoint in_polyPoi
 	// everything else -- enclaveTriangleMaterialID, clamping, etc...stays the same; we're only reforming the points.
 }
 
-void EnclaveTriangle::generateExteriorLineSegments(PrimaryLineT1Array* in_linkArrayRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
+void EnclaveTriangle::generateExteriorLineSegmentsET(PrimaryLineT1Array* in_linkArrayRef, 
+													BlockBorderLineList* in_blockBorderLineList, 
+													BorderDataMap* in_borderDataMap, 
+													EnclaveKeyDef::EnclaveKey in_key,
+													bool in_badRunFlag)
 {
+	//if (in_badRunFlag == true) {
+	//	std::cout << "(EnclaveTriangle): Starting generateExteriorLineSegmentsET. " << std::endl;
+	//	std::cout << "(EnclaveTriangle): Size of exteriorTracedBlocks: " << exteriorTracedBlocks.size() << std::endl;
+	//}
+
+
 	auto exteriorBegin = exteriorTracedBlocks.begin();
 	auto exteriorEnd = exteriorTracedBlocks.end();
 	for (exteriorBegin; exteriorBegin != exteriorEnd; exteriorBegin++)
 	{
+		//if (in_badRunFlag == true) {
+			//std::cout << "(EnclaveTriangle): Beginning block circuit build. " << std::endl;
+		//}
 		BlockCircuit circuit(in_blockBorderLineList, in_borderDataMap, isEnclaveTrianglePolyPerfectlyClamped, PolyDebugLevel::NONE);
+		//if (in_badRunFlag == true) {
+			//std::cout << "(EnclaveTriangle): Finished block circuit build. " << std::endl;
+		//}
+
 		int convertedToSingle = PolyUtils::convertBlockCoordsToSingle(exteriorBegin->x, exteriorBegin->y, exteriorBegin->z);
 		auto secondaryBegin = enclaveTriangleTertiary.triangleMap.find(convertedToSingle);
+
+		//if (in_badRunFlag == true) {
+			//std::cout << "(EnclaveTriangle): currentLineSEgmentIndex in segment tracker is:  " << 
+				//int(secondaryBegin->second.blockSegmentTracker.currentLineSegmentIndex) << std::endl;
+			//std::cout << "(EnclaveTriangle): currentLineSEgmentIndex in segment tracker is:  " <<
+				//int(secondaryBegin->second.blockSegmentTracker.currentLineSegmentIndex) << std::endl;
+		//}
+
 		for (int x = 0; x < secondaryBegin->second.blockSegmentTracker.currentLineSegmentIndex; x++)
 		{
 			//circuit.insertNewSegment(
@@ -870,6 +976,7 @@ void EnclaveTriangle::generateExteriorLineSegments(PrimaryLineT1Array* in_linkAr
 		if (isTriangleValid == false)
 		{
 			//std::cout << "Triangle detected as invalid, stopping run of EnclaveTriangle. " << std::endl;
+			//std::cout << "(EnclaveTriangle): Triangle detected as invalid, during call to generateExteriorLineSegments. " << std::endl;
 			break;
 		}
 

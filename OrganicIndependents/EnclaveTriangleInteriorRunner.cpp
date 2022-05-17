@@ -117,7 +117,15 @@ void EnclaveTriangleInteriorRunner::attemptIteration()
 				//std::cout << "!!! Block wasn't found...inserting! Block key: (" << currentBlockKey.x << ", " << currentBlockKey.y << ", " << currentBlockKey.z << std::endl;
 					//<< ") || Point A: " << currentIterationBeginPoint.x << ", " << currentIterationBeginPoint.y << ", " << currentIterationBeginPoint.z 
 					//<< " || Point B: " << currentIterationEndPoint.x << ", " << currentIterationEndPoint.y << ", " << currentIterationEndPoint.z << ", " << std::endl;
-				(*wrappedBBFanMapRef)[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentIterationBeginPoint, currentIterationEndPoint, lineMeta.IDofLine);
+
+				// it is possible that a "wild" or "rogue" interior run calls addNewSegment below more than appropriate; a fix 
+				// was added in the PrimarySegmentTracker class in which it enables bounds checking to prevent too many segments being added. 
+				// This fix was added during the commit on 5/15/2022.
+				bool wasAddValid = (*wrappedBBFanMapRef)[convertedBlockCoords].blockSegmentTracker.addNewSegment(currentIterationBeginPoint, currentIterationEndPoint, lineMeta.IDofLine);
+				if (wasAddValid == false)
+				{
+					std::cout << "(EnclaveTriangleInteriorRunner): Notice, during an interior run, an attempt to add a segment was invalid. " << std::endl;
+				}
 
 				// NEW CODE BEGIN
 				BlockCircuit circuit(blockBorderLineListRef, borderDataMapRef, isPolyPerfectlyClamped, PolyDebugLevel::NONE);

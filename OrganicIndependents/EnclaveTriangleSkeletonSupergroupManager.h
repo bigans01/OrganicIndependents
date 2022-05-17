@@ -51,6 +51,11 @@ public:
 		currentGroupCounter = 0;
 	}
 
+	void eraseSupergroup(int in_supergroupID)
+	{
+		triangleSkeletonSupergroups.erase(in_supergroupID);
+	}
+
 	void printMetadata()
 	{
 		auto groupManagerBSupergroupsBegin = triangleSkeletonSupergroups.begin();

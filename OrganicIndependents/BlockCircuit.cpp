@@ -48,6 +48,10 @@ bool BlockCircuit::fillSegmentArrayMetaDataWithPointsV2(int in_faceMatchThreshol
 	*/
 
 	bool validityResult = gatherCircuitPointsWithString("fillSegmentArrayData #1", in_point0, in_point1, in_point2);	// gather points from the segment(s)
+	if (validityResult == false)
+	{
+		//std::cout << "(BlockCircuit): bad circuit detected in call to function, fillSegmentArrayMetaDataWithPointsV2" << std::endl;
+	}
 	return validityResult;
 	//gatherCircuitPoints();
 }
@@ -74,6 +78,10 @@ bool BlockCircuit::fillSegmentArrayMetaDataWithPointsV1(int in_faceMatchThreshol
 
 	//gatherCircuitPoints(in_point0, in_point1, in_point2, in_optionalString);	// gather points from the segment(s)
 	bool validityResult = gatherCircuitPointsWithString(in_optionalString, in_point0, in_point1, in_point2);
+	if (validityResult == false)
+	{
+		//std::cout << "(BlockCircuit): bad circuit detected in call to function, fillSegmentArrayMetaDataWithPointsV1" << std::endl;
+	}
 	return validityResult;
 }
 
@@ -101,6 +109,10 @@ bool BlockCircuit::fillSegmentArrayMetaDataFromCircuit(int in_faceMatchThreshold
 	*/
 
 	bool validityResult = gatherCircuitPointsWithString("fillSegmentArrayData #2", in_point0, in_point1, in_point2);	// gather points from the segment(s)
+	if (validityResult == false)
+	{
+		//std::cout << "(BlockCircuit): bad circuit detected in call to function, fillSegmentArrayMetaDataFromCircuit" << std::endl;
+	}
 	return validityResult;
 	//gatherCircuitPoints();
 }
@@ -308,6 +320,7 @@ bool BlockCircuit::gatherCircuitPointsWithString(std::string in_optionalString, 
 		}
 		else if (currentContainer.isContainerValid == false)
 		{
+			//std::cout << "(BlockCircuit): circuit is not valid; called by function gatherCircuitPointsWithString " << std::endl;
 			isCircuitValid = false;
 		}
 	}

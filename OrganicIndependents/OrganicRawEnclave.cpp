@@ -206,6 +206,7 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 	// all maps that don't contain block data should be cleared; there is no need to have this data from this point forward,
 	// as any data that exists should come from blocks, and blocks alone; if this ORE is read from a file, the part of the file for that ORE 
 	// needs to only have block data.
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
 	skeletonSGM.triangleSkeletonSupergroups.clear();
 	etcSGM.enclaveTriangleSupergroups.clear();
 	organicTriangleSecondarySGM.secondarySupergroups.clear();
@@ -556,6 +557,12 @@ void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mute
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
 }
 
+void OrganicRawEnclave::removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	skeletonSGM.eraseSupergroup(in_supergroupIDToRemove);
+}
+
 void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)	// change the enclave key logic later...
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
@@ -588,10 +595,14 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 	// part 2: execute the runs for the triangles; delete/move EnclaveTriangles that are invalid, so that they don't run.
 	// it should be noted, that if not erased, invalid EnclaveTriangles can still produce BBFan data that secondaries can read. It's just that all of them stop upon the first invalid detection.
 
+	bool trianglesRemoved = false;
 	auto etcSGMBegin1 = etcSGM.enclaveTriangleSupergroups.begin();
 	auto etcSGMEnd1 = etcSGM.enclaveTriangleSupergroups.end();
+	int etcSGMSize = etcSGM.enclaveTriangleSupergroups.size();
+	int currentSGMCounter = 0;
 	for (etcSGMBegin1; etcSGMBegin1 != etcSGMEnd1; etcSGMBegin1++)
 	{
+		std::map<int, int> removalMap;
 		auto currentTriangleContainerBegin = etcSGMBegin1->second.containerMap.begin();
 		auto currentTriangleContainerEnd = etcSGMBegin1->second.containerMap.end();
 		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
@@ -603,28 +614,33 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 			{
 				//if (currentTrianglesBegin->first == 0)
 				//{
-				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey);
+				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey, true);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
 				{
-
-
+					//std::cout << "(OrganicRawEnclave): EnclaveTriangle detected as invalid, in call to spawnEnclaveTriangleContainers. Points were:" << std::endl;
+					//currentTrianglesBegin->second.printPoints();
+					//std::cout << "(Notice): size of etcSGM.enclaveTriangleSupergroups is: " << etcSGMSize << std::endl;
+					trianglesRemoved = true;
 					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
+					removalMap[currentTriangleContainerBegin->first] = currentTrianglesBegin->first;
+					//int removalVal = 3;
+					//std::cin >> removalVal;
+					//break;
 				}
 				//}
 			}
+		}
 
-
-			if (!removalSet.empty())
+		if (removalMap.size() != 0)	
+		{
+			//std::cout << "(OrganicRawEnclave): found some EnclaveTriangles to remove. " << std::endl;
+			auto removalsBegin = removalMap.begin();
+			auto removalsEnd = removalMap.end();
+			for (; removalsBegin != removalsEnd; removalsBegin++)
 			{
-				//std::cout << "Removal set not empty; removing identified invalids...";
-				auto removalSetBegin = removalSet.begin();
-				auto removalSetEnd = removalSet.end();
-				for (; removalSetBegin != removalSetEnd; removalSetBegin++)
-				{
-					//etcSGMBegin1->second.triangles.erase(*removalSetBegin);		// remove the INVALID triangle from the corresponding container.
-				}
+				etcSGMBegin1->second.containerMap[removalsBegin->first].triangles.erase(removalsBegin->second);
 			}
 		}
 	}
@@ -761,8 +777,8 @@ void OrganicRawEnclave::simulateBlockProduction()
 
 				//if (currentTrianglesBegin->first == 0)
 				//{
-				//currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0));
-				currentTrianglesBegin->second.executeRunDebug(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
+				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0), false);
+				
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
@@ -783,6 +799,7 @@ void OrganicRawEnclave::simulateBlockProduction()
 				for (; removalSetBegin != removalSetEnd; removalSetBegin++)
 				{
 					//etcSGMBegin1->second.triangles.erase(*removalSetBegin);		// remove the INVALID triangle from the corresponding container.
+					currentTriangleContainerBegin->second.triangles.erase(*removalSetBegin);
 				}
 			}
 		}
@@ -858,12 +875,15 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
 			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
 			{
-				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0));
+				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0), false);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
 				{
+					std::cout << "(OrganicRawEnclave): EnclaveTriangle detected as invalid, in call to produceBlockCopies. " << std::endl;
 					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
+					int removalVal = 3;
+					std::cin >> removalVal;
 				}
 			}
 
@@ -876,6 +896,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 				for (; removalSetBegin != removalSetEnd; removalSetBegin++)
 				{
 					//etcSGMBegin1->second.triangles.erase(*removalSetBegin);		// remove the INVALID triangle from the corresponding container.
+					currentTriangleContainerBegin->second.triangles.erase(*removalSetBegin);
 				}
 			}
 		}

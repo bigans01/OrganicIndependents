@@ -100,6 +100,7 @@ public:
 																																									// and wipes out the existing skeletons in skeletonSGM, 
 																																									// before appending an entirely new series of skeleton containers. Needed by 
 																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
+	void removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove);
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
 	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
 																											// populates the skeletonSGM of this ore, by spawning skeletons from
