@@ -1324,6 +1324,13 @@ int PolyUtils::convertBlockCoordsToSingle(int in_x, int in_y, int in_z)
 	return x + y + in_z;
 }
 
+int PolyUtils::convertBlockCoordsToSingle(EnclaveKeyDef::EnclaveKey in_key)
+{
+	int x = in_key.x * 16;
+	int y = in_key.y * 4;
+	return x + y + in_key.z;
+}
+
 EnclaveKeyDef::EnclaveKey PolyUtils::convertSingleToBlockKey(int in_value)
 {
 	EnclaveKeyDef::EnclaveKey tempkey;

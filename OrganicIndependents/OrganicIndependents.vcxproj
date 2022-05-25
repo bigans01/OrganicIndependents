@@ -204,6 +204,7 @@
     <ClInclude Include="ECBTrianglePointArray.h" />
     <ClInclude Include="EnclaveBlock.h" />
     <ClInclude Include="EnclaveBlockSkeleton.h" />
+    <ClInclude Include="EnclaveBlockState.h" />
     <ClInclude Include="EnclaveBlockVertex.h" />
     <ClInclude Include="EnclaveBlockVertexTri.h" />
     <ClInclude Include="EnclaveBorderLineList.h" />

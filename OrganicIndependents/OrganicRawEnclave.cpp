@@ -541,7 +541,17 @@ void OrganicRawEnclave::clearBlockSkeletons(std::mutex* in_mutexRef)
 	blockSkeletonMap.clear();
 }
 
-
+bool OrganicRawEnclave::doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	bool isASkeleton = false;
+	int targetInt = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
+	auto skeletonFinder = blockSkeletonMap.find(targetInt);
+	if (skeletonFinder != blockSkeletonMap.end())
+	{
+		isASkeleton = true;
+	}
+	return isASkeleton;
+}
 
 void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
 {
@@ -709,15 +719,58 @@ std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> OrganicR
 {
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> returnSet;
 
-	// we must generate block copies to produce this list; we will assume that the data needed to do this is already in the skeletonSGM.
-	auto fetchedExposedBlockMap = produceBlockCopies();
-	auto blocksBegin = fetchedExposedBlockMap.begin();
-	auto blocksEnd = fetchedExposedBlockMap.end();
-	for (; blocksBegin != blocksEnd; blocksBegin++)
+	// do the following if we are in a ORELodState of LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER.
+	if
+	(
+		currentLodState == ORELodState::LOD_ENCLAVE_SMATTER
+		||
+		currentLodState == ORELodState::LOD_ENCLAVE_RMATTER
+	)
 	{
-		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
-		returnSet.insert(currentKey);
+		// if there are blocks already populated, check those; we won't need -- and don't want to --
+		// call produceBlockCopies() as that is an expensive operation.
+		if (blockMap.size() != 0)
+		{
+			auto loadedBlocksBegin = blockMap.begin();
+			auto loadedBlocksEnd = blockMap.end();
+			for (; loadedBlocksBegin != loadedBlocksEnd; loadedBlocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(loadedBlocksBegin->first);
+				returnSet.insert(currentKey);
+			}
+		}
+		else
+		{
+			// we must generate block copies to produce this list; we will assume that the data needed to do this is already in the skeletonSGM.
+			auto fetchedExposedBlockMap = produceBlockCopies();
+			auto blocksBegin = fetchedExposedBlockMap.begin();
+			auto blocksEnd = fetchedExposedBlockMap.end();
+			for (; blocksBegin != blocksEnd; blocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+				returnSet.insert(currentKey);
+			}
+		}
 	}
+
+	// otherwise, scan the existing block map if we are in a ORELodState of LOD_BLOCK.
+	else if
+	(
+		currentLodState == ORELodState::LOD_BLOCK
+	)
+	{
+		// any block in the block map, that is "visible" (not implemented yet) would be considered EXPOSED.
+		auto exposedBlocksBegin = blockMap.begin();
+		auto exposedBlocksEnd = blockMap.end();
+		for (; exposedBlocksBegin != exposedBlocksEnd; exposedBlocksBegin++)
+		{
+			EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(exposedBlocksBegin->first);
+			returnSet.insert(currentKey);
+		}
+	}
+
+	// NOTE: we don't do anything if the ORE's current state is ORELodState::FULL.
+
 	return returnSet;
 }
 
@@ -834,6 +887,118 @@ void OrganicRawEnclave::simulateBlockProduction()
 	}
 }
 
+EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	EnclaveBlockState returnBlockState = EnclaveBlockState::NONEXISTENT;
+	// we shouldn't need a mutex here, as we'd only be reading, and not modifying data.
+	// if we are in a "matter" state, we need to generate the blocks 
+	if
+	(
+		currentLodState == ORELodState::LOD_ENCLAVE_SMATTER
+		||
+		currentLodState == ORELodState::LOD_ENCLAVE_RMATTER
+	)
+	{
+		//std::cout << "(OrganicRawEnclave): getBlockStatus -> entered RMATTER/SMATTER branch. " << std::endl;
+
+		// if there are blocks already populated, check those; we won't need -- and don't want to --
+		// call produceBlockCopies() as that is an expensive operation.
+		int targetInt = PolyUtils::convertBlockCoordsToSingle(in_blockKey);
+		if (blockMap.size() != 0)
+		{
+			std::cout << "(OrganicRawEnclave): blocks were already loaded in this ORE (LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER)." << std::endl;
+			auto existingBlockFinder = blockMap.find(targetInt);
+			if (existingBlockFinder != blockMap.end())
+			{
+				returnBlockState = EnclaveBlockState::EXPOSED;
+			}
+		}
+
+		// otherwise, we'll need to call produceBlockCopies, as it means we're looking at an ORE in a state of 
+		// LOD_ENCLAVE_SMATTER / LOD_ENCLAVE_RMATTER, that hasn't called spawnRenderableBlocks() on it yet.
+		else
+		{
+
+			auto exposedBlocks = produceBlockCopies();
+
+			// check if it's an exposed block; if it is, return BlockManifestState::EXPOSED
+			auto exposedBlocksFinder = exposedBlocks.find(targetInt);
+			if (exposedBlocksFinder != exposedBlocks.end())
+			{
+				returnBlockState = EnclaveBlockState::EXPOSED;
+				//std::cout << "(OrganicRawEnclave): found EXPOSED block for key: ";
+				//in_blockKey.printKey();
+				//std::cout << std::endl;
+			}
+		}
+		// check if it's an unexposed block; if it is, return BlockManifestState::UNEXPOSED
+		auto unexposedBlocks = fetchUnexposedBlockKeys();
+		auto unexposedBlockFinder = unexposedBlocks.find(in_blockKey);
+		if (unexposedBlockFinder != unexposedBlocks.end())
+		{
+			returnBlockState = EnclaveBlockState::UNEXPOSED;
+			//std::cout << "(OrganicRawEnclave): found UNEXPOSED block for key: ";
+			//in_blockKey.printKey();
+			//std::cout << std::endl;
+		}
+	}
+
+	// otherwise, if we are in ORELodState::BLOCK, just check whatever exists
+	else if
+	(
+		currentLodState == ORELodState::LOD_BLOCK
+	)
+	{
+		// ***** The below commented out code needs to be analyzed in next commit, to understand why it didn't work;
+		// Main culprit of this is that skeletons/etcsgm gets wiped out in the call to morphLodToBlock (5/22/2022)
+		/*
+		// check if it's an exposed block; if it is, return BlockManifestState::EXPOSED
+		auto exposedBlocksList = fetchExposedBlockKeys();
+		auto exposedFinder = exposedBlocksList.find(in_blockKey);
+		if (exposedFinder != exposedBlocksList.end())
+		{
+			returnBlockState = EnclaveBlockState::EXPOSED;
+		}
+		*/
+
+		int targetInt = PolyUtils::convertBlockCoordsToSingle(in_blockKey);
+		auto targetFinder = blockMap.find(targetInt);
+		if (targetFinder != blockMap.end())
+		{
+			returnBlockState = EnclaveBlockState::EXPOSED;
+		}
+
+		// check if it's an unexposed block; if it is, return BlockManifestState::UNEXPOSED
+		auto unexposedBlockList = fetchUnexposedBlockKeys();
+		auto unexposedFinder = unexposedBlockList.find(in_blockKey);
+		if (unexposedFinder != unexposedBlockList.end())
+		{
+			returnBlockState = EnclaveBlockState::UNEXPOSED;
+		}
+	}
+
+	// otherwise, it's full, so it can either exist as UNEXPOSED or NONEXISTENT_BECAUSE_FULL
+	else if
+	(
+		currentLodState == ORELodState::FULL
+	)
+	{
+		std::cout << "(OrganicRawEnclave): getBlockStatus -> entered FULL branch. " << std::endl;
+
+		auto fullUnexposedBlockList = fetchUnexposedBlockKeys();
+		auto fullUnexposedFinder = fullUnexposedBlockList.find(in_blockKey);
+		if (fullUnexposedFinder != fullUnexposedBlockList.end())
+		{
+			returnBlockState = EnclaveBlockState::UNEXPOSED;
+		}
+		else
+		{
+			returnBlockState = EnclaveBlockState::NONEXISTENT_BECAUSE_FULL;
+		}
+	}
+	return returnBlockState;
+}
+
 std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 {
 	OrganicTriangleSecondarySupergroupManager tempOtsSGM;
@@ -880,10 +1045,10 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
 				{
-					std::cout << "(OrganicRawEnclave): EnclaveTriangle detected as invalid, in call to produceBlockCopies. " << std::endl;
+					//std::cout << "(OrganicRawEnclave): WARNING: EnclaveTriangle detected as invalid, in call to produceBlockCopies. " << std::endl;
 					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
-					int removalVal = 3;
-					std::cin >> removalVal;
+					//int removalVal = 3;
+					//std::cin >> removalVal;
 				}
 			}
 

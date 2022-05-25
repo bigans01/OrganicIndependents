@@ -22,6 +22,7 @@ public:
 	static TriangleLine convertT2toSimpleTriangleLine(PrimaryLineT2 in_T1Line);
 	static ECBPolyLine convertToECBPolyLine(TriangleLine in_line, ECBPolyPoint in_thirdPoint);
 	static int convertBlockCoordsToSingle(int in_x, int in_y, int in_z);
+	static int convertBlockCoordsToSingle(EnclaveKeyDef::EnclaveKey);
 	static EnclaveKeyDef::EnclaveKey convertSingleToBlockKey(int in_value);
 	static ECBPoly produceECBPolyFromECBPolySkeleton(ECBPolySkeleton in_skeleton);
 	static ECBPoly produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyDef::EnclaveKey in_originalBlueprintKey);

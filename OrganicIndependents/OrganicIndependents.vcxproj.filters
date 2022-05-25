@@ -573,6 +573,9 @@
     <ClInclude Include="Operable3DEnclaveKeySet.h">
       <Filter>Header Files\Operable</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveBlockState.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

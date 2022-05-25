@@ -8,6 +8,7 @@
 #include "EnclavePolyFractureResults.h"
 #include "OrganicTriangleSecondary.h"
 #include "EnclaveBlock.h"
+#include "EnclaveBlockState.h"
 #include "EnclaveTriangleContainer.h"
 #include "EnclaveTriangleSkeletonContainer.h"
 #include "ORELodState.h"
@@ -110,7 +111,8 @@ public:
 	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
-
+	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);							// checks to see if a block exists as a skeleton, should only ever be used with the function
+																											// ECBMap::getBlockStateFromPopulatedORE.
 	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
 	void setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet);		// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
 																											// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
@@ -143,9 +145,7 @@ public:
 	// **************************** START DEBUG FUNCTIONS *********************************************
 
 	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
-	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
-														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
-														// Currently only used by printBlockCategorizations below, but can be used elsewhere.
+	EnclaveBlockState getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey);
 	void printBlockCategorizations();
 
 	// **************************** END DEBUG FUNCTIONS *********************************************
@@ -201,6 +201,10 @@ private:
 														int in_polyID,												// needed by the function, simulateBlockProduction(). 
 														int in_clusterID, 
 														OrganicTriangleSecondary in_enclavePolyFractureResults);
+	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
+														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
+														// Currently only used by printBlockCategorizations below, but can be used elsewhere. This will do nothing if 
+														// the ORE's currentLodState is already in LOD_BLOCK, as there will be nothing in etcSGM to read from.
 
 	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;	// stores the keys of any blocks considered to be "solid" blocks. (aka, skeletons)
 	std::map<int, EnclaveBlockSkeleton> rMassSolidsMap;		// used by OREMatterCollider::extractResultsAndSendtoORE (OrganicCoreLib), to store solid blocks formed during the conversion to ORELodState::LOD_ENCLAVE_RMATTER.
