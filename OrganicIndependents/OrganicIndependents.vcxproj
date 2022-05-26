@@ -209,6 +209,7 @@
     <ClInclude Include="EnclaveBlockVertexTri.h" />
     <ClInclude Include="EnclaveBorderLineList.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
+    <ClInclude Include="EnclaveKeyPair.h" />
     <ClInclude Include="EnclaveLineRunner.h" />
     <ClInclude Include="EnclavePolyFractureResults.h" />
     <ClInclude Include="EnclaveTriangle.h" />
@@ -302,6 +303,7 @@
     <ClInclude Include="PRResult.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />
+    <ClInclude Include="RippleImpactRegister.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
     <ClInclude Include="SecondarySearchResult.h" />

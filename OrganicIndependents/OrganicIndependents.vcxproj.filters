@@ -576,6 +576,12 @@
     <ClInclude Include="EnclaveBlockState.h">
       <Filter>Header Files\ORE\EnclaveBlock</Filter>
     </ClInclude>
+    <ClInclude Include="RippleImpactRegister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveKeyPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
