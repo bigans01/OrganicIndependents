@@ -73,6 +73,9 @@
     <Filter Include="Header Files\Operable">
       <UniqueIdentifier>{26a40a78-8dc8-42cb-a29a-11ea9c3de734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RippleImpact">
+      <UniqueIdentifier>{3209fc69-e149-49d1-9e39-766815825896}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -576,11 +579,11 @@
     <ClInclude Include="EnclaveBlockState.h">
       <Filter>Header Files\ORE\EnclaveBlock</Filter>
     </ClInclude>
-    <ClInclude Include="RippleImpactRegister.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EnclaveKeyPair.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RippleImpactRegister.h">
+      <Filter>Header Files\RippleImpact</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

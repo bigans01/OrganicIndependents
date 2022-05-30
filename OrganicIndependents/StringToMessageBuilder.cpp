@@ -6,7 +6,7 @@ MessageBuildResult StringToMessageBuilder::buildMessageFromString(std::string in
 	MessageBuildResult buildAttempt;
 	// loop until we find the first space character.
 	bool wasSpaceFound = false;
-	int stringSize = in_string.size();		
+	int stringSize = int(in_string.size());		
 	int firstSpaceIndex = 0;
 	int commandEndIndex = 0;				// the index where the command to check ends; would be equal to firstSpaceIndex -1.
 	int firstCommandLength = 0;

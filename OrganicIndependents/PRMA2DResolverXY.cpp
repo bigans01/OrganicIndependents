@@ -95,7 +95,7 @@ bool PRMA2DResolverXY::areComparisonsDone()
 
 void PRMA2DResolverXY::generateComparisonCount()
 {
-	comparisonsRemaining = pMassPtrMap.size();	// the number of comparisons is always equal to the initial number of pMass ptrs.
+	comparisonsRemaining = int(pMassPtrMap.size());	// the number of comparisons is always equal to the initial number of pMass ptrs.
 }
 
 

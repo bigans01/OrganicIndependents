@@ -9,7 +9,7 @@ void EnclaveTriangleContainer::insertTriangle(EnclaveTriangle in_enclaveTriangle
 void EnclaveTriangleContainer::insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle)
 {
 	triangles[in_triangleID] = in_enclaveTriangle;
-	triangleCount = triangles.size();
+	triangleCount = int(triangles.size());
 }
 
 bool EnclaveTriangleContainer::checkForYSliceBlocks(int in_yCoord)

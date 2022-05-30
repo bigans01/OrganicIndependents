@@ -54,7 +54,7 @@ class OperableIntSet
 
 		int size()
 		{
-			return intSet.size();
+			return int(intSet.size());
 		}
 
 		std::set<int>::iterator begin()

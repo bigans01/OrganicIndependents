@@ -150,7 +150,7 @@ OREDependencyState OrganicRawEnclave::getDependencyState()
 
 int OrganicRawEnclave::getNumberOfBlockSkeletons()
 {
-	return blockSkeletonMap.size();
+	return int(blockSkeletonMap.size());
 }
 
 void OrganicRawEnclave::updateOREForRMass()
@@ -608,7 +608,7 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 	bool trianglesRemoved = false;
 	auto etcSGMBegin1 = etcSGM.enclaveTriangleSupergroups.begin();
 	auto etcSGMEnd1 = etcSGM.enclaveTriangleSupergroups.end();
-	int etcSGMSize = etcSGM.enclaveTriangleSupergroups.size();
+	int etcSGMSize = int(etcSGM.enclaveTriangleSupergroups.size());
 	int currentSGMCounter = 0;
 	for (etcSGMBegin1; etcSGMBegin1 != etcSGMEnd1; etcSGMBegin1++)
 	{

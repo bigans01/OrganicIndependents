@@ -22,14 +22,6 @@ class RippleImpactRegister
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchImpactedBlueprints()
 		{
 			std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> returnSet;
-			/*
-			auto impactedBlueprintsBegin = impacts.begin();
-			auto impactedBlueprintsEnd = impacts.end();
-			for (; impactedBlueprintsBegin != impactedBlueprintsEnd; impactedBlueprintsBegin++)
-			{
-
-			}
-			*/
 			for (auto& c : impacts)
 			{
 				returnSet.insert(c.first);
@@ -51,7 +43,6 @@ class RippleImpactRegister
 			return returnVector;
 		}
 
-	private:
 		struct RippleImpactedORE
 		{
 			std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> impactedBlockKeys;
@@ -60,11 +51,12 @@ class RippleImpactRegister
 				impactedBlockKeys.insert(in_blockKey);
 			};
 		};
-
+			
 		struct RippleImpactedBlueprint
 		{
 			std::unordered_map<EnclaveKeyDef::EnclaveKey, RippleImpactedORE, EnclaveKeyDef::KeyHasher> impactedOREs;
 		};
+		
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, RippleImpactedBlueprint, EnclaveKeyDef::KeyHasher> impacts;
 };

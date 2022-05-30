@@ -138,19 +138,19 @@ PointSearchData FanManager::checkIfNearbyPointExists(EnclaveBlockVertex in_block
 			EnclaveBlockVertex currentVertex = in_blockVertex;	// copy the current vertex
 			int searchArmLength = 3;
 			// x floats
-			float x_pos = currentVertex.x + searchArmLength;
+			float x_pos = float(currentVertex.x + searchArmLength);
 			float x_current = currentVertex.x;
-			float x_neg = currentVertex.x - searchArmLength;
+			float x_neg = float(currentVertex.x - searchArmLength);
 
 			// y floats
-			float y_pos = currentVertex.y + searchArmLength;
+			float y_pos = float(currentVertex.y + searchArmLength);
 			float y_current = currentVertex.y;
-			float y_neg = currentVertex.z - searchArmLength;
+			float y_neg = float(currentVertex.z - searchArmLength);
 
 			// z floats
-			float z_pos = currentVertex.z + searchArmLength;
+			float z_pos = float(currentVertex.z + searchArmLength);
 			float z_current = currentVertex.z;
-			float z_neg = currentVertex.z - searchArmLength;
+			float z_neg = float(currentVertex.z - searchArmLength);
 
 			if
 				(

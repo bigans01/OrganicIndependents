@@ -3686,7 +3686,7 @@ ECBPolyPointLocation IndependentUtils::getEnclavePolyPointLocation(ECBPolyPoint 
 		}
 		else if (in_point.x == 4.0f)
 		{
-			locationToReturn.blockKey.x = 3.0f;
+			locationToReturn.blockKey.x = 3;
 			locationToReturn.preciseCoord.x = 1.0f;
 		}
 		//std::cout << "|||| value of precise coord: " << locationToReturn.preciseCoord.x << std::endl;
@@ -3732,7 +3732,7 @@ ECBPolyPointLocation IndependentUtils::getEnclavePolyPointLocation(ECBPolyPoint 
 		else if (in_point.y == 4.0f)
 		{
 			//std::cout << ">>> set for branch 2 " << std::endl;
-			locationToReturn.blockKey.y = 3.0f;
+			locationToReturn.blockKey.y = 3;
 			locationToReturn.preciseCoord.y = 1.0f;
 		}
 
@@ -3771,7 +3771,7 @@ ECBPolyPointLocation IndependentUtils::getEnclavePolyPointLocation(ECBPolyPoint 
 		}
 		else if (in_point.z == 4.0f)
 		{
-			locationToReturn.blockKey.z = 3.0f;
+			locationToReturn.blockKey.z = 3;
 			locationToReturn.preciseCoord.z = 1.0f;
 		}
 

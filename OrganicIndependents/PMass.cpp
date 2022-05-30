@@ -256,7 +256,7 @@ bool PMass::collideAtomIntoExistingMass(int in_idToCollide)
 
 void PMass::insertNewFusedArea(FusableArea in_fusableArea)
 {
-	int currentFusedAreaSize = fusedAreas.size();
+	int currentFusedAreaSize = int(fusedAreas.size());
 	fusedAreas[currentFusedAreaSize] = in_fusableArea;
 };
 

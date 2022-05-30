@@ -11,7 +11,7 @@ class PRResult
 	public:
 		void insertResult(PMassResult in_result)
 		{
-			acquiredResults[acquiredResults.size()] = in_result;
+			acquiredResults[int(acquiredResults.size())] = in_result;
 		}
 		std::map<int, PMassResult> acquiredResults;
 };
