@@ -28,14 +28,24 @@ class BoundaryPolyIndicator
 		}
 		BoundaryOrientation getBoundaryIndicatorValue()
 		{
+			BoundaryOrientation returnOrientation = BoundaryOrientation::NONE;
 			if (indicatorData == 0)
 			{
-				return BoundaryOrientation::NONE;
+				returnOrientation = BoundaryOrientation::NONE;
 			}
 			else
 			{
-
+				switch (indicatorData)
+				{
+					case 128:	{ returnOrientation = BoundaryOrientation::NEG_Z; }
+					case 64:	{ returnOrientation = BoundaryOrientation::POS_X; }
+					case 32:	{ returnOrientation = BoundaryOrientation::POS_Z; }
+					case 16:	{ returnOrientation = BoundaryOrientation::NEG_X; }
+					case 8:		{ returnOrientation = BoundaryOrientation::POS_Y; }
+					case 4:		{ returnOrientation = BoundaryOrientation::NEG_Y; }
+				}
 			}
+			return returnOrientation;
 		}
 };
 
