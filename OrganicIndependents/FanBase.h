@@ -4,6 +4,7 @@
 #define FANBASE_H
 
 #include "FanData.h"
+#include "BoundaryPolyIndicator.h"
 #include <iostream>
 
 class FanBase
@@ -23,7 +24,8 @@ public:
 
 	unsigned short materialID = 0;
 	unsigned char numberOfTertiaries = 0;
-	unsigned char faceAlignment = 0;
+	//unsigned char faceAlignment = 0;
+	BoundaryPolyIndicator faceAlignment;
 
 	// for the normal
 	ECBPolyPoint emptyNormal;

@@ -64,6 +64,7 @@ void FanManager::insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan)
 	currentTriangleRef->numberOfTertiaries = numberOfPolyMetaDataPoints - 2;		// set the number of tertiaries
 	currentTriangleRef->materialID = in_wrappedFan.poly.materialID;
 	currentTriangleRef->emptyNormal = in_wrappedFan.poly.emptyNormal;
+	currentTriangleRef->faceAlignment = in_wrappedFan.poly.faceAlignment;
 
 
 	// be sure to increment the number of secondary polys

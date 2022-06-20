@@ -76,6 +76,9 @@
     <Filter Include="Header Files\RippleImpact">
       <UniqueIdentifier>{3209fc69-e149-49d1-9e39-766815825896}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BoundaryPolyIndicator">
+      <UniqueIdentifier>{ca046ded-99f4-47c5-b48c-a4d8155581c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -584,6 +587,12 @@
     </ClInclude>
     <ClInclude Include="RippleImpactRegister.h">
       <Filter>Header Files\RippleImpact</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundaryPolyIndicator.h">
+      <Filter>Header Files\BoundaryPolyIndicator</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundaryOrientation.h">
+      <Filter>Header Files\BoundaryPolyIndicator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #define FANDATA_H
 
 #include "ECBPolyPoint.h"
+#include "BoundaryPolyIndicator.h"
 
 class FanData
 {
@@ -12,7 +13,8 @@ public:
 	FanData(unsigned char in_intArrayPtr[],
 		unsigned short in_materialID,
 		unsigned char in_numberOfTertiaries,
-		unsigned char in_faceAlignment,
+		//unsigned char in_faceAlignment,
+		BoundaryPolyIndicator in_faceAlignment,
 		ECBPolyPoint in_emptyNormal)
 	{
 		for (int x = 0; x < 8; x++)
@@ -28,7 +30,8 @@ public:
 	FanData(unsigned int in_intArrayPtr[],
 		short in_materialID,
 		unsigned char in_numberOfTertiaries,
-		unsigned char in_faceAlignment,
+		//unsigned char in_faceAlignment,
+		BoundaryPolyIndicator in_faceAlignment,
 		ECBPolyPoint in_emptyNormal)
 	{
 		for (int x = 0; x < 8; x++)
@@ -44,7 +47,8 @@ public:
 	unsigned int pointArray[8] = { 0 };
 	unsigned short materialID = 0;
 	unsigned char numberOfTertiaries = 0;
-	unsigned char faceAlignment = 0;
+	//unsigned char faceAlignment = 0;
+	BoundaryPolyIndicator faceAlignment;
 
 	// for the normal
 	ECBPolyPoint emptyNormal;

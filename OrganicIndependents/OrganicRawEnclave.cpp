@@ -906,7 +906,7 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 		int targetInt = PolyUtils::convertBlockCoordsToSingle(in_blockKey);
 		if (blockMap.size() != 0)
 		{
-			std::cout << "(OrganicRawEnclave): blocks were already loaded in this ORE (LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER)." << std::endl;
+			//std::cout << "(OrganicRawEnclave): blocks were already loaded in this ORE (LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER)." << std::endl;
 			auto existingBlockFinder = blockMap.find(targetInt);
 			if (existingBlockFinder != blockMap.end())
 			{
@@ -983,7 +983,7 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 		currentLodState == ORELodState::FULL
 	)
 	{
-		std::cout << "(OrganicRawEnclave): getBlockStatus -> entered FULL branch. " << std::endl;
+		//std::cout << "(OrganicRawEnclave): getBlockStatus -> entered FULL branch. " << std::endl;
 
 		auto fullUnexposedBlockList = fetchUnexposedBlockKeys();
 		auto fullUnexposedFinder = fullUnexposedBlockList.find(in_blockKey);

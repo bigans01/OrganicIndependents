@@ -167,6 +167,8 @@
     <ClInclude Include="BlueprintTransformRefs.h" />
     <ClInclude Include="BorderDataMap.h" />
     <ClInclude Include="BorderMDFaceList.h" />
+    <ClInclude Include="BoundaryOrientation.h" />
+    <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="Cycle.h" />
