@@ -24,6 +24,21 @@ NeighboringBlockLocation NeighboringBlockLocationSet::fetchSetByEuclideanDirecti
 	}	    
 }
 
+BoundaryOrientation NeighboringBlockLocationSet::getBoundaryValueForIndex(int in_index)
+{
+	BoundaryOrientation returnOrientation = BoundaryOrientation::NONE;
+	switch (in_index)
+	{
+		case 0: { returnOrientation = BoundaryOrientation::POS_X; break; }
+		case 1: { returnOrientation = BoundaryOrientation::NEG_X; break; }
+		case 2: { returnOrientation = BoundaryOrientation::POS_Y; break; }
+		case 3: { returnOrientation = BoundaryOrientation::NEG_Y; break; }
+		case 4: { returnOrientation = BoundaryOrientation::NEG_Z; break; }
+		case 5: { returnOrientation = BoundaryOrientation::POS_Z; break; }
+	}
+	return returnOrientation;
+}
+
 NeighboringBlockLocation NeighboringBlockLocationSet::calculatePosX(EnclaveKeyDef::EnclaveKey in_originBlueprintKey,
 	EnclaveKeyDef::EnclaveKey in_originOREKey,
 	EnclaveKeyDef::EnclaveKey in_originBlockKey)

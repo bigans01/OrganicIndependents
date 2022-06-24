@@ -6,6 +6,7 @@
 #include "NeighboringBlockLocation.h"
 #include "EnclaveKeyDef.h"
 #include "EuclideanDirection3D.h"
+#include "BoundaryOrientation.h"
 
 class NeighboringBlockLocationSet
 {
@@ -59,6 +60,9 @@ class NeighboringBlockLocationSet
 			EnclaveKeyDef::EnclaveKey in_originBlockKey);
 
 		NeighboringBlockLocation fetchSetByEuclideanDirection(EuclideanDirection3D in_direction);
+
+		// Boundary orientation
+		BoundaryOrientation getBoundaryValueForIndex(int in_index);
 
 	private:
 		void determineNeighbors();
