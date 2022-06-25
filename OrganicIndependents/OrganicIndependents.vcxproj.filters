@@ -594,6 +594,9 @@
     <ClInclude Include="BoundaryOrientation.h">
       <Filter>Header Files\BoundaryPolyIndicator</Filter>
     </ClInclude>
+    <ClInclude Include="NeighboringBlockRelativeOrientation.h">
+      <Filter>Header Files\Neighbors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

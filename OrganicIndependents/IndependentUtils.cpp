@@ -8951,3 +8951,63 @@ ECBPolyPointTri IndependentUtils::adjustEnclaveTriangleCoordsToWorldSpace(ECBPol
 	actualCoords.triPoints[2].z = enclavePointAdjustmentValue.z + in_precisePolyPointTri.triPoints[2].z;
 	return actualCoords;
 }
+
+BoundaryOrientation IndependentUtils::getOppositeOrientation(BoundaryOrientation in_boundaryOrientation)
+{
+	BoundaryOrientation returnOrientation = BoundaryOrientation::NONE;
+	switch (in_boundaryOrientation)
+	{
+		case BoundaryOrientation::POS_X: {	returnOrientation = BoundaryOrientation::NEG_X; break; }
+		case BoundaryOrientation::NEG_X: {	returnOrientation = BoundaryOrientation::POS_X; break; }
+		case BoundaryOrientation::POS_Y: {	returnOrientation = BoundaryOrientation::NEG_Y; break; }
+		case BoundaryOrientation::NEG_Y: {	returnOrientation = BoundaryOrientation::POS_Y; break; }
+		case BoundaryOrientation::POS_Z: {	returnOrientation = BoundaryOrientation::NEG_Z; break; }
+		case BoundaryOrientation::NEG_Z: {	returnOrientation = BoundaryOrientation::POS_Z; break; }
+	}
+	return returnOrientation;
+}
+
+void IndependentUtils::printBoundaryOrientation(BoundaryOrientation in_boundaryOrientation)
+{
+	switch (in_boundaryOrientation)
+	{
+		case BoundaryOrientation::POS_X: { std::cout << "POS_X"; break; }
+		case BoundaryOrientation::NEG_X: { std::cout << "NEG_X"; break; }
+		case BoundaryOrientation::POS_Y: { std::cout << "POS_Y"; break; }
+		case BoundaryOrientation::NEG_Y: { std::cout << "NEG_Y"; break; }
+		case BoundaryOrientation::POS_Z: { std::cout << "POS_Z"; break; }
+		case BoundaryOrientation::NEG_Z: { std::cout << "NEG_Z"; break; }
+	}
+}
+
+int IndependentUtils::convertBoundaryOrientationToInt(BoundaryOrientation in_boundaryOrientation)
+{
+	int returnValue = 0;
+	switch (in_boundaryOrientation)
+	{
+		case BoundaryOrientation::NONE:  { returnValue = 0; break; }
+		case BoundaryOrientation::POS_X: { returnValue = 2; break; }
+		case BoundaryOrientation::NEG_X: { returnValue = 4; break; }
+		case BoundaryOrientation::POS_Y: { returnValue = 5; break; }
+		case BoundaryOrientation::NEG_Y: { returnValue = 6; break; }
+		case BoundaryOrientation::POS_Z: { returnValue = 3; break; }
+		case BoundaryOrientation::NEG_Z: { returnValue = 1; break; }
+	}
+	return returnValue;
+}
+
+BoundaryOrientation IndependentUtils::convertIntToBoundaryOrientation(int in_indexValueToConvert)
+{
+	BoundaryOrientation returnOrientation;
+	switch (in_indexValueToConvert)
+	{
+		case 0: { returnOrientation = BoundaryOrientation::NONE; break; }
+		case 2: { returnOrientation = BoundaryOrientation::POS_X; break;}
+		case 4: { returnOrientation = BoundaryOrientation::NEG_X; break;}
+		case 5: { returnOrientation = BoundaryOrientation::POS_Y; break;}
+		case 6: { returnOrientation = BoundaryOrientation::NEG_Y; break;}
+		case 3: { returnOrientation = BoundaryOrientation::POS_Z; break;}
+		case 1: { returnOrientation = BoundaryOrientation::NEG_Z; break;}
+	}
+	return returnOrientation;
+}

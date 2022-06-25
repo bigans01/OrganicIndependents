@@ -28,6 +28,7 @@
 #include "ECBPoly.h"
 #include "EnclaveBlockVertexTri.h"
 #include "DynamicBorderLineList.h"
+#include "BoundaryOrientation.h"
 
 class EnclaveTriangle;
 class IndependentUtils
@@ -135,6 +136,11 @@ class IndependentUtils
 		static ECBPolyPointTri convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri);
 		static ECBPolyPointTri combineClampedCoordsWithPrecise(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
 		static ECBPolyPointTri adjustEnclaveTriangleCoordsToWorldSpace(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+
+		static BoundaryOrientation getOppositeOrientation(BoundaryOrientation in_boundaryOrientation);
+		static void printBoundaryOrientation(BoundaryOrientation in_boundaryOrientation);
+		static int convertBoundaryOrientationToInt(BoundaryOrientation in_boundaryOrientation);
+		static BoundaryOrientation convertIntToBoundaryOrientation(int in_indexValueToConvert);
 };
 
 #endif

@@ -249,6 +249,7 @@
     <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="NeighboringBlockLocation.h" />
     <ClInclude Include="NeighboringBlockLocationSet.h" />
+    <ClInclude Include="NeighboringBlockRelativeOrientation.h" />
     <ClInclude Include="NeighboringBlueprintLocation.h" />
     <ClInclude Include="NeighboringBlueprintLocationSet.h" />
     <ClInclude Include="NeighboringORELocation.h" />
