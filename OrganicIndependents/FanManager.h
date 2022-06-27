@@ -17,8 +17,70 @@ class IndependentUtils;
 class FanManager
 {
 public:
+	FanManager() {};
+
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-	// -------------------------------------------------------------------------------> Overload #1
+	// -------------------------------------------------------------------------------> Constructor Overload #1
+	// This overloaded constructor was added on 6/26/2022, as a requirement for EnclaveBlock = operator to work.
+	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+	FanManager(const FanManager& fanManager_a)
+	{
+		totalFans = fanManager_a.totalFans;
+		currentMode = fanManager_a.currentMode;
+		totalPoints = fanManager_a.totalPoints;
+		currentPointMode = fanManager_a.currentPointMode;
+
+
+		for (int x = 0; x < 16; x++)
+		{
+			triangleArray[x] = fanManager_a.triangleArray[x];
+		}
+
+		// Fan Array checks and copies
+		isExpandedFanArrayActive = fanManager_a.isExpandedFanArrayActive;
+		expandedFanArraySize = fanManager_a.expandedFanArraySize;
+		if (isExpandedFanArrayActive == true)
+		{
+			if (currentMode == FanArrayMode::THIN)
+			{
+				expandedThinFanArray.reset(new ThinFan[expandedFanArraySize]);
+				for (int x = 0; x < expandedFanArraySize; x++)
+				{
+					expandedThinFanArray[x] = fanManager_a.expandedThinFanArray[x];
+				}
+			}
+			else if (currentMode == FanArrayMode::FAT)
+			{
+				expandedFatFanArray.reset(new FatFan[expandedFanArraySize]);
+				for (int x = 0; x < expandedFanArraySize; x++)
+				{
+					expandedFatFanArray[x] = fanManager_a.expandedFatFanArray[x];
+				}
+			}
+		}
+
+		// EnclaveBlockVertex array checks and copies
+		expandedVertexArraySize = fanManager_a.expandedVertexArraySize;
+		if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+		{
+			for (int x = 0; x < totalPoints; x++)		// only need to copy over an amount of points equal to totalPoints
+			{
+				structarray[x] = fanManager_a.structarray[x];
+			}
+		}
+		else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+		{
+			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
+			for (int x = 0; x < totalPoints; x++)
+			{
+				expandedVertexArray[x] = fanManager_a.expandedVertexArray[x];		// copy over the contents
+			}
+		}
+	}
+
+	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// -------------------------------------------------------------------------------> Operator Overload #1
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	FanManager& operator=(FanManager&& fanManager_a)
 	{
@@ -79,7 +141,7 @@ public:
 	}
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-	// -------------------------------------------------------------------------------> Overload #2 (direct copy, FanManager to FanManager)
+	// -------------------------------------------------------------------------------> Operator Overload #2 (direct copy, FanManager to FanManager)
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	FanManager& operator=(const FanManager& fanManager_a)
 	{

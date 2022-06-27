@@ -26,6 +26,7 @@
 #include <vector>
 #include "OREDependencyState.h"
 #include "Operable3DEnclaveKeySet.h"
+#include "BlockCopyQuery.h"
 
 class OrganicRawEnclave
 {
@@ -141,6 +142,9 @@ public:
 
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
+	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists OR can be generated; 
+																				// the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
+																				// bool value of false means that a block was not found, while true indicates it was found.
 
 	// **************************** START DEBUG FUNCTIONS *********************************************
 

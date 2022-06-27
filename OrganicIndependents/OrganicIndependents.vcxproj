@@ -159,6 +159,7 @@
     <ClInclude Include="BlockBorderMDFace.h" />
     <ClInclude Include="BlockBorderMDLine.h" />
     <ClInclude Include="BlockCircuit.h" />
+    <ClInclude Include="BlockCopyQuery.h" />
     <ClInclude Include="BlockFlags.h" />
     <ClInclude Include="BlockFlagStates.h" />
     <ClInclude Include="BlockPolyPoint.h" />

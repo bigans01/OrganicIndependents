@@ -19,6 +19,7 @@
 #include "FanBase.h"
 #include "ThinFan.h"
 #include "FanManager.h"
+#include "BoundaryOrientation.h"
 
 // moved to OrganicPolyOperationsLib (along with other classes) from OrganicCoreLib on 5/1/2020**
 
@@ -42,6 +43,8 @@ public:
 	PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);						// check if the input parameter exists in the structarray; returns the location of the found point (only really used if it exists)
 	PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);
 	BlockSearchMeta checkForExactPoint(ECBPolyPoint in_point, int in_debugFlag);
+	bool checkIfPolysExistOnBoundary(BoundaryOrientation in_boundaryOrientationToCheck);		// checks whether or not any ThinFans or FatFans are marked
+																								// as being on particular face (i.e, POS_X)
 	BlockSearchMeta checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point, EnclaveKeyDef::EnclaveKey in_key, int in_debugFlag);
 	EnclaveBlockVertex fetchPoint(unsigned char in_pointIndex);									// for fetching with unsigned char
 	EnclaveBlockVertex fetchPoint(int in_pointIndex);											// for fetching with int	(may be consolidated later)

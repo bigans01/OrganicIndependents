@@ -597,6 +597,9 @@
     <ClInclude Include="NeighboringBlockRelativeOrientation.h">
       <Filter>Header Files\Neighbors</Filter>
     </ClInclude>
+    <ClInclude Include="BlockCopyQuery.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

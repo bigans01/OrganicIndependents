@@ -774,6 +774,76 @@ std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> OrganicR
 	return returnSet;
 }
 
+BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	BlockCopyQuery returnQuery;
+
+	// do the following if we are in a ORELodState of LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER.
+	if
+		(
+			currentLodState == ORELodState::LOD_ENCLAVE_SMATTER
+			||
+			currentLodState == ORELodState::LOD_ENCLAVE_RMATTER
+			)
+	{
+		// if there are blocks already populated, check those; we won't need -- and don't want to --
+		// call produceBlockCopies() as that is an expensive operation.
+		if (blockMap.size() != 0)
+		{
+			auto loadedBlocksBegin = blockMap.begin();
+			auto loadedBlocksEnd = blockMap.end();
+			for (; loadedBlocksBegin != loadedBlocksEnd; loadedBlocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(loadedBlocksBegin->first);
+				if (currentKey == in_blockKey)	// when these match, the block was found.
+				{
+					BlockCopyQuery foundCopy(blockMap[loadedBlocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
+					returnQuery = foundCopy;
+				}
+			}
+		}
+		else
+		{
+			// we must generate block copies to produce this list; we will assume that the data needed to do this is already in the skeletonSGM.
+			auto fetchedExposedBlockMap = produceBlockCopies();
+			auto blocksBegin = fetchedExposedBlockMap.begin();
+			auto blocksEnd = fetchedExposedBlockMap.end();
+			for (; blocksBegin != blocksEnd; blocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
+				if (currentKey == in_blockKey)	// when these match, the block was found.
+				{
+					BlockCopyQuery foundCopy(fetchedExposedBlockMap[blocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
+					returnQuery = foundCopy;
+				}
+			}
+		}
+	}
+
+	// otherwise, scan the existing block map if we are in a ORELodState of LOD_BLOCK.
+	else if
+	(
+		currentLodState == ORELodState::LOD_BLOCK
+	)
+	{
+		// any block in the block map, that is "visible" (not implemented yet) would be considered EXPOSED.
+		auto exposedBlocksBegin = blockMap.begin();
+		auto exposedBlocksEnd = blockMap.end();
+		for (; exposedBlocksBegin != exposedBlocksEnd; exposedBlocksBegin++)
+		{
+			EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(exposedBlocksBegin->first);
+			if (currentKey == in_blockKey)	// when these match, the block was found.
+			{
+				BlockCopyQuery foundCopy(blockMap[exposedBlocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
+				returnQuery = foundCopy;
+			}
+		}
+	}
+
+	// NOTE: we don't do anything if the ORE's current state is ORELodState::FULL.
+	return returnQuery;
+}
+
 void OrganicRawEnclave::simulateBlockProduction()
 {
 	BorderDataMap borderDataMap; // for getting trace results in enclaves

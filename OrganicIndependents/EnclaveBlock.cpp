@@ -70,6 +70,22 @@ BlockSearchMeta EnclaveBlock::checkForExactPoint(ECBPolyPoint in_point, int in_d
 
 }
 
+bool EnclaveBlock::checkIfPolysExistOnBoundary(BoundaryOrientation in_boundaryOrientationToCheck)
+{
+	bool doPolysExistInBoundary = false;
+	int numberOfFans = getNumberOfBBFans();
+	for (int currentFanIndex = 0; currentFanIndex < numberOfFans; currentFanIndex++)
+	{
+		auto targetFanPtr = retrieveSecondaryFromIndex(currentFanIndex);
+		if (targetFanPtr->faceAlignment.getBoundaryIndicatorValue() == in_boundaryOrientationToCheck)
+		{
+			doPolysExistInBoundary = true;
+			break;
+		}
+	}
+	return doPolysExistInBoundary;
+}
+
 EnclaveBlockVertex EnclaveBlock::fetchPoint(unsigned char in_pointIndex)
 {
 	// EBC, NEW
