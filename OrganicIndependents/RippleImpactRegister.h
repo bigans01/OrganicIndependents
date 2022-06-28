@@ -33,6 +33,13 @@ class RippleImpactRegister
 			impacts[in_blueprintKey].impactedOREs[in_oreKey].insertBlockKey(in_blockKey, in_boundaryOrientation);
 		}
 
+		void removeImpactedBlock(EnclaveKeyDef::EnclaveKey in_blueprintKey,
+			EnclaveKeyDef::EnclaveKey in_oreKey,
+			EnclaveKeyDef::EnclaveKey in_blockKey)
+		{
+			impacts[in_blueprintKey].impactedOREs[in_oreKey].eraseBlockKey(in_blockKey);
+		}
+
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchImpactedBlueprints()	// returns a vector of impacted blueprint keys.
 		{
 			std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> returnSet;
@@ -83,6 +90,11 @@ class RippleImpactRegister
 			{
 				impactedBlockOrientations[in_blockKey] = in_boundaryOrientation;
 			};
+
+			void eraseBlockKey(EnclaveKeyDef::EnclaveKey in_blockKey)
+			{
+				impactedBlockOrientations.erase(in_blockKey);
+			}
 		};
 			
 		struct RippleImpactedBlueprint
