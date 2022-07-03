@@ -40,6 +40,37 @@ class Message
 
 		int messageID = 0;				// set by the constructor.
 
+		// ------------------------------------------------- appending functions
+		void appendOtherMessage(Message* in_otherMessageRef)
+		{
+			// append any ints from other message.
+			if (in_otherMessageRef->intVector.size() != 0)
+			{
+				for (auto& otherMessageIntVectorCurrentVal : in_otherMessageRef->intVector)
+				{
+					intVector.push_back(otherMessageIntVectorCurrentVal);
+				}
+			}
+
+			// append any floats from other message.
+			if (in_otherMessageRef->floatVector.size() != 0)
+			{
+				for (auto& otherMessageFloatVectorCurrentVal : in_otherMessageRef->floatVector)
+				{
+					floatVector.push_back(otherMessageFloatVectorCurrentVal);
+				}
+			}
+
+			// append any strings from other message.
+			if (in_otherMessageRef->stringVector.size() != 0)
+			{
+				for (auto& otherMessageStringVectorCurrentVal : in_otherMessageRef->stringVector)
+				{
+					stringVector.push_back(otherMessageStringVectorCurrentVal);
+				}
+			}
+		}
+
 		// ------------------------------------------------- insertion functions
 		void insertEnclaveKey(EnclaveKeyDef::EnclaveKey in_key)
 		{
