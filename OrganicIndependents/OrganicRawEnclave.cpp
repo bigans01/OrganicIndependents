@@ -197,6 +197,12 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
 			break;
 		};
+
+		case ORELodState::FULL:
+		{
+			// when morphing from FULL to LOD_BLOCK, all blocks will initially be unexposed.
+			produceAllUnexposedBlocks(in_mutexRef);
+		};
 	}
 
 	currentLodState = ORELodState::LOD_BLOCK;					// switch to block mode
@@ -204,13 +210,34 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 	currentAppendedState = OREAppendedState::NONE;				// appended state isn't applicable when in block mode
 
 	// all maps that don't contain block data should be cleared; there is no need to have this data from this point forward,
-	// as any data that exists should come from blocks, and blocks alone; if this ORE is read from a file, the part of the file for that ORE 
+	// as any data that exists should come from blocks and blocks alone, even if they have a state of EXPOSED, UNEXPOSED, etc; if this ORE is read from a file, the part of the file for that ORE 
 	// needs to only have block data.
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
 	skeletonSGM.triangleSkeletonSupergroups.clear();
 	etcSGM.enclaveTriangleSupergroups.clear();
 	organicTriangleSecondarySGM.secondarySupergroups.clear();
 
+}
+
+void OrganicRawEnclave::produceAllUnexposedBlocks(std::mutex* in_mutexRef)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef);
+
+	// go through 0-3, for x/y/z
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			for (int z = 0; z < 4; z++)
+			{
+				// NOTE: the default material for a skeleton is 0; we will need to add functionality/options
+				// to set this later; perhaps a variable defined in the ORE that will auto-set this
+				EnclaveBlockSkeleton newSkeleton;
+				int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(x, y, z);
+				blockSkeletonMap[blockCoordsToSingle] = newSkeleton;
+			}
+		}
+	}
 }
 
 void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey)
@@ -245,7 +272,7 @@ void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKe
 
 		case ORELodState::LOD_BLOCK:
 		{
-
+			// if we are in a LOD_BLOCK state, the blocks should already be setup, so there shouldn't be anything to do here. Shoo!
 			break;
 		};
 		case ORELodState::FULL:

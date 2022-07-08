@@ -200,6 +200,10 @@ private:
 	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
+	void produceAllUnexposedBlocks(std::mutex* in_mutexRef);		// should be used when going from currentLodState of FULL to BLOCK; this will 
+																	// make all 64 possible blocks in the ORE be stored in the blockSkeletonMap. 
+																	// Currently used by morphLodToBlock function. Default material for each block is 0.
+																	
 
 	void insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,	// inserts OrganicTriangleSecondaries into a refed OrganicTriangleSecondarySupergroupManager;
 														int in_polyID,												// needed by the function, simulateBlockProduction(). 
