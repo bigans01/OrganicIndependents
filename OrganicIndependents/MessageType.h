@@ -71,7 +71,24 @@ enum class MessageType
 	// PRMA2D Resolution (XY, XZ, YZ)
 	PRMA2DRESOLVER_XY,
 	PRMA2DRESOLVER_XZ,
-	PRMA2DRESOLVER_YZ
+	PRMA2DRESOLVER_YZ,
+
+	// SPoly shell production messages (SPolyShellProducer)
+	// See their usages in:
+	// -SPolyShellProducer::convertBoundarySPolySupergroupToMessage (OrganicGLWinLib)
+	SPOLYSHELLPRODUCER_BOUNDARY_PRODUCED_FROM_INPUT,		// signifies that the Message contains melted SPolys, 
+															// formed from a SPolyShellProducer that had input SPolys. 
+															
+	SPOLYSHELLPRODUCER_BOUNDARY_PRODUCED_FROM_NO_INPUT,		// signifies that the Message contains melted SPolys, 
+															// formed from a SPolyShellProducer that had *NO* input SPolys. 
+
+	// SPoly origin 
+	// See their usages in:
+	// -OrganicSystem::jobCheckIfPolysExistInBlockFace (OrganicCoreLib)
+	// -RJPhasedDeleteBlock::interpretPhasedJobMessage (OrganicCoreLib)
+	SPOLY_ORIGINATES_FROM_EXPOSED_OR_UNEXPOSED,		// indicates that the SPoly origins were from an existing EXPOSED or UNEXPOSED block.
+	SPOLY_ORIGINATES_FROM_NONEXISTENT_BECAUSE_FULL	// indicates that the SPoly origins were from a artifical box-shell (non-existent block)
+
 };
 
 #endif
