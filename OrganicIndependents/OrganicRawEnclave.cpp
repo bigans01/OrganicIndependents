@@ -222,7 +222,7 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 void OrganicRawEnclave::produceAllUnexposedBlocks(std::mutex* in_mutexRef)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
-
+	// std::cout << "(OrganicRawEnclave): producing all unexposed blocks, due to morph from FULL to BLOCK. " << std::endl;
 	// go through 0-3, for x/y/z
 	for (int x = 0; x < 4; x++)
 	{
@@ -238,6 +238,7 @@ void OrganicRawEnclave::produceAllUnexposedBlocks(std::mutex* in_mutexRef)
 			}
 		}
 	}
+	// std::cout << "(OrganicRawEnclave): Done producing unexposed blocks; size of blockSkeletonMap is now: " << blockSkeletonMap.size() << std::endl;
 }
 
 void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey)
@@ -847,7 +848,8 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 		}
 	}
 
-	// otherwise, scan the existing block map if we are in a ORELodState of LOD_BLOCK.
+	// otherwise, scan the existing EXPOSED and UNEXPOSED maps if we are in a ORELodState of LOD_BLOCK;
+	// if we don't find anything in either of those, then the block doesn't exist.
 	else if
 	(
 		currentLodState == ORELodState::LOD_BLOCK
@@ -856,13 +858,34 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 		// any block in the block map, that is "visible" (not implemented yet) would be considered EXPOSED.
 		auto exposedBlocksBegin = blockMap.begin();
 		auto exposedBlocksEnd = blockMap.end();
+		bool exposedDiscovered = false;
 		for (; exposedBlocksBegin != exposedBlocksEnd; exposedBlocksBegin++)
 		{
 			EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(exposedBlocksBegin->first);
 			if (currentKey == in_blockKey)	// when these match, the block was found.
 			{
 				BlockCopyQuery foundCopy(blockMap[exposedBlocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
+				exposedDiscovered = true;
 				returnQuery = foundCopy;
+			}
+		}
+
+		// if we didn't find it in exposed, check the unexposed.
+		// If it was found, and because its unexposed, we'll just return en EnclaveBlock instance that has nothing in it
+		// (by their nature, UNEXPOSED EnclaveBlocks should have no triangles to render)
+		if (exposedDiscovered == false)
+		{
+			auto unexposedBlocksBegin = blockSkeletonMap.begin();
+			auto unexposedBlocksEnd = blockSkeletonMap.end();
+			for (; unexposedBlocksBegin != unexposedBlocksEnd; unexposedBlocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(unexposedBlocksBegin->first);
+				if (currentKey == in_blockKey)	// when these match, the block was found.
+				{
+					EnclaveBlock emptyBlock;
+					BlockCopyQuery foundCopy(emptyBlock);
+					returnQuery = foundCopy;
+				}
 			}
 		}
 	}

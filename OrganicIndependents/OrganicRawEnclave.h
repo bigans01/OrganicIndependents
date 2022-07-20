@@ -93,7 +93,7 @@ public:
 												// It will then set the value of the blockSkeletonMap to be the rMassSolidMap, which is the only way 
 												// to update the blockSkeletonMap with new solid blocks, when in an ORELodState::LOD_ENCLAVE_RMATTER.
 
-	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from LOD_ENCLAVE_RMATTER or LOD_ENCLAVE_SMATTER.
+	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL.
 	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)VicViper304!
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
@@ -142,9 +142,11 @@ public:
 
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
-	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists OR can be generated; 
-																				// the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
-																				// bool value of false means that a block was not found, while true indicates it was found.
+	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists, can be generated, 
+																				// or is even UNEXPOSED; the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
+																				// bool value of false in BlockCopyQuery.wasFound means that a block was not found, while true indicates it was found. 
+																				// In other words, false would only be returned for a non-existent block.
+
 
 	// **************************** START DEBUG FUNCTIONS *********************************************
 
