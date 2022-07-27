@@ -22,6 +22,30 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_
 	poly.emptyNormal = in_emptyNormal;
 }
 
+void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
+	short in_materialID,
+	ECBPolyPoint in_emptyNormal,
+	BoundaryPolyIndicator in_boundaryPolyIndicator)
+{
+	// Step 1: load the points.
+	//std::cout << "********* Loading points: " << std::endl;
+
+	for (int x = 0; x < in_blockCircuitRef->finalCircuitPoints.numberOfPoints; x++)
+	{
+		//poly.pointArray[x] = (unsigned char)x;	// convert to unsigned char, then store.
+		poly.fillPointIndex(x, x);
+		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[x]);
+
+		//std::cout << "point " << x << ": " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].x << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].y << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].z << std::endl;
+	}
+
+	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
+	//std::cout << "BBFan number of tertiaries: " << int(poly.numberOfTertiaries) << std::endl;
+	poly.materialID = in_materialID;
+	poly.emptyNormal = in_emptyNormal;
+	poly.faceAlignment = in_boundaryPolyIndicator;
+}
+
 int OrganicWrappedBBFan::checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap)
 {
 	int isValid = 0;

@@ -24,6 +24,10 @@ public:
 	EnclaveBlockVertex vertices[8];
 
 	void buildBBFan(BlockCircuit* in_blockCircuitRef, short in_materialID, ECBPolyPoint in_emptyNormal);
+	void buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef, 
+										 short in_materialID, 
+										 ECBPolyPoint in_emptyNormal,
+										 BoundaryPolyIndicator in_boundaryPolyIndicator);
 	int checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 	SegmentResult checkIfRunIsValidForTwoSegmentsSpecial(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 	int checkIfRunIsValidForTwoSegmentsViaCopy(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PrimarySegmentTracker in_trackerCopy, PolyRunDirection in_direction);

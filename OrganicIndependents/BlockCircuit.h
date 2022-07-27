@@ -17,6 +17,7 @@ class IndependentUtils;
 class BlockCircuit
 {
 public:
+	BlockCircuit() {};
 	BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, BorderDataMap* in_borderDataMapRef, int in_perfectClampValue, PolyDebugLevel in_debugLevel);
 
 	SCircuitSegment segmentArray[4];	// stores up to for segments
