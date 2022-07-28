@@ -122,6 +122,14 @@ public:
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
+	void instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// this function will remove a block from the skeleton map, and replace
+																											// the corresponding entry in blockMap with an entirely new, fresh, empty EnclaveBlock.
+
+	void insertVectoredBBFansIntoBlock(std::mutex* in_mutexRef,												// --> this function inserts a vector of OrganicWrappedBBFans into an EnclaveBlock.
+									   std::vector<OrganicWrappedBBFan> in_fanVector,						// this function assumes that the EnclaveBlock exists.
+									   EnclaveKeyDef::EnclaveKey in_key);
+
+
 	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
 																											// a different instance of OrganicRawEnclave, using the function appendSpawnedEnclaveTriangleSkeletonContainers; see usage in 
 																											// spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.

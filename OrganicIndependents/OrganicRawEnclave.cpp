@@ -536,6 +536,27 @@ EnclaveBlock* OrganicRawEnclave::getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKe
 	return &blockMap[keyToSingle];
 }
 
+void OrganicRawEnclave::instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef);	// because we are moving the state of a block from skeleton to "exposed", we need a lock.
+	int keyToSingle = PolyUtils::convertBlockCoordsToSingle(in_key.x, in_key.y, in_key.z);
+	blockSkeletonMap.erase(keyToSingle);
+	EnclaveBlock newBlock;
+	blockMap[keyToSingle] = newBlock;
+}
+
+void OrganicRawEnclave::insertVectoredBBFansIntoBlock(std::mutex* in_mutexRef, 
+													  std::vector<OrganicWrappedBBFan> in_fanVector, 
+													  EnclaveKeyDef::EnclaveKey in_key)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef); // updating the blocks requires a proper lock.
+	int keyToSingle = PolyUtils::convertBlockCoordsToSingle(in_key.x, in_key.y, in_key.z);
+	for (auto& currentFan : in_fanVector)
+	{
+		blockMap[keyToSingle].insertBBFanFromRawEnclave(currentFan);
+	}
+}
+
 std::map<int, EnclaveBlock>::iterator OrganicRawEnclave::getBlockMapBeginIter()
 {
 	return blockMap.begin();
