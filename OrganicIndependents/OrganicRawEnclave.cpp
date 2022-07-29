@@ -554,6 +554,7 @@ void OrganicRawEnclave::insertVectoredBBFansIntoBlock(std::mutex* in_mutexRef,
 	for (auto& currentFan : in_fanVector)
 	{
 		blockMap[keyToSingle].insertBBFanFromRawEnclave(currentFan);
+		total_triangles += currentFan.poly.numberOfTertiaries;
 	}
 }
 

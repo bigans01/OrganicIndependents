@@ -36,7 +36,7 @@ void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_block
 		poly.fillPointIndex(x, x);
 		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[x]);
 
-		//std::cout << "point " << x << ": " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].x << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].y << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].z << std::endl;
+		//std::cout << "(OrganicWrappedBBFan) inserting point " << x << ": " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].x << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].y << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].z << std::endl;
 	}
 
 	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
