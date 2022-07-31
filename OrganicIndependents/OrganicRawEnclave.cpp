@@ -247,6 +247,7 @@ void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::Encla
 	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
 	int erasedTriangles = blockMap[blockCoordsToSingle].getNumberOfTotalTriangles();	// get the number of triangles that existed in the block we're about to erase.
 	blockMap.erase(blockCoordsToSingle);
+	blockSkeletonMap.erase(blockCoordsToSingle);
 	total_triangles -= erasedTriangles;
 	eraseCounter++;
 }
@@ -543,6 +544,19 @@ void OrganicRawEnclave::instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRe
 	blockSkeletonMap.erase(keyToSingle);
 	EnclaveBlock newBlock;
 	blockMap[keyToSingle] = newBlock;
+}
+
+void OrganicRawEnclave::instantiateBlockAndRemoveSkeletonIfNonExistent(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef); // we will be checking, and potentially modifying the ORE, so we need a lock.
+	int keyToSingle = PolyUtils::convertBlockCoordsToSingle(in_key.x, in_key.y, in_key.z);
+	auto existingBlockFinder = blockMap.find(keyToSingle);
+	if (existingBlockFinder == blockMap.end())	// it doesn't exist
+	{
+		blockSkeletonMap.erase(keyToSingle);
+		EnclaveBlock newBlock;
+		blockMap[keyToSingle] = newBlock;
+	}
 }
 
 void OrganicRawEnclave::insertVectoredBBFansIntoBlock(std::mutex* in_mutexRef, 

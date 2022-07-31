@@ -38,6 +38,19 @@ class RippleImpactRegister
 			EnclaveKeyDef::EnclaveKey in_blockKey)
 		{
 			impacts[in_blueprintKey].impactedOREs[in_oreKey].eraseBlockKey(in_blockKey);
+
+			// check if the RippleImpactedORE has any more blocks; if it does not, we need to erase it.
+			if (impacts[in_blueprintKey].impactedOREs[in_oreKey].impactedBlockOrientations.size() == 0)
+			{
+				impacts[in_blueprintKey].impactedOREs.erase(in_oreKey);
+			}
+
+			// after checking for any removable OREs, we should check to see for removable blueprints.
+			// A blueprint should be removed if there are no remaining OREs in the map.
+			if (impacts[in_blueprintKey].impactedOREs.size() == 0)
+			{
+				impacts.erase(in_blueprintKey);
+			}
 		}
 
 		BoundaryOrientation lookupOrientation(EnclaveKeyDef::EnclaveKey in_blueprintKey,

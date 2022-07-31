@@ -124,6 +124,7 @@ public:
 	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
 	void instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// this function will remove a block from the skeleton map, and replace
 																											// the corresponding entry in blockMap with an entirely new, fresh, empty EnclaveBlock.
+	void instantiateBlockAndRemoveSkeletonIfNonExistent(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// works the same as instantiateBlockAndRemoveSkeleton, but only if the EnclaveBlock doesn't exist yet. 
 
 	void insertVectoredBBFansIntoBlock(std::mutex* in_mutexRef,												// --> this function inserts a vector of OrganicWrappedBBFans into an EnclaveBlock.
 									   std::vector<OrganicWrappedBBFan> in_fanVector,						// this function assumes that the EnclaveBlock exists.
