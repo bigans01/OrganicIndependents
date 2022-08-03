@@ -852,6 +852,8 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 	{
 		// if there are blocks already populated, check those; we won't need -- and don't want to --
 		// call produceBlockCopies() as that is an expensive operation.
+		//std::cout << "(OrganicRawEnclave::queryForBlockCopy): entered RMATTER/SMATTER branch. " << std::endl;
+		bool exposedDiscovered = false;
 		if (blockMap.size() != 0)
 		{
 			auto loadedBlocksBegin = blockMap.begin();
@@ -863,6 +865,7 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 				{
 					BlockCopyQuery foundCopy(blockMap[loadedBlocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
 					returnQuery = foundCopy;
+					exposedDiscovered = true;
 				}
 			}
 		}
@@ -879,9 +882,30 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 				{
 					BlockCopyQuery foundCopy(fetchedExposedBlockMap[blocksBegin->first]);	// create a BlockCopyQuery instance with the wasFound set to true.
 					returnQuery = foundCopy;
+					exposedDiscovered = true;
 				}
 			}
 		}
+
+		// if we didn't find it in exposed, check the UNEXPOSED blocks.
+		// If it was found, and because its unexposed, we'll just return en EnclaveBlock instance that has nothing in it
+		// (by their nature, UNEXPOSED EnclaveBlocks should have no triangles to render)
+		if (exposedDiscovered == false)
+		{
+			auto unexposedBlocksBegin = blockSkeletonMap.begin();
+			auto unexposedBlocksEnd = blockSkeletonMap.end();
+			for (; unexposedBlocksBegin != unexposedBlocksEnd; unexposedBlocksBegin++)
+			{
+				EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(unexposedBlocksBegin->first);
+				if (currentKey == in_blockKey)	// when these match, the block was found.
+				{
+					EnclaveBlock emptyBlock;
+					BlockCopyQuery foundCopy(emptyBlock);
+					returnQuery = foundCopy;
+				}
+			}
+		}
+
 	}
 
 	// otherwise, scan the existing EXPOSED and UNEXPOSED maps if we are in a ORELodState of LOD_BLOCK;
@@ -891,6 +915,7 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 		currentLodState == ORELodState::LOD_BLOCK
 	)
 	{
+		//std::cout << "(OrganicRawEnclave::queryForBlockCopy): entered BLOCK branch. " << std::endl;
 		// any block in the block map, that is "visible" (not implemented yet) would be considered EXPOSED.
 		auto exposedBlocksBegin = blockMap.begin();
 		auto exposedBlocksEnd = blockMap.end();
