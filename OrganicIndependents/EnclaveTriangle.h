@@ -45,6 +45,9 @@ public:
 	void printBlockKeys();				// prints the EnclaveKey block values of all blocks in the OrganicTriangleTertiary
 	bool doBlocksExistAtY(int in_y);	// checks if any blocks exist in the enclaveTriangleTeritary, at a specific layer of Y
 
+	void purgeBadFans();	// cleanup all the OrganicWrappedBBFans in the enclaveTriangleTertiary instance, 
+							// so that we don't end up inserting lines/points masquerading as triangles.
+
 private:
 	void resetRunMetaData(); // must be called before any run occurs.
 

@@ -53,6 +53,7 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 		std::cin >> invalid;
 	}
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
+	purgeBadFans();
 }
 
 void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, 
@@ -112,6 +113,31 @@ void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineLis
 		std::cin >> invalid;
 	}
 
+	purgeBadFans();
+}
+
+void EnclaveTriangle::purgeBadFans()
+{
+	// cycle through each OrganicWrappedBBFan, and clean it up via eraseBadFans();
+	// if the fan is completely botched (return value would be false), erase it.
+	std::vector<int> removalInts;
+	auto fansBegin = enclaveTriangleTertiary.triangleMap.begin();
+	auto fansEnd = enclaveTriangleTertiary.triangleMap.end();
+	for (; fansBegin != fansEnd; fansBegin++)
+	{
+		bool isCurrentFanValid = fansBegin->second.eraseBadFans();
+		if (isCurrentFanValid == false)
+		{
+			removalInts.push_back(fansBegin->first);
+		}
+	}
+
+	auto removalsBegin = removalInts.begin();
+	auto removalsEnd = removalInts.end();
+	for (; removalsBegin != removalsEnd; removalsBegin++)
+	{
+		enclaveTriangleTertiary.triangleMap.erase(*removalsBegin);
+	}
 }
 
 void EnclaveTriangle::resetRunMetaData()

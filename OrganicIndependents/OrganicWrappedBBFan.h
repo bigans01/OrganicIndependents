@@ -19,7 +19,6 @@ public:
 	int keyID;
 	PrimarySegmentTracker blockSegmentTracker;
 	PrimarySegmentTracker reverseSegmentTracker;
-	//BBFan poly;
 	FatFan poly;
 	EnclaveBlockVertex vertices[8];
 
@@ -29,6 +28,8 @@ public:
 										 ECBPolyPoint in_emptyNormal,
 										 BoundaryPolyIndicator in_boundaryPolyIndicator);
 	int checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
+	bool eraseBadFans();	// clean up any triangles that are actually points or lines, and reform the appropriate involved members
+							// (i.e., reform the vertices[] array and the poly.
 	SegmentResult checkIfRunIsValidForTwoSegmentsSpecial(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 	int checkIfRunIsValidForTwoSegmentsViaCopy(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PrimarySegmentTracker in_trackerCopy, PolyRunDirection in_direction);
 	int checkIfRunIsValidForTwoSegmentsReverse(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);

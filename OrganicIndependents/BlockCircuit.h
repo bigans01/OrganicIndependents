@@ -12,6 +12,8 @@
 #include "MicroPolyPointContainer.h"
 #include "TertiaryTriangleContainer.h"
 #include "PolyLogger.h"
+#include <map>
+#include "ECBPolyPoint.h"
 
 class IndependentUtils;
 class BlockCircuit
@@ -35,6 +37,7 @@ public:
 	TertiaryTriangleContainer produceAndReturnTertiaryTriangles(EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blockKey);
 	MicroPolyPointContainer finalCircuitPoints;
 
+	bool checkForDuplicatePoints(MicroPolyPointContainer* in_containerRef);	// temporarily added on 8/7/2022; may be removed after coming up with a solution.
 
 private:
 	int perfectClampValue = 0;

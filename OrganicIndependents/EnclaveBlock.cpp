@@ -125,7 +125,7 @@ ECBPolyPoint EnclaveBlock::convertVertexToPolyPoint(EnclaveBlockVertex in_blockV
 
 void EnclaveBlock::listSecondaries()
 {
-
+	manager.listSecondaries();
 }
 
 void EnclaveBlock::listPoints()

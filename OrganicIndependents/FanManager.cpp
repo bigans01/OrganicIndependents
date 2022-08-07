@@ -343,7 +343,21 @@ void FanManager::listSecondaries()
 		std::cout << ">>> Printing LOCALIZED mode array...; totalFans value is: " << totalFans << std::endl;
 		for (int x = 0; x < totalFans; x++)
 		{
-			triangleArray[x].printPoints();
+			std::cout << "Printing points/data for fan at " << x << std::endl;
+			//triangleArray[x].printPoints();
+			auto targetFanPtr = &triangleArray[x];
+			std::cout << "Orientation: " << targetFanPtr->faceAlignment.getPrintableIndicatorValue() << std::endl;
+			auto currentFanData = targetFanPtr->getFanData();
+			int totalPointsToPrint = currentFanData.numberOfTertiaries + 2;
+			for (int y = 0; y < totalPointsToPrint; y++)
+			{
+				unsigned int currentPointIndex = currentFanData.pointArray[y];
+				auto fetchedVertex = fetchPoint(currentPointIndex);
+				auto vertexConvertedToPoint = convertVertexToPolyPoint(fetchedVertex);
+				std::cout << "Point at triangle index [" << y << "], referencing unique point index " << currentPointIndex <<  ", (" << vertexConvertedToPoint.x << ", " << vertexConvertedToPoint.y << ", " << vertexConvertedToPoint.z << ") " << std::endl;
+
+			}
+
 		}
 	}
 	else if (currentMode == FanArrayMode::THIN)

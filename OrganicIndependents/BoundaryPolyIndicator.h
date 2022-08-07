@@ -47,6 +47,21 @@ class BoundaryPolyIndicator
 			}
 			return returnOrientation;
 		}
+
+		std::string getPrintableIndicatorValue()
+		{
+			std::string returnString = "BoundaryOrientation::NONE";
+			switch (indicatorData)
+			{
+				case 128: { returnString = "BoundaryOrientation::NEG_Z"; break;}
+				case 64: { returnString = "BoundaryOrientation::POS_X"; break;}
+				case 32: { returnString = "BoundaryOrientation::POS_Z"; break;}
+				case 16: { returnString = "BoundaryOrientation::NEG_X"; break;}
+				case 8: { returnString = "BoundaryOrientation::POS_Y"; break;}
+				case 4: { returnString = "BoundaryOrientation::NEG_Y"; break;}
+			}
+			return returnString;
+		}
 };
 
 #endif

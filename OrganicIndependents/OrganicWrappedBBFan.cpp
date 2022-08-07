@@ -22,6 +22,75 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_
 	poly.emptyNormal = in_emptyNormal;
 }
 
+bool OrganicWrappedBBFan::eraseBadFans()
+{
+	bool isFanValid = true;
+	int numberOfPointsToScan = poly.numberOfTertiaries + 2;
+
+	/*
+	std::map<int, ECBPolyPoint> uniquePointMap;
+	for (int x = 0; x < numberOfPointsToScan; x++)
+	{
+		// fetch the point
+		ECBPolyPoint currentPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[x]);
+
+		// scan to see if the point exists.
+		if (uniquePointMap.size() == 0)	// for the very first point
+		{
+			uniquePointMap[uniquePointMap.size()] = currentPoint;
+		}
+		else
+		{
+			// check to see if the point matches.
+			bool matchFound = false;
+			auto currentPointsBegin = uniquePointMap.begin();
+			auto currentPointsEnd = uniquePointMap.end();
+			for (; currentPointsBegin != currentPointsEnd; currentPointsBegin++)
+			{
+				// if the below holds true, a duplicate was found.
+				if (currentPoint == currentPointsBegin->second)
+				{
+					matchFound = true;
+					isFanValid = false;
+					break;
+				}
+			}
+
+			// if we had no match, insert the point.
+			if (matchFound == false)
+			{
+				uniquePointMap[uniquePointMap.size()] = currentPoint;
+			}
+		}
+	}
+	*/
+
+	
+	int allOneCount = 0;
+	for (int x = 0; x < numberOfPointsToScan; x++)
+	{
+		ECBPolyPoint currentPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[x]);
+		if
+		(
+			currentPoint.x == 1.0f
+			&&
+			currentPoint.y == 1.0f
+			&&
+			currentPoint.z == 1.0f
+		)
+		{
+			allOneCount++;
+		}
+	}
+
+	if (allOneCount == numberOfPointsToScan)
+	{
+		isFanValid = false;
+	}
+	
+	return isFanValid;
+}
+
 void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
 	short in_materialID,
 	ECBPolyPoint in_emptyNormal,

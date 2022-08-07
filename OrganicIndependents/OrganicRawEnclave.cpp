@@ -358,6 +358,22 @@ int OrganicRawEnclave::getTotalTriangles()
 	return total_triangles;
 }
 
+int OrganicRawEnclave::printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
+	auto blockFinder = blockMap.find(blockCoordsToSingle);
+	if (blockFinder != blockMap.end())
+	{
+		std::cout << "(OrganicRawEnclave::printBlockData): found EXPOSED block. " << std::endl;
+		blockFinder->second.listSecondaries();
+	}
+	else if (blockFinder == blockMap.end())
+	{
+		std::cout << "(OrganicRawEnclave::printBlockData): did NOT find EXPOSED block. " << std::endl;
+	}
+	return 0;
+}
+
 GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave)
 {
 	GroupSetPair returnPair;
