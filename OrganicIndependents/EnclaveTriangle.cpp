@@ -125,7 +125,7 @@ void EnclaveTriangle::purgeBadFans()
 	auto fansEnd = enclaveTriangleTertiary.triangleMap.end();
 	for (; fansBegin != fansEnd; fansBegin++)
 	{
-		bool isCurrentFanValid = fansBegin->second.eraseBadFans();
+		bool isCurrentFanValid = fansBegin->second.checkForAndEraseAnomalousTriangles();
 		if (isCurrentFanValid == false)
 		{
 			removalInts.push_back(fansBegin->first);

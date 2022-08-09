@@ -22,73 +22,124 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_
 	poly.emptyNormal = in_emptyNormal;
 }
 
-bool OrganicWrappedBBFan::eraseBadFans()
+bool OrganicWrappedBBFan::checkForAndEraseAnomalousTriangles()
 {
-	bool isFanValid = true;
-	int numberOfPointsToScan = poly.numberOfTertiaries + 2;
+	// We need a bool to see if anys remain after this operation. If there aren't any, we can return false to indicate that the fan shouldn't be added at all.
+	bool containsValidFans = true;
 
-	/*
-	std::map<int, ECBPolyPoint> uniquePointMap;
-	for (int x = 0; x < numberOfPointsToScan; x++)
+
+	// Step 0: perform first/last point matching check.
+	//		I.e, compare point at index 0 to the last point.
+	//		The value of the last index should be the number of triangles + 2, minus one.
+	//		For example, for 3 triangles, it would be at point index 4 -- (3 + 2) - 1.
+	performFirstLastMatchCheck();
+	
+	// Step 1: Create all TemporalTriangles, and load them into a map.
+	int totalNumberOfInitialTemporals = poly.numberOfTertiaries;
+	int currentLeading0Value = 1;
+	int currentLeading1Value = 2;
+	std::map<int, TemporalTriangle> temporalTriangleMap;
+	std::vector<int> temporalRemovalVector;
+
+	for (int x = 0; x < totalNumberOfInitialTemporals; x++)
 	{
-		// fetch the point
-		ECBPolyPoint currentPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[x]);
+		ECBPolyPoint sharedPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[0]);	// the shared point for each TemporalTriangle
+																										// should always be the very first point in vertices.
+		ECBPolyPoint currentLeadingPoint0 = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[currentLeading0Value]);
+		ECBPolyPoint currentLeadingPoint1 = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[currentLeading1Value]);
 
-		// scan to see if the point exists.
-		if (uniquePointMap.size() == 0)	// for the very first point
+
+
+		TemporalTriangle currentTemporal(sharedPoint,
+										currentLeadingPoint0,
+										currentLeadingPoint1,
+										currentLeading0Value,
+										currentLeading1Value);
+		temporalTriangleMap[temporalTriangleMap.size()] = currentTemporal;
+
+		// make sure to increment the current leading values, so the next triangle points to the appropriate spot.
+		currentLeading0Value++;
+		currentLeading1Value++;
+	}
+
+	// Step 2: For each TemporalTriangle, check if its valid. If it isn't valid, we'll have to:
+	//	A. "chop" out the associated vertex value in vertices[] array; meaning, erase that vertex 
+	//		and move any vertexes with a higher index than that one down by one.
+	//	B. 	after the "chop" is done, all TemporalTriangles need to call downshiftLeadingPointIndices(),
+	//		so that when isTemporalValid() is called on their turn, they are looking at updated stats.
+	//	C.	If the value of isTemporalValid() is false, we must also decrement the valueof poly.numberOfTertiaries.
+	auto temporalTrianglesBegin = temporalTriangleMap.begin();
+	auto temporalTrianglesEnd = temporalTriangleMap.end();
+	for (; temporalTrianglesBegin != temporalTrianglesEnd; temporalTrianglesBegin++)
+	{
+		bool isCurrentTemporalValid = temporalTrianglesBegin->second.isTemporalValid();
+		if (isCurrentTemporalValid == false)
 		{
-			uniquePointMap[uniquePointMap.size()] = currentPoint;
-		}
-		else
-		{
-			// check to see if the point matches.
-			bool matchFound = false;
-			auto currentPointsBegin = uniquePointMap.begin();
-			auto currentPointsEnd = uniquePointMap.end();
-			for (; currentPointsBegin != currentPointsEnd; currentPointsBegin++)
+			// Do the "chop out" in the vertices array; the index to chop out should be from the current chopOutTarget.
+			int chopOutTarget = temporalTrianglesBegin->second.fetchTemporalMidPointIndex();
+			chopOutPointAndShiftVertices(chopOutTarget);
+
+			// All TemporalTriangles need to have downshiftLeadingPointIndices() called.
+			auto temporalTrianglesRedoBegin = temporalTriangleMap.begin();
+			auto temporalTrianglesRedoEnd = temporalTriangleMap.end();
+			for (; temporalTrianglesRedoBegin != temporalTrianglesRedoEnd; temporalTrianglesRedoBegin++)
 			{
-				// if the below holds true, a duplicate was found.
-				if (currentPoint == currentPointsBegin->second)
-				{
-					matchFound = true;
-					isFanValid = false;
-					break;
-				}
+				temporalTrianglesRedoBegin->second.downshiftLeadingPointIndices();
 			}
 
-			// if we had no match, insert the point.
-			if (matchFound == false)
-			{
-				uniquePointMap[uniquePointMap.size()] = currentPoint;
-			}
-		}
-	}
-	*/
+			// For debug only: output the current temporal into the removal vector.
+			temporalRemovalVector.push_back(temporalTrianglesBegin->first);
 
-	
-	int allOneCount = 0;
-	for (int x = 0; x < numberOfPointsToScan; x++)
-	{
-		ECBPolyPoint currentPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[x]);
-		if
-		(
-			currentPoint.x == 1.0f
-			&&
-			currentPoint.y == 1.0f
-			&&
-			currentPoint.z == 1.0f
-		)
-		{
-			allOneCount++;
+			// Finally, decrement the value of poly.numberOfTertiaries by 1.
+			poly.numberOfTertiaries--;
 		}
 	}
 
-	if (allOneCount == numberOfPointsToScan)
+	// For Debug: remove "bad" temporals.
+	auto removalVectorActionBegin = temporalRemovalVector.begin();
+	auto removalVectorActionEnd = temporalRemovalVector.end();
+	for (; removalVectorActionBegin != removalVectorActionEnd; removalVectorActionBegin++)
 	{
-		isFanValid = false;
+		temporalTriangleMap.erase(*removalVectorActionBegin);
 	}
-	
-	return isFanValid;
+
+	//std::cout << "(OrganicWrappedBBFan::checkForAndEraseAnomalousTriangles) -> initial number of TemporalTriangles: " << totalNumberOfInitialTemporals << std::endl;
+	//std::cout << "(OrganicWrappedBBFan::checkForAndEraseAnomalousTriangles) -> current number of TemporalTriangles: " << temporalTriangleMap.size() << std::endl;
+
+	// If the value of poly.numberOfTertiaries is 0, there are no valid fans to insert.
+	if (poly.numberOfTertiaries == 0)
+	{
+		containsValidFans = false;
+	}
+
+	return containsValidFans;
+}
+
+void OrganicWrappedBBFan::performFirstLastMatchCheck()
+{
+	int lastPointIndex = (poly.numberOfTertiaries + 2) - 1;
+	ECBPolyPoint initialPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[0]);
+	ECBPolyPoint initialLastPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[lastPointIndex]);
+	if (initialPoint == initialLastPoint)
+	{
+		// the points match; decrement the number of tertiaries by one.
+		poly.numberOfTertiaries--;
+	}
+}
+
+void OrganicWrappedBBFan::chopOutPointAndShiftVertices(int in_targetIndexToChop)
+{
+	// The final index of vertices, would be 7. The number of shifts down would be equal to 7 - the value of in_targetIndexToChop;
+	// this would be applied from the end of the vertices array, so work backwards.
+	int numberOfShifts = 7 - in_targetIndexToChop;
+	int currentReplacementIndex = in_targetIndexToChop;
+	int currentIndexThatDoesTheReplacement = in_targetIndexToChop + 1;
+	for (int x = 0; x < numberOfShifts; x++)
+	{
+		vertices[currentReplacementIndex] = vertices[currentIndexThatDoesTheReplacement];
+		currentReplacementIndex++;
+		currentIndexThatDoesTheReplacement++;
+	}
 }
 
 void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,

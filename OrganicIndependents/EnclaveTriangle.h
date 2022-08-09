@@ -20,6 +20,15 @@
 #include "SegmentResult.h"
 //#include "PrimaryLineT1Array.h"
 
+/*
+
+Description: When generated, an EnclaveTriangle will attempt to trace through its own area in order to produce OrganicWrappedBBFan instances.
+			 However, there is a possibility that the generated fan instances have anomalies; these anomalies must be checked in each fan,
+			 allowing for corrections and possible removal of the fan. To ensure this is done, the purgeBadFans function must be called at the
+			 very end of both the executeRun and executeRunDebug functions.
+
+*/
+
 class PrimaryLineT1Array;	// this class forwarding could be cleaned up later.
 class IndependentUtils;
 class EnclaveTriangle
@@ -46,7 +55,8 @@ public:
 	bool doBlocksExistAtY(int in_y);	// checks if any blocks exist in the enclaveTriangleTeritary, at a specific layer of Y
 
 	void purgeBadFans();	// cleanup all the OrganicWrappedBBFans in the enclaveTriangleTertiary instance, 
-							// so that we don't end up inserting lines/points masquerading as triangles.
+							// so that we don't end up inserting lines/points masquerading as triangles. If the 
+							// OrganicWrappedBBFan has no valid triangles, it will be deleted.
 
 private:
 	void resetRunMetaData(); // must be called before any run occurs.
