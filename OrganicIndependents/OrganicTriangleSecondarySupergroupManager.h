@@ -44,7 +44,6 @@ public:
 						auto blockFinder = (*in_skeletonMapRef).find(wrappedBBFanBegin->first);
 						if (blockFinder == (*in_skeletonMapRef).end())		// if it isn't in the skeleton map, we'll display it.
 						{
-							//EnclaveBlock* blockRef = 
 							int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 							EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
 							blockRef->insertBBFanFromRawEnclave(wrappedBBFanBegin->second);

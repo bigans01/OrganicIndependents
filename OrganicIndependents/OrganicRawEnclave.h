@@ -104,7 +104,7 @@ public:
 																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
 	void removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove);
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
-	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);
+	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);												// prints any existing "secondaries" (triangle fans) in an EnclaveBlock, if that block exists.
 	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
 																											// populates the skeletonSGM of this ore, by spawning skeletons from
 																											// the etcSGM. This function should NOT
