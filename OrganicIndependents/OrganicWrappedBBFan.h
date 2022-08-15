@@ -40,7 +40,8 @@ class OrganicWrappedBBFan
 											 ECBPolyPoint in_emptyNormal,
 											 BoundaryPolyIndicator in_boundaryPolyIndicator);
 		int checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
-		bool checkForAndEraseAnomalousTriangles();	// Check for anomalous triangle conditions, such as first/last points matching, or duplicate points in the same TemporalTriang.e
+		bool checkForAndEraseAnomalousTriangles();	// Check for anomalous triangle conditions, such as first/last points matching, or duplicate points in the same TemporalTriangle.
+													// There is also a possibility, for some unknown reason, that the poly member of this class contains no tertiaries. 
 
 		SegmentResult checkIfRunIsValidForTwoSegmentsSpecial(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 		int checkIfRunIsValidForTwoSegmentsViaCopy(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PrimarySegmentTracker in_trackerCopy, PolyRunDirection in_direction);

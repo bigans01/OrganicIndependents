@@ -3,10 +3,27 @@
 #ifndef CYCLE_H
 #define CYCLE_H
 
-//#include <unordered_set>
 #include <map>
 #include <mutex>
 #include <iostream>
+
+/*
+
+Description:
+
+Template class Cycle
+
+A Cycle is a templated class, built off the std::map STL container. Unlike a map, it has the ability to
+store an iterator that represents the currently selected element in a list, through the member currentCycleElement.
+This iterator can be manually set through the call to setCurrentElementByKey, or is automatically set to the beginning of the map
+if setCurrentElementByKey hasn't been called yet, when calling getCurrentElementIter() for the first time.
+
+If all elements are removed from the cycle, the value of getCurrentElementIter() will be an iterator that points to the end() 
+of the underlying map, and the bool value of wasSetCurrentElementCalled will get set back to false. The begin, rbegin, end,
+find, and erase functions all function the same as they would in a normal map; their purpose here is to serve as wrappers
+for ease of use.
+
+*/
 
 template <typename CycleKey, typename CycleValue> class Cycle {
 	public:
@@ -47,13 +64,80 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		typename std::map<CycleKey, CycleValue>::iterator getCurrentElementIter()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
+			setCurrentElementIfNotSet();	// safety: set the value of currentCycleElement to the beginning of the map, if it isn't set.
 			return currentCycleElement;
 		}
 
-		void erase(CycleKey in_elementToErase) {
+		void erase(CycleKey in_elementToErase) 
+		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
+
+			// first, get size of current map; if the value of this is different after the erase,
+			// we know the iterator needs to be reset.
+			int preEraseAttemptMapSize = cycleMap.size();
+
+			// check if the current element to erase is equal to the current iterator;
+			// also, get what the next element would be post erase, if we did it.
+			// if it is, we will need to reset the value of currentCycleElement after the erase.
+			
+			bool isElementToEraseEqualToCurrentCycleElement = false;
+			auto elementToEraseFinder = cycleMap.find(in_elementToErase);
+			auto predictedNext = predictNextElementAfterErase();	// no lock_guard should be attempted here, as that is already done at the beginning of this function.
+
+			
+			if (currentCycleElement == elementToEraseFinder)
+			{
+				isElementToEraseEqualToCurrentCycleElement = true;
+			}
+			
+
+			// attempt the erase, and reset the begin/end iters.
 			cycleMap.erase(in_elementToErase);
 			resetBeginAndEndIters();
+
+			
+			// check to see if we need the reset the currentCycleElement.
+			// Two conditions must be met: 
+			// A.) the size of the cycleMap can't be equal to currentMapSize value above
+			// B.) the element that was erased was actually what the currentCycleElement was before the erase
+			if
+			(
+				(preEraseAttemptMapSize != cycleMap.size())
+				&&
+				(isElementToEraseEqualToCurrentCycleElement == true)
+			)
+			{
+				// at this point, the value of currentCycleElement is invalid, so it must be set again.
+				// We do this based on what the value of preEraseAttemptMapSize is.
+
+				// If preEraseAttemptMapSize was > 2, we now have at least 2 elements remaining. So the value
+				// of currentCycleElement would be equal to the predicted value returned by
+				// the call to predictNextElementAfterErase().
+				if (preEraseAttemptMapSize > 2)
+				{
+					currentCycleElement = predictedNext;
+				}
+
+				// If there were exactly 2 elements before the erase,
+				// There's only one remaining.
+				else if (preEraseAttemptMapSize == 2)
+				{
+					currentCycleElement = cycleMap.begin();
+				}
+
+				// If there was just 1 element in the map, there is now nothing; make the currentCycleElement the end of the map.
+				else if (preEraseAttemptMapSize == 1)
+				{
+					currentCycleElement = cycleMap.end();
+				}
+			}
+
+			// if the size of the cycle is now 0, it is back at it's original state, 
+			// so the value of wasSetCurrentElementCalled needs to be set back to false.
+			if (cycleMap.size() == 0)
+			{
+				wasSetCurrentElementCalled = false;
+			}		
 		}
 
 		int size() {
@@ -83,6 +167,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			}
 		}
 
+
 		typename std::map<CycleKey, CycleValue>::iterator getNextElement()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
@@ -108,9 +193,13 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 					currentCycleElement = currentElementStartIter;
 				}
 			}
-			else
+			else if (cycleMap.size() == 1)
 			{
 				return currentCycleElement;	// if there's just one element, jsut return this
+			}
+			else if (cycleMap.size() == 0)
+			{
+				currentCycleElement = cycleMap.end();	// there are no elements remaining; return end()
 			}
 			
 			return currentCycleElement;
@@ -144,9 +233,13 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 					currentCycleElement = currentElementEndIter;
 				}
 			}
-			else
+			else if (cycleMap.size() == 1)
 			{
 				return currentCycleElement;	// if there's just one element, jsut return this
+			}
+			else if (cycleMap.size() == 0)
+			{
+				currentCycleElement = cycleMap.end();	// there are no elements remaining; return end()
 			}
 
 			return currentCycleElement;
@@ -156,6 +249,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			currentCycleElement = cycleMap.find(in_keyToSet);
+			wasSetCurrentElementCalled = true;
 		}
 
 	private:
@@ -164,6 +258,19 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		typename std::map<CycleKey, CycleValue>::iterator currentCycleElement;
 		typename std::map<CycleKey, CycleValue>::iterator currentElementEndIter;
 		std::mutex cycleMutex;
+		bool wasSetCurrentElementCalled = false;	// this gets set to true when setCurrentElementByKey is called,
+													// or gets set automatically if setCurrentElementByKey hasn't been called before 
+													// the first call to getCurrentElementIter(). This value gets set back to false
+													// during the erase function call, if there are no elements left in the map after the erase.
+
+		void setCurrentElementIfNotSet()
+		{
+			if (wasSetCurrentElementCalled == false)
+			{
+				currentCycleElement = cycleMap.begin();
+				wasSetCurrentElementCalled = true;
+			}
+		}
 
 		void resetBeginAndEndIters()
 		{
@@ -212,6 +319,45 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			return returnIter;
 		}
 		
+		typename std::map<CycleKey, CycleValue>::iterator predictNextElementAfterErase()
+		{
+			typename std::map<CycleKey, CycleValue>::iterator predictedElement;
+			// check that the currentCycleElement is actually set.
+			setCurrentElementIfNotSet();
+
+			// There would be at least 2 elements remaining after the erase.
+			if (cycleMap.size() > 2)
+			{
+				// CASE 1: currentCycleElement isn't equal to the end; just get the next element.
+				if (currentCycleElement != currentElementEndIter)
+				{
+					// the next element would be whatever is ahead of the currentCycleElement.
+					predictedElement = currentCycleElement;
+					predictedElement++;
+				}
+
+				// CASE 2: currentCycleElement is the the ending element; the next element in the cycle is the beginning of the map.
+				else if (currentCycleElement == currentElementEndIter)
+				{
+					// if currentCycleElement is already at the end, the next element would be the beginning.
+					predictedElement = currentElementStartIter;
+				}
+			}
+
+			// There would be exactly 1 element remaining after the erase.
+			else if (cycleMap.size() == 2)
+			{
+				predictedElement = cycleMap.begin();
+			}
+
+			// There would be 0 elements remaining after the erase.
+			else if (cycleMap.size() == 1)
+			{
+				predictedElement = cycleMap.end();
+			}
+
+			return predictedElement;
+		}
 };
 
 #endif
