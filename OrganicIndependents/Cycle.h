@@ -29,12 +29,8 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 	public:
 		bool empty()
 		{
-			bool isEmpty = false;
-			if (cycleMap.empty() == false)
-			{
-				isEmpty = true;
-			}
-			return isEmpty;
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.empty();
 		}
 
 		typename std::map<CycleKey, CycleValue>::iterator begin() 
@@ -66,6 +62,15 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			std::lock_guard<std::mutex> guard(cycleMutex);
 			setCurrentElementIfNotSet();	// safety: set the value of currentCycleElement to the beginning of the map, if it isn't set.
 			return currentCycleElement;
+		}
+
+		void clear()
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			cycleMap.clear();			// first, empty out the cycleMap.
+			resetBeginAndEndIters();	// reset the iters.
+			currentCycleElement = cycleMap.end();	// set the currentCycleElement to be the end
+			wasSetCurrentElementCalled = false;		// lastly, reset the value of wasSetCurrentElementCalled.
 		}
 
 		void erase(CycleKey in_elementToErase) 
