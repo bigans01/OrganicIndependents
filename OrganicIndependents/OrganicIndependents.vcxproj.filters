@@ -79,6 +79,9 @@
     <Filter Include="Header Files\BoundaryPolyIndicator">
       <UniqueIdentifier>{ca046ded-99f4-47c5-b48c-a4d8155581c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Custom_Containers">
+      <UniqueIdentifier>{b4f30adf-47bf-470d-b6eb-821e312ad23c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -492,9 +495,6 @@
     <ClInclude Include="MessageContainer.h">
       <Filter>Header Files\Messages</Filter>
     </ClInclude>
-    <ClInclude Include="Cycle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FusableArea.h">
       <Filter>Header Files\Fusion</Filter>
     </ClInclude>
@@ -599,6 +599,12 @@
     </ClInclude>
     <ClInclude Include="BlockCopyQuery.h">
       <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="Cycle.h">
+      <Filter>Header Files\Custom_Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackedMap.h">
+      <Filter>Header Files\Custom_Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -323,6 +323,7 @@
     <ClInclude Include="TertiaryTriangleContainer.h" />
     <ClInclude Include="TertiaryTriangleProducer.h" />
     <ClInclude Include="ThinFan.h" />
+    <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
   </ItemGroup>
   <ItemGroup>

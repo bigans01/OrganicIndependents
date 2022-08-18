@@ -64,6 +64,12 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			return currentCycleElement;
 		}
 
+		int size() 
+		{
+			std::lock_guard<std::mutex> guard(cycleMutex);
+			return cycleMap.size();
+		}
+
 		void clear()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
@@ -145,10 +151,6 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			}		
 		}
 
-		int size() {
-			std::lock_guard<std::mutex> guard(cycleMutex);
-			return cycleMap.size();
-		}
 
 		CycleValue& operator[](const CycleKey& in_key)
 		{
