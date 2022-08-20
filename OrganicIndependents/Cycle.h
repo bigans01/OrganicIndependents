@@ -94,6 +94,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			bool isElementToEraseEqualToCurrentCycleElement = false;
 			auto elementToEraseFinder = cycleMap.find(in_elementToErase);
 			auto predictedNext = predictNextElementAfterErase();	// no lock_guard should be attempted here, as that is already done at the beginning of this function.
+																	// predictedNext will only really need to be used below if the pre erase size was > 2.
 
 			
 			if (currentCycleElement == elementToEraseFinder)
@@ -108,6 +109,10 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 
 			
 			// check to see if we need the reset the currentCycleElement.
+			// We only need to do this if it's value is equal to the key we're about to erase, as that would make currentCycleElement 
+			// invalid. Otherwise, if currentCycleElement is NOT equal to the key we're about to erase -- we are fine, because it will
+			// still be valid after this operation.
+
 			// Two conditions must be met: 
 			// A.) the size of the cycleMap can't be equal to currentMapSize value above
 			// B.) the element that was erased was actually what the currentCycleElement was before the erase
@@ -166,18 +171,20 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 
 		void insert(CycleKey in_key, CycleValue in_insertCycleValue)	// insert a key at the specified "in_key" location, if it doesn't exist.
 		{
+			// It should be noted, that if the key of the iter returned (we'll call it returnedKey) by getCurrentElementIter()
+			// matches the key we are inserting, that the returnedKey will NOT be invalidated -- and it's value will be updated.
+			// This lesser known rule of std::map has been tested and verified.
+
 			std::lock_guard<std::mutex> guard(cycleMutex);
-			if (doesCycleValueExist(in_insertCycleValue) == false)
-			{
-				cycleMap[in_key] = in_insertCycleValue;
-				resetBeginAndEndIters();
-			}
+			cycleMap[in_key] = in_insertCycleValue;
+			resetBeginAndEndIters();
 		}
 
 
 		typename std::map<CycleKey, CycleValue>::iterator getNextElement()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
+			setCurrentElementIfNotSet(); // do this, in case that getCurrentElementIter() is not called before this.
 			if (cycleMap.size() >= 2)
 			{
 				// CASE 1: currentCycleElement isn't equal to the end; just get the next element.
@@ -215,6 +222,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		typename std::map<CycleKey, CycleValue>::iterator getPreviousElement()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
+			setCurrentElementIfNotSet(); // do this, in case that getCurrentElementIter() is not called before this.
 			//typename std::map<CycleKey, CycleValue>::reverse_iterator returnIter = cycleMap.find(0);
 			if (cycleMap.size() >= 2)
 			{
@@ -296,23 +304,6 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			}
 		}
 
-		bool doesCycleValueExist(CycleValue in_cycleValueToFind)
-		{
-			bool exists = false;
-			auto cyclesBegin = cycleMap.begin();
-			auto cyclesEnd = cycleMap.end();
-			for (; cyclesBegin != cyclesEnd; cyclesBegin++)
-			{
-				if (cyclesBegin->second == in_cycleValueToFind)
-				{
-					exists = true;
-					break;
-				}
-			}
-			return exists;
-		}
-
-		
 		typename std::map<CycleKey, CycleValue>::reverse_iterator findReverseIter(CycleKey in_keyToSearchFor)
 		{
 			typename std::map<CycleKey, CycleValue>::reverse_iterator returnIter = cycleMap.rbegin();
@@ -350,6 +341,8 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 					predictedElement = currentElementStartIter;
 				}
 			}
+
+			// NOTE: these next two else ifs may not be needed; more testing may need to be done.
 
 			// There would be exactly 1 element remaining after the erase.
 			else if (cycleMap.size() == 2)
