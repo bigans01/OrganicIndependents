@@ -27,6 +27,52 @@ for ease of use.
 
 template <typename CycleKey, typename CycleValue> class Cycle {
 	public:
+
+		// the following two constructors and = operator must be defined, 
+		// because of the fact that the implicit constructors would try to copy the mutex, which is illegal.
+		Cycle() {};
+		Cycle(const Cycle& in_otherCycle)
+		{
+			// Remember, when doing this, don't use the functions of in_otherTrackedMap (because they aren't const, etc)	
+
+			// copy everything but the mutex
+			// first, copy the cycle.
+			cycleMap = in_otherCycle.cycleMap;
+
+			// reset the begin/end iters
+			resetBeginAndEndIters();
+
+			// once it's copied over, check if wasSetCurrentElementCalled was set;
+			if (in_otherCycle.wasSetCurrentElementCalled == true)
+			{
+				CycleKey otherMapCurrentKey = in_otherCycle.currentCycleElement->first;
+				setCurrentElementByKey(otherMapCurrentKey);
+				wasSetCurrentElementCalled = true;
+			}
+
+		}
+		Cycle& operator=(const Cycle& in_otherCycle)
+		{
+			// Remember, when doing this, don't use the functions of in_otherTrackedMap (because they aren't const, etc)	
+
+			// copy everything but the mutex
+			// first, copy the cycle.
+			cycleMap = in_otherCycle.cycleMap;
+
+			// reset the begin/end iters
+			resetBeginAndEndIters();
+
+			// once it's copied over, check if wasSetCurrentElementCalled was set;
+			if (in_otherCycle.wasSetCurrentElementCalled == true)
+			{
+				CycleKey otherMapCurrentKey = in_otherCycle.currentCycleElement->first;
+				setCurrentElementByKey(otherMapCurrentKey);
+				wasSetCurrentElementCalled = true;
+			}
+
+			return *this;
+		}
+
 		bool empty()
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
@@ -67,7 +113,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 		int size() 
 		{
 			std::lock_guard<std::mutex> guard(cycleMutex);
-			return cycleMap.size();
+			return int(cycleMap.size());	// cast to int, to make compiler happy (avoiding a warning)
 		}
 
 		void clear()
@@ -85,7 +131,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 
 			// first, get size of current map; if the value of this is different after the erase,
 			// we know the iterator needs to be reset.
-			int preEraseAttemptMapSize = cycleMap.size();
+			int preEraseAttemptMapSize = int(cycleMap.size());
 
 			// check if the current element to erase is equal to the current iterator;
 			// also, get what the next element would be post erase, if we did it.
@@ -118,7 +164,7 @@ template <typename CycleKey, typename CycleValue> class Cycle {
 			// B.) the element that was erased was actually what the currentCycleElement was before the erase
 			if
 			(
-				(preEraseAttemptMapSize != cycleMap.size())
+				(preEraseAttemptMapSize != int(cycleMap.size()))
 				&&
 				(isElementToEraseEqualToCurrentCycleElement == true)
 			)

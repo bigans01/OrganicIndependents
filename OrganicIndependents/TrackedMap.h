@@ -22,6 +22,53 @@ is called; the same can be said for when currentTrackedMapElement is at the begi
 
 template <typename TrackedMapKey, typename TrackedMapValue> class TrackedMap {
 	public:
+
+		// the following two constructors and = operator must be defined, 
+		// because of the fact that the implicit constructors would try to copy the mutex, which is illegal.
+		TrackedMap() {};
+		TrackedMap(const TrackedMap& in_otherTrackedMap)
+		{
+			// Remember, when doing this, don't use the functions of in_otherTrackedMap (because they aren't const, etc)	
+
+			// copy everything but the mutex
+			// first, copy the map.
+			trackedMap = in_otherTrackedMap.trackedMap;
+
+			// reset the begin/end iters
+			resetBeginAndEndIters();
+
+			// once it's copied over, check if wasSetCurrentElementCalled was set;
+			if (in_otherTrackedMap.wasSetCurrentElementCalled == true)
+			{
+				TrackedMapKey otherMapCurrentKey = in_otherTrackedMap.currentTrackedMapElement->first;
+				setCurrentElementByKey(otherMapCurrentKey);
+				wasSetCurrentElementCalled = true;
+			}
+			
+			
+		}
+		TrackedMap& operator=(const TrackedMap& in_otherTrackedMap)
+		{
+			// Remember, when doing this, don't use the functions of in_otherTrackedMap (because they aren't const, etc)	
+
+			// copy everything but the mutex
+			// first, copy the map.
+			trackedMap = in_otherTrackedMap.trackedMap;
+
+			// reset the begin/end iters
+			resetBeginAndEndIters();
+
+			// once it's copied over, check if wasSetCurrentElementCalled was set;
+			if (in_otherTrackedMap.wasSetCurrentElementCalled == true)
+			{
+				TrackedMapKey otherMapCurrentKey = in_otherTrackedMap.currentTrackedMapElement->first;
+				setCurrentElementByKey(otherMapCurrentKey);
+				wasSetCurrentElementCalled = true;
+			}
+
+			return *this;
+		}
+
 		bool empty()
 		{
 			std::lock_guard<std::mutex> guard(trackedMapMutex);
@@ -62,7 +109,7 @@ template <typename TrackedMapKey, typename TrackedMapValue> class TrackedMap {
 		int size() 
 		{
 			std::lock_guard<std::mutex> guard(trackedMapMutex);
-			return trackedMap.size();
+			return int(trackedMap.size());	// cast to int, to make compiler happy (avoiding a warning)
 		}
 
 		void clear()
@@ -81,7 +128,7 @@ template <typename TrackedMapKey, typename TrackedMapValue> class TrackedMap {
 
 			// first, get size of current map; if the value of this is different after the erase,
 			// we know the iterator needs to be reset.
-			int preEraseAttemptMapSize = trackedMap.size();
+			int preEraseAttemptMapSize = int(trackedMap.size());
 
 			// check if the current element to erase is equal to the current iterator;
 			// also, get what the next element would be post erase, if we did it.
@@ -110,7 +157,7 @@ template <typename TrackedMapKey, typename TrackedMapValue> class TrackedMap {
 			// B.) the element that was erased was actually what the currentTrackedMapElement was before the erase
 			if
 			(
-				(preEraseAttemptMapSize != trackedMap.size())
+				(preEraseAttemptMapSize != int(trackedMap.size()))
 				&&
 				(isElementToEraseEqualTocurrentTrackedMapElement == true)
 			)
@@ -321,6 +368,5 @@ template <typename TrackedMapKey, typename TrackedMapValue> class TrackedMap {
 		}
 		
 };
-
 
 #endif
