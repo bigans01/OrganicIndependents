@@ -91,7 +91,15 @@ enum class MessageType
 	// -OrganicSystem::jobCheckIfPolysExistInBlockFace (OrganicCoreLib)
 	// -RJPhasedDeleteBlock::interpretPhasedJobMessage (OrganicCoreLib)
 	SPOLY_ORIGINATES_FROM_EXPOSED_OR_UNEXPOSED,		// indicates that the SPoly origins were from an existing EXPOSED or UNEXPOSED block.
-	SPOLY_ORIGINATES_FROM_NONEXISTENT_BECAUSE_FULL	// indicates that the SPoly origins were from a artifical box-shell (non-existent block)
+	SPOLY_ORIGINATES_FROM_NONEXISTENT_BECAUSE_FULL,	// indicates that the SPoly origins were from a artifical box-shell (non-existent block)
+
+	// ImGui messages
+	IMGUI_SEND_INPUT_FEEDBACK_TO_IMGUI_INPUT_TEXT	// indicates that this message contains keystroke/input feedback destined for a ImGuiInputText object (OrganicGLWinLib).
+													// The message should contain three values: 
+													// 1. a string for the name of the keyed ImGuiInputTextPanel as it exists in ImGuiInputTextPanelContainer
+													// 2. a string for the name of the keyed ImGuiInputText as it exists in the ImGuiInputTextPanel from step 1 above
+													// 3. an int value representing the OpenGL keystroke enumeration to process (i.e, GLFW_KEY_W)
+													
 
 };
 
