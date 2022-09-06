@@ -22,6 +22,117 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_
 	poly.emptyNormal = in_emptyNormal;
 }
 
+void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
+	short in_materialID,
+	ECBPolyPoint in_emptyNormal,
+	BoundaryPolyIndicator in_boundaryPolyIndicator)
+{
+	// Step 1: load the points.
+	//std::cout << "********* Loading points: " << std::endl;
+
+	for (int x = 0; x < in_blockCircuitRef->finalCircuitPoints.numberOfPoints; x++)
+	{
+		//poly.pointArray[x] = (unsigned char)x;	// convert to unsigned char, then store.
+		poly.fillPointIndex(x, x);
+		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[x]);
+
+		//std::cout << "(OrganicWrappedBBFan) inserting point " << x << ": " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].x << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].y << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].z << std::endl;
+	}
+
+	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
+	//std::cout << "BBFan number of tertiaries: " << int(poly.numberOfTertiaries) << std::endl;
+	poly.materialID = in_materialID;
+	poly.emptyNormal = in_emptyNormal;
+	poly.faceAlignment = in_boundaryPolyIndicator;
+}
+
+void OrganicWrappedBBFan::runBoundaryChecks()
+{
+	// we're going to assume that there are tertiaries remaining; we shouldn't be calling this function if there are 0 tertiaries.
+	// Take the points, round them for safety, and then analyze them.
+	ECBPolyPoint convertedPoint0 = IndependentUtils::roundPolyPointToHundredths(IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[0]));
+	ECBPolyPoint convertedPoint1 = IndependentUtils::roundPolyPointToHundredths(IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[1]));
+	ECBPolyPoint convertedPoint2 = IndependentUtils::roundPolyPointToHundredths(IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[2]));
+
+	// Check for NEG_Z
+	if
+	(
+		convertedPoint0.z == 0.0f
+		&&
+		convertedPoint1.z == 0.0f
+		&&
+		convertedPoint2.z == 0.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::NEG_Z);
+	}
+
+	// Check for POS_X
+	else if
+	(
+		convertedPoint0.x == 1.0f
+		&&
+		convertedPoint1.x == 1.0f
+		&&
+		convertedPoint2.x == 1.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::POS_X);
+	}
+
+	// Check for POS_Z
+	else if
+	(
+		convertedPoint0.z == 1.0f
+		&&
+		convertedPoint1.z == 1.0f
+		&&
+		convertedPoint2.z == 1.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::POS_Z);
+	}
+
+	// Check for NEG_X
+	else if
+	(
+		convertedPoint0.x == 0.0f
+		&&
+		convertedPoint1.x == 0.0f
+		&&
+		convertedPoint2.x == 0.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::NEG_X);
+	}
+
+	// Check for POS_Y
+	else if
+	(
+		convertedPoint0.y == 1.0f
+		&&
+		convertedPoint1.y == 1.0f
+		&&
+		convertedPoint2.y == 1.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::POS_Y);
+	}
+
+	// Check for NEG_Y
+	else if
+	(
+		convertedPoint0.y == 0.0f
+		&&
+		convertedPoint1.y == 0.0f
+		&&
+		convertedPoint2.y == 0.0f
+	)
+	{
+		poly.faceAlignment.setBoundaryIndicator(BoundaryOrientation::NEG_Y);
+	}
+}
+
 bool OrganicWrappedBBFan::checkForAndEraseAnomalousTriangles()
 {
 	// We need a bool to see if anys remain after this operation. If there aren't any, we can return false to indicate that the fan shouldn't be added at all.
@@ -153,29 +264,6 @@ void OrganicWrappedBBFan::chopOutPointAndShiftVertices(int in_targetIndexToChop)
 	}
 }
 
-void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
-	short in_materialID,
-	ECBPolyPoint in_emptyNormal,
-	BoundaryPolyIndicator in_boundaryPolyIndicator)
-{
-	// Step 1: load the points.
-	//std::cout << "********* Loading points: " << std::endl;
-
-	for (int x = 0; x < in_blockCircuitRef->finalCircuitPoints.numberOfPoints; x++)
-	{
-		//poly.pointArray[x] = (unsigned char)x;	// convert to unsigned char, then store.
-		poly.fillPointIndex(x, x);
-		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[x]);
-
-		//std::cout << "(OrganicWrappedBBFan) inserting point " << x << ": " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].x << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].y << ", " << in_blockCircuitRef->finalCircuitPoints.pointArray[x].z << std::endl;
-	}
-
-	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
-	//std::cout << "BBFan number of tertiaries: " << int(poly.numberOfTertiaries) << std::endl;
-	poly.materialID = in_materialID;
-	poly.emptyNormal = in_emptyNormal;
-	poly.faceAlignment = in_boundaryPolyIndicator;
-}
 
 int OrganicWrappedBBFan::checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap)
 {

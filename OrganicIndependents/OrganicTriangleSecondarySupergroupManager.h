@@ -101,7 +101,7 @@ public:
 					auto wrappedBBFanEnd = tertiariesBegin->second.triangleMap.end();
 					for (; wrappedBBFanBegin != wrappedBBFanEnd; wrappedBBFanBegin++)
 					{
-						touchedSet.insert(wrappedBBFanBegin->first);	// insert the resulting value into the set
+						touchedSet.insert(wrappedBBFanBegin->first);	// insert the resulting value into the set	
 					}
 				}
 			}

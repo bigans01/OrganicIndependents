@@ -11,11 +11,18 @@ EnclaveTriangleSkeleton OrganicTransformUtils::deflateEnclaveTriangle(EnclaveTri
 	returnSkeleton.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnSkeleton.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
 	returnSkeleton.emptyNormal = in_enclaveTriangle.emptyNormal;
+	returnSkeleton.skeletonBoundaryIndicatorValue = in_enclaveTriangle.enclaveTriangleBoundaryPolyIndicator;
 
 	return returnSkeleton;
 }
 
-EnclaveTriangleSkeleton OrganicTransformUtils::buildTriangleSkeletonRaw(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC, short in_materialID, short in_isPolyPerfectlyClamped, ECBPolyPoint in_emptyNormal)
+EnclaveTriangleSkeleton OrganicTransformUtils::buildTriangleSkeletonRaw(ECBPolyPoint in_pointA, 
+																		ECBPolyPoint in_pointB, 
+																		ECBPolyPoint in_pointC, 
+																		short in_materialID, 
+																		short in_isPolyPerfectlyClamped, 
+																		ECBPolyPoint in_emptyNormal,
+																		BoundaryPolyIndicator in_skeletonBoundaryIndicator)
 {
 	EnclaveTriangleSkeleton returnSkeleton;
 	returnSkeleton.points[0] = in_pointA;
@@ -25,6 +32,7 @@ EnclaveTriangleSkeleton OrganicTransformUtils::buildTriangleSkeletonRaw(ECBPolyP
 	returnSkeleton.materialID = in_materialID;
 	returnSkeleton.isPolyPerfectlyClamped = in_isPolyPerfectlyClamped;
 	returnSkeleton.emptyNormal = in_emptyNormal;
+	returnSkeleton.skeletonBoundaryIndicatorValue = in_skeletonBoundaryIndicator;
 
 	return returnSkeleton;
 }
@@ -61,7 +69,7 @@ EnclaveTriangle OrganicTransformUtils::inflateEnclaveTriangle(EnclaveTriangleSke
 	returnTriangle.enclaveTriangleMaterialID = in_enclaveTriangleSkeleton.materialID;
 	returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = in_enclaveTriangleSkeleton.isPolyPerfectlyClamped;
 	returnTriangle.emptyNormal = in_enclaveTriangleSkeleton.emptyNormal;
-	//returnTriangle.
+	returnTriangle.enclaveTriangleBoundaryPolyIndicator = in_enclaveTriangleSkeleton.skeletonBoundaryIndicatorValue;
 
 	return returnTriangle;
 }

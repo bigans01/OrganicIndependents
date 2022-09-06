@@ -18,6 +18,7 @@
 #include "EnclaveTriangleInteriorRunner.h"
 #include "TerminatingSetContainer.h"
 #include "SegmentResult.h"
+#include "BoundaryPolyIndicator.h"
 //#include "PrimaryLineT1Array.h"
 
 /*
@@ -42,6 +43,7 @@ public:
 	ECBPolyLine lineArray[3];							// the 3 ECBPolyLine that are used as a basis to trace the EnclaveTriangle through an Enclave.
 	ECBPolyPoint emptyNormal;							// the empty normal that faces outward towards empty space.
 	OrganicTriangleTertiary enclaveTriangleTertiary;	// stores the actual bb fans that this EnclaveTriangle produced in each block that it touched.
+	BoundaryPolyIndicator enclaveTriangleBoundaryPolyIndicator;	// stores the BoundaryPolyIndicator value for the enclave triangle.
 
 	void executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
 	void executeRunDebug(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
@@ -54,11 +56,15 @@ public:
 	void printBlockKeys();				// prints the EnclaveKey block values of all blocks in the OrganicTriangleTertiary
 	bool doBlocksExistAtY(int in_y);	// checks if any blocks exist in the enclaveTriangleTeritary, at a specific layer of Y
 
+
+private:
 	void purgeBadFans();	// cleanup all the OrganicWrappedBBFans in the enclaveTriangleTertiary instance, 
 							// so that we don't end up inserting lines/points masquerading as triangles. If the 
 							// OrganicWrappedBBFan has no valid triangles, it will be deleted.
-
-private:
+	void runBoundaryOrientationPass();	// checks the existing OrganicWrappedBBFans in the OrganicTriangleTertiary, to apply any other boundary flags needed.
+										// This is because the BoundaryPolyIndicator for an EnclaveTriangle only truly gets set if the EnclaveTriangle is on an
+										// ORE's border (i.e, POS_X), not on the blocks. So all blocks need to have their fans checked for bordering.
+										// This should be called immediately after purgeBadFans().
 	void resetRunMetaData(); // must be called before any run occurs.
 
 	// functions for ensuring the triangle will run OK

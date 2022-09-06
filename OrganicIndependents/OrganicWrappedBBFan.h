@@ -46,7 +46,9 @@ class OrganicWrappedBBFan
 		SegmentResult checkIfRunIsValidForTwoSegmentsSpecial(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 		int checkIfRunIsValidForTwoSegmentsViaCopy(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, PrimarySegmentTracker in_trackerCopy, PolyRunDirection in_direction);
 		int checkIfRunIsValidForTwoSegmentsReverse(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
-
+		void runBoundaryChecks();	// checks the first 3 points in a FatFan (poly member), to see if any bordering flags need to be set for the fans.
+									// should only be done after checkForAndEraseAnomalousTriangles() has been called. Should not be called if there are no tertiaries;
+									// (this function assumes there are tertiaries to operate on)
 	private:
 		// TemporalTriangle -- used to determine what the points of each fan in a triangle are; 
 		// instances of this class should only be instantiated/managed after the call to performFirstLastMatchCheck()

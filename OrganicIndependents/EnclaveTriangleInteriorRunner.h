@@ -11,6 +11,7 @@
 #include "PolyUtils.h"
 #include "PolyLineEndpointMeta.h"
 #include <unordered_set>
+#include "BoundaryPolyIndicator.h"
 
 class IndependentUtils;
 class EnclaveTriangleInteriorRunner
@@ -18,6 +19,7 @@ class EnclaveTriangleInteriorRunner
 public:
 	EnclaveTriangleInteriorRunner(ECBPolyPoint in_beginPoint,
 		ECBPolyPoint in_endPoint,
+		BoundaryPolyIndicator in_runnerBoundaryIndicatorValue,
 		PrimaryLineT1 in_primaryLine,
 		BlockBorderLineList* in_blockBorderLineListRef,
 		BorderDataMap* in_borderDataMapRef,
@@ -38,6 +40,7 @@ public:
 	int debugFlag = 0;
 	int specialCheckFlag = 0;				// this indicates when to do a special check
 	PrimaryLineT1 lineMeta;
+	BoundaryPolyIndicator runnerBoundaryIndicatorValue;
 	ECBPolyPoint lineSlope;
 	BlockBorderLineList* blockBorderLineListRef;
 	BorderDataMap* borderDataMapRef;

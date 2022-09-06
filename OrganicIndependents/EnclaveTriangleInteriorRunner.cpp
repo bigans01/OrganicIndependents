@@ -4,6 +4,7 @@
 
 EnclaveTriangleInteriorRunner::EnclaveTriangleInteriorRunner(ECBPolyPoint in_beginPoint,
 	ECBPolyPoint in_endPoint,
+	BoundaryPolyIndicator in_runnerBoundaryIndicatorValue,
 	PrimaryLineT1 in_primaryLine,
 	BlockBorderLineList* in_blockBorderLineListRef,
 	BorderDataMap* in_borderDataMapRef,
@@ -20,6 +21,9 @@ EnclaveTriangleInteriorRunner::EnclaveTriangleInteriorRunner(ECBPolyPoint in_beg
 {
 	// set debug mode (if needed)
 	debugModeFlag = in_debugModeFlag;
+
+	// set runner indicator value.
+	runnerBoundaryIndicatorValue = in_runnerBoundaryIndicatorValue;
 
 	//std::cout << "!! EnclaveTriangleInteriorRunner initialized. " << std::endl;
 
@@ -258,7 +262,7 @@ void EnclaveTriangleInteriorRunner::populateOrganicWrappedBBFanWithCircuitData(B
 {
 	if (in_circuitRef->isCircuitValid == true)	// only add if the circuit contains a valid BB fan that can be constructed.
 	{
-		(*wrappedBBFanMapRef)[in_secondaryID].buildBBFan(in_circuitRef, materialID, emptyNormal);
+		(*wrappedBBFanMapRef)[in_secondaryID].buildBBFanWithBoundaryIndicator(in_circuitRef, materialID, emptyNormal, runnerBoundaryIndicatorValue);
 	}
 }
 

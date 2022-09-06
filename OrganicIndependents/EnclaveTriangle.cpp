@@ -54,6 +54,7 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	}
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
 	purgeBadFans();
+	runBoundaryOrientationPass();	// ensure that triangles that are on block borders have their BoundaryPolyIndicators set appropriately.
 }
 
 void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, 
@@ -114,6 +115,7 @@ void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineLis
 	}
 
 	purgeBadFans();
+	runBoundaryOrientationPass();	// ensure that triangles that are on block borders have their BoundaryPolyIndicators set appropriately.
 }
 
 void EnclaveTriangle::purgeBadFans()
@@ -137,6 +139,22 @@ void EnclaveTriangle::purgeBadFans()
 	for (; removalsBegin != removalsEnd; removalsBegin++)
 	{
 		enclaveTriangleTertiary.triangleMap.erase(*removalsBegin);
+	}
+
+	// if there are no fans remaining, the triangle is bad.
+	if (enclaveTriangleTertiary.triangleMap.size() == 0)
+	{
+		isTriangleValid = false;
+	}
+}
+
+void EnclaveTriangle::runBoundaryOrientationPass()
+{
+	auto fansBegin = enclaveTriangleTertiary.triangleMap.begin();
+	auto fansEnd = enclaveTriangleTertiary.triangleMap.end();
+	for (; fansBegin != fansEnd; fansBegin++)
+	{
+		fansBegin->second.runBoundaryChecks();
 	}
 }
 
@@ -480,7 +498,21 @@ void EnclaveTriangle::runInteriorRunnerReverse(PrimaryLineT1Array* in_linkArrayR
 
 
 					PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
-					EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &enclaveTriangleTertiary.triangleMap, &terminatingSetRef->terminatingSetMap[x].set, &allTracedBlocks, enclaveTriangleMaterialID, isEnclaveTrianglePolyPerfectlyClamped, emptyNormal, currentBlockKey, 2, false);
+					EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, 
+															    tracingResult.resultingEndPoint, 
+																enclaveTriangleBoundaryPolyIndicator,
+																in_linkArrayRef->linkArray[x], 
+																in_blockBorderLineList, 
+																in_borderDataMap, 
+																&enclaveTriangleTertiary.triangleMap, 
+																&terminatingSetRef->terminatingSetMap[x].set, 
+																&allTracedBlocks, 
+																enclaveTriangleMaterialID, 
+																isEnclaveTrianglePolyPerfectlyClamped, 
+																emptyNormal, 
+																currentBlockKey, 
+																2, 
+																false);
 				}
 			}
 
@@ -577,7 +609,21 @@ void EnclaveTriangle::runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, Bl
 					ECBPolyPoint testIntended = IndependentUtils::determineIntendedFacesV2(in_linkArrayRef->linkArray[x].beginPointRealXYZ, in_linkArrayRef->linkArray[x].endPointRealXYZ, in_linkArrayRef->linkArray[x].thirdPointRealXYZ, in_linkArrayRef->linkArray[x].x_int, in_linkArrayRef->linkArray[x].y_int, in_linkArrayRef->linkArray[x].z_int);
 				}
 
-				EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &enclaveTriangleTertiary.triangleMap, &terminatingSetRef->terminatingSetMap[x].set, &allTracedBlocks, enclaveTriangleMaterialID, isEnclaveTrianglePolyPerfectlyClamped, emptyNormal, currentBlockKey, 1, false);
+				EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, 
+															tracingResult.resultingEndPoint, 
+															enclaveTriangleBoundaryPolyIndicator, 
+															in_linkArrayRef->linkArray[x], 
+															in_blockBorderLineList, 
+															in_borderDataMap, 
+															&enclaveTriangleTertiary.triangleMap, 
+															&terminatingSetRef->terminatingSetMap[x].set, 
+															&allTracedBlocks, 
+															enclaveTriangleMaterialID, 
+															isEnclaveTrianglePolyPerfectlyClamped, 
+															emptyNormal, 
+															currentBlockKey, 
+															1, 
+															false);
 			}
 
 
@@ -625,6 +671,7 @@ void EnclaveTriangle::runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, Bl
 							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
 							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
 								tracingResult.resultingEndPoint,
+								enclaveTriangleBoundaryPolyIndicator,
 								in_linkArrayRef->linkArray[x],
 								in_blockBorderLineList,
 								in_borderDataMap,
@@ -644,6 +691,7 @@ void EnclaveTriangle::runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, Bl
 							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
 							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
 								tracingResult.resultingEndPoint,
+								enclaveTriangleBoundaryPolyIndicator,
 								in_linkArrayRef->linkArray[x],
 								in_blockBorderLineList,
 								in_borderDataMap,
@@ -757,7 +805,21 @@ void EnclaveTriangle::runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRe
 					//std::cout << "Test of intended faces: " << testIntended.x << ", " << testIntended.y << ", " << testIntended.z << std::endl;
 				}
 
-				EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &enclaveTriangleTertiary.triangleMap, &terminatingSetRef->terminatingSetMap[x].set, &allTracedBlocks, enclaveTriangleMaterialID, isEnclaveTrianglePolyPerfectlyClamped, emptyNormal, currentBlockKey, 1, false);
+				EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, 
+															tracingResult.resultingEndPoint, 
+															enclaveTriangleBoundaryPolyIndicator,
+															in_linkArrayRef->linkArray[x], 
+															in_blockBorderLineList, 
+															in_borderDataMap, 
+															&enclaveTriangleTertiary.triangleMap, 
+															&terminatingSetRef->terminatingSetMap[x].set, 
+															&allTracedBlocks, 
+															enclaveTriangleMaterialID, 
+															isEnclaveTrianglePolyPerfectlyClamped, 
+															emptyNormal, 
+															currentBlockKey, 
+															1, 
+															false);
 				//EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint, tracingResult.resultingEndPoint, &in_linkArrayRef->linkArray[x], in_blockBorderLineList, in_borderDataMap, &enclaveTriangleTertiary.triangleMap);
 
 			}
@@ -818,6 +880,7 @@ void EnclaveTriangle::runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRe
 							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
 							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
 								tracingResult.resultingEndPoint,
+								enclaveTriangleBoundaryPolyIndicator,
 								in_linkArrayRef->linkArray[x],
 								in_blockBorderLineList,
 								in_borderDataMap,
@@ -837,6 +900,7 @@ void EnclaveTriangle::runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRe
 							PLTracingResult tracingResult = IndependentUtils::getBlockTracingResult(currentBeginPoint, interceptToUse, in_blockBorderLineList, in_borderDataMap, 0);
 							EnclaveTriangleInteriorRunner interiorRunner(currentBeginPoint,
 								tracingResult.resultingEndPoint,
+								enclaveTriangleBoundaryPolyIndicator,
 								in_linkArrayRef->linkArray[x],
 								in_blockBorderLineList,
 								in_borderDataMap,
@@ -1101,7 +1165,7 @@ void EnclaveTriangle::populateOrganicWrappedBBFanWithCircuitData(BlockCircuit* i
 {
 	if (in_circuitRef->isCircuitValid == true)	// only add if the circuit contains a valid BB fan that can be constructed.
 	{
-		enclaveTriangleTertiary.triangleMap[in_secondaryID].buildBBFan(in_circuitRef, enclaveTriangleMaterialID, emptyNormal);
+		enclaveTriangleTertiary.triangleMap[in_secondaryID].buildBBFanWithBoundaryIndicator(in_circuitRef, enclaveTriangleMaterialID, emptyNormal, enclaveTriangleBoundaryPolyIndicator);
 	}
 }
 

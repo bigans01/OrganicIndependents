@@ -6,6 +6,7 @@
 #include "ECBPolyPoint.h"
 #include "EnclaveTriangle.h"
 #include "TriangleLine.h"
+#include "BoundaryPolyIndicator.h"
 
 class IndependentUtils;
 class EnclaveTriangleSkeleton
@@ -16,6 +17,7 @@ public:
 	short isPolyPerfectlyClamped = 0;					// determines if the entire polygon is perfectly clamped to x, y, or z azis
 	//ECBPolyPoint mrp;				// probably not needed, but comment out just in case.
 	ECBPolyPoint emptyNormal;
+	BoundaryPolyIndicator skeletonBoundaryIndicatorValue;
 	EnclaveTriangle inflateToEnclaveTriangle()
 	{
 		EnclaveTriangle returnTriangle;
@@ -41,6 +43,7 @@ public:
 		returnTriangle.enclaveTriangleMaterialID = materialID;
 		returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = isPolyPerfectlyClamped;
 		returnTriangle.emptyNormal = emptyNormal;
+		returnTriangle.enclaveTriangleBoundaryPolyIndicator = skeletonBoundaryIndicatorValue;
 
 		return returnTriangle;
 	};

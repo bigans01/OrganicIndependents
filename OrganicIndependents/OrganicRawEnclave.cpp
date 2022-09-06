@@ -370,6 +370,16 @@ int OrganicRawEnclave::printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey)
 	else if (blockFinder == blockMap.end())
 	{
 		std::cout << "(OrganicRawEnclave::printBlockData): did NOT find EXPOSED block. " << std::endl;
+
+		auto skeletonFinder = blockSkeletonMap.find(blockCoordsToSingle);
+		if (skeletonFinder != blockSkeletonMap.end())
+		{
+			std::cout << "(OrganicRawEnclave::printBlockData): found block as UNEXPOSED (blockSkeletonMap) " << std::endl;
+		}
+		else
+		{
+			std::cout << "(OrganicRawEnclave::printBlockData): did NOT find block as UNEXPOSED (blockSkeletonMap) " << std::endl;
+		}
 	}
 	return 0;
 }
