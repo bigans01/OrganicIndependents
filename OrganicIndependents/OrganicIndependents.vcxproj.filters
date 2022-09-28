@@ -82,6 +82,12 @@
     <Filter Include="Header Files\Custom_Containers">
       <UniqueIdentifier>{b4f30adf-47bf-470d-b6eb-821e312ad23c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ExceptionRecorder">
+      <UniqueIdentifier>{c351417d-910d-41e5-bd6e-8734f05cc826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ExceptionRecorder">
+      <UniqueIdentifier>{9d10be80-701a-4cb8-b80e-ec49df36c9b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -606,6 +612,15 @@
     <ClInclude Include="TrackedMap.h">
       <Filter>Header Files\Custom_Containers</Filter>
     </ClInclude>
+    <ClInclude Include="ExceptionRecorder.h">
+      <Filter>Header Files\ExceptionRecorder</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionRecord.h">
+      <Filter>Header Files\ExceptionRecorder</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionRecordType.h">
+      <Filter>Header Files\ExceptionRecorder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -772,6 +787,12 @@
     </ClCompile>
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp">
       <Filter>Source Files\Neighbors</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionRecorder.cpp">
+      <Filter>Source Files\ExceptionRecorder</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionRecord.cpp">
+      <Filter>Source Files\ExceptionRecorder</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

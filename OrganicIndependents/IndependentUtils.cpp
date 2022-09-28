@@ -8980,6 +8980,21 @@ void IndependentUtils::printBoundaryOrientation(BoundaryOrientation in_boundaryO
 	}
 }
 
+std::string IndependentUtils::getBoundaryOrientationString(BoundaryOrientation in_boundaryOrientation)
+{
+	std::string returnString = "NONE";
+	switch (in_boundaryOrientation)
+	{
+		case BoundaryOrientation::POS_X: { returnString = "POS_X"; break; }
+		case BoundaryOrientation::NEG_X: { returnString = "NEG_X"; break; }
+		case BoundaryOrientation::POS_Y: { returnString = "POS_Y"; break; }
+		case BoundaryOrientation::NEG_Y: { returnString = "NEG_Y"; break; }
+		case BoundaryOrientation::POS_Z: { returnString = "POS_Z"; break; }
+		case BoundaryOrientation::NEG_Z: { returnString = "NEG_Z"; break; }
+	}
+	return returnString;
+}
+
 int IndependentUtils::convertBoundaryOrientationToInt(BoundaryOrientation in_boundaryOrientation)
 {
 	int returnValue = 0;
@@ -8998,7 +9013,7 @@ int IndependentUtils::convertBoundaryOrientationToInt(BoundaryOrientation in_bou
 
 BoundaryOrientation IndependentUtils::convertIntToBoundaryOrientation(int in_indexValueToConvert)
 {
-	BoundaryOrientation returnOrientation;
+	BoundaryOrientation returnOrientation = BoundaryOrientation::NONE;
 	switch (in_indexValueToConvert)
 	{
 		case 0: { returnOrientation = BoundaryOrientation::NONE; break; }

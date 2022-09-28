@@ -24,6 +24,7 @@ Dependents: none
 #define ENCLAVEKEY_H
 
 #include <iostream>
+#include <string>
 
 class EnclaveKeyDef {
 
@@ -93,9 +94,16 @@ public:
 			return equalsValue;
 		}
 
+		// simply prints the key to std::cout.
 		void printKey()
 		{
 			std::cout << " (" << x << ", " << y << ", " << z << ") ";
+		}
+
+		// returns an std::string that contains the key coordinates.
+		std::string getKeyString()
+		{
+			return std::string("(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")");
 		}
 	};
 

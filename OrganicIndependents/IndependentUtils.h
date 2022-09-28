@@ -139,6 +139,7 @@ class IndependentUtils
 
 		static BoundaryOrientation getOppositeOrientation(BoundaryOrientation in_boundaryOrientation);
 		static void printBoundaryOrientation(BoundaryOrientation in_boundaryOrientation);
+		static std::string getBoundaryOrientationString(BoundaryOrientation in_boundaryOrientation);
 		static int convertBoundaryOrientationToInt(BoundaryOrientation in_boundaryOrientation);
 		static BoundaryOrientation convertIntToBoundaryOrientation(int in_indexValueToConvert);
 };

@@ -228,6 +228,9 @@
     <ClInclude Include="ErrorSensor.h" />
     <ClInclude Include="ErrorUtils.h" />
     <ClInclude Include="EuclideanDirection3D.h" />
+    <ClInclude Include="ExceptionRecord.h" />
+    <ClInclude Include="ExceptionRecorder.h" />
+    <ClInclude Include="ExceptionRecordType.h" />
     <ClInclude Include="FaceListMeta.h" />
     <ClInclude Include="FanBase.h" />
     <ClInclude Include="FanData.h" />
@@ -345,6 +348,8 @@
     <ClCompile Include="EnclaveTriangle.cpp" />
     <ClCompile Include="EnclaveTriangleContainer.cpp" />
     <ClCompile Include="EnclaveTriangleInteriorRunner.cpp" />
+    <ClCompile Include="ExceptionRecord.cpp" />
+    <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
