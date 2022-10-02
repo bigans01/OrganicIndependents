@@ -74,6 +74,16 @@ class BoundaryPolyIndicator
 			return set;
 		}
 
+		unsigned char getIndicatorData()
+		{
+			return indicatorData;
+		}
+
+		void setIndicatorData(unsigned char in_indicatorData)
+		{
+			indicatorData = in_indicatorData;
+		}
+
 		BoundaryOrientation getBoundaryIndicatorValue()
 		{
 			BoundaryOrientation returnOrientation = BoundaryOrientation::NONE;
@@ -190,6 +200,20 @@ class BoundaryPolyIndicator
 			else if (((indicatorData >> 2) & 1) == 1)
 			{
 				returnString = "BoundaryOrientation::NEG_Y";
+			}
+
+			// Print the SCAB_PARENT and SCAB_CHILD flags if they are set.
+
+			// SCAB_PARENT
+			if (((indicatorData >> 1) & 1) == 1)
+			{
+				returnString += " | SCAB_PARENT ";
+			}
+
+			// SCAB_CHILD
+			if ((indicatorData & 1) == 1)
+			{
+				returnString += " | SCAB_CHILD ";
 			}
 
 			return returnString;
