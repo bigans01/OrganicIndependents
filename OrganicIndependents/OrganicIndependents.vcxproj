@@ -236,6 +236,10 @@
     <ClInclude Include="FanData.h" />
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
+    <ClInclude Include="FTriangle.h" />
+    <ClInclude Include="FTriangleContainer.h" />
+    <ClInclude Include="FTriangleFracturerBase.h" />
+    <ClInclude Include="FTriangleType.h" />
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GroupSetPair.h" />
@@ -351,6 +355,8 @@
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
+    <ClCompile Include="FTriangle.cpp" />
+    <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />

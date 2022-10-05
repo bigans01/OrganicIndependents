@@ -88,6 +88,12 @@
     <Filter Include="Source Files\ExceptionRecorder">
       <UniqueIdentifier>{9d10be80-701a-4cb8-b80e-ec49df36c9b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle">
+      <UniqueIdentifier>{383906ba-f6fd-40cf-8daf-40e1788391eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle">
+      <UniqueIdentifier>{dedddf21-6adc-4fbb-81e0-93ce6b3e965c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -621,6 +627,18 @@
     <ClInclude Include="ExceptionRecordType.h">
       <Filter>Header Files\ExceptionRecorder</Filter>
     </ClInclude>
+    <ClInclude Include="FTriangle.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleType.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleContainer.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleFracturerBase.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -793,6 +811,12 @@
     </ClCompile>
     <ClCompile Include="ExceptionRecord.cpp">
       <Filter>Source Files\ExceptionRecorder</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangle.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleFracturerBase.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
