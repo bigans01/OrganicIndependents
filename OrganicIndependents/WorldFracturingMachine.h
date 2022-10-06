@@ -5,6 +5,7 @@
 
 #include "FTriangleFracturerBase.h"
 #include "IndependentUtils.h"
+#include <iostream>
 
 class WorldFracturingMachine : public FTriangleFracturerBase
 {

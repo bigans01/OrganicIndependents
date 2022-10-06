@@ -26,6 +26,8 @@ void FTriangle::setupAndRunFracturerMachine()
 	{
 		case FTriangleType::WORLD:
 		{
+			std::cout << "Selected WORLD fracturer. " << std::endl;
+
 			std::shared_ptr<FTriangleFracturerBase> worldFracturer(new (WorldFracturingMachine));
 			fracturerMachine = worldFracturer;
 			fracturerMachine->transferFTriangleMetadata(fracturePoints[0], 
@@ -34,6 +36,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureEmptyNormal,
 														fractureRequiredOrientation);
 			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->runFracturing();
 			break;
 		}
 	}

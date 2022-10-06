@@ -8,6 +8,8 @@
 #include "FTriangleContainer.h"
 #include "ECBPolyPoint.h"
 #include "BoundaryOrientation.h"
+#include "EnclaveKeyPair.h"
+#include "CalibratableBlueprintKeyPair.h"
 
 class FTriangleFracturerBase
 {
@@ -28,7 +30,13 @@ class FTriangleFracturerBase
 		ECBPolyPoint originFTrianglePoints[3];
 		ECBPolyPoint originFTriangleEmptynormal;
 		BoundaryOrientation originBoundaryOrientation = BoundaryOrientation::NONE;
-		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* ftfOutputRef = nullptr;
+		EnclaveKeyPair originFTriangleLineKeypairs[3];		// These are the keypair values used to trace an FTriangleLine through it's respective space;
+															// this must be handled by the derived class of this base class. These should have an initial value,
+															// but then the keys may be calibrated (i.e, such as with WorldFracturingMachine::calibrateOriginBlueprintKeys())
+															// which will update their values.
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* ftfOutputRef = nullptr;	// a pointer to the map that stores
+																																// the output triangles that are a result of the 
+																																// fracturing operation.
 
 		EnclaveKeyDef::EnclaveKey originFTriangleKeys[3];	// the origin keys of the FTriangle points; these must be set appropriately by
 															// the derived class of this base class (i.e, in a WorldFracturingMachine this would be 

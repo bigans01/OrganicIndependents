@@ -648,6 +648,9 @@
     <ClInclude Include="WorldFracturingMachine.h">
       <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
     </ClInclude>
+    <ClInclude Include="CalibratableBlueprintKeyPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -829,6 +832,9 @@
     </ClCompile>
     <ClCompile Include="WorldFracturingMachine.cpp">
       <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibratableBlueprintKeyPair.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

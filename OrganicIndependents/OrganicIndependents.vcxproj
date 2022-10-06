@@ -170,6 +170,7 @@
     <ClInclude Include="BorderMDFaceList.h" />
     <ClInclude Include="BoundaryOrientation.h" />
     <ClInclude Include="BoundaryPolyIndicator.h" />
+    <ClInclude Include="CalibratableBlueprintKeyPair.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="Cycle.h" />
@@ -343,6 +344,7 @@
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
     <ClCompile Include="BorderDataMap.cpp" />
     <ClCompile Include="BorderMDFaceList.cpp" />
+    <ClCompile Include="CalibratableBlueprintKeyPair.cpp" />
     <ClCompile Include="DynamicBorderLineList.cpp" />
     <ClCompile Include="DynamicLinePointSynchronizer.cpp" />
     <ClCompile Include="ECBBorder.cpp" />
