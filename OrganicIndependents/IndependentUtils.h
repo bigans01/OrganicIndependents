@@ -45,6 +45,7 @@ class IndependentUtils
 		static EnclaveKeyDef::EnclaveKey getBlueprintCalibratedKey(ECBPolyPoint in_pointToCheckA, ECBPolyPoint in_pointToCheckB, ECBBorderLineList* in_borderLineListRef);
 		static EnclaveKeyDef::EnclaveKey lookupBlueprintBorderKey(ECBPPOrientationResults in_results, ECBBorderLineList* in_borderLineListRef, ECBPolyPoint in_originPoint, ECBPolyPoint in_interceptPoint);
 		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static EnclaveKeyDef::EnclaveKey getUncalibratedBlueprintKeyForPoint(ECBPolyPoint in_point);
 		static ECBPolyPoint getBlueprintTracingEndpointForIsolatedPrimaryT2(ECBPolyPoint in_pointA, ECBPolyPoint in_slope, ECBBorderLineList* in_borderLineList, EnclaveKeyDef::EnclaveKey in_blueprintKey);
 
 		static ECBBorderValues getBlueprintLimits(EnclaveKeyDef::EnclaveKey in_Key);

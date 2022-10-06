@@ -22,5 +22,19 @@ void FTriangle::determineOutputLevel()
 
 void FTriangle::setupAndRunFracturerMachine()
 {
-
+	switch (triangleOriginGrid)
+	{
+		case FTriangleType::WORLD:
+		{
+			std::shared_ptr<FTriangleFracturerBase> worldFracturer(new (WorldFracturingMachine));
+			fracturerMachine = worldFracturer;
+			fracturerMachine->transferFTriangleMetadata(fracturePoints[0], 
+													    fracturePoints[1], 
+														fracturePoints[2], 
+														fractureEmptyNormal,
+														fractureRequiredOrientation);
+			fracturerMachine->setOutputRef(&outputContainers);
+			break;
+		}
+	}
 }

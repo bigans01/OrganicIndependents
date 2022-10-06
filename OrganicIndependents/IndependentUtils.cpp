@@ -1780,6 +1780,31 @@ EnclaveKeyDef::EnclaveKey IndependentUtils::getBorderShiftResult(ECBBorder in_Bo
 	return shiftKey;
 }
 
+EnclaveKeyDef::EnclaveKey IndependentUtils::getUncalibratedBlueprintKeyForPoint(ECBPolyPoint in_point)
+{
+	EnclaveKeyDef::EnclaveKey rawKey(0,0,0);
+
+	// check x
+	if (in_point.x != 0.0f)
+	{
+		rawKey.x = floor(in_point.x / 32);
+	}
+
+	// check y
+	if (in_point.y != 0.0f)
+	{
+		rawKey.y = floor(in_point.y / 32);
+	}
+
+	// check z
+	if (in_point.z != 0.0f)
+	{
+		rawKey.z = floor(in_point.z / 32);
+	}
+
+	return rawKey;
+}
+
 ECBPolyPoint IndependentUtils::getBlueprintTracingEndpointForIsolatedPrimaryT2(ECBPolyPoint in_pointA, ECBPolyPoint in_slope, ECBBorderLineList* in_borderLineList, EnclaveKeyDef::EnclaveKey in_blueprintKey)
 {
 	//std::cout << "*********** calling for primary t2 isolation; Key is: " << in_blueprintKey.x << ", " << in_blueprintKey.y << ", " << in_blueprintKey.z << std::endl;

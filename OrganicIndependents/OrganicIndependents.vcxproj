@@ -332,6 +332,7 @@
     <ClInclude Include="ThinFan.h" />
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
+    <ClInclude Include="WorldFracturingMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
@@ -398,6 +399,7 @@
     <ClCompile Include="TerminatingSetContainer.cpp" />
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
     <ClCompile Include="TertiaryTriangleProducer.cpp" />
+    <ClCompile Include="WorldFracturingMachine.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

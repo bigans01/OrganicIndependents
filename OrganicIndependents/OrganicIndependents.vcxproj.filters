@@ -94,6 +94,12 @@
     <Filter Include="Source Files\FracturableTriangle">
       <UniqueIdentifier>{dedddf21-6adc-4fbb-81e0-93ce6b3e965c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FracturingMachines">
+      <UniqueIdentifier>{f9f59192-9e99-49c4-b23f-6d0dcdaad393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FracturingMachines">
+      <UniqueIdentifier>{bf565c0b-4d83-41f6-8a7c-a0e2cee328b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -639,6 +645,9 @@
     <ClInclude Include="FTriangleFracturerBase.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
+    <ClInclude Include="WorldFracturingMachine.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -817,6 +826,9 @@
     </ClCompile>
     <ClCompile Include="FTriangleFracturerBase.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldFracturingMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
