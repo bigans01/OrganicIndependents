@@ -240,7 +240,10 @@
     <ClInclude Include="FTriangle.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
+    <ClInclude Include="FTriangleProductionStager.h" />
+    <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
+    <ClInclude Include="FTriangleWorldTracer.h" />
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GroupSetPair.h" />
@@ -333,6 +336,7 @@
     <ClInclude Include="ThinFan.h" />
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
+    <ClInclude Include="UniquePointContainer.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +364,7 @@
     <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
+    <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />

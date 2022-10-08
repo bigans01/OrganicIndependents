@@ -6,6 +6,7 @@ void WorldFracturingMachine::runFracturing()
 	determineUncalibratedBlueprintKeys();	// Step 1: get the uncalibrated keys.
 	calibrateOriginBlueprintKeys();			// Step 2: calibrate the keys.
 	translateTriangleByBlueprintKeys();		// first, do any required translations.
+	runWorldTracing();
 }
 
 void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
@@ -69,4 +70,11 @@ void WorldFracturingMachine::calibrateOriginBlueprintKeys()
 void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 {
 
+}
+
+void WorldFracturingMachine::runWorldTracing()
+{
+	FTriangleWorldTracer worldTracer;
+	worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs);
+	worldTracer.runLineTracing();
 }

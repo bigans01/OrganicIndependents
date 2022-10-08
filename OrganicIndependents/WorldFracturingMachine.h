@@ -6,6 +6,7 @@
 #include "FTriangleFracturerBase.h"
 #include "IndependentUtils.h"
 #include <iostream>
+#include "FTriangleWorldTracer.h"
 
 class WorldFracturingMachine : public FTriangleFracturerBase
 {
@@ -18,7 +19,7 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 		// we should translate the triangle to a more manageable range (somewhere around 0,0,0). To do this, we will get the min X/Y/Z 
 		// blueprint coords, and translate by that. The translateTriangle function will do this. This will also make debugging easier.
 		void translateTriangleByBlueprintKeys();
-
+		void runWorldTracing();
 		
 };
 

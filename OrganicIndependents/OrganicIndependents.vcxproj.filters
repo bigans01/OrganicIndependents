@@ -100,6 +100,12 @@
     <Filter Include="Source Files\FracturableTriangle\FracturingMachines">
       <UniqueIdentifier>{bf565c0b-4d83-41f6-8a7c-a0e2cee328b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FTriangleTracer">
+      <UniqueIdentifier>{0670afa0-a0d9-4058-95cf-ac5fd1f4cbc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FTriangleTracer">
+      <UniqueIdentifier>{85c4ed54-2fd3-4fd6-9f5e-4bf88681fbe0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -642,14 +648,26 @@
     <ClInclude Include="FTriangleContainer.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
-    <ClInclude Include="FTriangleFracturerBase.h">
-      <Filter>Header Files\FracturableTriangle</Filter>
-    </ClInclude>
     <ClInclude Include="WorldFracturingMachine.h">
       <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
     </ClInclude>
     <ClInclude Include="CalibratableBlueprintKeyPair.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UniquePointContainer.h">
+      <Filter>Header Files\Custom_Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleProductionStager.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleFracturerBase.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleTracerBase.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleWorldTracer.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -827,14 +845,17 @@
     <ClCompile Include="FTriangle.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
-    <ClCompile Include="FTriangleFracturerBase.cpp">
-      <Filter>Source Files\FracturableTriangle</Filter>
-    </ClCompile>
     <ClCompile Include="WorldFracturingMachine.cpp">
       <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
     </ClCompile>
     <ClCompile Include="CalibratableBlueprintKeyPair.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleFracturerBase.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleWorldTracer.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
