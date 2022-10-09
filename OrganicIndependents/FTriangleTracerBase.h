@@ -23,21 +23,25 @@ class FTriangleTracerBase
 	public:
 		void initialize(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleProductionStager, EnclaveKeyDef::KeyHasher>* in_tracerStagerRef,
 						UniquePointContainer* in_uniquePointsContainerRef,
-						EnclaveKeyPair in_tracingLineKeyPairs[3])
+						EnclaveKeyPair in_tracingLineKeyPairs[3],
+						ECBPolyPoint in_fTrianglePoints[3])
 		{
 			tracerStagerRef = in_tracerStagerRef;
 			uniquePointsContainerRef = in_uniquePointsContainerRef;
 			for (int x = 0; x < 3; x++)
 			{
 				tracingLineKeypairs[x] = in_tracingLineKeyPairs[x];
+				fTrianglePoints[x] = in_fTrianglePoints[x];
 			}
+
 		};
 
 		virtual void runLineTracing() = 0;
-	private:
+	protected:
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleProductionStager, EnclaveKeyDef::KeyHasher>* tracerStagerRef = nullptr;
 		UniquePointContainer* uniquePointsContainerRef = nullptr;
 		EnclaveKeyPair tracingLineKeypairs[3];
+		ECBPolyPoint fTrianglePoints[3];
 };
 
 #endif

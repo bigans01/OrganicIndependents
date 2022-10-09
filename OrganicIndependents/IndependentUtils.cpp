@@ -405,6 +405,10 @@ ECBCalibratedPointPair IndependentUtils::compareAndCalibrateDistances(ECBPolyPoi
 		{
 			std::cout << "Warning, no corner found!!!! " << std::endl;
 			std::cout << ">>>> Normalized slope was: " << normalized_slope.x << ", " << normalized_slope.y << ", " << normalized_slope.z << ", " << std::endl;
+			std::cout << "Original distances: " << std::endl;
+			std::cout << "distance x: " << in_distanceValues.x << std::endl;
+			std::cout << "distance y: " << in_distanceValues.y << std::endl;
+			std::cout << "distance z: " << in_distanceValues.z << std::endl;
 			int stopinput;
 			std::cin >> stopinput;
 		}
@@ -487,6 +491,347 @@ ECBCalibratedPointPair IndependentUtils::compareAndCalibrateDistances(ECBPolyPoi
 
 	// std::cout << "||||||||||||||||||| ending calibration comparison ||||||||||||||||||||" << std::endl;
 	return returnPair;
+}
+
+ECBIntersectMeta IndependentUtils::findClosestBlueprintIntersection(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, EnclaveKeyDef::EnclaveKey in_pointAKey, EnclaveKeyDef::EnclaveKey in_pointBKey)
+{
+	// firstly, calculate the slope (pointB - pointA)
+	ECBIntersectMeta intersectMetaReturn;		// for return value
+	//std::cout << "Point A Key: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+	//std::cout << "Point B Key: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+	//std::cout << std::endl << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+	//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+				// std::cout << "Key A: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+				// std::cout << "Key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+
+
+	if (!(in_pointAKey == in_pointBKey))		// do this if the keys are not equal
+	{
+		//std::cout << "!!! CONDITION 1 entry" << std::endl;
+		//std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+		ECBPolyPoint resultantSlope;
+		resultantSlope.x = in_pointB.x - in_pointA.x;
+		resultantSlope.y = in_pointB.y - in_pointA.y;
+		resultantSlope.z = in_pointB.z - in_pointA.z;
+		//std::cout << "Resultant slope values are: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+		// flags for determining what the direction of x/y/z is; if they remain 0, there is no slope (perfectly flat for the line on that axis)
+		int x_dir = 0;
+		int y_dir = 0;
+		int z_dir = 0;
+
+		float x_interceptCoord = 0.0f;
+		float y_interceptCoord = 0.0f;
+		float z_interceptCoord = 0.0f;
+
+		// calculate total line length, which is the square root of the sum of x/y/z squared (pythagorean theorem)
+		float powSlopeX = pow(resultantSlope.x, 2.0f);
+		float powSlopeY = pow(resultantSlope.y, 2.0f);
+		float powSlopeZ = pow(resultantSlope.z, 2.0f);
+		float fullLineLength = sqrt(powSlopeX + powSlopeY + powSlopeZ);
+
+		// create a temporary struct to store tracked data
+		struct travelDistances
+		{
+			float timeToComplete = 0.0f;
+			float length = 0.0f;
+			int direction = 0;
+			ECBPolyPoint point;
+		};
+		travelDistances travelResults[3];	// first index value (0) = x result
+											// second index value (1) = y result
+											// third index value (2) = z result
+
+		// ******for this logic, check lines starting at 1891 in OrganicSystem.cpp
+		// check slope direction, and calculate distance for x ********************************************************************************************************************************************************************
+		float time_to_complete_x_traversal = 0.0f; // initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		float time_to_complete_y_traversal = 0.0f;
+		float time_to_complete_z_traversal = 0.0f;
+
+		float time_to_complete_x_traversal_RAW = 0.0f;
+		float time_to_complete_y_traversal_RAW = 0.0f;
+		float time_to_complete_z_traversal_RAW = 0.0f;
+
+		ECBPolyPoint calculatedPoint_for_x;		// initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		ECBPolyPoint calculatedPoint_for_y;
+		ECBPolyPoint calculatedPoint_for_z;
+
+
+		if (resultantSlope.x > 0)
+		{
+			//std::cout << "POS X entry " << std::endl;
+			x_dir = 1;			// going towards positive x 
+			x_interceptCoord = float((in_pointAKey.x * 32) + 32);								// x_interceptCoord is the precise location of x at the EAST face border
+			float origin_to_border_x_diff = (x_interceptCoord - in_pointA.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
+			//std::cout << "X intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "Origin to border x diff: " << origin_to_border_x_diff << std::endl;
+			time_to_complete_x_traversal = origin_to_border_x_diff / resultantSlope.x;	// get the distance that the ray has to travel to get to this value of x
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+			//std::cout << "X-traversal time: " << time_to_complete_x_traversal << std::endl;
+
+		}
+		else if (resultantSlope.x < 0)
+		{
+			x_dir = -1;			// going towards negative x
+			x_interceptCoord = float(in_pointAKey.x * 32);
+			//std::cout << "x-intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "point A x: " << in_pointA.x << std::endl;
+			float origin_to_border_x_diff = abs(x_interceptCoord - in_pointA.x);					// make sure to get absolute value for these two lines (WEST border)
+			time_to_complete_x_traversal = abs(origin_to_border_x_diff / resultantSlope.x);	// ""
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);	// "" 
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);	// ""
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+		}
+		//std::cout << "X-traversal value: " << travelResults[0].timeToComplete << std::endl;
+
+		//... for y												********************************************************************************************************************************************************************
+		if (resultantSlope.y > 0)
+		{
+			//std::cout << "POS Y entry " << std::endl;
+			y_dir = 1;		// going towards positive y
+			y_interceptCoord = float((in_pointAKey.y * 32) + 32);								// y_interceptCoord is the precise location of y at the TOP face border
+			float origin_to_border_y_diff = y_interceptCoord - in_pointA.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
+			time_to_complete_y_traversal = origin_to_border_y_diff / resultantSlope.y;	// get the distance this ray has to travel to get to this value of y
+			//std::cout << "correct value of origin_to_border: " << origin_to_border_y_diff << std::endl;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+
+		}
+		else if (resultantSlope.y < 0)
+		{
+			//std::cout << "NEG Y entry " << std::endl;
+			y_dir = -1;
+
+			//std::cout << "BP key A: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+			//std::cout << "BP key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+
+			y_interceptCoord = float(in_pointAKey.y * 32);
+			float origin_to_border_y_diff = abs(y_interceptCoord - in_pointA.y);
+			time_to_complete_y_traversal = abs(origin_to_border_y_diff / resultantSlope.y);
+			//time_to_complete_y_traversal = roundToThousandths(abs(origin_to_border_y_diff / resultantSlope.y));
+			//time_to_complete_y_traversal_RAW = abs(origin_to_border_y_diff / resultantSlope.y);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+		}
+		//std::cout << "Y-traversal value: " << travelResults[1].timeToComplete << std::endl;
+
+		//... for z
+		if (resultantSlope.z > 0)
+		{
+			//std::cout << ">> POS Z entry " << std::endl;
+			z_dir = 1;
+			z_interceptCoord = float((in_pointAKey.z * 32) + 32);
+			float origin_to_border_z_diff = z_interceptCoord - in_pointA.z;
+			time_to_complete_z_traversal = origin_to_border_z_diff / resultantSlope.z;
+			//time_to_complete_z_traversal = roundToThousandths(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal_RAW = origin_to_border_z_diff / resultantSlope.z;
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		else if (resultantSlope.z < 0)
+		{
+			//std::cout << "NEG Z entry " << std::endl;
+			z_dir = -1;
+			z_interceptCoord = float(in_pointAKey.z * 32);
+			float origin_to_border_z_diff = abs(z_interceptCoord - in_pointA.z);
+			time_to_complete_z_traversal = abs(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal = roundToThousandths(abs(origin_to_border_z_diff / resultantSlope.z));
+			//time_to_complete_z_traversal_RAW = abs(origin_to_border_z_diff / resultantSlope.z);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		//std::cout << "Z-traversal value: " << travelResults[2].timeToComplete << std::endl;
+		//std::cout << "||||| distance values set " << std::endl;
+
+		// find true key shift value (in case the point is exactly on a border line or border corner of this ECB's x/y/z limits)
+		ECBPolyPointTri triPointParam;
+		triPointParam.triPoints[0] = calculatedPoint_for_x;
+		triPointParam.triPoints[1] = calculatedPoint_for_y;
+		triPointParam.triPoints[2] = calculatedPoint_for_z;
+		ECBPolyPoint distanceValues;
+		distanceValues.x = time_to_complete_x_traversal;
+		distanceValues.y = time_to_complete_y_traversal;
+		distanceValues.z = time_to_complete_z_traversal;
+
+		//std::cout << "Time to complete traversals: " << std::endl;
+		//std::cout << "x: " << time_to_complete_x_traversal << std::endl;
+		//std::cout << "y: " << time_to_complete_y_traversal << std::endl;
+		//std::cout << "z: " << time_to_complete_z_traversal << std::endl;
+		//std::cout << std::fixed << std::setprecision(7);
+		//std::cout << "Raw values: " << std::endl;
+		//std::cout << "Raw x: " << time_to_complete_x_traversal_RAW << std::endl;
+		//std::cout << "Raw y: " << time_to_complete_y_traversal_RAW << std::endl;
+		//std::cout << "Raw z: " << time_to_complete_z_traversal_RAW << std::endl;
+		//std::cout << "Comparing and calibrate..." << std::endl;
+		//std::cout << "!!### Resultant slope used will be: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+		ECBCalibratedPointPair newTri = compareAndCalibrateDistances(&triPointParam, distanceValues, resultantSlope, in_pointAKey);
+		//std::cout << "Comparing and calibrate complete..." << std::endl;
+		ECBPolyPoint slopeDirection;
+		slopeDirection.x = float(x_dir);
+		slopeDirection.y = float(y_dir);
+		slopeDirection.z = float(z_dir);
+
+		triPointParam = newTri.calibratedPointTri;
+		distanceValues = newTri.calibratedDistance;
+
+		//std::cout << "Calling BP movemeta..." << std::endl;
+		intersectMetaReturn = findBlueprintBorderMoveMeta(in_pointAKey, in_pointA, distanceValues, slopeDirection, triPointParam);			// find key for shifting 
+		//std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+		//std::cout << "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| End of movemeta finding. " << std::endl;
+	}
+
+	else if (in_pointAKey == in_pointBKey)
+	{
+		intersectMetaReturn.originPoint = in_pointA;
+		intersectMetaReturn.intersectedPoint = in_pointB;
+		//std::cout << "finish entry" << std::endl;
+	}
+	// cycle through results
+	/*
+	float currentShortestTime = 0.0f;
+	int currentShortestIndex = -1;		// -1 is default (no valid index selected)
+	for (int x = 0; x < 3; x++)
+	{
+		if (travelResults[x].timeToComplete != 0.0f)	// is there an actual valid time for this?
+		{
+			if (currentShortestTime == 0.0f)	// for when the current length is 0 (this condition should always be met)
+			{
+				currentShortestTime = travelResults[x].timeToComplete;	// set the initial length
+				currentShortestIndex = x;							// set the index; 0 = x, 1 = y, 2 = z;
+			}
+			else if (currentShortestTime != 0.0f)
+			{
+				if (travelResults[x].timeToComplete < currentShortestTime)	// is the length being checked even smaller than the currentShortestLength?
+				{
+					currentShortestTime = travelResults[x].timeToComplete;	// reset the length
+					currentShortestIndex = x;							// reset the index
+				}
+			}
+		}
+	}
+
+	if (currentShortestIndex == 0)	// x was found
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +X" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -X" << std::endl;
+		}
+	}
+	else if (currentShortestIndex == 1)
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +Y" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -Y" << std::endl;
+		}
+	}
+	else if (currentShortestIndex == 2)
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +Z" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -Z" << std::endl;
+		}
+	}
+	*/
+	//intersectResult.faceID = travelResults[currentShortestIndex].direction;
+	//intersectResult.intersectedPoint = travelResults[currentShortestIndex].point;
+	//intersectResult.lineLength = travelResults[currentShortestIndex].length;
+	//intersectResult.originPoint = in_pointA;
+	//std::cout << "Preparing to return..." << std::endl;
+	return intersectMetaReturn;
 }
 
 ECBIntersectMeta IndependentUtils::findBlueprintBorderMoveMeta(EnclaveKeyDef::EnclaveKey in_Key1, ECBPolyPoint in_originPoint, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slopeDirection, ECBPolyPointTri in_XYZinterceptCoords)

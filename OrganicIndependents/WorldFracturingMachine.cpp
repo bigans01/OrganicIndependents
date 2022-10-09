@@ -75,6 +75,6 @@ void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 void WorldFracturingMachine::runWorldTracing()
 {
 	FTriangleWorldTracer worldTracer;
-	worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs);
+	worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, originFTrianglePoints);
 	worldTracer.runLineTracing();
 }

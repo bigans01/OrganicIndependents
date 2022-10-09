@@ -37,6 +37,7 @@ class IndependentUtils
 		static int checkIfPointsExistOnSameFace(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, BorderMDFaceList in_faceListC, int in_debugFlag);
 		static ECBPolyPointLocation getPolyPointLocation(ECBPolyPoint in_point, ECBBorderValues in_borderValues);
 		static ECBCalibratedPointPair compareAndCalibrateDistances(ECBPolyPointTri* in_polyPointTriRef, ECBPolyPoint in_distanceValues, ECBPolyPoint in_currentLineSlope, EnclaveKeyDef::EnclaveKey in_currentBlueprintKey);
+		static ECBIntersectMeta findClosestBlueprintIntersection(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, EnclaveKeyDef::EnclaveKey in_pointAKey, EnclaveKeyDef::EnclaveKey in_pointBKey);
 		static ECBIntersectMeta findBlueprintBorderMoveMeta(EnclaveKeyDef::EnclaveKey in_Key1, ECBPolyPoint in_originPoint, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slope, ECBPolyPointTri in_XYZinterceptCoords);		// determines the full key shift, by checking if the poly point's slope is on a border line or a border corner point; called by findClosestBlueprintIntersection
 		static ECBPolyPoint roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey);		// rounds a point to appropriate precision, based off blueprint coords
 		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
