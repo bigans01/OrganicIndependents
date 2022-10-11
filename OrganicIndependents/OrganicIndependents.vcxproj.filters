@@ -106,6 +106,15 @@
     <Filter Include="Source Files\FracturableTriangle\FTriangleTracer">
       <UniqueIdentifier>{85c4ed54-2fd3-4fd6-9f5e-4bf88681fbe0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FTriangleLine">
+      <UniqueIdentifier>{388dd4dc-5c93-4d0a-9b02-60fa30138f64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FRayCasters">
+      <UniqueIdentifier>{d21e85c8-122a-468a-9612-c443d8bd962e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FRayCasters">
+      <UniqueIdentifier>{96850d37-e3d6-4949-9544-b8f8e14ac7e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -669,6 +678,33 @@
     <ClInclude Include="FTriangleWorldTracer.h">
       <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClInclude>
+    <ClInclude Include="FTriangleLineType.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLine</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleLine.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLine</Filter>
+    </ClInclude>
+    <ClInclude Include="PerfectClampEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FRayCasterQuadBase.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="FRayCasterTypeEnum.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="FRayCasterInitData.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="XFRayCastQuad.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="YFRayCastQuad.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="ZFRayCastQuad.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -856,6 +892,18 @@
     </ClCompile>
     <ClCompile Include="FTriangleWorldTracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleProductionStager.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="XFRayCastQuad.cpp">
+      <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
+    </ClCompile>
+    <ClCompile Include="YFRayCastQuad.cpp">
+      <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
+    </ClCompile>
+    <ClCompile Include="ZFRayCastQuad.cpp">
+      <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

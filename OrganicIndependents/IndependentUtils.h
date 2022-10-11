@@ -29,6 +29,7 @@
 #include "EnclaveBlockVertexTri.h"
 #include "DynamicBorderLineList.h"
 #include "BoundaryOrientation.h"
+#include <glm/glm.hpp>
 
 class EnclaveTriangle;
 class IndependentUtils

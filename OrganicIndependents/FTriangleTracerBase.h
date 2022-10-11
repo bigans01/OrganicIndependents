@@ -8,7 +8,7 @@
 #include "FTriangleProductionStager.h"
 #include "UniquePointContainer.h"
 #include "EnclaveKeyPair.h"
-
+#include "FTriangleLine.h"
 
 /*
 

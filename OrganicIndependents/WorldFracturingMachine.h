@@ -20,7 +20,7 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 		// blueprint coords, and translate by that. The translateTriangle function will do this. This will also make debugging easier.
 		void translateTriangleByBlueprintKeys();
 		void runWorldTracing();
-		
+		void buildWorldFRayCasters();	// determine the FRayCasters that this machine will have to use
 };
 
 #endif

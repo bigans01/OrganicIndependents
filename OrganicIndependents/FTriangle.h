@@ -12,6 +12,7 @@
 #include "FTriangleFracturerBase.h"
 #include "WorldFracturingMachine.h"
 #include "BoundaryOrientation.h"
+#include "PerfectClampEnum.h"
 
 /*
 
@@ -30,7 +31,8 @@ class FTriangle
 				  ECBPolyPoint in_fracturePoint2,
 				  FTriangleType in_originType,
 				  ECBPolyPoint in_fractureEmptyNormal,
-				  BoundaryOrientation in_requiredOrientation)
+				  BoundaryOrientation in_requiredOrientation,
+				  PerfectClampEnum in_perfectClampValue)
 		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
@@ -39,10 +41,11 @@ class FTriangle
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
 															// constant, and passable to the produced FTriangles in the outputContainers member.
 			fractureRequiredOrientation = in_requiredOrientation;
+			fractureRequiredClampValue = in_perfectClampValue;
 		}
 
 		void fracture();
-
+		void printProducedPoints();
 	private:
 		ECBPolyPoint fracturePoints[3];
 		FTriangleType triangleOriginGrid = FTriangleType::NOVAL;	// the original grid type for the FTriangle (the grid type it was built in)
@@ -50,9 +53,11 @@ class FTriangle
 																	// FTriangleFracturerBase-derived class.
 		ECBPolyPoint fractureEmptyNormal;
 		BoundaryOrientation fractureRequiredOrientation = BoundaryOrientation::NONE;	// must be set by constructor.
+		PerfectClampEnum fractureRequiredClampValue = PerfectClampEnum::NONE;	// must be set by constructor
 
 		std::shared_ptr<FTriangleFracturerBase> fracturerMachine;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher> outputContainers;
+		bool hasFracturingCompleted = false;
 
 		void determineOutputLevel();	// sets the value of the triangleOutputGrid, based on what the value of the triangleOriginGrid is.
 										// The value of triangleOutputGrid is used to determine the value of the FTriangleFracturerBase-derived instance.

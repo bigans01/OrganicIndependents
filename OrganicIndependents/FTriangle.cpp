@@ -9,6 +9,7 @@ void FTriangle::fracture()
 									// as we are already at the lowest possible level, and it isn't possible to fracture anymore.
 }
 
+
 void FTriangle::determineOutputLevel()
 {
 	switch (triangleOriginGrid)
@@ -34,10 +35,18 @@ void FTriangle::setupAndRunFracturerMachine()
 													    fracturePoints[1], 
 														fracturePoints[2], 
 														fractureEmptyNormal,
-														fractureRequiredOrientation);
+														fractureRequiredOrientation,
+														fractureRequiredClampValue);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
+
+			hasFracturingCompleted = true;
 			break;
 		}
 	}
+}
+
+void FTriangle::printProducedPoints()
+{
+	fracturerMachine->printFracturerPoints();
 }

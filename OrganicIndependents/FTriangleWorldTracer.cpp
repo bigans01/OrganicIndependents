@@ -34,9 +34,15 @@ void FTriangleWorldTracer::runLineTracing()
 			// ...
 			// get the currentKey, the currentIterationBeginPoint, and currentIterationEndpoint, to construct a new
 			// FTriangleLine (having the FTriangleLineType::EXTERIOR type) and put it into the referenced FTriangleProductionStager map.
+			// Ensure that the new points have been inserted into the UniquePointContainer.
 			auto currentTracerKey = currentTracer.currentKey;
 			auto currentBeginPoint = currentTracer.currentIterationBeginPoint;
 			auto currentEndPoint = currentTracer.currentIterationEndpoint;
+
+			uniquePointsContainerRef->insertPoint(currentBeginPoint);
+			uniquePointsContainerRef->insertPoint(currentEndPoint);
+			FTriangleLine newExteriorLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
+			(*tracerStagerRef)[currentTracerKey].insertLine(newExteriorLine);
 
 			currentTracer.traverseLineOnce();
 		}

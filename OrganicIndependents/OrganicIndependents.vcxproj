@@ -78,9 +78,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -237,9 +239,14 @@
     <ClInclude Include="FanData.h" />
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
+    <ClInclude Include="FRayCasterInitData.h" />
+    <ClInclude Include="FRayCasterQuadBase.h" />
+    <ClInclude Include="FRayCasterTypeEnum.h" />
     <ClInclude Include="FTriangle.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
+    <ClInclude Include="FTriangleLine.h" />
+    <ClInclude Include="FTriangleLineType.h" />
     <ClInclude Include="FTriangleProductionStager.h" />
     <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
@@ -285,6 +292,7 @@
     <ClInclude Include="PAtomBase.h" />
     <ClInclude Include="PAtomDimType.h" />
     <ClInclude Include="PAtomState.h" />
+    <ClInclude Include="PerfectClampEnum.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
     <ClInclude Include="PMassResult.h" />
@@ -338,6 +346,9 @@
     <ClInclude Include="TriangleLine.h" />
     <ClInclude Include="UniquePointContainer.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
+    <ClInclude Include="XFRayCastQuad.h" />
+    <ClInclude Include="YFRayCastQuad.h" />
+    <ClInclude Include="ZFRayCastQuad.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
@@ -364,6 +375,7 @@
     <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
+    <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
@@ -407,6 +419,9 @@
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
     <ClCompile Include="TertiaryTriangleProducer.cpp" />
     <ClCompile Include="WorldFracturingMachine.cpp" />
+    <ClCompile Include="XFRayCastQuad.cpp" />
+    <ClCompile Include="YFRayCastQuad.cpp" />
+    <ClCompile Include="ZFRayCastQuad.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

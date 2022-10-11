@@ -78,6 +78,16 @@ class UniquePointContainer
 			return zPoints;
 		}
 
+		void printAllPoints()
+		{
+			std::cout << "Printing all points: " << std::endl;
+			for (auto& currentPoint : points)
+			{
+				currentPoint.printPointCoords();
+				std::cout << std::endl;
+			}
+		}
+
 	private:
 		std::vector<ECBPolyPoint> points;
 };
