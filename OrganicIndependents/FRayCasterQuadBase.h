@@ -8,6 +8,10 @@
 #include "FRayCasterInitData.h"
 #include <iostream>
 #include "IndependentUtils.h"
+#include <vector>
+#include "ECBPolyPointPair.h"
+#include "FRayInterceptionType.h"
+#include "FRayInterceptionMachine.h"
 
 class FRayCasterQuadBase
 {
@@ -20,6 +24,8 @@ class FRayCasterQuadBase
 			quadDimOneMax = in_initData.dimOneMax;
 			quadDimTwoMin = in_initData.dimTwoMin;
 			quadDimTwoMax = in_initData.dimTwoMax;
+			quadTargetRaycastDimMin = in_initData.rayCastDimMin;
+			quadTargetRaycastDimMax = in_initData.rayCastDimMax;
 			quadRayCastInterval = in_initData.rayCastInterval;
 			for (int x = 0; x < 3; x++)
 			{
@@ -35,6 +41,8 @@ class FRayCasterQuadBase
 		int quadDimOneMax = 0;
 		int quadDimTwoMin = 0;
 		int quadDimTwoMax = 0;
+		int quadTargetRaycastDimMin = 0;
+		int quadTargetRaycastDimMax = 0;
 		float quadRayCastInterval = 0.0f;
 		ECBPolyPoint targetTrianglePoints[3];
 		UniquePointContainer* quadPointContainerRef = nullptr;

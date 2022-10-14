@@ -27,6 +27,7 @@ std::vector<std::string> ExceptionRecord::transformRecordToStrings()
 
 		// Used in function WeldedTriangleGroupBuilder::handleFinalObservation() (OrganicGLWinLib)
 		case ExceptionRecordType::EXCEPTION_WELDED_TRIANGLE_SHIFT_LINES_EXCEEDED: { writeOutWeldedTriangleShiftLinesExceeded(&returnStrings); break; }
+		case ExceptionRecordType::EXCEPTION_TERMINATION_ATTEMPTS_EXCEEDED: { writeOutExcessiveTerminatingLines(&returnStrings); break; }
 	}
 
 	// the return vector that contains our output.
@@ -71,4 +72,34 @@ void ExceptionRecord::writeOutWeldedTriangleShiftLinesExceeded(std::vector<std::
 	// there should only be two context strings; simply read and push back.
 	in_outVectorRef->push_back(exceptionMessage.readString());
 	in_outVectorRef->push_back(exceptionMessage.readString());
+}
+
+void ExceptionRecord::writeOutExcessiveTerminatingLines(std::vector<std::string>* in_outVectorRef)
+{
+	// Remember, open the message first.
+	exceptionMessage.open();
+
+	// First two strings are context strings.
+	in_outVectorRef->push_back(exceptionMessage.readString());
+	in_outVectorRef->push_back(exceptionMessage.readString());
+
+	// Read the context string for the original lines.
+	in_outVectorRef->push_back(exceptionMessage.readString());
+
+	// Read the next int, to get the number of original lines to read.
+	int numberOfOriginalLinesToRead = exceptionMessage.readInt();
+	for (int x = 0; x < numberOfOriginalLinesToRead; x++)
+	{
+		in_outVectorRef->push_back(exceptionMessage.readString());
+	}
+
+	// Read the context string final lines:
+	in_outVectorRef->push_back(exceptionMessage.readString());
+
+	// Read the next int, to get the number of remaining lines to read.
+	int numberOfRemainingLinesToRead = exceptionMessage.readInt();
+	for (int x = 0; x < numberOfRemainingLinesToRead; x++)
+	{
+		in_outVectorRef->push_back(exceptionMessage.readString());
+	}
 }

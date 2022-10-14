@@ -11,6 +11,10 @@ void YFRayCastQuad::buildAndCastRays()
 	float currentZLocation = IndependentUtils::roundToHundredth(quadDimTwoMin * quadRayCastInterval);
 	float currentZLocationBase = currentZLocation;
 
+	// determine the max float value for Y
+	float minYDimValue = IndependentUtils::roundToHundredth(quadTargetRaycastDimMin * quadRayCastInterval);
+	float maxYDimValue = IndependentUtils::roundToHundredth((quadTargetRaycastDimMax * quadRayCastInterval) + quadRayCastInterval);
+
 	// do a nested loop; for each X, go through all Z.
 	// We must also make sure to reset the currentZLocation to its min value, every time we iterate in the x loop.
 	for (int x = 0; x < xLength; x++)
@@ -25,7 +29,18 @@ void YFRayCastQuad::buildAndCastRays()
 		{
 			currentZLocation += quadRayCastInterval;
 			currentZLocation = IndependentUtils::roundToHundredth(currentZLocation);
-			std::cout << "YFRayCast built: X -> " << currentXLocation << " | Z -> " << currentZLocation << std::endl;
+			std::cout << "YFRayCast built: X -> " << currentXLocation << " | Z -> " << currentZLocation << " | Min Y: -> " << minYDimValue << " | Max Y: -> " << maxYDimValue << std::endl;
+
+			YFRay currentYFRay(currentXLocation, currentZLocation, minYDimValue, maxYDimValue);
+			yFRayVector.push_back(currentYFRay);
 		}
+	}
+
+	// finally, cycle through each element in the vector and run the ray through a FRayInterceptionMachine, with
+	// the appropriate interception type (ROUND_FOR_Y)
+	for (auto& currentYFRay : yFRayVector)
+	{
+		auto currentRayPair = currentYFRay.getRayPoints();
+		FRayInterceptionMachine currentMachine(currentRayPair, targetTrianglePoints, quadPointContainerRef, FRayInterceptionType::ROUND_FOR_Y);
 	}
 }

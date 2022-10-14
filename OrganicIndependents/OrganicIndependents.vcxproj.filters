@@ -705,6 +705,12 @@
     <ClInclude Include="ZFRayCastQuad.h">
       <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
     </ClInclude>
+    <ClInclude Include="FRayInterceptionMachine.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="FRayInterceptionType.h">
+      <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

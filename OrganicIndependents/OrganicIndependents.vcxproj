@@ -72,9 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -242,6 +244,8 @@
     <ClInclude Include="FRayCasterInitData.h" />
     <ClInclude Include="FRayCasterQuadBase.h" />
     <ClInclude Include="FRayCasterTypeEnum.h" />
+    <ClInclude Include="FRayInterceptionMachine.h" />
+    <ClInclude Include="FRayInterceptionType.h" />
     <ClInclude Include="FTriangle.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />

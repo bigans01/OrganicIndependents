@@ -40,17 +40,27 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	glm::vec3 testVec3;
 
 	// cycle through each key to determine the min max for X/Y/Z
+	std::set<int> xKeyValues;
+	std::set<int> yKeyValues;
+	std::set<int> zKeyValues;
+
+	// throw each x/y/z into it's appropriate set; remember, sets are automatically ordered from least to greatest.
 	for (int x = 0; x < 3; x++)
 	{
-		minX = std::min(originFTriangleKeys[x].x, minX);
-		maxX = std::max(originFTriangleKeys[x].x, maxX);
-
-		minY = std::min(originFTriangleKeys[x].y, minY);
-		maxY = std::max(originFTriangleKeys[x].y, maxY);
-
-		minZ = std::min(originFTriangleKeys[x].z, minZ);
-		maxZ = std::max(originFTriangleKeys[x].z, maxZ);
+		xKeyValues.insert(originFTriangleKeys[x].x);
+		yKeyValues.insert(originFTriangleKeys[x].y);
+		zKeyValues.insert(originFTriangleKeys[x].z);
 	}
+
+	// the begin of a set of ints is the least value, the rbegin is the greatest value.
+	minX = *xKeyValues.begin();
+	maxX = *xKeyValues.rbegin();
+
+	minY = *yKeyValues.begin();
+	maxY = *yKeyValues.rbegin();
+
+	minZ = *zKeyValues.begin();
+	maxZ = *zKeyValues.rbegin();
 
 	int xGridWidth = maxX - minX;
 	int yGridWidth = maxY - minY;
@@ -69,7 +79,9 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	)
 	{
 		std::cout << "Found valid X grid. " << std::endl;
-		FRayCasterInitData xData(minY, maxY, minZ, maxZ, rayCastDimInterval);
+
+		// requires: minY/maxY, minZ/maxZ, and the max of our target ray cast dim (so maxX)
+		FRayCasterInitData xData(minY, maxY, minZ, maxZ, rayCastDimInterval, minX, maxX);
 		mappedInitData[FRayCasterTypeEnum::X_RAY] = xData;
 	}
 
@@ -82,7 +94,9 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	)
 	{
 		std::cout << "Found valid Y grid. " << std::endl;
-		FRayCasterInitData yData(minX, maxX, minZ, maxZ, rayCastDimInterval);
+
+		// requires: minX/maxX, minZ/maxZ, and the max of our target ray cast dim (so maxY)
+		FRayCasterInitData yData(minX, maxX, minZ, maxZ, rayCastDimInterval, minY, maxY);
 		mappedInitData[FRayCasterTypeEnum::Y_RAY] = yData;
 	}
 
@@ -95,7 +109,9 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	)
 	{
 		std::cout << "Found valid Z grid. " << std::endl;
-		FRayCasterInitData zData(minX, maxX, minY, maxY, rayCastDimInterval);
+
+		// requires: minX/maxX, minY/maxY, and the max of our target ray cast dim (so maxZ)
+		FRayCasterInitData zData(minX, maxX, minY, maxY, rayCastDimInterval, minZ, maxZ);
 		mappedInitData[FRayCasterTypeEnum::Z_RAY] = zData;
 	}
 

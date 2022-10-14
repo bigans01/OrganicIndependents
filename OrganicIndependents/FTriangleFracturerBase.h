@@ -25,6 +25,7 @@
 #include "XFRayCastQuad.h"
 #include "YFRayCastQuad.h"
 #include "ZFRayCastQuad.h"
+#include <set>
 
 class FTriangleFracturerBase
 {

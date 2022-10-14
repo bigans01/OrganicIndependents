@@ -47,6 +47,7 @@ class ExceptionRecord
 		// There should be 1 function for each specific case.
 		void writeOutCategorizedLines(std::vector<std::string>* in_outVectorRef);					// for ExceptionRecordType::EXCEPTION_INVALID_TYPICAL_SEQUENCE
 		void writeOutWeldedTriangleShiftLinesExceeded(std::vector<std::string>* in_outVectorRef);	// for ExceptionRecordType::EXCEPTION_WELDED_TRIANGLE_SHIFT_LINES_EXCEEDED
+		void writeOutExcessiveTerminatingLines(std::vector<std::string>* in_outVectorRef);			// for ExceptionRecordType::EXCEPTION_TERMINATION_ATTEMPTS_EXCEEDED
 
 };
 
