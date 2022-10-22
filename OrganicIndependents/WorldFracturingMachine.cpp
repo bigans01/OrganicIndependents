@@ -11,6 +11,15 @@ void WorldFracturingMachine::runFracturing()
 	translateTriangleByBlueprintKeys();		// first, do any required translations.
 	runWorldTracing();						// second, create exterior FTriangleLines.
 	buildWorldFRayCasters();				// third, determine the ray casters we have to use for the FTriangle.
+
+	// as a test, get all points with X = 64.0f.
+	float xValue = 64.0f;
+	std::cout << "(WorldFracturingMachine::runFracturing): printing X points that have a value of " << xValue << ": " << std::endl;
+	for (auto& x64points : fracturerPoints.getAllPointsWithX(xValue))
+	{
+		x64points.printPointCoords();
+		std::cout << std::endl;
+	}
 }
 
 void WorldFracturingMachine::determineUncalibratedBlueprintKeys()

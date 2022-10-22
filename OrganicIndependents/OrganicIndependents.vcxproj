@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -244,8 +244,8 @@
     <ClInclude Include="FRayCasterInitData.h" />
     <ClInclude Include="FRayCasterQuadBase.h" />
     <ClInclude Include="FRayCasterTypeEnum.h" />
-    <ClInclude Include="FRayInterceptionMachine.h" />
-    <ClInclude Include="FRayInterceptionType.h" />
+    <ClInclude Include="FRayIntersectionMachine.h" />
+    <ClInclude Include="FRayIntersectionRoundingMode.h" />
     <ClInclude Include="FTriangle.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
@@ -349,6 +349,7 @@
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
     <ClInclude Include="UniquePointContainer.h" />
+    <ClInclude Include="Vec3Pair.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
     <ClInclude Include="XFRayCastQuad.h" />
     <ClInclude Include="YFRayCastQuad.h" />
@@ -377,6 +378,7 @@
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
+    <ClCompile Include="FRayIntersectionMachine.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />

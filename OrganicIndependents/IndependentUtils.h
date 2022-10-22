@@ -76,6 +76,10 @@ class IndependentUtils
 		static EnclaveBlockVertex convertPolyPointToBlockVertex(ECBPolyPoint in_polyPoint);
 		static ECBPolyPoint roundPolyPointToThousandths(ECBPolyPoint in_polyPoint);
 		static ECBPolyPoint roundPolyPointToTenThousandths(ECBPolyPoint in_polyPoint);
+
+		static glm::vec3 convertECBPolyPointToVec3(ECBPolyPoint in_pointToConvert);
+		static ECBPolyPoint convertVec3ToPolyPoint(glm::vec3 in_pointToConvert);
+
 		static int checkIfFaceListsMatch(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, int in_numberOfMatches);
 		static float roundToHundredth(float in_float);
 		static float roundToThousandths(float in_float);

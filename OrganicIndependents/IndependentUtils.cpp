@@ -4741,6 +4741,16 @@ ECBPolyPoint IndependentUtils::roundPolyPointToTenThousandths(ECBPolyPoint in_po
 	return calibratedPoint;
 }
 
+glm::vec3 IndependentUtils::convertECBPolyPointToVec3(ECBPolyPoint in_pointToConvert)
+{
+	return glm::vec3(in_pointToConvert.x, in_pointToConvert.y, in_pointToConvert.z);
+}
+
+ECBPolyPoint IndependentUtils::convertVec3ToPolyPoint(glm::vec3 in_pointToConvert)
+{
+	return ECBPolyPoint(in_pointToConvert.x, in_pointToConvert.y, in_pointToConvert.z);
+}
+
 float IndependentUtils::roundToHundredth(float in_float)
 {
 	float calcedFloat = float(floor(in_float * 100 + 0.5) / 100);

@@ -41,6 +41,6 @@ void XFRayCastQuad::buildAndCastRays()
 	for (auto& currentXFRay : xFRayVector)
 	{
 		auto currentRayPair = currentXFRay.getRayPoints();
-		FRayInterceptionMachine currentMachine(currentRayPair, targetTrianglePoints, quadPointContainerRef, FRayInterceptionType::ROUND_FOR_X);
+		FRayIntersectionMachine currentMachine(currentRayPair, targetTrianglePoints, quadPointContainerRef, FRayIntersectionRoundingMode::ROUND_FOR_X);
 	}
 }

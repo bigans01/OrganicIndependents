@@ -10,8 +10,8 @@
 #include "IndependentUtils.h"
 #include <vector>
 #include "ECBPolyPointPair.h"
-#include "FRayInterceptionType.h"
-#include "FRayInterceptionMachine.h"
+#include "FRayIntersectionRoundingMode.h"
+#include "FRayIntersectionMachine.h"
 
 class FRayCasterQuadBase
 {

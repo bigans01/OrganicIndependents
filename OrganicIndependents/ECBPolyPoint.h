@@ -19,7 +19,16 @@ public:
 		z += ecbPolyPoint_b.z;
 		return *this;
 	}
+
 	ECBPolyPoint& operator-=(const ECBPolyPoint& ecbPolyPoint_b)
+	{
+		x -= ecbPolyPoint_b.x;
+		y -= ecbPolyPoint_b.y;
+		z -= ecbPolyPoint_b.z;
+		return *this;
+	}
+
+	ECBPolyPoint& operator-(const ECBPolyPoint& ecbPolyPoint_b)
 	{
 		x -= ecbPolyPoint_b.x;
 		y -= ecbPolyPoint_b.y;
