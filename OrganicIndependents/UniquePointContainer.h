@@ -5,12 +5,13 @@
 
 #include <vector>
 #include "ECBPolyPoint.h"
+#include "FTrianglePoint.h"
 
 /*
 
 Description:
 
-A simple container class used to store unique values for ECBPolyPoints. Its intention is to be used with derivatives 
+A simple container class used to store unique values for FTrianglePoints. Its intention is to be used with derivatives 
 of the FTriangleFracturerBaseClass, but may have uses in other places (and the code may be expanded upon as well).
 
 */
@@ -18,7 +19,7 @@ of the FTriangleFracturerBaseClass, but may have uses in other places (and the c
 class UniquePointContainer
 {
 	public:
-		void insertPoint(ECBPolyPoint in_pointToInsert)	// attempt to insert a point; will not insert if the point already exists.
+		void insertFTrianglePoint(FTrianglePoint in_pointToInsert)	// attempt to insert a point; will not insert if the point already exists.
 		{
 			bool doesPointExist = false;
 
@@ -39,40 +40,40 @@ class UniquePointContainer
 			}
 		}
 
-		std::vector<ECBPolyPoint> getAllPointsWithX(float in_xLookupValue)	// fetch all points that match a particular X value.
+		std::vector<FTrianglePoint> getAllPointsWithX(float in_xLookupValue)	// fetch all points that match a particular X value.
 		{
-			std::vector<ECBPolyPoint> xPoints;
-			for (auto& currentPoint : points)
+			std::vector<FTrianglePoint> xPoints;
+			for (auto& currentFTrianglePoint : points)
 			{
-				if (currentPoint.x == in_xLookupValue)
+				if (currentFTrianglePoint.point.x == in_xLookupValue)
 				{
-					xPoints.push_back(currentPoint);
+					xPoints.push_back(currentFTrianglePoint);
 				}
 			}
 			return xPoints;
 		}
 
-		std::vector<ECBPolyPoint> getAllPointsWithY(float in_yLookupValue)	// fetch all points that match a particular Y value.
+		std::vector<FTrianglePoint> getAllPointsWithY(float in_yLookupValue)	// fetch all points that match a particular Y value.
 		{
-			std::vector<ECBPolyPoint> yPoints;
-			for (auto& currentPoint : points)
+			std::vector<FTrianglePoint> yPoints;
+			for (auto& currentFTrianglePoint : points)
 			{
-				if (currentPoint.y == in_yLookupValue)
+				if (currentFTrianglePoint.point.y == in_yLookupValue)
 				{
-					yPoints.push_back(currentPoint);
+					yPoints.push_back(currentFTrianglePoint);
 				}
 			}
 			return yPoints;
 		}
 
-		std::vector<ECBPolyPoint> getAllPointsWithZ(float in_zLookupValue) // fetch all points that match a particular Z value.
+		std::vector<FTrianglePoint> getAllPointsWithZ(float in_zLookupValue) // fetch all points that match a particular Z value.
 		{
-			std::vector<ECBPolyPoint> zPoints;
-			for (auto& currentPoint : points)
+			std::vector<FTrianglePoint> zPoints;
+			for (auto& currentFTrianglePoint : points)
 			{
-				if (currentPoint.z == in_zLookupValue)
+				if (currentFTrianglePoint.point.z == in_zLookupValue)
 				{
-					zPoints.push_back(currentPoint);
+					zPoints.push_back(currentFTrianglePoint);
 				}
 			}
 			return zPoints;
@@ -83,13 +84,13 @@ class UniquePointContainer
 			std::cout << "Printing all points: " << std::endl;
 			for (auto& currentPoint : points)
 			{
-				currentPoint.printPointCoords();
+				currentPoint.printPointData();
 				std::cout << std::endl;
 			}
 		}
 
 	private:
-		std::vector<ECBPolyPoint> points;
+		std::vector<FTrianglePoint> points;
 };
 
 #endif

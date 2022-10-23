@@ -4,6 +4,7 @@
 #define FTRIANGLEWORLDTRACER_H
 
 #include "FTriangleFracturerBase.h"
+#include "TracingLineBoundingBox.h"
 
 /*
 
@@ -38,7 +39,16 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 					beginPoint(in_beginPoint),
 					endPoint(in_endPoint)
 			{
-				ECBIntersectMeta resultantIntersect = IndependentUtils::findClosestBlueprintIntersection(beginPoint, endPoint, beginKey, endKey);	// do the initial set up; beginKey will be replaced by currentKey in later function calls
+				// NEW: the FTriangleWorldTracer should use the advanced blueprint tracing function, findCBIv2 (this function uses a tracing bounding box
+				// for safety against cases where the incrementing key goes out of the bounds of the keys that represent the points of the line).
+				// This feature will probably eventually be extended to other points of the overall Organic libraries, but it is being tested here for now.
+				TracingLineBoundingBox bbToUse(beginKey, endKey);
+				lineBoundingBox = bbToUse;
+				ECBIntersectMeta resultantIntersect = IndependentUtils::findCBIv2(beginPoint, 
+																				  endPoint, 
+																				  beginKey, 
+																				  endKey,
+																				lineBoundingBox);	// do the initial set up; beginKey will be replaced by currentKey in later function calls
 				nextKeyAdd = resultantIntersect.incrementingKey;					// the next key add will be a result from previous function call
 				currentIterationBeginPoint = beginPoint;							// set the initial value of the begin point
 				currentIterationEndpoint = resultantIntersect.intersectedPoint;		// set the incrementing point
@@ -53,6 +63,8 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 			ECBPolyPoint currentIterationBeginPoint;	// equals whatever the begin point of the line is
 			ECBPolyPoint currentIterationEndpoint;		// equals whatever the point is when this line hits an ECB border
 			ECBPolyPoint endPoint;						//	 equals point B of line
+
+			TracingLineBoundingBox lineBoundingBox;		// must be set by constructor function
 
 			bool shouldTraceStop = false;
 
@@ -75,7 +87,11 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 				//std::cout << "nextKeyAdd Value: " << nextKeyAdd.x << ", " << nextKeyAdd.y << ", " << nextKeyAdd.z << std::endl;
 				currentKey += nextKeyAdd;
 				//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
-				ECBIntersectMeta resultantIntersect = IndependentUtils::findClosestBlueprintIntersection(currentIterationEndpoint, endPoint, currentKey, endKey);
+				ECBIntersectMeta resultantIntersect = IndependentUtils::findCBIv2(currentIterationEndpoint,
+																										endPoint, 
+																										currentKey, 
+																										endKey,
+																										lineBoundingBox);
 				//std::cout << "--Resultant intersect at traverseLineOnce: " << resultantIntersect.intersectedPoint.x << ", " << resultantIntersect.intersectedPoint.y << ", " << resultantIntersect.intersectedPoint.z << std::endl;
 				nextKeyAdd = resultantIntersect.incrementingKey;
 				currentIterationBeginPoint = currentIterationEndpoint;			// set the begin point to be the previous end point

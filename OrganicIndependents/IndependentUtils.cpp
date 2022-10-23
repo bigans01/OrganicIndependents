@@ -1532,6 +1532,1062 @@ ECBIntersectMeta IndependentUtils::findBlueprintBorderMoveMeta(EnclaveKeyDef::En
 	return intersectMeta;
 }
 
+ECBIntersectMeta IndependentUtils::findCBIv2(ECBPolyPoint in_pointA,
+	ECBPolyPoint in_pointB,
+	EnclaveKeyDef::EnclaveKey in_pointAKey,
+	EnclaveKeyDef::EnclaveKey in_pointBKey,
+	TracingLineBoundingBox in_boundingBox)
+{
+	// firstly, calculate the slope (pointB - pointA)
+	ECBIntersectMeta intersectMetaReturn;		// for return value
+	//std::cout << "Point A Key: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+	//std::cout << "Point B Key: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+	//std::cout << std::endl << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+	//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+				// std::cout << "Key A: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+				// std::cout << "Key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+
+
+	if (!(in_pointAKey == in_pointBKey))		// do this if the keys are not equal
+	{
+		//std::cout << "!!! CONDITION 1 entry" << std::endl;
+		//std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+		ECBPolyPoint resultantSlope;
+		resultantSlope.x = in_pointB.x - in_pointA.x;
+		resultantSlope.y = in_pointB.y - in_pointA.y;
+		resultantSlope.z = in_pointB.z - in_pointA.z;
+		//std::cout << "Resultant slope values are: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+		// flags for determining what the direction of x/y/z is; if they remain 0, there is no slope (perfectly flat for the line on that axis)
+		int x_dir = 0;
+		int y_dir = 0;
+		int z_dir = 0;
+
+		float x_interceptCoord = 0.0f;
+		float y_interceptCoord = 0.0f;
+		float z_interceptCoord = 0.0f;
+
+		// calculate total line length, which is the square root of the sum of x/y/z squared (pythagorean theorem)
+		float powSlopeX = pow(resultantSlope.x, 2.0f);
+		float powSlopeY = pow(resultantSlope.y, 2.0f);
+		float powSlopeZ = pow(resultantSlope.z, 2.0f);
+		float fullLineLength = sqrt(powSlopeX + powSlopeY + powSlopeZ);
+
+		// create a temporary struct to store tracked data
+		struct travelDistances
+		{
+			float timeToComplete = 0.0f;
+			float length = 0.0f;
+			int direction = 0;
+			ECBPolyPoint point;
+		};
+		travelDistances travelResults[3];	// first index value (0) = x result
+											// second index value (1) = y result
+											// third index value (2) = z result
+
+		// ******for this logic, check lines starting at 1891 in OrganicSystem.cpp
+		// check slope direction, and calculate distance for x ********************************************************************************************************************************************************************
+		float time_to_complete_x_traversal = 0.0f; // initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		float time_to_complete_y_traversal = 0.0f;
+		float time_to_complete_z_traversal = 0.0f;
+
+		float time_to_complete_x_traversal_RAW = 0.0f;
+		float time_to_complete_y_traversal_RAW = 0.0f;
+		float time_to_complete_z_traversal_RAW = 0.0f;
+
+		ECBPolyPoint calculatedPoint_for_x;		// initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		ECBPolyPoint calculatedPoint_for_y;
+		ECBPolyPoint calculatedPoint_for_z;
+
+
+		if (resultantSlope.x > 0)
+		{
+			//std::cout << "POS X entry " << std::endl;
+			x_dir = 1;			// going towards positive x 
+			x_interceptCoord = float((in_pointAKey.x * 32) + 32);								// x_interceptCoord is the precise location of x at the EAST face border
+			float origin_to_border_x_diff = (x_interceptCoord - in_pointA.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
+			//std::cout << "X intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "Origin to border x diff: " << origin_to_border_x_diff << std::endl;
+			time_to_complete_x_traversal = origin_to_border_x_diff / resultantSlope.x;	// get the distance that the ray has to travel to get to this value of x
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+			//std::cout << "X-traversal time: " << time_to_complete_x_traversal << std::endl;
+
+		}
+		else if (resultantSlope.x < 0)
+		{
+			x_dir = -1;			// going towards negative x
+			x_interceptCoord = float(in_pointAKey.x * 32);
+			//std::cout << "x-intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "point A x: " << in_pointA.x << std::endl;
+			float origin_to_border_x_diff = abs(x_interceptCoord - in_pointA.x);					// make sure to get absolute value for these two lines (WEST border)
+			time_to_complete_x_traversal = abs(origin_to_border_x_diff / resultantSlope.x);	// ""
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);	// "" 
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);	// ""
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+		}
+		//std::cout << "X-traversal value: " << travelResults[0].timeToComplete << std::endl;
+
+		//... for y												********************************************************************************************************************************************************************
+		if (resultantSlope.y > 0)
+		{
+			//std::cout << "POS Y entry " << std::endl;
+			y_dir = 1;		// going towards positive y
+			y_interceptCoord = float((in_pointAKey.y * 32) + 32);								// y_interceptCoord is the precise location of y at the TOP face border
+			float origin_to_border_y_diff = y_interceptCoord - in_pointA.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
+			time_to_complete_y_traversal = origin_to_border_y_diff / resultantSlope.y;	// get the distance this ray has to travel to get to this value of y
+			//std::cout << "correct value of origin_to_border: " << origin_to_border_y_diff << std::endl;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+
+		}
+		else if (resultantSlope.y < 0)
+		{
+			//std::cout << "NEG Y entry " << std::endl;
+			y_dir = -1;
+
+			//std::cout << "BP key A: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+			//std::cout << "BP key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+
+			y_interceptCoord = float(in_pointAKey.y * 32);
+			float origin_to_border_y_diff = abs(y_interceptCoord - in_pointA.y);
+			time_to_complete_y_traversal = abs(origin_to_border_y_diff / resultantSlope.y);
+			//time_to_complete_y_traversal = roundToThousandths(abs(origin_to_border_y_diff / resultantSlope.y));
+			//time_to_complete_y_traversal_RAW = abs(origin_to_border_y_diff / resultantSlope.y);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+		}
+		//std::cout << "Y-traversal value: " << travelResults[1].timeToComplete << std::endl;
+
+		//... for z
+		if (resultantSlope.z > 0)
+		{
+			//std::cout << ">> POS Z entry " << std::endl;
+			z_dir = 1;
+			z_interceptCoord = float((in_pointAKey.z * 32) + 32);
+			float origin_to_border_z_diff = z_interceptCoord - in_pointA.z;
+			time_to_complete_z_traversal = origin_to_border_z_diff / resultantSlope.z;
+			//time_to_complete_z_traversal = roundToThousandths(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal_RAW = origin_to_border_z_diff / resultantSlope.z;
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		else if (resultantSlope.z < 0)
+		{
+			//std::cout << "NEG Z entry " << std::endl;
+			z_dir = -1;
+			z_interceptCoord = float(in_pointAKey.z * 32);
+			float origin_to_border_z_diff = abs(z_interceptCoord - in_pointA.z);
+			time_to_complete_z_traversal = abs(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal = roundToThousandths(abs(origin_to_border_z_diff / resultantSlope.z));
+			//time_to_complete_z_traversal_RAW = abs(origin_to_border_z_diff / resultantSlope.z);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		//std::cout << "Z-traversal value: " << travelResults[2].timeToComplete << std::endl;
+		//std::cout << "||||| distance values set " << std::endl;
+
+		// find true key shift value (in case the point is exactly on a border line or border corner of this ECB's x/y/z limits)
+		ECBPolyPointTri triPointParam;
+		triPointParam.triPoints[0] = calculatedPoint_for_x;
+		triPointParam.triPoints[1] = calculatedPoint_for_y;
+		triPointParam.triPoints[2] = calculatedPoint_for_z;
+		ECBPolyPoint distanceValues;
+		distanceValues.x = time_to_complete_x_traversal;
+		distanceValues.y = time_to_complete_y_traversal;
+		distanceValues.z = time_to_complete_z_traversal;
+
+		//std::cout << "Time to complete traversals: " << std::endl;
+		//std::cout << "x: " << time_to_complete_x_traversal << std::endl;
+		//std::cout << "y: " << time_to_complete_y_traversal << std::endl;
+		//std::cout << "z: " << time_to_complete_z_traversal << std::endl;
+		//std::cout << std::fixed << std::setprecision(7);
+		//std::cout << "Raw values: " << std::endl;
+		//std::cout << "Raw x: " << time_to_complete_x_traversal_RAW << std::endl;
+		//std::cout << "Raw y: " << time_to_complete_y_traversal_RAW << std::endl;
+		//std::cout << "Raw z: " << time_to_complete_z_traversal_RAW << std::endl;
+		//std::cout << "Comparing and calibrate..." << std::endl;
+		//std::cout << "!!### Resultant slope used will be: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+		ECBCalibratedPointPair newTri = compareAndCalibrateDistances(&triPointParam, distanceValues, resultantSlope, in_pointAKey);
+		//std::cout << "Comparing and calibrate complete..." << std::endl;
+		ECBPolyPoint slopeDirection;
+		slopeDirection.x = float(x_dir);
+		slopeDirection.y = float(y_dir);
+		slopeDirection.z = float(z_dir);
+
+		triPointParam = newTri.calibratedPointTri;
+		distanceValues = newTri.calibratedDistance;
+
+		//std::cout << "Calling BP movemeta..." << std::endl;
+		intersectMetaReturn = findBBMMv2(in_pointAKey,
+										in_pointA,
+										distanceValues,
+										slopeDirection,
+										triPointParam,
+										in_boundingBox);			// find key for shifting 			// find key for shifting 
+		//std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+		//std::cout << "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| End of movemeta finding. " << std::endl;
+	}
+
+	else if (in_pointAKey == in_pointBKey)
+	{
+		intersectMetaReturn.originPoint = in_pointA;
+		intersectMetaReturn.intersectedPoint = in_pointB;
+		//std::cout << "finish entry" << std::endl;
+	}
+	// cycle through results
+	/*
+	float currentShortestTime = 0.0f;
+	int currentShortestIndex = -1;		// -1 is default (no valid index selected)
+	for (int x = 0; x < 3; x++)
+	{
+		if (travelResults[x].timeToComplete != 0.0f)	// is there an actual valid time for this?
+		{
+			if (currentShortestTime == 0.0f)	// for when the current length is 0 (this condition should always be met)
+			{
+				currentShortestTime = travelResults[x].timeToComplete;	// set the initial length
+				currentShortestIndex = x;							// set the index; 0 = x, 1 = y, 2 = z;
+			}
+			else if (currentShortestTime != 0.0f)
+			{
+				if (travelResults[x].timeToComplete < currentShortestTime)	// is the length being checked even smaller than the currentShortestLength?
+				{
+					currentShortestTime = travelResults[x].timeToComplete;	// reset the length
+					currentShortestIndex = x;							// reset the index
+				}
+			}
+		}
+	}
+
+	if (currentShortestIndex == 0)	// x was found
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +X" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -X" << std::endl;
+		}
+	}
+	else if (currentShortestIndex == 1)
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +Y" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -Y" << std::endl;
+		}
+	}
+	else if (currentShortestIndex == 2)
+	{
+		if (travelResults[currentShortestIndex].direction == 1)
+		{
+			//std::cout << "Line intersects at +Z" << std::endl;
+		}
+		else if (travelResults[currentShortestIndex].direction == -1)
+		{
+			//std::cout << "Line intersects at -Z" << std::endl;
+		}
+	}
+	*/
+	//intersectResult.faceID = travelResults[currentShortestIndex].direction;
+	//intersectResult.intersectedPoint = travelResults[currentShortestIndex].point;
+	//intersectResult.lineLength = travelResults[currentShortestIndex].length;
+	//intersectResult.originPoint = in_pointA;
+	//std::cout << "Preparing to return..." << std::endl;
+	return intersectMetaReturn;
+}
+
+ECBIntersectMeta IndependentUtils::findBBMMv2(EnclaveKeyDef::EnclaveKey in_Key1,
+	ECBPolyPoint in_originPoint,
+	ECBPolyPoint in_distanceValues,
+	ECBPolyPoint in_slopeDirection,
+	ECBPolyPointTri in_XYZinterceptCoords,
+	TracingLineBoundingBox in_boundingBox)
+{
+	// variable initialization
+	std::cout << "------------------------------------------------------------------->>>> Origin point for calc is: " << in_originPoint.x << ", " << in_originPoint.y << ", " << in_originPoint.z << ", " << std::endl;
+	ECBIntersectMeta intersectMeta;
+	EnclaveKeyDef::EnclaveKey newKey;
+	ECBBorderLineList pointABorderLineList;
+	ECBBorderValues borderLimits = getBlueprintLimits(in_Key1);		// get the precise border limits
+	pointABorderLineList = IndependentUtils::determineBorderLines(in_Key1);			// get the border values for the origin point, based on in_Key1
+	int isPointOnALine = 1;
+	//std::cout << "Original dist_to_x: " << in_distanceValues.x << std::endl;
+	//std::cout << "Original dist_to_y: " << in_distanceValues.y << std::endl;
+	//std::cout << "Original dist_to_z: " << in_distanceValues.z << std::endl;
+	//std::cout << std::fixed << std::setprecision(7);
+	//float dist_to_X = OrganicUtils::roundToOneHundredThousandth(in_distanceValues.x);
+	//float dist_to_Y = OrganicUtils::roundToOneHundredThousandth(in_distanceValues.y);
+	//float dist_to_Z = OrganicUtils::roundToOneHundredThousandth(in_distanceValues.z);
+	//float dist_to_X = OrganicUtils::roundToThousandths(in_distanceValues.x);
+	//float dist_to_Y = OrganicUtils::roundToThousandths(in_distanceValues.y);
+	//float dist_to_Z = OrganicUtils::roundToThousandths(in_distanceValues.z);
+	ECBPolyPoint testXYZenhanced = IndependentUtils::roundXYZInterceptDistancesToAppropriatePrecisionDebug(in_distanceValues.x, in_distanceValues.y, in_distanceValues.z);
+	float dist_to_X = testXYZenhanced.x;
+	float dist_to_Y = testXYZenhanced.y;
+	float dist_to_Z = testXYZenhanced.z;
+
+	//ECBPolyPoint x_intercept_coords = OrganicUtils::roundPolyPointToOneMillionthsSpecial(in_XYZinterceptCoords.triPoints[0]);	// get x point
+	//ECBPolyPoint y_intercept_coords = OrganicUtils::roundPolyPointToOneMillionthsSpecial(in_XYZinterceptCoords.triPoints[1]);	// ...y point
+	//ECBPolyPoint z_intercept_coords = OrganicUtils::roundPolyPointToOneMillionthsSpecial(in_XYZinterceptCoords.triPoints[2]);	// ...z point
+	//std::cout << "Base intercept coords, before conversion: " << std::endl;
+	//std::cout << "X--> " << in_XYZinterceptCoords.triPoints[0].x << ",  " << in_XYZinterceptCoords.triPoints[0].y << ",  " << in_XYZinterceptCoords.triPoints[0].z << std::endl;
+	//std::cout << "Y--> " << in_XYZinterceptCoords.triPoints[1].x << ",  " << in_XYZinterceptCoords.triPoints[1].y << ",  " << in_XYZinterceptCoords.triPoints[1].z << std::endl;
+	//std::cout << "Z--> " << in_XYZinterceptCoords.triPoints[2].x << ",  " << in_XYZinterceptCoords.triPoints[2].y << ",  " << in_XYZinterceptCoords.triPoints[2].z << std::endl;
+	ECBPolyPoint x_intercept_coords = IndependentUtils::roundToAppropriatePrecisionForHundredths(in_XYZinterceptCoords.triPoints[0], in_Key1);
+	ECBPolyPoint y_intercept_coords = IndependentUtils::roundToAppropriatePrecisionForHundredths(in_XYZinterceptCoords.triPoints[1], in_Key1);
+	ECBPolyPoint z_intercept_coords = IndependentUtils::roundToAppropriatePrecisionForHundredths(in_XYZinterceptCoords.triPoints[2], in_Key1);
+
+	//std::cout << "X int coords: " << x_intercept_coords.x << ", " << x_intercept_coords.y << ", " << x_intercept_coords.z << std::endl;
+	//std::cout << "Y int coords: " << y_intercept_coords.x << ", " << y_intercept_coords.y << ", " << y_intercept_coords.z << std::endl;
+	//std::cout << "Z int coords: " << z_intercept_coords.x << ", " << z_intercept_coords.y << ", " << z_intercept_coords.z << std::endl;
+
+	//std::cout << "------------------------" << std::endl;
+	//ECBPolyPoint originalX = in_XYZinterceptCoords.triPoints[0];
+	//ECBPolyPoint originalY = in_XYZinterceptCoords.triPoints[1];
+	//ECBPolyPoint originalZ = in_XYZinterceptCoords.triPoints[2];
+
+	//std::cout << "Original X: " << originalX.x << "," << originalX.y << "," << originalX.z << std::endl;
+	//std::cout << "Original Y: " << originalY.x << "," << originalY.y << "," << originalY.z << std::endl;
+	//std::cout << "Original Z: " << originalZ.x << "," << originalZ.y << "," << originalZ.z << std::endl;
+
+	//std::cout << "Dist values: " << dist_to_X << ", " << dist_to_Y << ", " << dist_to_Z << std::endl;
+	if ((dist_to_X == dist_to_Y) && (dist_to_Y == dist_to_Z))
+	{
+		//std::cout << "ALL distances equal! " << std::endl;
+		isPointOnALine = 0;								// corner type mode to 0
+	}
+	ECBPolyPoint pointToCheck;				// the actual intercept point that will be used when comparing to border lines, border corners, or border faces
+	if (dist_to_Y == dist_to_Z)
+	{
+		//std::cout << "Dist to Y/Z are equal!" << std::endl;
+	}
+	if ((in_originPoint.x == ((in_Key1.z*32.0f) + 32.0f)) || (in_originPoint.x == in_Key1.z*32.0f))
+	{
+		//std::cout << "Origin point on bounds! " << std::endl;
+	}
+
+	//float resultVal = 2.0f + 0.0f;
+	//std::cout << "result val test: " << resultVal << std::endl;
+
+	// Step 1: check if the resulting point is a perfect corner intercept
+	// Multiple conditions:
+	//		Condition 1: X, Y, -AND- Z intercept distance are the same 
+	//		Condition 2: dist_to_X equals dist_to_Y -AND- the z value for the origin point is at the north or the south face -AND- the z slope is 0
+	//      Condition 3: dist_to_X equals dist_to_Z -AND- the y value for the origin point is at the top or bottom face -AND- the y slope is 0
+	//		Condition 4: dist_to_Y equals dist_to_Z -AND- the x value for the origin point is at the east or west face -AND- the x slope is 0
+	//      Condition 5: in_slope.x is not 0 -AND- in_slope.y is 0 -AND- in_slope.z is 0 -AND (x intercept coord's y and z are exactly on border)
+	//      Condition 6: in_slope.y is not 0 -AND- in_slope.x is 0 -AND- in_slope.z is 0 -AND (y intercept coord's x and z are exactly on border)
+	//      Condition 7: in_slope.z is not 0 -AND- in_slope.y is 0 -AND- in_slope.z is 0 -AND (z intercept coord's x and y are exactly on border)
+	if (
+		((dist_to_X == dist_to_Y) && (dist_to_Y == dist_to_Z))	// Condition 1: X, Y, -AND - Z intercept distance are the same
+
+		||
+
+		(														//	Condition 2: dist_to_X equals dist_to_Y -AND- the z value for the origin point is at the north or the south face -AND- the z slope is 0
+		(dist_to_X == dist_to_Y)
+			&&
+			((in_originPoint.z == ((in_Key1.z*32.0f) + 32.0f)) || (in_originPoint.z == in_Key1.z*32.0f))
+			&&
+			in_slopeDirection.z == 0.0f
+			)
+
+		||
+
+		(														//	Condition 3: dist_to_X equals dist_to_Z -AND- the y value for the origin point is at the top or bottom face -AND- the y slope is 0
+		(dist_to_X == dist_to_Z)
+			&&
+			((in_originPoint.y == ((in_Key1.y*32.0f) + 32.0f)) || (in_originPoint.y == in_Key1.y*32.0f))
+			&&
+			in_slopeDirection.y == 0.0f
+			)
+
+		||
+
+		(														//	Condition 4: dist_to_Y equals dist_to_Z -AND- the x value for the origin point is at the east or west face -AND- the x slope is 0
+		(dist_to_Y == dist_to_Z)
+			&&
+			((in_originPoint.x == ((in_Key1.x*32.0f) + 32.0f)) || (in_originPoint.x == in_Key1.x*32.0f))		// THIS WAS AN ERROR ON: 5/27/2018! These values were z instead of x!!!!
+			&&
+			in_slopeDirection.x == 0.0f
+			)
+
+		||
+
+		(														//  Condition 5: in_slope.x is not 0 -AND- in_slope.y is 0 -AND- in_slope.z is 0 -AND (x intercept coord's y and z are exactly on border)		
+		(dist_to_X != 0.0f)
+			&&
+			(in_slopeDirection.y == 0.0f)
+			&&
+			(in_slopeDirection.z == 0.0f)
+			&&
+			(
+			((x_intercept_coords.y == ((in_Key1.y*32.0f) + 32.0f)) || (x_intercept_coords.y == in_Key1.y*32.0f))
+				&&
+				((x_intercept_coords.z == ((in_Key1.z*32.0f) + 32.0f)) || (x_intercept_coords.z == in_Key1.z*32.0f))
+				)
+			)
+
+		||
+
+		(														//   Condition 6: in_slope.y is not 0 -AND- in_slope.x is 0 -AND- in_slope.z is 0 -AND (y intercept coord's x and z are exactly on border)
+		(dist_to_Y != 0.0f)
+			&&
+			(in_slopeDirection.x == 0.0f)
+			&&
+			(in_slopeDirection.z == 0.0f)
+			&&
+			(
+			((y_intercept_coords.x == ((in_Key1.x*32.0f) + 32.0f)) || (y_intercept_coords.x == in_Key1.x*32.0f))
+				&&
+				((y_intercept_coords.z == ((in_Key1.z*32.0f) + 32.0f)) || (y_intercept_coords.z == in_Key1.z*32.0f))
+				)
+			)
+
+		||
+
+		(														//   Condition 7: in_slope.y is not 0 -AND- in_slope.x is 0 -AND- in_slope.z is 0 -AND (y intercept coord's x and z are exactly on border)
+		(dist_to_Z != 0.0f)
+			&&
+			(in_slopeDirection.x == 0.0f)
+			&&
+			(in_slopeDirection.y == 0.0f)
+			&&
+			(
+			((z_intercept_coords.x == ((in_Key1.x*32.0f) + 32.0f)) || (z_intercept_coords.x == in_Key1.x*32.0f))
+				&&
+				((z_intercept_coords.y == ((in_Key1.y*32.0f) + 32.0f)) || (z_intercept_coords.y == in_Key1.y*32.0f))
+				)
+			)
+		)
+	{
+		//std::cout << ">>> STEP 1 ENTRY (Corner detected)" << std::endl;
+		// need triple if check below
+		if (in_slopeDirection.x != 0.0f)
+		{
+			//std::cout << std::fixed << std::setprecision(7);
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);		// pick any of the 3 points (it won't matter since they all have the same distance...we'll pick x coord here)
+			//std::cout << "X point chosen... " << std::endl;
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+			//std::cout << "X-intercept, x: " << pointToCheck.x << std::endl;
+			//std::cout << "X-intercept, y: " << pointToCheck.y << std::endl;
+			//std::cout << "X-intercept, z: " << pointToCheck.z << std::endl;
+
+			//std::cout << "True corner point to match to: " << pointABorderLineList.corner_LowerSW.cornerPoint.x << std::endl;
+			//std::cout << "True corner point to match to: " << pointABorderLineList.corner_LowerSW.cornerPoint.y << std::endl;
+			//std::cout << "True corner point to match to: " << pointABorderLineList.corner_LowerSW.cornerPoint.z << std::endl;
+
+			if (pointToCheck.x == pointABorderLineList.corner_LowerSW.cornerPoint.x)
+			{
+				//std::cout << "x true match found... " << std::endl;
+			}
+			if (pointToCheck.y == pointABorderLineList.corner_LowerSW.cornerPoint.y)
+			{
+				//std::cout << "y true match found..." << std::endl;
+			}
+			if (pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)
+			{
+				//std::cout << "z true match found..." << std::endl;
+			}
+		}
+		else if (in_slopeDirection.y != 0.0f)
+		{
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(1, y_intercept_coords, isPointOnALine);
+			//std::cout << "Y point chosen... " << std::endl;
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(1, y_intercept_coords, isPointOnALine, &borderLimits);
+		}
+		else if (in_slopeDirection.z != 0.0f)
+		{
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
+			//std::cout << "Z point chosen... " << std::endl;
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits);
+		}
+
+		//std::cout << "corner intersection detected!!!" << std::endl;
+		if (pointToCheck.x == pointABorderLineList.corner_LowerNW.cornerPoint.x	&&		pointToCheck.y == pointABorderLineList.corner_LowerNW.cornerPoint.y	&&		pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z)		// Lower NW
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_LowerNW.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key
+			//std::cout << "Point is at lower NW...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_LowerSW.cornerPoint.x	&&	pointToCheck.y == pointABorderLineList.corner_LowerSW.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)			// Lower SW
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_LowerSW.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, lower SW
+			//std::cout << "Point is at lower SW...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_UpperSW.cornerPoint.x   &&	pointToCheck.y == pointABorderLineList.corner_UpperSW.cornerPoint.y   &&  pointToCheck.z == pointABorderLineList.corner_UpperSW.cornerPoint.z)			// Upper SW	 
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_UpperSW.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, upper SW
+			//std::cout << "Point is at upper SW...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_UpperNW.cornerPoint.x	&&	pointToCheck.y == pointABorderLineList.corner_UpperNW.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_UpperNW.cornerPoint.z)			// Upper NW
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_UpperNW.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, upper NW
+			//std::cout << "Point is at upper NW...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_LowerNE.cornerPoint.x	&&  pointToCheck.y == pointABorderLineList.corner_LowerNE.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_LowerNE.cornerPoint.z)			// Lower NE
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_LowerNE.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, lower NE
+			//std::cout << "Point is at lower NE...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_LowerSE.cornerPoint.x	&&	pointToCheck.y == pointABorderLineList.corner_LowerSE.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_LowerSE.cornerPoint.z)			// Lower SE
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_LowerSE.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, lower SE
+			//std::cout << "Point is at lower SE...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_UpperSE.cornerPoint.x	&&	pointToCheck.y == pointABorderLineList.corner_UpperSE.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_UpperSE.cornerPoint.z)			// Upper SE
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_UpperSE.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, upper SE
+			//std::cout << "Point is at upper SE...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+		else if (pointToCheck.x == pointABorderLineList.corner_UpperNE.cornerPoint.x	&&	pointToCheck.y == pointABorderLineList.corner_UpperNE.cornerPoint.y	&&	pointToCheck.z == pointABorderLineList.corner_UpperNE.cornerPoint.z)			// Upper NE
+		{
+			newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.corner_UpperNE.cornerAmpValues, in_originPoint, pointToCheck);	// get the shifting key, upper NE
+			//std::cout << "Point is at upper NE...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+			//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+		}
+
+	}
+
+	// Step 2: check if the resulting point is a border line intercept
+	else if ((dist_to_X == dist_to_Y) || (dist_to_Y == dist_to_Z) || (dist_to_X == dist_to_Z))
+	{
+		//std::cout << "STEP 2 ENTRY" << std::endl;
+		// ||||||||||||||||||||||||||||||||||||||||| condition 1 (Z-lines): X and Y distances match, check for Z ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		if ((dist_to_X == dist_to_Y) && (dist_to_X != 0.0f))
+		{
+			//std::cout << "STEP 2:1 ENTRY: Z-lines " << std::endl;
+			//std::cout << "dist to Z: " << dist_to_Z << std::endl;
+			//std::cout << "dist to X: " << dist_to_X << std::endl;
+			//std::cout << "in_slopeDirection.z: " << in_slopeDirection.z << std::endl;
+			if ((dist_to_Z < dist_to_X) && (in_slopeDirection.z != 0.0f))
+			{
+				//std::cout << "Z is less than X!!! " << std::endl;
+			}
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+			if (
+				(dist_to_Z > dist_to_X) && (in_slopeDirection.z != 0.0f)		//     condition 1: if Z's distance is greater  than X (could also be y here), AND it's slope is not 0, we go with x/y distance point
+				||																//		-- OR --
+				(in_slopeDirection.z == 0.0f)									//     condition 2: Z's slope is 0, check x and y
+				)	// we can compare to either x or y, since they are both the same value; if Z is greater, it will not hit a Z-face before X and Y does
+			{
+				//pointToCheck = x_intercept_coords;	// make the pointToCheck equal to either x or y intercept coords
+				//std::cout << "(Z-line) OPTION 1: entry check" << std::endl;
+				//perform comparisons to Zaxis borders -- lowerWest, lowerEast, upperWest, upperEast
+				//std::cout << "Lower NW coords: " << pointABorderLineList.corner_LowerNW.cornerPoint.x << ", " << pointABorderLineList.corner_LowerNW.cornerPoint.y << ", " << pointABorderLineList.corner_LowerNW.cornerPoint.z << std::endl;
+				//std::cout << "Lower SW coords: " << pointABorderLineList.corner_LowerSW.cornerPoint.x << ", " << pointABorderLineList.corner_LowerSW.cornerPoint.y << ", " << pointABorderLineList.corner_LowerSW.cornerPoint.z << std::endl;
+
+				//std::cout << "Upper SW coords: " << pointABorderLineList.corner_UpperSW.cornerPoint.x << ", " << pointABorderLineList.corner_UpperSW.cornerPoint.y << ", " << pointABorderLineList.corner_UpperSW.cornerPoint.z << std::endl;
+				// Lower West line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				if ((pointToCheck.x == pointABorderLineList.corner_LowerNW.cornerPoint.x)
+					&&
+					(pointToCheck.y == pointABorderLineList.corner_LowerNW.cornerPoint.y)
+					&&
+					(pointToCheck.z > pointABorderLineList.corner_LowerNW.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_LowerSW.cornerPoint.z)			// is z between the LowerNW and LowerSW corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Zaxis_lowerWest, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at lower west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+
+				// Upper West line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.x == pointABorderLineList.corner_UpperNW.cornerPoint.x)
+					&&
+					(pointToCheck.y == pointABorderLineList.corner_UpperNW.cornerPoint.y)
+					&&
+					(pointToCheck.z > pointABorderLineList.corner_UpperNW.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_UpperSW.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Zaxis_upperWest, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at upper west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+
+				// Upper East line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.x == pointABorderLineList.corner_UpperNE.cornerPoint.x)
+					&&
+					(pointToCheck.y == pointABorderLineList.corner_UpperNE.cornerPoint.y)
+					&&
+					(pointToCheck.z > pointABorderLineList.corner_UpperNE.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_UpperSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Zaxis_upperEast, in_originPoint, pointToCheck);	// get the shifting key				
+					//std::cout << "Point is at upper east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				// Lower East line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.x == pointABorderLineList.corner_LowerNE.cornerPoint.x)
+					&&
+					(pointToCheck.y == pointABorderLineList.corner_LowerNE.cornerPoint.y)
+					&&
+					(pointToCheck.z > pointABorderLineList.corner_LowerNE.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_LowerSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Zaxis_lowerEast, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at lower east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+
+			}
+			else if ((dist_to_Z < dist_to_X) && (in_slopeDirection.z != 0.0f))	// Z-face gets intersected before X/Y
+			{
+				std::cout << "(Z-line) OPTION 2: entry check" << std::endl;
+				//pointToCheck = z_intercept_coords;	// make pointToCheck equal to z coord, since it hits a z face before x/y
+				//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
+				pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits);
+				if (in_slopeDirection.z == 1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.SouthFace, in_originPoint, pointToCheck);
+					std::cout << "X/Y distances match, but Z is hit first (positive z): " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				else if (in_slopeDirection.z == -1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.NorthFace, in_originPoint, pointToCheck);
+					std::cout << "X/Y distances match, but Z is hit first (negative z)" << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				//if 
+			}
+		}
+		// ||||||||||||||||||||||||||||||||||||||||| condition 2 (Y-lines): X and Z distances match, check for Y ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		else if ((dist_to_X == dist_to_Z) && (dist_to_X != 0.0f))
+		{
+			//std::cout << "STEP 2:2 ENTRY: Y-lines " << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+
+			if (
+				(dist_to_Y > dist_to_X) && (in_slopeDirection.y != 0.0f)			// condition 1:	if Y's distance is greater  than X (could also be z here), AND it's slope is not 0, we go with x/z distance point
+				||																	// --OR-- 
+				(in_slopeDirection.y == 0.0f)										// condition 2: Y's slope is 0, check x and y	
+				)
+			{
+				//std::cout << "(Y-line) OPTION 1: entry check" << std::endl;
+				if ((pointToCheck.x == pointABorderLineList.corner_LowerNE.cornerPoint.x)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerNE.cornerPoint.z)
+					&&
+					(pointToCheck.y > pointABorderLineList.corner_LowerNE.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperNE.cornerPoint.y)
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Yaxis_northEast, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at north east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+
+				// South East line
+				else if ((pointToCheck.x == pointABorderLineList.corner_LowerSE.cornerPoint.x)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerSE.cornerPoint.z)
+					&&
+					(pointToCheck.y > pointABorderLineList.corner_LowerSE.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperSE.cornerPoint.y)
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Yaxis_southEast, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at south east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				// South West line
+				else if ((pointToCheck.x == pointABorderLineList.corner_LowerSW.cornerPoint.x)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)
+					&&
+					(pointToCheck.y > pointABorderLineList.corner_LowerSW.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperSW.cornerPoint.y)
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Yaxis_southWest, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at south west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				// North West line
+				else if ((pointToCheck.x == pointABorderLineList.corner_LowerNW.cornerPoint.x)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z)
+					&&
+					(pointToCheck.y > pointABorderLineList.corner_LowerNW.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperNW.cornerPoint.y)
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Yaxis_northWest, in_originPoint, pointToCheck);	// get the shifting key
+					//std::cout << "Point is at north west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+
+				}
+
+			}
+			else if ((dist_to_Y < dist_to_X) && (in_slopeDirection.y != 0.0f))
+			{
+				//std::cout << "(Y-line) OPTION 2: entry check" << std::endl;
+				//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(1, y_intercept_coords, isPointOnALine);
+				pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(1, y_intercept_coords, isPointOnALine, &borderLimits);
+				if (in_slopeDirection.y == 1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.TopFace, in_originPoint, pointToCheck);
+					//std::cout << "X/Z distances match, but Y is hit first (positive y): " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+				else if (in_slopeDirection.y == -1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.BottomFace, in_originPoint, pointToCheck);
+					//std::cout << "X/Z distances match, but Y is hit first (negative y): " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+				}
+			}
+		}
+		// ||||||||||||||||||||||||||||||||||||||||| condition 3 (x-lines): Y and Z distances match, check for X ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		else if ((dist_to_Y == dist_to_Z) && (dist_to_Y != 0.0f))
+		{
+			//std::cout << "STEP 2:3 ENTRY: X-lines " << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
+			//std::cout << "x slope direction " << in_slopeDirection.x << std::endl;
+			if (in_slopeDirection.x == 0.0f)
+			{
+				//std::cout << "x slope is 0!" << std::endl;
+			}
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits);
+			if (
+				(dist_to_X > dist_to_Y) && (in_slopeDirection.x != 0.0f)	// condition 1:	if X's distance is greater  than Y (could also be Z here), AND it's slope is not 0, we go with y/z distance point
+				||															// --OR-- 
+				(in_slopeDirection.x == 0.0f)								// condition 2: X's slope is 0, check y and z
+				)
+			{
+				//std::cout << "STEP 2:3:1 Entry " << std::endl;
+				//std::cout << "Lower NW coords: " << pointABorderLineList.corner_LowerNW.cornerPoint.x << ", " << pointABorderLineList.corner_LowerNW.cornerPoint.y << ", " << pointABorderLineList.corner_LowerNW.cornerPoint.z << std::endl;
+				//std::cout << "Lower SW coords: " << pointABorderLineList.corner_LowerSW.cornerPoint.x << ", " << pointABorderLineList.corner_LowerSW.cornerPoint.y << ", " << pointABorderLineList.corner_LowerSW.cornerPoint.z << std::endl;
+				//std::cout << "Upper SW coords: " << pointABorderLineList.corner_UpperSW.cornerPoint.x << ", " << pointABorderLineList.corner_UpperSW.cornerPoint.y << ", " << pointABorderLineList.corner_UpperSW.cornerPoint.z << std::endl;
+				if ((pointToCheck.y == pointABorderLineList.corner_LowerNW.cornerPoint.y)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z)
+					&&
+					(pointToCheck.x > pointABorderLineList.corner_LowerNW.cornerPoint.x	&&		pointToCheck.x < pointABorderLineList.corner_LowerNE.cornerPoint.x)	// is x between the LowerNW and LowerNE corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Xaxis_lowerNorth, in_originPoint, pointToCheck);	// get the shifting key
+					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+				}
+				// Lower South  line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.y == pointABorderLineList.corner_LowerSW.cornerPoint.y)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)
+					&&
+					(pointToCheck.x > pointABorderLineList.corner_LowerSW.cornerPoint.x	&&	pointToCheck.x < pointABorderLineList.corner_LowerSE.cornerPoint.x)		// is x between the LowerSW and LowerSE corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Xaxis_lowerSouth, in_originPoint, pointToCheck);	// get the shifting key
+					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+				}
+				// Upper South line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.y == pointABorderLineList.corner_UpperSW.cornerPoint.y)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_UpperSW.cornerPoint.z)
+					&&
+					(pointToCheck.x > pointABorderLineList.corner_UpperSW.cornerPoint.x	&& pointToCheck.x < pointABorderLineList.corner_UpperSE.cornerPoint.x)			// is x between the UpperSW and UpperSE corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Xaxis_upperSouth, in_originPoint, pointToCheck);	// get the shifting key
+					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+				}
+				// Upper North line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				else if ((pointToCheck.y == pointABorderLineList.corner_UpperNW.cornerPoint.y)
+					&&
+					(pointToCheck.z == pointABorderLineList.corner_UpperNW.cornerPoint.z)
+					&&
+					(pointToCheck.x > pointABorderLineList.corner_UpperNW.cornerPoint.x	&& pointToCheck.x < pointABorderLineList.corner_UpperNE.cornerPoint.x)			// is x between the UpperNW and UpperNE corners, but not equal to either of them?
+					)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Xaxis_upperNorth, in_originPoint, pointToCheck);	// get the shifting key
+					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
+				}
+			}
+			else if ((dist_to_X < dist_to_Y) && (in_slopeDirection.x != 0.0f))
+			{
+				//std::cout << "STEP 2:3:2 entry " << std::endl;
+				//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
+				pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+				if (in_slopeDirection.x == 1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.EastFace, in_originPoint, pointToCheck);
+				}
+				else if (in_slopeDirection.x == -1.0f)
+				{
+					newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.WestFace, in_originPoint, pointToCheck);
+				}
+			}
+		}
+
+		else if ((dist_to_X != 0.0f) && (dist_to_Y == dist_to_Z) && (dist_to_Y == 0.0f))
+		{
+			//std::cout << "CONDITION 4 MET" << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);	// parameters: 0 = round other points to x, use x-intercept coords, corner type
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+			// pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
+			if ((pointToCheck.x == pointABorderLineList.corner_LowerNW.cornerPoint.x))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.WestFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.WestFace, in_originPoint, pointToCheck);
+			}
+			else if ((pointToCheck.x == pointABorderLineList.corner_LowerNE.cornerPoint.x))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.EastFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.EastFace, in_originPoint, pointToCheck);
+			}
+
+		}
+
+		// ||||||||||||||||||||||||||||||||||||||||| condition 5: checking for Y, but X and Z are both 0.0f ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		else if ((dist_to_Y != 0.0f) && (dist_to_X == dist_to_Z) && (dist_to_X == 0.0f))
+		{
+			//std::cout << "CONDITION 5 MET " << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(1, y_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(1, y_intercept_coords, isPointOnALine, &borderLimits);
+			if ((pointToCheck.y == pointABorderLineList.corner_LowerNW.cornerPoint.y))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.BottomFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.BottomFace, in_originPoint, pointToCheck);
+			}
+			else if ((pointToCheck.y == pointABorderLineList.corner_UpperNW.cornerPoint.y))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.TopFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.TopFace, in_originPoint, pointToCheck);
+			}
+		}
+
+		// ||||||||||||||||||||||||||||||||||||||||| condition 6: checking for Z, but X and Y are both 0.0f ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		else if ((dist_to_Z != 0.0f) && (dist_to_X == dist_to_Y) && (dist_to_X == 0.0f))
+		{
+			//std::cout << "CONDITION 6 MET" << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits);
+			if ((pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.NorthFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.NorthFace, in_originPoint, pointToCheck);
+			}
+			else if ((pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z))
+			{
+				//calculatedEndpointData.applyBlockBorder(pointABorderLineList.SouthFace);
+				newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.SouthFace, in_originPoint, pointToCheck);
+			}
+
+		}
+	}
+
+	// Step 3: else, it's just a normal intercept
+	else {
+		//std::cout << "|||| Normal Face intercept entry " << std::endl;
+		float currentShortestTime = 0.0f;
+		int currentShortestIndex = -1;		// -1 is default (no valid index selected)
+		float distanceValues[3];			// set up a temp array
+		distanceValues[0] = in_distanceValues.x;	// store x distance value
+		distanceValues[1] = in_distanceValues.y;	// "" y
+		distanceValues[2] = in_distanceValues.z;	// "" z
+
+		for (int x = 0; x < 3; x++)
+		{
+			if (distanceValues[x] != 0.0f)	// is there an actual valid time for this?
+			{
+				if (currentShortestTime == 0.0f)	// for when the current length is 0 (this condition should always be met)
+				{
+					currentShortestTime = distanceValues[x];	// set the initial length
+					currentShortestIndex = x;							// set the index; 0 = x, 1 = y, 2 = z;
+				}
+				else if (currentShortestTime != 0.0f)
+				{
+					if (distanceValues[x] < currentShortestTime)	// is the length being checked even smaller than the currentShortestLength?
+					{
+						currentShortestTime = distanceValues[x];	// reset the length
+						currentShortestIndex = x;							// reset the index
+					}
+				}
+			}
+		}
+		if (currentShortestIndex == 0)	// x was found
+		{
+			//pointToCheck = x_intercept_coords;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits);
+			if (in_slopeDirection.x == 1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.EastFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at +X" << std::endl;
+			}
+			else if (in_slopeDirection.x == -1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.WestFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at -X" << std::endl;
+			}
+		}
+		else if (currentShortestIndex == 1)		// y was found
+		{
+			//pointToCheck = y_intercept_coords;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(1, y_intercept_coords, isPointOnALine);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(1, y_intercept_coords, isPointOnALine, &borderLimits);
+			if (in_slopeDirection.y == 1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.TopFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at +Y" << std::endl;
+			}
+			else if (in_slopeDirection.y == -1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.BottomFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at -Y" << std::endl;
+			}
+		}
+		else if (currentShortestIndex == 2)		// z was found
+		{
+			//std::cout << "Z will intercept in normal face..." << std::endl;
+			//std::cout << "Z intercept is: " << z_intercept_coords.x << ", " << z_intercept_coords.y << ", " << z_intercept_coords.z << std::endl;
+			pointToCheck = z_intercept_coords;
+			//std::cout << "Z intercept-Point to check, before conversion" << pointToCheck.x << "," << pointToCheck.y << "," << pointToCheck.z << std::endl;
+			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
+			//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.Yaxis_southEast, in_originPoint, pointToCheck);	// get the shifting key
+			ECBPPOrientationResults testResults = IndependentUtils::GetBlueprintPointOrientation(pointToCheck, &pointABorderLineList);
+			pointToCheck = IndependentUtils::roundToNearestBlueprintLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits);
+			IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+			//std::cout << "Z intercept-Point to check, post conversion" << pointToCheck.x << "," << pointToCheck.y << "," << pointToCheck.z << std::endl;
+			if (in_slopeDirection.z == 1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.SouthFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at +Z" << std::endl;
+
+			}
+			else if (in_slopeDirection.z == -1)
+			{
+				//newKey = IndependentUtils::getBorderShiftResult(pointABorderLineList.NorthFace, in_originPoint, pointToCheck);
+				newKey = IndependentUtils::getBlueprintCalibratedKey(in_originPoint, pointToCheck, &pointABorderLineList);
+				//std::cout << "Type 3: line intersects at -Z" << std::endl;
+			}
+		}
+
+	}
+
+	// Once the newKey value has been determined, it must go through the TracingLineBoundingBox instance to check
+	// for any corrections.
+	intersectMeta.incrementingKey = in_boundingBox.applyBoundingCorrectionToKeys(in_Key1, newKey);
+
+	intersectMeta.originPoint = in_originPoint;
+	intersectMeta.intersectedPoint = pointToCheck;
+	//std::cout << ">>> values of intersectMeta return: " << std::endl;
+	//std::cout << "|||||||| Intersected point values are: " << pointToCheck.x << ", " << pointToCheck.y << ", " << pointToCheck.z << std::endl;
+	//std::cout << "incrementingKey: " << intersectMeta.incrementingKey.x << ", " << intersectMeta.incrementingKey.y << ", " << intersectMeta.incrementingKey.z << std::endl;
+//	std::cout << "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| End of movemeta finding. " << std::endl;
+	//std::cout << "+++->>>>Incrementing key: " << intersectMeta.incrementingKey.x << ", " << intersectMeta.incrementingKey.y << ", " << intersectMeta.incrementingKey.z << std::endl;
+	//std::cout << "+++->>>>Intersected point: " << pointToCheck.x << ", " << pointToCheck.y << ", " << pointToCheck.z << std::endl;
+	//std::cout << std::endl;
+	if (intersectMeta.incrementingKey.x == 0
+		&&
+		intersectMeta.incrementingKey.y == 0
+		&&
+		intersectMeta.incrementingKey.z == 0
+		)
+	{
+		std::cout << ">>>> (Blueprint border move meta) Invalid value detected" << std::endl;
+		std::cout << "+++++ Debug data: +++++" << std::endl;
+		std::cout << "!!!!!!!! (DEBUG) Origin point is: " << in_originPoint.x << ", " << in_originPoint.y << ", " << in_originPoint.z << std::endl;
+		std::cout << "|||||||| (DEBUG) Intersected point values are: " << pointToCheck.x << ", " << pointToCheck.y << ", " << pointToCheck.z << std::endl;
+		std::cout << "Key used to produce blueprint borders: " << in_Key1.x << ", " << in_Key1.y << ", " << in_Key1.z << std::endl;
+		std::cout << "Slope direction: " << in_slopeDirection.x << ", " << in_slopeDirection.y << ", " << in_slopeDirection.z << std::endl;
+		std::cout << "Dist to X: " << dist_to_X << std::endl;
+		std::cout << "Dist to Y: " << dist_to_Y << std::endl;
+		std::cout << "Dist to Z: " << dist_to_Z << std::endl;
+
+		std::cout << "X int coords: " << x_intercept_coords.x << ", " << x_intercept_coords.y << ", " << x_intercept_coords.z << std::endl;
+		std::cout << "Y int coords: " << y_intercept_coords.x << ", " << y_intercept_coords.y << ", " << y_intercept_coords.z << std::endl;
+		std::cout << "Z int coords: " << z_intercept_coords.x << ", " << z_intercept_coords.y << ", " << z_intercept_coords.z << std::endl;
+		int in_val;
+		std::cin >> in_val;
+	}
+
+
+	return intersectMeta;
+}
+
 ECBPolyPoint IndependentUtils::roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey)
 {
 	ECBBorderValues borderValues = IndependentUtils::getBlueprintLimits(in_blueprintKey);

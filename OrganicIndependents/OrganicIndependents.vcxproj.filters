@@ -115,6 +115,9 @@
     <Filter Include="Source Files\FracturableTriangle\FRayCasters">
       <UniqueIdentifier>{96850d37-e3d6-4949-9544-b8f8e14ac7e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FTrianglePoint">
+      <UniqueIdentifier>{f3a96a60-3ce8-49b7-a2a7-a311fe0817ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -710,6 +713,18 @@
     </ClInclude>
     <ClInclude Include="FRayIntersectionRoundingMode.h">
       <Filter>Header Files\FracturableTriangle\FRayCasters</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3Pair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FTrianglePoint.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="FTrianglePointType.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="TracingLineBoundingBox.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

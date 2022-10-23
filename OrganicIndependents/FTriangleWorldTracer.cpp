@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FTriangleWorldTracer.h"
+#include "FTrianglePoint.h"
 
 void FTriangleWorldTracer::runLineTracing()
 {
@@ -15,6 +16,8 @@ void FTriangleWorldTracer::runLineTracing()
 			case 2: { beginPointIndex = 2; endPointIndex = 0; break;}
 		}
 
+		//TracingLineBoundingBox currentTracerBoundingBox(tracingLineKeypairs[x].keyA,
+		//											    tracingLineKeypairs[x].keyB);
 		WorldLineTracer currentTracer(tracingLineKeypairs[x].keyA,
 											tracingLineKeypairs[x].keyB,
 											fTrianglePoints[beginPointIndex],
@@ -39,9 +42,16 @@ void FTriangleWorldTracer::runLineTracing()
 			auto currentBeginPoint = currentTracer.currentIterationBeginPoint;
 			auto currentEndPoint = currentTracer.currentIterationEndpoint;
 
-			uniquePointsContainerRef->insertPoint(currentBeginPoint);
-			uniquePointsContainerRef->insertPoint(currentEndPoint);
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentBeginPoint, FTrianglePointType::EXTERIOR));
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint, FTrianglePointType::EXTERIOR));
 			FTriangleLine newExteriorLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
+
+			std::cout << "(FTriangleWorldTracer): inserting line with points: A -> ";
+			currentBeginPoint.printPointCoords();
+			std::cout << " | B -> ";
+			currentEndPoint.printPointCoords();
+			std::cout << std::endl;
+
 			(*tracerStagerRef)[currentTracerKey].insertLine(newExteriorLine);
 
 			currentTracer.traverseLineOnce();

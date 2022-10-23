@@ -17,7 +17,7 @@ void WorldFracturingMachine::runFracturing()
 	std::cout << "(WorldFracturingMachine::runFracturing): printing X points that have a value of " << xValue << ": " << std::endl;
 	for (auto& x64points : fracturerPoints.getAllPointsWithX(xValue))
 	{
-		x64points.printPointCoords();
+		x64points.printPointData();
 		std::cout << std::endl;
 	}
 }

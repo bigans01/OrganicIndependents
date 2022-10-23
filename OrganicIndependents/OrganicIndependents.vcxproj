@@ -251,6 +251,8 @@
     <ClInclude Include="FTriangleFracturerBase.h" />
     <ClInclude Include="FTriangleLine.h" />
     <ClInclude Include="FTriangleLineType.h" />
+    <ClInclude Include="FTrianglePoint.h" />
+    <ClInclude Include="FTrianglePointType.h" />
     <ClInclude Include="FTriangleProductionStager.h" />
     <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
@@ -346,6 +348,7 @@
     <ClInclude Include="TertiaryTriangleContainer.h" />
     <ClInclude Include="TertiaryTriangleProducer.h" />
     <ClInclude Include="ThinFan.h" />
+    <ClInclude Include="TracingLineBoundingBox.h" />
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
     <ClInclude Include="UniquePointContainer.h" />

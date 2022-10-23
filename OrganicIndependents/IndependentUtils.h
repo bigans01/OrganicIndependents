@@ -30,6 +30,7 @@
 #include "DynamicBorderLineList.h"
 #include "BoundaryOrientation.h"
 #include <glm/glm.hpp>
+#include "TracingLineBoundingBox.h"
 
 class EnclaveTriangle;
 class IndependentUtils
@@ -40,6 +41,21 @@ class IndependentUtils
 		static ECBCalibratedPointPair compareAndCalibrateDistances(ECBPolyPointTri* in_polyPointTriRef, ECBPolyPoint in_distanceValues, ECBPolyPoint in_currentLineSlope, EnclaveKeyDef::EnclaveKey in_currentBlueprintKey);
 		static ECBIntersectMeta findClosestBlueprintIntersection(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, EnclaveKeyDef::EnclaveKey in_pointAKey, EnclaveKeyDef::EnclaveKey in_pointBKey);
 		static ECBIntersectMeta findBlueprintBorderMoveMeta(EnclaveKeyDef::EnclaveKey in_Key1, ECBPolyPoint in_originPoint, ECBPolyPoint in_distanceValues, ECBPolyPoint in_slope, ECBPolyPointTri in_XYZinterceptCoords);		// determines the full key shift, by checking if the poly point's slope is on a border line or a border corner point; called by findClosestBlueprintIntersection
+
+		// Below: "Safer" version of findClosestBlueprintIntersection, that prevents overshoot of the incrementing key;
+		// Currently used by FTriangleWorldTracer only, but will probably supersede the original findClosestBlueprintIntersection function in the future.
+		static ECBIntersectMeta findCBIv2(ECBPolyPoint in_pointA,	
+										  ECBPolyPoint in_pointB, 
+										  EnclaveKeyDef::EnclaveKey in_pointAKey, 
+										  EnclaveKeyDef::EnclaveKey in_pointBKey,
+										  TracingLineBoundingBox in_boundingBox);
+
+		static ECBIntersectMeta findBBMMv2(EnclaveKeyDef::EnclaveKey in_Key1, // Used by "safer" function, findCBIv2 only.
+										  ECBPolyPoint in_originPoint, 
+										  ECBPolyPoint in_distanceValues, 
+										  ECBPolyPoint in_slopeDirection, 
+										  ECBPolyPointTri in_XYZinterceptCoords,
+										  TracingLineBoundingBox in_boundingBox);		// determines the full key shift, by checking if the poly point's slope is on a border line or a border corner point; called by findClosestBlueprintIntersection
 		static ECBPolyPoint roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey);		// rounds a point to appropriate precision, based off blueprint coords
 		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
 		static ECBPolyPoint roundToNearestBlueprintLineOrCorner(int in_xoryorz, ECBPolyPoint in_polyPoint, int in_lineOrCorner, ECBBorderValues* in_blueprintBorderValuesRef);

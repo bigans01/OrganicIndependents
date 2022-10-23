@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include "IndependentUtils.h"
 #include "Vec3Pair.h"
+#include "FTrianglePoint.h"
 
 /*
 
@@ -47,7 +48,7 @@ class FRayIntersectionMachine
 			// If we did intersect, convert the point and insert (in a perfect world, we probably wouldn't need to convert, but that's not important right now)
 			if (currentIntersectionResult.intersectionType == FRayIntersectionType::INTERSECTS)
 			{
-				intersectorUniquePointsRef->insertPoint(IndependentUtils::convertVec3ToPolyPoint(currentIntersectionResult.intersectedPoint));
+				intersectorUniquePointsRef->insertFTrianglePoint(FTrianglePoint(currentIntersectionResult.intersectedPoint, FTrianglePointType::INTERIOR));
 			}
 		}
 	private:
