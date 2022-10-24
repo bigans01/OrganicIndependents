@@ -118,6 +118,9 @@
     <Filter Include="Header Files\FracturableTriangle\FTrianglePoint">
       <UniqueIdentifier>{f3a96a60-3ce8-49b7-a2a7-a311fe0817ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FTriangleLineScanner">
+      <UniqueIdentifier>{5bbd0fb6-f38d-49cf-8d14-aadc87269509}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

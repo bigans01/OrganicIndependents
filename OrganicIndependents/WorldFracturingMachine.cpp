@@ -10,7 +10,9 @@ void WorldFracturingMachine::runFracturing()
 	calibrateOriginBlueprintKeys();			// Step 2: calibrate the keys.
 	translateTriangleByBlueprintKeys();		// first, do any required translations.
 	runWorldTracing();						// second, create exterior FTriangleLines.
-	buildWorldFRayCasters();				// third, determine the ray casters we have to use for the FTriangle.
+	buildAndRunWorldFRayCasters();			// third, determine the ray casters we have to use for the FTriangle, and run them.
+	determineAndBuildFLineScanners();		// fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
+											// and then run them.
 
 	// as a test, get all points with X = 64.0f.
 	float xValue = 64.0f;
@@ -92,7 +94,7 @@ void WorldFracturingMachine::runWorldTracing()
 	worldTracer.runLineTracing();
 }
 
-void WorldFracturingMachine::buildWorldFRayCasters()
+void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 {
 	// We must first determine which ray casters are eligible to run, and get their init data.
 	auto acceptedRayCasterTypes = getUsableRayCasters();
@@ -260,4 +262,48 @@ void WorldFracturingMachine::buildWorldFRayCasters()
 		}
 	}
 
+}
+
+void WorldFracturingMachine::determineAndBuildFLineScanners()
+{
+	auto acceptablePermits = getValidPermits();
+	auto XYZLists = getScanningIntervals(32.0f);
+
+	// Below: if the permit is accepted, AND the corresponding list it will use is available, we'll need to create a LineScanner instance.
+
+	// For YZLineScanner (Moves along fixed X interval, makes lines with Y/Z)
+	auto xPermitFinder = acceptablePermits.find(LineScanPermit::SCAN_X);
+	if
+	(
+		(xPermitFinder != acceptablePermits.end())
+		&&
+		!(XYZLists.xList.empty())
+	)
+	{
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for YZLineScanner." << std::endl;
+	}
+
+	// For XZLineScanner (Moves along fixed Y interval, makes lines with X/Z)
+	auto yPermitFinder = acceptablePermits.find(LineScanPermit::SCAN_Y);
+	if
+	(
+		(yPermitFinder != acceptablePermits.end())
+		&&
+		!(XYZLists.yList.empty())
+	)
+	{
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XZLineScanner." << std::endl;
+	}
+
+	// For XYLineScanner (Moves along fixed Z interval, makes lines with X/Y)
+	auto zPermitFinder = acceptablePermits.find(LineScanPermit::SCAN_Z);
+	if
+	(
+		(zPermitFinder != acceptablePermits.end())
+		&&
+		!(XYZLists.zList.empty())
+	)
+	{
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XYLineScanner." << std::endl;
+	}
 }

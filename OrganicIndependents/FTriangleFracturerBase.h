@@ -71,6 +71,25 @@ class FTriangleFracturerBase
 																// which FRayCasterQuadBase-derived classes to build.
 		std::map<FRayCasterTypeEnum, std::shared_ptr<FRayCasterQuadBase>> selectedRayCasters;	// a map of selected ray casters, that must be executed.
 																								// Must be called by derived class that is based off this one.
+
+		struct LineScanLists
+		{
+			LineScanLists() {};
+			std::set<float> xList;
+			std::set<float> yList;
+			std::set<float> zList;
+		};
+
+		LineScanLists getScanningIntervals(float in_fixedIntervalValue);
+
+		enum class LineScanPermit
+		{
+			SCAN_X,
+			SCAN_Y,
+			SCAN_Z
+		};
+
+		std::set<LineScanPermit> getValidPermits();
 };
 
 #endif

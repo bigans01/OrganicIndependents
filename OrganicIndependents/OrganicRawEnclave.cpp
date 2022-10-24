@@ -866,6 +866,10 @@ std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> OrganicR
 
 BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey)
 {
+	// Currently, this function is only used by OrganicSystem::jobCheckIfPolysExistInBlockFace. 
+	// It is not designed to be used on OREs that have a value of FULL for the currentLodState.
+	// If a function is trying to call this one on a FULL ORE, there is improper logic being used somewhere.
+
 	BlockCopyQuery returnQuery;
 
 	// do the following if we are in a ORELodState of LOD_ENCLAVE_SMATTER or LOD_ENCLAVE_RMATTER.
@@ -1196,7 +1200,7 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 		auto fullUnexposedFinder = fullUnexposedBlockList.find(in_blockKey);
 		if (fullUnexposedFinder != fullUnexposedBlockList.end())
 		{
-			returnBlockState = EnclaveBlockState::UNEXPOSED;
+			returnBlockState = EnclaveBlockState::UNEXPOSED_BUT_FULL;
 		}
 		else
 		{

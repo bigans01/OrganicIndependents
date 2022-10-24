@@ -28,12 +28,13 @@ public:
 		return *this;
 	}
 
-	ECBPolyPoint& operator-(const ECBPolyPoint& ecbPolyPoint_b)
+	ECBPolyPoint operator-(const ECBPolyPoint& in_pointB)
 	{
-		x -= ecbPolyPoint_b.x;
-		y -= ecbPolyPoint_b.y;
-		z -= ecbPolyPoint_b.z;
-		return *this;
+		ECBPolyPoint returnPoint;
+		returnPoint.x = (x - in_pointB.x);
+		returnPoint.y = (y - in_pointB.y);
+		returnPoint.z = (z - in_pointB.z);
+		return returnPoint;
 	}
 
 	bool operator==(const ECBPolyPoint& in_otherPoint)

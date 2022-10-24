@@ -152,7 +152,8 @@ public:
 
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
-	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists, can be generated, 
+	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// Currently this function is not designed to be used with any ORE that has a currentLodState of FULL. It is not designed to be used on those (yet).
+																				// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists, can be generated, 
 																				// or is even UNEXPOSED; the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
 																				// bool value of false in BlockCopyQuery.wasFound means that a block was not found, while true indicates it was found. 
 																				// In other words, false would only be returned for a non-existent block.
