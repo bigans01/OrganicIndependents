@@ -3,8 +3,6 @@
 #ifndef ECBINTERSECTMETA_H
 #define ECBINTERSECTMETA_H
 
-#include "EnclaveKeyDef.h"
-#include "ECBPolyPoint.h"
 
 class ECBIntersectMeta
 {

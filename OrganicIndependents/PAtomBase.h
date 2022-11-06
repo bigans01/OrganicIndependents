@@ -3,12 +3,8 @@
 #ifndef PATOMBASE_H
 #define PATOMBASE_H
 
-#include <unordered_map>
-#include "EnclaveKeyDef.h"
 #include "FusableArea.h"
-#include "ECBPolyPoint.h"
 #include "PAtomState.h"
-#include "IndependentUtils.h"
 
 class PAtomBase
 {

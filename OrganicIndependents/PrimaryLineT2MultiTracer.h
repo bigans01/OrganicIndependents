@@ -4,7 +4,6 @@
 #define PRIMARYLINET2MULTITRACER_H
 
 #include "ECBBorderLineList.h"
-#include "ECBPolyPoint.h"
 #include "ECBPolyPointPair.h"
 #include "ECBPPOrientations.h"
 #include "ECBPPOrientationResults.h"
@@ -15,10 +14,8 @@
 #include "PrimaryLineT2Array.h"
 #include "PrimaryLineT2.h"
 #include "PrimaryLineT1LinkArray.h"
-#include "EnclaveKeyDef.h"
 #include "PLTracingResult.h"
 #include "SecondaryLineType.h"
-#include "IndependentUtils.h"
 
 class PrimaryLineT2MultiTracer
 {

@@ -3,8 +3,6 @@
 #ifndef MICROPOLYPOINTCONTAINER_H
 #define MICROPOLYPOINTCONTAINER_H
 
-#include "ECBPolyPoint.h"
-#include <iostream>
 
 class MicroPolyPointContainer
 {

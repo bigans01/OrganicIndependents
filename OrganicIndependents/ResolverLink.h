@@ -3,9 +3,7 @@
 #ifndef RESOLVERLINK_H
 #define RESOLVERLINK_H
 
-#include "ECBPolyPoint.h"
 #include "PMass.h"
-#include <mutex>
 #include "PAtomDimType.h"
 #include "PAtom2DXY.h"
 

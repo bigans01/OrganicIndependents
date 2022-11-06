@@ -3,8 +3,6 @@
 #ifndef DYNAMICLINEPOINTSYNCHRONIZER_H
 #define DYNAMICLINEPOINTSYNCHRONIZER_H
 
-#include "ECBPolyPoint.h"
-#include <iostream>
 #include "DynamicLineSyncResult.h"
 #include "DynamicLinePointSyncExclusionFlags.h"
 

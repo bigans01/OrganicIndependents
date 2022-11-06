@@ -3,9 +3,6 @@
 #ifndef PMASSRESULT_H
 #define PMASSRESULT_H
 
-#include "ECBPolyPoint.h"
-#include "OperableIntSet.h"
-#include <iostream>
 
 class PMassResult
 {

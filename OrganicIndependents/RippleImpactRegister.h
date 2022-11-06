@@ -3,13 +3,8 @@
 #ifndef RIPPLEIMPACTREGISTER_H
 #define RIPPLEIMPACTREGISTER_H
 
-#include "EnclaveKeyDef.h"
 #include "EnclaveKeyPair.h"
-#include <unordered_map>
-#include <unordered_set>
 #include "NeighboringBlockLocation.h"
-#include <vector>
-#include "BoundaryOrientation.h"
 #include "NeighboringBlockRelativeOrientation.h"
 
 /*

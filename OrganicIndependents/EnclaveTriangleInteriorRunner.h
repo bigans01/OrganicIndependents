@@ -3,15 +3,12 @@
 #ifndef ENCLAVETRIANGLEINTERIORRUNNER_H
 #define ENCLAVETRIANGLEINTERIORRUNNER_H
 
-#include "ECBPolyPoint.h"
 #include "PrimaryLineT1.h"
 #include "BlockBorderLineList.h"
 #include "BorderDataMap.h"
 #include "OrganicTriangleTertiary.h"
 #include "PolyUtils.h"
 #include "PolyLineEndpointMeta.h"
-#include <unordered_set>
-#include "BoundaryPolyIndicator.h"
 
 class IndependentUtils;
 class EnclaveTriangleInteriorRunner

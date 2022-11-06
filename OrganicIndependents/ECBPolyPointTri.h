@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ECBPolyPoint.h"
 
 #ifndef ECBPOLYPOINTTRI_H
 #define ECBPOLYPOINTTRI_H

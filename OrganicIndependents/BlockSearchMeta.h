@@ -3,7 +3,6 @@
 #ifndef BLOCKSEARCHMETA_H
 #define BLOCKSEARCHMETA_H
 
-#include "ECBPolyPoint.h"
 
 class BlockSearchMeta
 {

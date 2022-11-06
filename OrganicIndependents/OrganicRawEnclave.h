@@ -3,8 +3,6 @@
 #ifndef OrganicRawEnclave_H
 #define OrganicRawEnclave_H
 
-#include <map>
-#include <set>
 #include "EnclavePolyFractureResults.h"
 #include "OrganicTriangleSecondary.h"
 #include "EnclaveBlock.h"
@@ -14,8 +12,6 @@
 #include "ORELodState.h"
 #include "OrganicTransformUtils.h"
 #include "EnclaveBlockSkeleton.h"
-#include <mutex>
-#include "OperableIntSet.h"
 #include "EnclaveBlock.h"
 #include "OrganicTriangleSecondarySupergroupManager.h"
 #include "EnclaveTriangleContainerSupergroupManager.h"
@@ -23,7 +19,6 @@
 #include "GroupSetPair.h"
 #include "ORELodState.h"
 #include "OREAppendedState.h"
-#include <vector>
 #include "OREDependencyState.h"
 #include "Operable3DEnclaveKeySet.h"
 #include "BlockCopyQuery.h"
@@ -84,7 +79,10 @@ public:
 	void printMetadata();
 	void printTrianglesPerBlock();
 
-	bool checkIfFull();
+	bool checkIfFull();		// analyzes the number of unexposed blocks, to determine if the ORE is FULL. If the number equals 64, the currentLodState is updated to FULL,
+							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out. This case can occur in OrganicCoreLib functions,
+							// OrganicMassDriverElevator::proceedToNextFloorAndUpdateMassDrivers() and OrganicMassDriverElevator::runDriversForStartingFloor(),
+							// which call this function. This function should only be used by the OrganicMassDriverElevator or ECBPolyReformer classes. 
 	int getNumberOfBlockSkeletons();
 	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
 												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 

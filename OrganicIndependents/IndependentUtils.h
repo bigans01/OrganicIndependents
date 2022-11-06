@@ -4,10 +4,8 @@
 #define INDEPENDENTUTILS_H
 
 #include "ECBPPOrientationResults.h"
-#include "ECBPolyPoint.h"
 #include "BlockBorderLineList.h"
 #include "EnclaveBorderLineList.h"
-#include "EnclaveKeyDef.h"
 #include "ECBBorderLineList.h"
 #include "BorderDataMap.h"
 #include "BorderMDFaceList.h"
@@ -28,8 +26,6 @@
 #include "ECBPoly.h"
 #include "EnclaveBlockVertexTri.h"
 #include "DynamicBorderLineList.h"
-#include "BoundaryOrientation.h"
-#include <glm/glm.hpp>
 #include "TracingLineBoundingBox.h"
 
 class EnclaveTriangle;

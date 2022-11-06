@@ -5,12 +5,7 @@
 
 #include "PRMA2DResolverBase.h"
 #include "ResolverLinkMap.h"
-#include "ECBPolyPoint.h"
 #include "PMass.h"
-#include <map>
-#include <mutex>
-#include <iostream>
-#include "OperableIntSet.h"
 
 class PRMA2DResolverXY : public PRMA2DResolverBase
 {

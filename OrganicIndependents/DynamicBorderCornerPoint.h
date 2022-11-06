@@ -4,7 +4,6 @@
 #define DYNAMICBORDERCORNERPOINT_H
 
 #include "DynamicBorder.h"
-#include "ECBPolyPoint.h"
 
 class DynamicBorderCornerPoint
 {

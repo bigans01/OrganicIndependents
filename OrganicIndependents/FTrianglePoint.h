@@ -4,10 +4,6 @@
 #define FTRIANGLEPOINT_H
 
 #include "FTrianglePointType.h"
-#include "ECBPolyPoint.h"
-#include <glm/glm.hpp>
-#include <iostream>
-#include "IndependentUtils.h"
 
 class FTrianglePoint
 {
@@ -23,12 +19,12 @@ class FTrianglePoint
 			FTrianglePointType in_pointType) :
 			pointType(in_pointType)
 		{
-			point = IndependentUtils::convertECBPolyPointToVec3(in_point);
+			point.x = in_point.x;
+			point.y = in_point.y;
+			point.z = in_point.z;
 		};
 
 
-		FTrianglePointType pointType = FTrianglePointType::NOVAL;	// must be set by constructor #2 above
-		glm::vec3 point;
 
 		bool operator==(const ECBPolyPoint& in_otherPoint)
 		{
@@ -43,6 +39,9 @@ class FTrianglePoint
 		{
 			return (point == in_otherPoint.point);
 		}
+
+		FTrianglePointType pointType = FTrianglePointType::NOVAL;	// must be set by constructor #2 above
+		glm::vec3 point;
 
 		void printPointData()
 		{

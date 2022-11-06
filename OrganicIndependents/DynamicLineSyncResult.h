@@ -4,7 +4,6 @@
 #define DYNAMICLINESYNCRESULT_H
 
 #include "DynamicLineSyncType.h"
-#include "ECBPolyPoint.h"
 
 class DynamicLineSyncResult
 {

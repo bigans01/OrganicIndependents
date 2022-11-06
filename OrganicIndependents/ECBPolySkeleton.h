@@ -3,7 +3,6 @@
 #ifndef ECBPOLYSKELETON_H
 #define ECBPOLYSKELETON_H
 
-#include "ECBPolyPoint.h"
 
 class ECBPolySkeleton
 {

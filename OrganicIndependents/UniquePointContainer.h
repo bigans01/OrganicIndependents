@@ -3,8 +3,6 @@
 #ifndef UNIQUEPOINTCONTAINER_H
 #define UNIQUEPOINTCONTAINER_H
 
-#include <vector>
-#include "ECBPolyPoint.h"
 #include "FTrianglePoint.h"
 
 /*

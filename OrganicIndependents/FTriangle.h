@@ -4,14 +4,9 @@
 #define FTRIANGLE_H
 
 #include "FTriangleType.h"
-#include "ECBPolyPoint.h"
-#include <mutex>
-#include <unordered_map>
 #include "FTriangleContainer.h"
-#include "EnclaveKeyDef.h"
 #include "FTriangleFracturerBase.h"
 #include "WorldFracturingMachine.h"
-#include "BoundaryOrientation.h"
 #include "PerfectClampEnum.h"
 
 /*

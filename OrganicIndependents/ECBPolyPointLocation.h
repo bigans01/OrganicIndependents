@@ -4,8 +4,7 @@
 #ifndef ECBPOLYPOINTLOCATION_H
 #define ECBPOLYPOINTLOCATION_H
 
-#include "EnclaveKeyDef.h"
-#include "ECBPolyPoint.h"
+
 
 class ECBPolyPointLocation
 {

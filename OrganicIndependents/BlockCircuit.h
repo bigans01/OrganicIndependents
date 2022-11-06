@@ -12,8 +12,6 @@
 #include "MicroPolyPointContainer.h"
 #include "TertiaryTriangleContainer.h"
 #include "PolyLogger.h"
-#include <map>
-#include "ECBPolyPoint.h"
 
 class IndependentUtils;
 class BlockCircuit

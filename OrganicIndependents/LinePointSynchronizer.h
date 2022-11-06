@@ -3,7 +3,6 @@
 #ifndef LINEPOINTSYNCHRONIZER_H
 #define LINEPOINTSYNCHRONIZER_H
 
-#include "ECBPolyPoint.h"
 
 class LinePointSynchronizer
 {

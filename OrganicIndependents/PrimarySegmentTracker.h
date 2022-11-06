@@ -4,7 +4,6 @@
 #define PRIMARYSEGMENTTRACKER_H
 
 #include "EnclaveBlockVertex.h"
-#include "ECBPolyPoint.h"
 #include "SegmentMeta.h"
 
 class PrimarySegmentTracker

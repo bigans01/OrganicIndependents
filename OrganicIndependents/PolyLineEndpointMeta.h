@@ -3,8 +3,6 @@
 #ifndef POLYLINEENDPOINTMETA_H
 #define POLYLINEENDPOINTMETA_H
 
-#include <iostream>
-#include "ECBPolyPoint.h"
 #include "BlockBorder.h"
 
 class PolyLineEndpointMeta

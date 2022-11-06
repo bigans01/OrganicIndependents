@@ -4,7 +4,6 @@
 #define NEIGHBORINGBLOCKRELATIVEORIENTATION_H
 
 #include "NeighboringBlockLocation.h"
-#include "BoundaryOrientation.h"
 
 class NeighboringBlockRelativeOrientation
 {

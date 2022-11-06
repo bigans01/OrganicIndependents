@@ -3,12 +3,7 @@
 #ifndef FRAYCASTERQUADBASE_H
 #define FRAYCASTERQUADBASE_H
 
-#include "ECBPolyPoint.h"
-#include "UniquePointContainer.h"
 #include "FRayCasterInitData.h"
-#include <iostream>
-#include "IndependentUtils.h"
-#include <vector>
 #include "ECBPolyPointPair.h"
 #include "FRayIntersectionRoundingMode.h"
 #include "FRayIntersectionMachine.h"

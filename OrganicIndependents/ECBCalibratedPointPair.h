@@ -4,7 +4,6 @@
 #define ECBCALIBRATEDPOINTPAIR_H
 
 #include "ECBPolyPointTri.h"
-#include "ECBPolyPoint.h"
 
 class ECBCalibratedPointPair
 {

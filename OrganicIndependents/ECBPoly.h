@@ -3,11 +3,8 @@
 #ifndef ECBPOLYLINE_NEW_H
 #define ECBPOLYLINE_NEW_H
 
-#include <unordered_map>
-#include "ECBPolyPoint.h"
 #include "ECBPolyLine.h"
 #include "ECBPolyType.h"
-#include <iostream>
 
 
 class ECBPoly

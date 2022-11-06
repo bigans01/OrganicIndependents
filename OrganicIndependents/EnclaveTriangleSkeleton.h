@@ -3,10 +3,8 @@
 #ifndef ENCLAVETRIANGLESKELETON_H
 #define ENCLAVETRIANGLESKELETON_H
 
-#include "ECBPolyPoint.h"
 #include "EnclaveTriangle.h"
 #include "TriangleLine.h"
-#include "BoundaryPolyIndicator.h"
 
 class IndependentUtils;
 class EnclaveTriangleSkeleton

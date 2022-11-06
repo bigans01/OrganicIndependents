@@ -4,9 +4,7 @@
 #define NEIGHBORINGBLOCKLOCATIONSET_H
 
 #include "NeighboringBlockLocation.h"
-#include "EnclaveKeyDef.h"
 #include "EuclideanDirection3D.h"
-#include "BoundaryOrientation.h"
 
 class NeighboringBlockLocationSet
 {

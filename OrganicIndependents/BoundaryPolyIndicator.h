@@ -3,7 +3,6 @@
 #ifndef BOUNDARYPOLYINDICATOR_H
 #define BOUNDARYPOLYINDICATOR_H
 
-#include "BoundaryOrientation.h"
 
 /*
 

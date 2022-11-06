@@ -3,7 +3,6 @@
 #ifndef FTRIANGLELINE_H
 #define FTRIANGLELINE_H
 
-#include "ECBPolyPoint.h"
 #include "FTriangleLineType.h"
 
 class FTriangleLine
@@ -11,6 +10,13 @@ class FTriangleLine
 	public:
 		FTriangleLine() {};
 		FTriangleLine(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, FTriangleLineType in_lineType) :
+			lineType(in_lineType)
+		{
+			pointA = IndependentUtils::convertECBPolyPointToVec3(in_pointA);
+			pointB = IndependentUtils::convertECBPolyPointToVec3(in_pointB);
+		};
+
+		FTriangleLine(glm::vec3 in_pointA, glm::vec3 in_pointB, FTriangleLineType in_lineType) :
 			pointA(in_pointA),
 			pointB(in_pointB),
 			lineType(in_lineType)
@@ -29,10 +35,24 @@ class FTriangleLine
 		}
 
 		FTriangleLineType getType() { return lineType; }
+		void printLine()
+		{
+			std::cout << " pointA -> " << pointA.x << ", " << pointA.y << ", " << pointA.z
+					<< "| pointB -> " << pointB.x << ", " << pointB.y << ", " << pointB.z;
 
+			std::string lineTypeString = "";
+			switch (lineType)
+			{
+				case FTriangleLineType::EXTERIOR: { lineTypeString = "EXTERIOR"; break; };
+				case FTriangleLineType::SCANNED: { lineTypeString = "SCANNED"; break; };
+			}
+			std::cout << " | linetType -> " << lineTypeString << std::endl;
+		}
+
+
+		glm::vec3 pointA;
+		glm::vec3 pointB;
 	private:
-		ECBPolyPoint pointA;
-		ECBPolyPoint pointB;
 		FTriangleLineType lineType = FTriangleLineType::NONE;
 };
 

@@ -3,10 +3,7 @@
 #ifndef CALIBRATABLEBLUEPRINTKEYPAIR_H
 #define CALIBRATABLEBLUEPRINTKEYPAIR_H
 
-#include "EnclaveKeyDef.h"
-#include "ECBPolyPoint.h"
 #include "EnclaveKeyPair.h"
-#include "IndependentUtils.h"
 
 class CalibratableBlueprintKeyPair
 {

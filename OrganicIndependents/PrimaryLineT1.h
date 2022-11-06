@@ -4,9 +4,6 @@
 #define PRIMARYLINET1_H
 
 #include "ECBPolyPointLocation.h"
-#include "ECBPolyPoint.h"
-#include "EnclaveKeyDef.h"
-#include <iostream>
 
 class IndependentUtils;
 class PrimaryLineT1

@@ -3,7 +3,6 @@
 #ifndef SEGMENTMETA_H
 #define SEGMENTMETA_H
 
-#include "ECBPolyPoint.h"
 
 class SegmentMeta
 {

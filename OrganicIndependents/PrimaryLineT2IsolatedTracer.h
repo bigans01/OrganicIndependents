@@ -3,14 +3,12 @@
 #ifndef PRIMARYLINET2ISOLATEDTRACER_H
 #define PRIMARYLINET2ISOLATEDTRACER_H
 
-#include "ECBPolyPoint.h"
 #include "ECBPPOrientations.h"
 #include "ECBPPOrientationResults.h"
 #include "BorderDataMap.h"
 #include "ECBPolyLineSlopesArray.h"
 #include "PrimaryLineT2Array.h"
 #include "PrimaryLineT2.h"
-#include "EnclaveKeyDef.h"
 #include "PLTracingResult.h"
 #include "ECBBorderLineList.h"
 

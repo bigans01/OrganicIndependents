@@ -4,8 +4,7 @@
 #define PRM2ARESOLVERBASE_H
 
 // eg, an example class names that derives this base would be: PRMA2DResolverXY, PRMA2DResolverYZ, PRMA2DREsolverXZ
-#include "ECBPolyPoint.h"
-#include "Message.h"
+
 #include "ResolverLinkMap.h"
 
 class PRMA2DResolverBase

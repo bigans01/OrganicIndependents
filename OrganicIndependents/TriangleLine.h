@@ -3,7 +3,6 @@
 #ifndef TRIANGLELINE_H
 #define TRIANGLELINE_H
 
-#include "ECBPolyPoint.h"
 #include "OrganicLineBase.h"
 
 class TriangleLine : public OrganicLineBase

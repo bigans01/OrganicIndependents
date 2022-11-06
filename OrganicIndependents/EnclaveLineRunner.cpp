@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EnclaveLineRunner.h"
-#include "ECBPolyPoint.h"
 
 EnclaveLineRunner::EnclaveLineRunner(PrimaryLineT1 in_link, BlockBorderLineList* in_lineListRef, int in_lineID)
 {

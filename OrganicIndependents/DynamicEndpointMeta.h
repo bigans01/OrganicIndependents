@@ -3,8 +3,6 @@
 #ifndef DYNAMICENDPOINTMETA_H
 #define DYNAMICENDPOINTMETA_H
 
-#include <iostream>
-#include "ECBPolyPoint.h"
 #include "DynamicBorder.h"
 
 class DynamicEndpointMeta

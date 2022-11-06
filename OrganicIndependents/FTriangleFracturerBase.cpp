@@ -116,6 +116,16 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	return mappedInitData;
 }
 
+void FTriangleFracturerBase::erasePermitFromSet(DifferingDimValues in_dimValueForErase, std::set<LineScanPermit>* in_permitMapRef)
+{
+	switch (in_dimValueForErase)
+	{
+		case DifferingDimValues::DIFFERENT_X: { in_permitMapRef->erase(LineScanPermit::SCAN_X); break;}
+		case DifferingDimValues::DIFFERENT_Y: { in_permitMapRef->erase(LineScanPermit::SCAN_Y); break;}
+		case DifferingDimValues::DIFFERENT_Z: { in_permitMapRef->erase(LineScanPermit::SCAN_Z); break;}
+	}
+}
+
 std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getValidPermits()
 {
 	// populate the permit with all 3 valid permits; we will subtract from this as necessary.
@@ -128,31 +138,29 @@ std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getVali
 	switch (originPerfectClampValue)
 	{
 
-		// Check for X clamp. Remove SCAN_X if true.
+		// For any dimension that is perfectly clamped, the scan that is aligned on that dimension should not be used.
 		case PerfectClampEnum::CLAMPED_TO_X: { validPermits.erase(LineScanPermit::SCAN_X); break; }
 		case PerfectClampEnum::CLAMPED_TO_Y: { validPermits.erase(LineScanPermit::SCAN_Y); break; }
 		case PerfectClampEnum::CLAMPED_TO_Z: { validPermits.erase(LineScanPermit::SCAN_Z); break; }
 
 		
 
-		// Second set of tests: matching dimensions in points. Can only be done if
-		// the perfect clamp value is NONE.
+		// Below: this case was meant to exclude unnecessary scans on certain dimensions,
+		// in order to avoid duplicate lines from being inserted into FTriangleProductionStager instances. 
+		// However, with the enhanced checks to FTriangleProductionStager::insertLine -- which prevent duplicate line insertion --
+		// the below logic may not be needed. It will have to be looked at, at a later point in time.
 		case PerfectClampEnum::NONE:
 		{
-
-			enum class DifferingDimValues
-			{
-				DIFFERENT_X,
-				DIFFERENT_Y,
-				DIFFERENT_Z
-			};
+			
+			/*
+			std::set<DifferingDimValues> baseValues;
+			baseValues.insert(DifferingDimValues::DIFFERENT_X);
+			baseValues.insert(DifferingDimValues::DIFFERENT_Y);
+			baseValues.insert(DifferingDimValues::DIFFERENT_Z);
 
 			// Check line 0 (point0 -> point1, subtract point0 from point1)
 			ECBPolyPoint line0Diff = (originFTrianglePoints[1] - originFTrianglePoints[0]);
-			std::set<DifferingDimValues> line0DimValues;
-			line0DimValues.insert(DifferingDimValues::DIFFERENT_X);
-			line0DimValues.insert(DifferingDimValues::DIFFERENT_Y);
-			line0DimValues.insert(DifferingDimValues::DIFFERENT_Z);
+			std::set<DifferingDimValues> line0DimValues = baseValues;
 			int line0NonDiffCount = 0;
 			if (line0Diff.x == 0.0f)
 			{
@@ -171,16 +179,17 @@ std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getVali
 				line0DimValues.erase(DifferingDimValues::DIFFERENT_Z);
 				line0NonDiffCount++;
 			}
-			std::cout << "(Line 0): -> number of diffs: " << line0DimValues.size() << std::endl;
 
+			std::cout << "(Line 0): -> number of diffs: " << line0DimValues.size() << std::endl;
+			if (line0DimValues.size() == 1)
+			{
+				//erasePermitFromSet(*line0DimValues.begin(), &validPermits);
+			}
 
 
 			// Check line 1 (point1 -> point2, subtract point1 from point2)
 			ECBPolyPoint line1Diff = (originFTrianglePoints[2] - originFTrianglePoints[1]);
-			std::set<DifferingDimValues> line1DimValues;
-			line1DimValues.insert(DifferingDimValues::DIFFERENT_X);
-			line1DimValues.insert(DifferingDimValues::DIFFERENT_Y);
-			line1DimValues.insert(DifferingDimValues::DIFFERENT_Z);
+			std::set<DifferingDimValues> line1DimValues = baseValues;
 			int line1NonDiffCount = 0;
 			if (line1Diff.x == 0.0f)
 			{
@@ -198,15 +207,16 @@ std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getVali
 				line1NonDiffCount++;
 			}
 			std::cout << "(Line 1): -> number of diffs: " << line1DimValues.size() << std::endl;
+			if (line1DimValues.size() == 1)
+			{
+				//erasePermitFromSet(*line1DimValues.begin(), &validPermits);
+			}
 
 
 
 			// Check line 2 (point2 -> point0, subtract point2 from point0)
 			ECBPolyPoint line2Diff = (originFTrianglePoints[0] - originFTrianglePoints[2]);
-			std::set<DifferingDimValues> line2DimValues;
-			line2DimValues.insert(DifferingDimValues::DIFFERENT_X);
-			line2DimValues.insert(DifferingDimValues::DIFFERENT_Y);
-			line2DimValues.insert(DifferingDimValues::DIFFERENT_Z);
+			std::set<DifferingDimValues> line2DimValues = baseValues;
 			int line2NonDiffCount = 0;
 			if (line2Diff.x == 0.0f)
 			{
@@ -224,12 +234,63 @@ std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getVali
 				line2NonDiffCount++;
 			}
 			std::cout << "(Line 2): -> number of diffs: " << line2DimValues.size() << std::endl;
-
+			if (line2DimValues.size() == 1)
+			{
+				//erasePermitFromSet(*line2DimValues.begin(), &validPermits);
+			}
+			*/
 			break;
 		}
 	}
 	std::cout << "Size of validPermits is: " << validPermits.size() << std::endl;
 	return validPermits;
+}
+
+int FTriangleFracturerBase::getScanDimensionalStartKey(FTriangleFracturerBase::LineScanPermit in_dimensionToFetch)
+{
+	// Below: remember, in a set, the values are arranged least to greatest.
+	int startingDimensionValue = 0;
+
+	switch (in_dimensionToFetch)
+	{
+		case LineScanPermit::SCAN_X:
+		{
+			std::set<int> allXValues;
+			for (int a = 0; a < 3; a++)
+			{
+				allXValues.insert(originFTriangleKeys[a].x);
+			}
+
+			startingDimensionValue = *allXValues.begin();
+			break;
+		}
+
+		case LineScanPermit::SCAN_Y:
+		{
+			std::set<int> allYValues;
+			for (int b = 0; b < 3; b++)
+			{
+				allYValues.insert(originFTriangleKeys[b].y);
+			}
+
+			startingDimensionValue = *allYValues.begin();
+			break;
+		}
+
+		case LineScanPermit::SCAN_Z:
+		{
+			std::set<int> allZValues;
+			for (int c = 0; c < 3; c++)
+			{
+				allZValues.insert(originFTriangleKeys[c].z);
+			}
+
+			startingDimensionValue = *allZValues.begin();
+			break;
+		}
+	}
+
+	return startingDimensionValue;
 }
 
 FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningIntervals(float in_fixedIntervalValue)
@@ -266,7 +327,7 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 	minZ = *zKeyValues.begin();
 	maxZ = *zKeyValues.rbegin();
 
-	/*
+	
 	std::cout << "Min/Max interval values are: " << std::endl;
 	std::cout << "minX: " << minX << std::endl;
 	std::cout << "maxX: " << maxX << std::endl;
@@ -274,48 +335,46 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 	std::cout << "maxY: " << maxY << std::endl;
 	std::cout << "minZ: " << minZ << std::endl;
 	std::cout << "maxZ: " << maxZ << std::endl;
-	*/
+	
 
 	int xGridWidth = maxX - minX;
 	int yGridWidth = maxY - minY;
 	int zGridWidth = maxZ - minZ;
 
-	// Determine the fixed X values.
+	// Determine the fixed X values; start with the minimum X value, and increment by the in_fixedIntervalValue, for
+	// an amount of times equal to xGridWidth.
 	if (xGridWidth >= 1)
 	{
-		auto currentXKey = xKeyValues.begin();
+		float currentX = IndependentUtils::roundToHundredth(((*xKeyValues.begin()) * in_fixedIntervalValue) + in_fixedIntervalValue);
 		for (int x = 0; x < xGridWidth; x++)
 		{
-			float currentXListValue = IndependentUtils::roundToHundredth(((*currentXKey) * in_fixedIntervalValue) + in_fixedIntervalValue);
-			returnLists.xList.insert(currentXListValue);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted X list value: " << currentXListValue << std::endl;
-			currentXKey++;
+			returnLists.xList.insert(currentX);
+			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted X list value: " << currentX << std::endl;
+			currentX = IndependentUtils::roundToHundredth(currentX + in_fixedIntervalValue);
 		}
 	}
 
-	// Determine the fixed Y values.
+	// ...repeat this for Y
 	if (yGridWidth >= 1)
 	{
-		auto currentYKey = yKeyValues.begin();
+		float currentY = IndependentUtils::roundToHundredth(((*yKeyValues.begin()) * in_fixedIntervalValue) + in_fixedIntervalValue);
 		for (int y = 0; y < yGridWidth; y++)
 		{
-			float currentYListValue = IndependentUtils::roundToHundredth(((*currentYKey) * in_fixedIntervalValue) + in_fixedIntervalValue);
-			returnLists.yList.insert(currentYListValue);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Y list value: " << currentYListValue << std::endl;
-			currentYKey++;
+			returnLists.yList.insert(currentY);
+			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Y list value: " << currentY << std::endl;
+			currentY = IndependentUtils::roundToHundredth(currentY + in_fixedIntervalValue);
 		}
 	}
 
-	// Determine the fixed Z values
+	// ...and Z
 	if (zGridWidth >= 1)
 	{
-		auto currentZKey = zKeyValues.begin();
+		float currentZ = IndependentUtils::roundToHundredth(((*zKeyValues.begin()) * in_fixedIntervalValue) + in_fixedIntervalValue);
 		for (int z = 0; z < zGridWidth; z++)
 		{
-			float currentZListValue = IndependentUtils::roundToHundredth(((*currentZKey) * in_fixedIntervalValue) + in_fixedIntervalValue);
-			returnLists.zList.insert(currentZListValue);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Z list value: " << currentZListValue << std::endl;
-			currentZKey++;
+			returnLists.zList.insert(currentZ);
+			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Z list value: " << currentZ << std::endl;
+			currentZ = IndependentUtils::roundToHundredth(currentZ + in_fixedIntervalValue);
 		}
 	}
 

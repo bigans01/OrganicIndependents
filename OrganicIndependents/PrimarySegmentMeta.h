@@ -5,7 +5,6 @@
 
 #include "BorderMDFaceList.h"
 #include "EnclaveBlockVertex.h"
-#include "ECBPolyPoint.h"
 
 class PrimarySegmentMeta
 {

@@ -5,10 +5,6 @@
 
 #include "MessageLocality.h"
 #include "MessageType.h"
-#include "EnclaveKeyDef.h"
-#include "ECBPolyPoint.h"
-#include <vector>
-#include <string>
 
 class Message
 {

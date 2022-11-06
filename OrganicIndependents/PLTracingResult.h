@@ -3,7 +3,6 @@
 #ifndef PLTRACINGRESULT_H
 #define PLTRACINGRESULT_H
 
-#include "ECBPolyPoint.h"
 #include "BorderMDFaceList.h"
 #include "ECBPPOrientationResults.h"
 

@@ -5,9 +5,6 @@
 
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyLineSlopesArray.h"
-#include "ECBPolyPoint.h"
-#include <iostream>
-
 class IndependentUtils;
 class PrimaryLineT2
 {

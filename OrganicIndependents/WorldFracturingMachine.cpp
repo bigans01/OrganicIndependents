@@ -280,7 +280,22 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.xList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for YZLineScanner." << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XDimLineScanner. (goes forward toward positive X)" << std::endl;
+		int startBackwardXValue = getScanDimensionalStartKey(LineScanPermit::SCAN_X);
+		int startForwardXValue = startBackwardXValue + 1;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward X start key is: " << startBackwardXValue << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward X start key is: " << startForwardXValue << std::endl;
+
+		std::shared_ptr<DimensionalLineScannerBase> xScanner(new XDimLineScanner);
+		lineScannerMap[LineScanPermit::SCAN_X] = xScanner;
+		lineScannerMap[LineScanPermit::SCAN_X]->initializeLineScanner(XYZLists.xList,
+																	&fracturerPoints,
+																	&stagerMap,
+																	startBackwardXValue,
+																	startForwardXValue,
+																	rayCastDimInterval);
+		lineScannerMap[LineScanPermit::SCAN_X]->runScan();
+																				
 	}
 
 	// For XZLineScanner (Moves along fixed Y interval, makes lines with X/Z)
@@ -292,7 +307,11 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.yList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XZLineScanner." << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for YDimLineScanner. (goes forward toward positive Y)" << std::endl;
+		int startBackwardYValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Y);
+		int startForwardYValue = startBackwardYValue + 1;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
 	}
 
 	// For XYLineScanner (Moves along fixed Z interval, makes lines with X/Y)
@@ -304,6 +323,10 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.zList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XYLineScanner." << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for ZDimLineScanner. (goes forward toward positive Z)" << std::endl;
+		int startBackwardZValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Z);
+		int startForwardZValue = startBackwardZValue + 1;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
+		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
 	}
 }

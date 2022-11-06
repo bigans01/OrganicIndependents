@@ -180,6 +180,7 @@
     <ClInclude Include="Cycle.h" />
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
+    <ClInclude Include="DimensionalLineScannerBase.h" />
     <ClInclude Include="DynamicBorder.h" />
     <ClInclude Include="DynamicBorderCornerPoint.h" />
     <ClInclude Include="DynamicBorderLineList.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
     <ClInclude Include="FTriangleLine.h" />
+    <ClInclude Include="FTriangleLineTargets.h" />
     <ClInclude Include="FTriangleLineType.h" />
     <ClInclude Include="FTrianglePoint.h" />
     <ClInclude Include="FTrianglePointType.h" />
@@ -354,8 +356,12 @@
     <ClInclude Include="UniquePointContainer.h" />
     <ClInclude Include="Vec3Pair.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
+    <ClInclude Include="XDimLineScanner.h" />
     <ClInclude Include="XFRayCastQuad.h" />
+    <ClInclude Include="XSliceLine.h" />
     <ClInclude Include="YFRayCastQuad.h" />
+    <ClInclude Include="YZDim.h" />
+    <ClInclude Include="YZDimMoveVal.h" />
     <ClInclude Include="ZFRayCastQuad.h" />
   </ItemGroup>
   <ItemGroup>
@@ -368,6 +374,7 @@
     <ClCompile Include="BorderDataMap.cpp" />
     <ClCompile Include="BorderMDFaceList.cpp" />
     <ClCompile Include="CalibratableBlueprintKeyPair.cpp" />
+    <ClCompile Include="DimensionalLineScannerBase.cpp" />
     <ClCompile Include="DynamicBorderLineList.cpp" />
     <ClCompile Include="DynamicLinePointSynchronizer.cpp" />
     <ClCompile Include="ECBBorder.cpp" />
@@ -381,6 +388,7 @@
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
+    <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
@@ -428,7 +436,9 @@
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
     <ClCompile Include="TertiaryTriangleProducer.cpp" />
     <ClCompile Include="WorldFracturingMachine.cpp" />
+    <ClCompile Include="XDimLineScanner.cpp" />
     <ClCompile Include="XFRayCastQuad.cpp" />
+    <ClCompile Include="XSliceLine.cpp" />
     <ClCompile Include="YFRayCastQuad.cpp" />
     <ClCompile Include="ZFRayCastQuad.cpp" />
   </ItemGroup>

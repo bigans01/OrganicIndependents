@@ -3,7 +3,7 @@
 #ifndef ECBPOLYPOINTPAIR_H
 #define ECBPOLYPOINTPAIR_H
 
-#include "ECBPolyPoint.h"
+
 
 class ECBPolyPointPair
 {

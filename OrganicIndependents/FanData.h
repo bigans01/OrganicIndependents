@@ -3,8 +3,7 @@
 #ifndef FANDATA_H
 #define FANDATA_H
 
-#include "ECBPolyPoint.h"
-#include "BoundaryPolyIndicator.h"
+
 
 class FanData
 {

@@ -121,6 +121,30 @@
     <Filter Include="Header Files\FracturableTriangle\FTriangleLineScanner">
       <UniqueIdentifier>{5bbd0fb6-f38d-49cf-8d14-aadc87269509}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners">
+      <UniqueIdentifier>{11e5d318-f116-4324-9e54-efea97078c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\DimensionalLineScanners">
+      <UniqueIdentifier>{01dc3c3f-2713-4286-be39-1c1d5ce528bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner">
+      <UniqueIdentifier>{05db7d89-599e-4a55-9c15-fc9c161feb7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner">
+      <UniqueIdentifier>{5071a937-50b3-4eba-bc00-b88d81a29bdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner">
+      <UniqueIdentifier>{1280059b-c424-45ab-8f81-a2c1cb3d08de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner">
+      <UniqueIdentifier>{fb6273cf-5dfe-447c-ab3d-a572d616f19e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner">
+      <UniqueIdentifier>{e9842468-3896-42e9-8e57-b3ce2d98bc52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner">
+      <UniqueIdentifier>{c7671f8f-e053-4bc4-a41e-49f6822ea7cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -729,6 +753,24 @@
     <ClInclude Include="TracingLineBoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DimensionalLineScannerBase.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners</Filter>
+    </ClInclude>
+    <ClInclude Include="XDimLineScanner.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="YZDimMoveVal.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="XSliceLine.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="YZDim.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleLineTargets.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -930,6 +972,18 @@
       <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
     </ClCompile>
     <ClCompile Include="FRayIntersectionMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
+    </ClCompile>
+    <ClCompile Include="DimensionalLineScannerBase.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners</Filter>
+    </ClCompile>
+    <ClCompile Include="XDimLineScanner.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="XSliceLine.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\XDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="FRayCasterQuadBase.cpp">
       <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
     </ClCompile>
   </ItemGroup>

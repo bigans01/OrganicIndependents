@@ -4,7 +4,6 @@
 #define PRIMARYLINET1ARRAY_H
 
 #include "PrimaryLineT1.h"
-#include "EnclaveKeyDef.h"
 #include "ECBTrianglePointArray.h"
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyLineSlopesArray.h"
@@ -12,8 +11,6 @@
 #include "PrimaryLineT2IsolatedTracer.h"
 #include "PrimaryLineT2MultiTracer.h"
 #include "BorderDataMap.h"
-#include "ECBPolyPoint.h"
-#include <map>
 
 class IndependentUtils;
 class PrimaryLineT1Array

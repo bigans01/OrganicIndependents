@@ -3,8 +3,6 @@
 #ifndef FUSABLEAREA_H
 #define FUSABLEAREA_H
 
-#include "ECBPolyPoint.h"
-#include "OperableIntSet.h"
 #include "FusableAreaState.h"
 
 class FusableArea

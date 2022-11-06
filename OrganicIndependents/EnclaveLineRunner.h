@@ -6,11 +6,9 @@
 #include <iomanip>
 #include "PrimaryLineT1.h"
 #include "PrimaryLineT2.h"
-#include "IndependentUtils.h"
 #include "EnclaveBlock.h"
 #include "BlockBorderLineList.h"
 #include "PolyLineEndpointMeta.h"
-#include "ECBPolyPoint.h"
 #include "ECBPolyPointTri.h"
 #include "LineRunnerState.h"
 

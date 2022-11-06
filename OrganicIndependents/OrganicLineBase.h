@@ -3,7 +3,6 @@
 #ifndef ORGANICLINEBASE_H
 #define ORGANICLINEBASE_H
 
-#include "ECBPolyPoint.h"
 
 class OrganicLineBase
 {

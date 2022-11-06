@@ -3,10 +3,7 @@
 #ifndef FTRIANGLETRACERBASE_H
 #define FTRIANGLETRACERBASE_H
 
-#include "EnclaveKeyDef.h"
-#include <unordered_map>
 #include "FTriangleProductionStager.h"
-#include "UniquePointContainer.h"
 #include "EnclaveKeyPair.h"
 #include "FTriangleLine.h"
 

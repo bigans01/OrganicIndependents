@@ -3,23 +3,18 @@
 #ifndef ENCLAVEBLOCK_H
 #define ENCLAVEBLOCK_H
 
-#include <iostream>
 #include "EnclaveBlockVertex.h"
 #include "TertiaryTriangleContainer.h"
 #include "PointSearchData.h"
 #include "PrimarySegmentTracker.h"
 #include "BlockSearchMeta.h"
-#include "ECBPolyPoint.h"
-#include "EnclaveKeyDef.h"
 #include "PolyGroupTicker.h"
 #include "BlockFlags.h"
 #include "BlockFlagStates.h"
 #include "OrganicWrappedBBFan.h"
-#include <mutex>
 #include "FanBase.h"
 #include "ThinFan.h"
 #include "FanManager.h"
-#include "BoundaryOrientation.h"
 
 // moved to OrganicPolyOperationsLib (along with other classes) from OrganicCoreLib on 5/1/2020**
 
