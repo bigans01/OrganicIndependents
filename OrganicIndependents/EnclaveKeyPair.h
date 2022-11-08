@@ -3,7 +3,7 @@
 #ifndef ENCLAVEKEYPAIR_H
 #define ENCLAVEKEYPAIR_H
 
-#include "EnclaveKeyDef.h"
+
 
 class EnclaveKeyPair
 {

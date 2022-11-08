@@ -23,9 +23,6 @@ Dependents: none
 #ifndef ENCLAVEKEY_H
 #define ENCLAVEKEY_H
 
-#include <iostream>
-#include <string>
-
 class EnclaveKeyDef {
 
 public:

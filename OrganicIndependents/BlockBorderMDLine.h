@@ -3,7 +3,7 @@
 #ifndef BLOCKBORDERMDLINE_H
 #define BLOCKBORDERMDLINE_H
 
-#include "EnclaveKeyDef.h"
+
 #include "ECBPPOrientations.h"
 
 class BlockBorderMDLine

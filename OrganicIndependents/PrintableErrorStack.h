@@ -2,9 +2,6 @@
 
 #ifndef PRINTABLEERRORSTACK_H
 #define PRINTABLEERRORSTACK_H
-
-#include <stack>
-#include <iostream>
 #include "PrintableError.h"
 
 class PrintableErrorStack

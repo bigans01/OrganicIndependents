@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <iostream>
 #include "TertiaryTriangleContainer.h"
 
 void TertiaryTriangleContainer::sanitizePoints(int in_debugFlag)

@@ -3,7 +3,7 @@
 #ifndef NEIGHBORINGBLOCKLOCATION_H
 #define NEIGHBORINGBLOCKLOCATION_H
 
-#include "EnclaveKeyDef.h"
+
 
 class NeighboringBlockLocation
 {

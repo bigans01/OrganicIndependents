@@ -4,7 +4,6 @@
 #define PRIMARYLINET2MULTITRACER_H
 
 #include "ECBBorderLineList.h"
-#include "ECBPolyPointPair.h"
 #include "ECBPPOrientations.h"
 #include "ECBPPOrientationResults.h"
 #include "BorderDataMap.h"

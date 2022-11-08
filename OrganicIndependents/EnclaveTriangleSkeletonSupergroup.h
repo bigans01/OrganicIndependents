@@ -2,8 +2,6 @@
 
 #ifndef ENCLAVETRIANGLESKELETONSUPERGROUP_H
 #define ENCLAVETRIANGLESKELETONSUPERGROUP_H
-
-#include <map>
 #include "EnclaveTriangleSkeletonContainer.h"
 
 class EnclaveTriangleSkeletonSupergroup

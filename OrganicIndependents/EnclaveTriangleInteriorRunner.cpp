@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EnclaveTriangleInteriorRunner.h"
-#include "IndependentUtils.h"
 
 EnclaveTriangleInteriorRunner::EnclaveTriangleInteriorRunner(ECBPolyPoint in_beginPoint,
 	ECBPolyPoint in_endPoint,

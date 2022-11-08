@@ -3,8 +3,6 @@
 #ifndef VEC3PAIR_H
 #define VEC3PAIR_H
 
-#include <glm/glm.hpp>
-#include "ECBPolyPointPair.h"
 
 class Vec3Pair
 {

@@ -6,7 +6,7 @@
 #include "TriangleLine.h"
 #include "PrimaryLineT1.h"
 #include "PrimaryLineT2.h"
-#include "EnclaveKeyDef.h"
+
 #include "ECBPoly.h"
 #include "ECBPolySkeleton.h"
 #include "OrganicLineBase.h"

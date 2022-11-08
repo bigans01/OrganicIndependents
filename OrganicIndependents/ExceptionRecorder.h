@@ -3,7 +3,6 @@
 #ifndef EXCEPTIONRECORDER_H
 #define EXCEPTIONRECORDER_H
 
-#include <vector>
 #include "ExceptionRecord.h"
 
 /*

@@ -3,10 +3,6 @@
 #ifndef CYCLE_H
 #define CYCLE_H
 
-#include <map>
-#include <mutex>
-#include <iostream>
-
 /*
 
 Description:

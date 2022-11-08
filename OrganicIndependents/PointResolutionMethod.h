@@ -3,7 +3,6 @@
 #ifndef POINTRESOLUTIONMETHOD_H
 #define POINTRESOLUTIONMETHOD_H
 
-#include "Message.h"
 #include "PRResult.h"
 #include "ResolverLinkMap.h"
 #include "PRMTypeEnum.h"

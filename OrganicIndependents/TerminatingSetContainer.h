@@ -3,7 +3,6 @@
 #ifndef TERMINATINGSETCONTAINER_H
 #define TERMINATINGSETCONTAINER_H
 
-#include <map>
 #include "TerminatingSet.h"
 
 class TerminatingSetContainer

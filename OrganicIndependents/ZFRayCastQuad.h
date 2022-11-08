@@ -27,11 +27,7 @@ class ZFRayCastQuad : public FRayCasterQuadBase
 			float yCoord = 0.0f;
 			float minZ = 0.0f;
 			float maxZ = 0.0f;
-			ECBPolyPointPair getRayPoints()
-			{
-				return ECBPolyPointPair(ECBPolyPoint(xCoord, yCoord, minZ),
-										ECBPolyPoint(xCoord, yCoord, maxZ));
-			}
+			ECBPolyPointPair getRayPoints();
 		};
 
 		std::vector<ZFRay> zFRayVector;

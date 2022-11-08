@@ -4,8 +4,6 @@
 #define WORLDFRACTURINGMACHINE_H
 
 #include "FTriangleFracturerBase.h"
-#include "IndependentUtils.h"
-#include <iostream>
 #include "FTriangleWorldTracer.h"
 
 class WorldFracturingMachine : public FTriangleFracturerBase

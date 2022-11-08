@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "IndependentUtils.h"
 #include "EnclaveTriangle.h"
 
 int IndependentUtils::checkIfPointsExistOnSameFace(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, BorderMDFaceList in_faceListC, int in_debugFlag)

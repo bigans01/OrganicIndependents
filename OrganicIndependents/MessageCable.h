@@ -3,9 +3,6 @@
 #ifndef MESSAGECABLE_H
 #define MESSAGECABLE_H
 
-#include <queue>
-#include <mutex>
-#include "Message.h"
 
 class MessageCable
 {

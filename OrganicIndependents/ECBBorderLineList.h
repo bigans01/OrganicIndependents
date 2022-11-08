@@ -4,7 +4,6 @@
 #include "ECBBorderLine.h"
 #include "ECBBorder.h"
 #include "ECBBorderCornerPoint.h"
-#include <iostream>
 
 #ifndef ECBBORDERLINELIST_H
 #define ECBBORDERLINELIST_H

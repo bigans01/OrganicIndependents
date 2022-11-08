@@ -3,7 +3,6 @@
 #ifndef MESSAGEBUILDRESULT_H
 #define MESSAGEBUILDRESULT_H
 
-#include "Message.h"
 
 class MessageBuildResult
 {

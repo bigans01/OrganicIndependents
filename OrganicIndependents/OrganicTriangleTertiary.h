@@ -3,7 +3,6 @@
 #ifndef ORGANICTRIANGLETERTIARY_H
 #define ORGANICTRIANGLETERTIARY_H
 
-#include <map>
 
 #include "OrganicWrappedBBFan.h"
 

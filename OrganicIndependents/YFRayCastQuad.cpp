@@ -44,3 +44,9 @@ void YFRayCastQuad::buildAndCastRays()
 		FRayIntersectionMachine currentMachine(currentRayPair, targetTrianglePoints, quadPointContainerRef, FRayIntersectionRoundingMode::ROUND_FOR_Y);
 	}
 }
+
+ECBPolyPointPair YFRayCastQuad::YFRay::getRayPoints()
+{
+	return ECBPolyPointPair(ECBPolyPoint(xCoord, minY, zCoord),
+							ECBPolyPoint(xCoord, maxY, zCoord));
+}

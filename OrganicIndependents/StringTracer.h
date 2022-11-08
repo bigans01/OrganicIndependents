@@ -3,10 +3,6 @@
 #ifndef STRINGTRACER_H
 #define STRINGTRACER_H
 
-#include <queue>
-#include <string>
-#include <iostream>
-
 class StringTracer
 {
 	public:

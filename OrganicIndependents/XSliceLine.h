@@ -3,12 +3,8 @@
 #ifndef XSLICELINE_H
 #define XSLICELINE_H
 
-//#include <glm/glm.hpp>
 #include "YZDimMoveVal.h"
-//#include <unordered_set>
-#include "EnclaveKeyDef.h"
 #include "YZDim.h"
-//#include <cmath>
 #include "FTriangleLineTargets.h"
 
 class XSliceLine

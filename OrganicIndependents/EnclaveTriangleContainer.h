@@ -4,7 +4,6 @@
 #define ENCALVETRIANGLECONTAINER_H
 
 #include "EnclaveTriangle.h"
-#include <map>
 
 class EnclaveTriangleContainer
 {

@@ -3,8 +3,6 @@
 #ifndef BLUEPRINTSCANNINGCUBOID_H
 #define BLUEPRINTSCANNINGCUBOID_H
 
-#include "EnclaveKeyDef.h"
-#include <mutex>
 
 class BlueprintScanningCuboid
 {

@@ -3,7 +3,6 @@
 #ifndef DEBUGOPTIONSET_H
 #define DEBUGOPTIONSET_H
 
-#include <set>
 #include "DebugOption.h"
 #include "PolyDebugLevel.h"
 

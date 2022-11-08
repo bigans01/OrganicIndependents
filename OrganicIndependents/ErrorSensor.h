@@ -6,7 +6,6 @@
 #include "PrintableErrorStack.h"
 #include "ErrorEnum.h"
 #include "ErrorUtils.h"
-#include <string>
 
 class ErrorSensor
 {

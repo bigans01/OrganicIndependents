@@ -3,8 +3,6 @@
 #ifndef OPERABLEINTSET_H
 #define OPERABLEINTSET_H
 
-#include <set>
-#include <iostream>
 
 class OperableIntSet
 {

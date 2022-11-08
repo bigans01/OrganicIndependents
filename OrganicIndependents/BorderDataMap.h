@@ -3,12 +3,10 @@
 #ifndef BORDERDATAMAP_H
 #define BORDERDATAMAP_H
 
-#include <unordered_map>
 #include "ECBPPOrientations.h"
 #include "BlockBorderMDCorner.h"
 #include "BlockBorderMDLine.h"
 #include "BlockBorderMDFace.h"
-#include <iostream>
 
 class BorderDataMap
 {

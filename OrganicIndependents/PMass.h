@@ -3,13 +3,7 @@
 #ifndef PMASS_H
 #define PMASS_H
 
-#include <map>
 #include "PAtomBase.h"
-#include <mutex>
-#include <set>
-#include <unordered_map>
-#include "EnclaveKeyDef.h"
-#include <iostream>
 #include "AtomicBondingResult.h"
 #include "PMassState.h"
 #include "PMassResult.h"

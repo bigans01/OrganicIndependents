@@ -4,7 +4,6 @@
 #define FRAYINTERCEPTIONMACHINE_H
 
 #include "FRayIntersectionRoundingMode.h"
-#include "ECBPolyPointPair.h"
 #include "Vec3Pair.h"
 #include "FTrianglePoint.h"
 

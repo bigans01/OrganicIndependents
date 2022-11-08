@@ -3,10 +3,7 @@
 #ifndef EXCEPTIONRECORD_H
 #define EXCEPTIONRECORD_H
 
-#include "Message.h"
 #include "ExceptionRecordType.h"
-#include <vector>
-#include <iostream>
 
 /*
 

@@ -4,9 +4,6 @@
 #define BLUEPRINTTRANSFORMREFS_H
 
 #include "ECBPoly.h"
-#include <map>
-#include <unordered_map>
-#include "EnclaveKeyDef.h"
 #include "OrganicRawEnclave.h"
 #include "PolyGroupRange.h"
 

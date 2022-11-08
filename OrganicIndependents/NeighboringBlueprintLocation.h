@@ -3,7 +3,7 @@
 #ifndef NEIGHBORINGBLUEPRINTLOCATION_H
 #define NEIGHBORINGBLUEPRINTLOCATION_H
 
-#include "EnclaveKeyDef.h"
+
 
 class NeighboringBlueprintLocation
 {

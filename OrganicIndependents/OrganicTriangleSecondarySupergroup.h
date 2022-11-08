@@ -3,7 +3,6 @@
 #ifndef ORGANICTRIANGLESECONDARYSUPERGROUP_H
 #define ORGANICTRIANGLESECONDARYSUPERGROUP_H
 
-#include <map>
 #include "OrganicTriangleSecondary.h"
 
 class OrganicTriangleSecondarySupergroup

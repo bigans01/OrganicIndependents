@@ -4,8 +4,6 @@
 #define PRINTABLEERROR_H
 
 #include "ErrorEnum.h"
-#include <iostream>
-#include <string>
 
 class PrintableError
 {

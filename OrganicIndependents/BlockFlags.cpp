@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BlockFlags.h"
-#include "IndependentUtils.h"
 
 BlockFlagStates BlockFlags::getTriangleDataLocationFlag()
 {

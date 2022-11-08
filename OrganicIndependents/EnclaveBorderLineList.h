@@ -2,7 +2,6 @@
 
 #include "BlockBorderCornerPoint.h"
 #include "BlockBorder.h"
-#include <iostream>
 
 #ifndef ENCLAVEBORDERLINELIST_H
 #define ENCLAVEBORDERLINELIST_H

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FanManager.h"
-#include "IndependentUtils.h"
 
 void FanManager::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, short in_materialID)
 {

@@ -3,10 +3,6 @@
 #ifndef OPERABLE3DENCLAVEKEYSET_H
 #define OPERABLE3DENCLAVEKEYSET_H
 
-#include <unordered_set>
-#include "EnclaveKeyDef.h"
-#include <iostream>
-
 class Operable3DEnclaveKeySet
 {
 	public:

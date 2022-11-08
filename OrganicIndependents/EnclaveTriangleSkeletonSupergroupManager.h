@@ -3,9 +3,7 @@
 #ifndef ENCLAVETRIANGLESKELETONSUPERGROUPMANAGER_H
 #define ENCLAVETRIANGLESKELETONSUPERGROUPMANAGER_H
 
-#include <map>
 #include "EnclaveTriangleSkeletonSupergroup.h"
-#include "OperableIntSet.h"
 
 class EnclaveTriangleSkeletonSupergroupManager
 {

@@ -3,13 +3,11 @@
 #ifndef FANMANAGER_H
 #define FANMANAGER_H
 
-#include <mutex>
 #include "EnclaveBlockVertex.h"
 #include "ThinFan.h"
 #include "FatFan.h"
 #include "TertiaryTriangleContainer.h"
 #include "PointSearchData.h"
-#include <iostream>
 #include "OrganicWrappedBBFan.h"
 #include "BlockSearchMeta.h"
 

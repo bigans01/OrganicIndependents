@@ -3,8 +3,6 @@
 #ifndef MESSAGEINTERPRETER_H
 #define MESSAGEINTERPRETER_H
 
-#include <map>
-#include "Message.h"
 
 class MessageInterpreter
 {

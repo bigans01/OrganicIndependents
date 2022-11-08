@@ -3,8 +3,6 @@
 #ifndef MESSAGECONTAINER_H
 #define MESSAGECONTAINER_H
 
-#include "Message.h"
-#include <vector>
 
 class MessageContainer
 {

@@ -3,7 +3,6 @@
 #ifndef ENCLAVETRIANGLESKELETONCONTAINER_H
 #define ENCLAVETRIANGLESKELETONCONTAINER_H
 
-#include <map>
 #include "EnclaveTriangleSkeleton.h"
 
 class EnclaveTriangleSkeletonContainer

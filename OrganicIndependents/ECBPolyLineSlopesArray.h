@@ -3,7 +3,6 @@
 #ifndef ECBPOLYLINESLOPESARRAY_H
 #define ECBPOLYLINESLOPESARRAY_H
 
-#include <iostream>
 #include "ECBPolyLineSlopes.h"
 #include "ECBPolyLine.h"
 

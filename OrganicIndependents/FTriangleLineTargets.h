@@ -3,8 +3,6 @@
 #ifndef FTRIANGLELINETARGETS_H
 #define FTRIANGLELINETARGETS_H
 
-//#include <unordered_set>
-//#include "EnclaveKeyDef.h"
 #include "FTriangleLine.h"
 
 class FTriangleLineTargets

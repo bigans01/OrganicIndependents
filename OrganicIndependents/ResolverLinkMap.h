@@ -3,7 +3,6 @@
 #ifndef RESOLVERLINKMAP_H
 #define RESOLVERLINKMAP_H
 
-#include <map>
 #include "ResolverLink.h"
 
 class ResolverLinkMap

@@ -2,7 +2,7 @@
 
 
 // migrated over from OrganicCoreLib on 11/11/2019
-#include "EnclaveKeyDef.h"
+
 
 #ifndef ECBBORDER_H
 #define ECBBORDER_H

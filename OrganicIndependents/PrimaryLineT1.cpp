@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "PrimaryLineT1.h"
-#include "IndependentUtils.h"
 
 void PrimaryLineT1::calibrate(ECBPolyPoint in_pointC)
 {

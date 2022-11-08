@@ -4,7 +4,6 @@
 #define POLYLOGGER_H
 
 #include "PolyDebugLevel.h"
-#include <iostream>
 
 class PolyLogger
 {

@@ -3,7 +3,7 @@
 #ifndef BLOCKBORDERMDCORNER_H
 #define BLOCKBORDERMDCORNER_H
 
-#include "EnclaveKeyDef.h"
+
 #include "ECBPPOrientations.h"
 
 class BlockBorderMDCorner

@@ -3,10 +3,6 @@
 #ifndef TRACINGLINEBOUNDINGBOX_H
 #define TRACINGLINEBOUNDINGBOX_H
 
-#include "EnclaveKeyDef.h"
-#include <set>
-#include <iostream>
-
 /*
 
 Description:

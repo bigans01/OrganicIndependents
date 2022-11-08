@@ -4,8 +4,6 @@
 #define FANBASE_H
 
 #include "FanData.h"
-#include "BoundaryPolyIndicator.h"
-#include <iostream>
 
 class FanBase
 {

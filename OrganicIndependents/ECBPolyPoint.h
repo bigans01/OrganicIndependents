@@ -3,8 +3,6 @@
 #ifndef ECBPOLYPOINT_NEW_H
 #define ECBPOLYPOINT_NEW_H
 
-#include <iostream>
-
 class ECBPolyPoint
 {
 public:

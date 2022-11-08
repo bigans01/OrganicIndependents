@@ -3,13 +3,10 @@
 #ifndef ORGANICTRIANGLESECONDARYSUPERGROUPMANAGER_H
 #define ORGANICTRIANGLESECONDARYSUPERGROUPMANAGER_H
 
-#include <map>
 #include "OrganicTriangleSecondarySupergroup.h"
 #include "EnclaveBlockSkeleton.h"
 #include "EnclaveBlock.h"
 #include "PolyUtils.h"
-#include "EnclaveKeyDef.h"
-#include <set>
 
 class OrganicTriangleSecondarySupergroupManager
 {

@@ -6,11 +6,9 @@
 #include "PointResolutionMethod.h"
 
 // headers exclusive to PRMAtomic2D
-#include <mutex>
 #include "PRMA2DResolverBase.h"
 #include "PRMA2DResolverXY.h"
 #include "ResolverLinkMap.h"
-#include <iostream>
 
 class PRMAtomic2D : public PointResolutionMethod
 {

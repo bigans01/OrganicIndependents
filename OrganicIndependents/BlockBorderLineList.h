@@ -2,7 +2,6 @@
 
 #include "BlockBorderCornerPoint.h"
 #include "BlockBorder.h"
-#include <iostream>
 
 #ifndef BLOCKBORDERLINELIST_H
 #define BLOCKBORDERLINELIST_H

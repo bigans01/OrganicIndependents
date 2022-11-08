@@ -5,7 +5,6 @@
 
 #include "PrintableError.h"
 #include "ErrorEnum.h"
-#include <string>
 
 class ErrorUtils
 {

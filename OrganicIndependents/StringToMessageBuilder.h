@@ -4,7 +4,6 @@
 #define STRINGTOMESSAGEBUILDER_H
 
 #include "MessageBuildResult.h"
-#include <iostream>
 
 class StringToMessageBuilder
 {

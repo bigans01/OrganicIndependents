@@ -3,7 +3,6 @@
 #ifndef ENCLAVETRIANGLE_H
 #define ENCLAVETRIANGLE_H
 
-#include <unordered_set>
 #include "ECBPolyLine.h"
 #include "OrganicWrappedBBFan.h"
 #include "PolyRunDirection.h"
@@ -18,7 +17,6 @@
 #include "EnclaveTriangleInteriorRunner.h"
 #include "TerminatingSetContainer.h"
 #include "SegmentResult.h"
-#include "BoundaryPolyIndicator.h"
 //#include "PrimaryLineT1Array.h"
 
 /*

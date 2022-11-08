@@ -3,7 +3,6 @@
 #ifndef ENCLAVETRIANGLECONTAINERSUPERGROUPMANAGER_H
 #define ENCLAVETRIANGLECONTAINERSUPERGROUPMANAGER_H
 
-#include <map>
 #include "EnclaveTriangleContainerSupergroup.h"
 #include "EnclaveTriangle.h"
 #include "EnclaveTriangleSkeletonSupergroupManager.h"

@@ -4,11 +4,9 @@
 #define PRIMARYLINET2ARRAY_H
 
 #include "PrimaryLineT2.h"
-#include "EnclaveKeyDef.h"
 #include "ECBTrianglePointArray.h"
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyLineSlopesArray.h"
-#include <map>
 
 class PrimaryLineT2Array
 {

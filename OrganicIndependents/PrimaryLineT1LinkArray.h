@@ -4,7 +4,6 @@
 #define PRIMARYLINET1LINKARRAY_H
 
 #include "PrimaryLineT1Link.h"
-#include "ECBPolyPointPair.h"
 
 class PrimaryLineT1LinkArray
 {

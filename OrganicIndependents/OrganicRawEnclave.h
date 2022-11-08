@@ -12,7 +12,6 @@
 #include "ORELodState.h"
 #include "OrganicTransformUtils.h"
 #include "EnclaveBlockSkeleton.h"
-#include "EnclaveBlock.h"
 #include "OrganicTriangleSecondarySupergroupManager.h"
 #include "EnclaveTriangleContainerSupergroupManager.h"
 #include "EnclaveTriangleSkeletonSupergroupManager.h"

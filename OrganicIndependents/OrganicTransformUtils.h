@@ -5,8 +5,6 @@
 
 #include "EnclaveTriangle.h"
 #include "EnclaveTriangleSkeleton.h"
-#include "IndependentUtils.h"
-#include "BoundaryPolyIndicator.h"
 
 class OrganicTransformUtils
 {

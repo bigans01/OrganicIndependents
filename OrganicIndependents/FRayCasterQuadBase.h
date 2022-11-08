@@ -4,8 +4,7 @@
 #define FRAYCASTERQUADBASE_H
 
 #include "FRayCasterInitData.h"
-#include "ECBPolyPointPair.h"
-#include "FRayIntersectionRoundingMode.h"
+ #include "FRayIntersectionRoundingMode.h"
 #include "FRayIntersectionMachine.h"
 
 class FRayCasterQuadBase

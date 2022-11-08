@@ -4,7 +4,7 @@
 #define NEIGHBORINGBLUEPRINTLOCATIONSET_H
 
 #include "NeighboringBlueprintLocation.h"
-#include "EnclaveKeyDef.h"
+
 
 class NeighboringBlueprintLocationSet
 {

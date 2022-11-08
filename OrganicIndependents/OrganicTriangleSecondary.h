@@ -3,7 +3,6 @@
 #ifndef ORGANICTRIANGLESECONDARY_H
 #define ORGANICTRIANGLESECONDARY_H
 
-#include <map>
 #include "OrganicTriangleTertiary.h"
 #include "EnclaveTriangleContainer.h"
 

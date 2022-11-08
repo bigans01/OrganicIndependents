@@ -3,7 +3,6 @@
 #ifndef ATOMICBONDINGRESULT_H
 #define ATOMICBONDINGRESULT_H
 
-#include <mutex>
 #include "PAtomBase.h"
 
 class AtomicBondingResult

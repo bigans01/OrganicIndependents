@@ -3,7 +3,7 @@
 #ifndef NEIGHBORINGORELOCATION_H
 #define NEIGHBORINGORELOCATION_H
 
-#include "EnclaveKeyDef.h"
+
 
 class NeighboringORELocation
 {

@@ -4,7 +4,7 @@
 #define NEIGHBORINGORELOCATIONSET_H
 
 #include "NeighboringORELocation.h"
-#include "EnclaveKeyDef.h"
+
 
 class NeighboringORELocationSet
 {

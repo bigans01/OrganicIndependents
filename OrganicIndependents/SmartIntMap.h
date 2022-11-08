@@ -3,9 +3,6 @@
 #ifndef SMARTINTMAP_H
 #define SMARTINTMAP_H
 
-#include <map>
-#include <iostream>
-
 // Created on 4/15/2021
 //
 // Purpose: this class attempts to keep all of the int values in an std::map with an int key in a contiguous block; i.e, there are no gaps 

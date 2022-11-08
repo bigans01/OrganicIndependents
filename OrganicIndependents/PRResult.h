@@ -3,7 +3,6 @@
 #ifndef PRRESULT_H
 #define PRRESULT_H
 
-#include <map>
 #include "PMassResult.h"
 
 class PRResult
