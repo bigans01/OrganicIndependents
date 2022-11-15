@@ -312,6 +312,16 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		int startForwardYValue = startBackwardYValue + 1;
 		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
 		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
+
+		std::shared_ptr<DimensionalLineScannerBase> yScanner(new YDimLineScanner);
+		lineScannerMap[LineScanPermit::SCAN_Y] = yScanner;
+		lineScannerMap[LineScanPermit::SCAN_Y]->initializeLineScanner(XYZLists.yList,
+																	&fracturerPoints,
+																	&stagerMap,
+																	startBackwardYValue,
+																	startForwardYValue,
+																	rayCastDimInterval);
+		lineScannerMap[LineScanPermit::SCAN_Y]->runScan();
 	}
 
 	// For XYLineScanner (Moves along fixed Z interval, makes lines with X/Y)
@@ -328,5 +338,15 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		int startForwardZValue = startBackwardZValue + 1;
 		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
 		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
+
+		std::shared_ptr<DimensionalLineScannerBase> zScanner(new ZDimLineScanner);
+		lineScannerMap[LineScanPermit::SCAN_Z] = zScanner;
+		lineScannerMap[LineScanPermit::SCAN_Z]->initializeLineScanner(XYZLists.zList,
+																	&fracturerPoints,
+																	&stagerMap,
+																	startBackwardZValue,
+																	startForwardZValue,
+																	rayCastDimInterval);
+		lineScannerMap[LineScanPermit::SCAN_Z]->runScan();
 	}
 }

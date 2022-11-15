@@ -242,7 +242,15 @@ std::set<FTriangleFracturerBase::LineScanPermit> FTriangleFracturerBase::getVali
 			break;
 		}
 	}
+
+	/*
 	std::cout << "Size of validPermits is: " << validPermits.size() << std::endl;
+
+	int permitSizeWait = 7;
+	std::map<int, int> crapCompileInts;
+	std::cin >> permitSizeWait;
+	*/
+
 	return validPermits;
 }
 

@@ -363,10 +363,18 @@
     <ClInclude Include="XDimLineScanner.h" />
     <ClInclude Include="XFRayCastQuad.h" />
     <ClInclude Include="XSliceLine.h" />
+    <ClInclude Include="XYDim.h" />
+    <ClInclude Include="XYDimMoveVal.h" />
+    <ClInclude Include="XZDim.h" />
+    <ClInclude Include="XZDimMoveVal.h" />
+    <ClInclude Include="YDimLineScanner.h" />
     <ClInclude Include="YFRayCastQuad.h" />
+    <ClInclude Include="YSliceLine.h" />
     <ClInclude Include="YZDim.h" />
     <ClInclude Include="YZDimMoveVal.h" />
+    <ClInclude Include="ZDimLineScanner.h" />
     <ClInclude Include="ZFRayCastQuad.h" />
+    <ClInclude Include="ZSliceLine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockBorderLineList.cpp" />
@@ -443,8 +451,12 @@
     <ClCompile Include="XDimLineScanner.cpp" />
     <ClCompile Include="XFRayCastQuad.cpp" />
     <ClCompile Include="XSliceLine.cpp" />
+    <ClCompile Include="YDimLineScanner.cpp" />
     <ClCompile Include="YFRayCastQuad.cpp" />
+    <ClCompile Include="YSliceLine.cpp" />
+    <ClCompile Include="ZDimLineScanner.cpp" />
     <ClCompile Include="ZFRayCastQuad.cpp" />
+    <ClCompile Include="ZSliceLine.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

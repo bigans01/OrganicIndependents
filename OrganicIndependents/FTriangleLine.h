@@ -44,7 +44,9 @@ class FTriangleLine
 			switch (lineType)
 			{
 				case FTriangleLineType::EXTERIOR: { lineTypeString = "EXTERIOR"; break; };
-				case FTriangleLineType::SCANNED: { lineTypeString = "SCANNED"; break; };
+				case FTriangleLineType::XSLICE_SCANNED: { lineTypeString = "XSLICE_SCANNED"; break; };
+				case FTriangleLineType::YSLICE_SCANNED: { lineTypeString = "YSLICE_SCANNED"; break; };
+				case FTriangleLineType::ZSLICE_SCANNED: { lineTypeString = "ZSLICE_SCANNED"; break; };
 			}
 			std::cout << " | linetType -> " << lineTypeString << std::endl;
 		}

@@ -1,50 +1,49 @@
 #pragma once
 
-#ifndef XSLICELINE_H
-#define XSLICELINE_H
+#ifndef ZSLICELINE_H
+#define ZSLICELINE_H
 
-#include "YZDimMoveVal.h"
-#include "YZDim.h"
+#include "XYDimMoveVal.h"
+#include "XYDim.h"
 #include "FTriangleLineTargets.h"
 
-class XSliceLine
+class ZSliceLine
 {
 	public:
-		XSliceLine() {};
-		XSliceLine(YZDim in_currentLineYZDim,
+		ZSliceLine() {};
+		ZSliceLine(XYDim in_currentLineXYDim,
 					glm::vec3 in_linePointA,
 					glm::vec3 in_linePointB,
-					int in_currentBackwardXValue,
-					int	in_currentForwardXValue,
+					int in_currentBackwardZValue,
+					int in_currentForwardZValue,
 					float in_currentFixedInterval) :
-			currentLineYDim(in_currentLineYZDim.y),
-			currentLineZDim(in_currentLineYZDim.z),
+			currentLineXDim(in_currentLineXYDim.x),
+			currentLineYDim(in_currentLineXYDim.y),
 			linePointA(in_linePointA),
 			linePointB(in_linePointB),
-			currentBackwardXValue(in_currentBackwardXValue),
-			currentForwardXValue(in_currentForwardXValue),
+			currentBackwardZValue(in_currentBackwardZValue),
+			currentForwardZValue(in_currentForwardZValue),
 			currentFixedInterval(in_currentFixedInterval)
 		{
-			determineXLineOutputs();
+			determineZLineOutputs();
 		}
-
-		YZDimMoveVal fetchXLineMoveVal();
+		XYDimMoveVal fetchZLineMoveVal();
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchAffectedKeys();
 		FTriangleLineTargets retrieveProducedTargets();
 	private:
+		int currentLineXDim = 0;
 		int currentLineYDim = 0;
-		int currentLineZDim = 0;
 		glm::vec3 linePointA;
 		glm::vec3 linePointB;
-		int currentBackwardXValue = 0;
-		int currentForwardXValue = 0;
+		int currentBackwardZValue = 0;
+		int currentForwardZValue = 0;
 		float currentFixedInterval = 0.0f;
 
-		YZDimMoveVal calculatedMoveVal;
+		XYDimMoveVal calculatedMoveVal;
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> affectedKeys;
 		FTriangleLineTargets lineTargets;
 
-		void determineXLineOutputs();
+		void determineZLineOutputs();
 };
 
 #endif

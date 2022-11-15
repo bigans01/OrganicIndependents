@@ -7,7 +7,9 @@ enum class FTriangleLineType
 {
 	NONE,
 	EXTERIOR,
-	SCANNED
+	XSLICE_SCANNED,
+	YSLICE_SCANNED,
+	ZSLICE_SCANNED
 };
 
 #endif

@@ -771,6 +771,30 @@
     <ClInclude Include="FTriangleLineTargets.h">
       <Filter>Header Files\FracturableTriangle\DimensionalLineScanners</Filter>
     </ClInclude>
+    <ClInclude Include="YDimLineScanner.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="YSliceLine.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="XZDimMoveVal.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="XZDim.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="XYDimMoveVal.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="XYDim.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ZSliceLine.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ZDimLineScanner.h">
+      <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -985,6 +1009,18 @@
     </ClCompile>
     <ClCompile Include="FRayCasterQuadBase.cpp">
       <Filter>Source Files\FracturableTriangle\FRayCasters</Filter>
+    </ClCompile>
+    <ClCompile Include="YSliceLine.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="YDimLineScanner.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\YDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ZSliceLine.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ZDimLineScanner.cpp">
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

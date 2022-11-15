@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "XSliceLine.h"
 
-YZDimMoveVal XSliceLine::fetchLineMoveVal()
+YZDimMoveVal XSliceLine::fetchXLineMoveVal()
 {
 	return calculatedMoveVal;
 }
@@ -16,9 +16,9 @@ FTriangleLineTargets XSliceLine::retrieveProducedTargets()
 	return lineTargets;
 }
 
-void XSliceLine::determineLineOutputs()
+void XSliceLine::determineXLineOutputs()
 {
-	// Check Y; to have a valid move val for Y, the modulo of point B, when calculated against the fixed interval,
+	// Check Y; to have a valid move val for Y, the modulo of point B.y, when calculated against the fixed interval,
 	// must be 0. There are 3 possible scenarios:
 	// -the Y of point B is less than point A; so the move val for Y is -1.
 	// -the Y of point B is greater than point A; so the move val for Y is +1.
@@ -56,7 +56,7 @@ void XSliceLine::determineLineOutputs()
 		{
 			calculatedZDimMove--;
 		}
-		else if (linePointB.y == linePointA.y)
+		else if (linePointB.z == linePointA.z)
 		{
 			perfectlyAlignedToZGridLine = true;
 		}
@@ -85,7 +85,7 @@ void XSliceLine::determineLineOutputs()
 		targetKeys.insert(backwardXKey);
 		targetKeys.insert(forwardXKey);
 
-		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::SCANNED),
+		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::XSLICE_SCANNED),
 											   targetKeys);
 
 		lineTargets = determinedTargets;		

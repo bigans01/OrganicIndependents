@@ -85,6 +85,8 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 	std::map<int, FTrianglePoint> nonEndpointPointsMap;
 
 	// Step 1: load up the nonEndpointPointsMap with all of the interior points
+
+
 	endpointsPointMap = exteriorPointComparisonMap;
 	nonEndpointPointsMap = in_nonEndpoints;	// any 
 
@@ -115,18 +117,43 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 		}
 	}
 
+	/*
+	std::cout << "->>>> Printing out endpoints, first pass." << std::endl;
+	for (auto& passOneExterior : endpointsPointMap)
+	{
+		passOneExterior.second.printPointData();
+		std::cout << std::endl;
+	}
+	*/
+
 	// erase the EXTERIOR points we moved into the interior map above.
 	for (auto& currentExteriorIDToRemove : removalIndices)
 	{
+		std::cout << "!!! Erasing element at: " << currentExteriorIDToRemove << std::endl;
 		endpointsPointMap.erase(currentExteriorIDToRemove);
 	}
+
+	/*
+	std::cout << "->>>> Printing out endpoints, second pass." << std::endl;
+	for (auto& passOneExterior : endpointsPointMap)
+	{
+		passOneExterior.second.printPointData();
+		std::cout << std::endl;
+	}
+	*/
 
 	std::cout << "Number of endpoints: " << endpointsPointMap.size() << std::endl;
 	std::cout << "Number of non-endpoints: " << nonEndpointPointsMap.size() << std::endl;
 
 	std::vector<FTrianglePoint> finalEndpointsVector;
-	finalEndpointsVector.push_back(endpointsPointMap[0]);
-	finalEndpointsVector.push_back(endpointsPointMap[1]);
+	finalEndpointsVector.push_back(endpointsPointMap.begin()->second);
+	finalEndpointsVector.push_back(endpointsPointMap.rbegin()->second);
+
+	/*
+	std::cout << "Done re-organizing points..." << std::endl;
+	int comparisonDone = 3;
+	std::cin >> comparisonDone;
+	*/
 
 	return ReorganizedPoints(finalEndpointsVector, nonEndpointPointsMap);
 }

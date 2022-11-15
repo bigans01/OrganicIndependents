@@ -16,6 +16,8 @@
 #include "ZFRayCastQuad.h"
 #include "DimensionalLineScannerBase.h"
 #include "XDimLineScanner.h"
+#include "YDimLineScanner.h"
+#include "ZDimLineScanner.h"
 
 class FTriangleFracturerBase
 {
