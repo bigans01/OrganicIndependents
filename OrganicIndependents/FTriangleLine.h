@@ -5,6 +5,19 @@
 
 #include "FTriangleLineType.h"
 
+/*
+
+Description:
+
+An FTriangleLine is produced by the production functions of a class
+that is derived from the DimensionalLineScannerBase class.
+
+For example, the function ZDimLineScanner::produceZSliceLines (from a class derived from DimensionalLineScannerBase)
+will gather all the metadata needed for a ZSliceLine. The ZSliceLine's retrieveProducedTargets() function
+will then produce all the necessary keys that the FTriangleLine will then go into.
+
+*/
+
 class FTriangleLine
 {
 	public:
@@ -51,9 +64,39 @@ class FTriangleLine
 			std::cout << " | linetType -> " << lineTypeString << std::endl;
 		}
 
+		void swapPoints()
+		{
+			DoublePoint pointATemp = pointA;
+			pointA = pointB;
+			pointB = pointATemp;
+		}
 
-		glm::vec3 pointA;
-		glm::vec3 pointB;
+		bool doesPointExist(glm::vec3 in_point)
+		{
+			bool exists = false;
+
+			if
+			(
+				(pointA == in_point)
+				||
+				(pointB == in_point)
+			)
+			{
+				exists = true;
+			}
+			return exists;
+		}
+
+		void translateLine(DoublePoint in_translationValue)
+		{
+			pointA += in_translationValue;
+			pointB += in_translationValue;
+			pointA.roundHundredth();
+			pointB.roundHundredth();
+		}
+
+		DoublePoint pointA;
+		DoublePoint pointB;
 	private:
 		FTriangleLineType lineType = FTriangleLineType::NONE;
 };

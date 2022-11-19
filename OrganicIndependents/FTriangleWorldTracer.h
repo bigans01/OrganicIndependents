@@ -3,7 +3,7 @@
 #ifndef FTRIANGLEWORLDTRACER_H
 #define FTRIANGLEWORLDTRACER_H
 
-#include "FTriangleFracturerBase.h"
+#include "FTriangleTracerBase.h"
 #include "TracingLineBoundingBox.h"
 
 /*

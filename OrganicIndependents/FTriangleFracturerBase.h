@@ -3,7 +3,6 @@
 #ifndef FTRIANGLEFRACTURERBASE_H
 #define FTRIANGLEFRACTURERBASE_H
 
-#include "FTriangleContainer.h"
 #include "FTriangleProductionStager.h"
 #include "EnclaveKeyPair.h"
 #include "CalibratableBlueprintKeyPair.h"
@@ -18,14 +17,16 @@
 #include "XDimLineScanner.h"
 #include "YDimLineScanner.h"
 #include "ZDimLineScanner.h"
+#include "FTriangleContainer.h"
+#include "FTriangleReverseTranslationMode.h"
 
 class FTriangleFracturerBase
 {
 	public:
 		// common public functions
-		void transferFTriangleMetadata(ECBPolyPoint in_fracturePoint0,	// used to set the points + empty normal, which are required for fracturing.
-			ECBPolyPoint in_fracturePoint1,
-			ECBPolyPoint in_fracturePoint2,
+		void transferFTriangleMetadata(DoublePoint in_fracturePoint0,	// used to set the points + empty normal, which are required for fracturing.
+			DoublePoint in_fracturePoint1,
+			DoublePoint in_fracturePoint2,
 			ECBPolyPoint in_fractureEmptyNormal,
 			BoundaryOrientation in_originBoundaryOrientation,
 			PerfectClampEnum in_originPerfectClampValue);
@@ -37,7 +38,9 @@ class FTriangleFracturerBase
 		friend class FTriangle;
 
 		// metadata from the FTriangle that we will use as a basis for fracturing
-		ECBPolyPoint originFTrianglePoints[3];
+		DoublePoint originFTrianglePoints[3];
+		ECBPolyPoint localizedFTrianglePoints[3];	// stores the localized points of an FTriangle (used mainly by WorldFracturingMachine; may be moved later)
+
 		ECBPolyPoint originFTriangleEmptynormal;
 		BoundaryOrientation originBoundaryOrientation = BoundaryOrientation::NONE;	// must be set by constructor
 		PerfectClampEnum originPerfectClampValue = PerfectClampEnum::NONE;	// must be set by constructor
@@ -96,6 +99,8 @@ class FTriangleFracturerBase
 		std::map<FRayCasterTypeEnum, FRayCasterInitData> getUsableRayCasters();		// uses the values of the originFTriangleKeys (which must be calibrated before this) to determine
 		void setOutputRef(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* in_outputRef);	// set a reference
 																																		// to the map that we will output fracture results to.
+		void analyzeAndCleanupStagers(); // check the stagerMap for any bad instances (bad number of lines, etc);
+										 // for valid stagers, the lines of said stagers are put into the proper sequential order.
 };
 
 #endif

@@ -1,22 +1,18 @@
-/*------------------------------------------------------------------------------------------
-
+/*
 
 Initial creation:        7/7/2017
---EnclaveKeyDef.h		(Last update 11/11/2019) (Moved to OrganicPolyOperationsLib)
 
-Description: Header file for EnclaveKeyDef.cpp.
+Description: 
 
-Summary: EnclaveKeyDef.h supplies the definition that will be used for the key values in any type of collection. The Key is made up of a x/y/z coordinate, and is meant to be put
-into an unordered map. A hash for this is then constructed, in accordance with the rules for an unordered map. Examples of classes that use this are:
+The EnclaveKeyDef class contains a 3D key (EnclaveKey) and a 2D key (Enclave2DKey)
+it allows for using hash maps (such as unordered_map, unordered_set) that can store
+three-dimensional values. It is used extensively in many libraries.
 
--EnclaveCollectionMap (member variable: EnclaveCollectionMap)
--ManifestCollectionMap (member variable: ManiCollectionMap)
--RenderCollectionMap (member variable: RenderMatrix)
-
-Dependents: none
+maps and unordered_maps must specify the KeyHasher hashing function, to make the map valid.
 
 
-------------------------------------------------------------------------------------------*/
+
+*/
 
 #pragma once
 
@@ -95,6 +91,12 @@ public:
 		void printKey()
 		{
 			std::cout << " (" << x << ", " << y << ", " << z << ") ";
+		}
+
+		// simply return the inverted key.
+		EnclaveKey getInvertedKey()
+		{
+			return EnclaveKey(x*-1, y*-1, z*-1);
 		}
 
 		// returns an std::string that contains the key coordinates.

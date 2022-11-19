@@ -3,8 +3,16 @@
 #ifndef FRAYCASTERQUADBASE_H
 #define FRAYCASTERQUADBASE_H
 
+/*
+
+Description: 
+
+This is the base class for XF/YF/ZF RayCastQuad classes.
+
+*/
+
 #include "FRayCasterInitData.h"
- #include "FRayIntersectionRoundingMode.h"
+#include "FRayIntersectionRoundingMode.h"
 #include "FRayIntersectionMachine.h"
 
 class FRayCasterQuadBase

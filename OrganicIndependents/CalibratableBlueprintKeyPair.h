@@ -10,10 +10,11 @@ class CalibratableBlueprintKeyPair
 public:
 	EnclaveKeyDef::EnclaveKey startKey;
 	EnclaveKeyDef::EnclaveKey endKey;
-	ECBPolyPoint pointA;
-	ECBPolyPoint pointB;
-	ECBPolyPoint pointC;
+	DoublePoint pointA;
+	DoublePoint pointB;
+	DoublePoint pointC;
 
+	void initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, DoublePoint in_pointA, DoublePoint in_pointB, DoublePoint in_pointC);
 	void initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC);
 	void calibrate();
 	EnclaveKeyPair getBeginAndEndKeys();

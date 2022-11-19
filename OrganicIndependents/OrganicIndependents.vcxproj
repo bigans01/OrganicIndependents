@@ -185,6 +185,7 @@
     <ClInclude Include="DebugOption.h" />
     <ClInclude Include="DebugOptionSet.h" />
     <ClInclude Include="DimensionalLineScannerBase.h" />
+    <ClInclude Include="DoublePoint.h" />
     <ClInclude Include="DynamicBorder.h" />
     <ClInclude Include="DynamicBorderCornerPoint.h" />
     <ClInclude Include="DynamicBorderLineList.h" />
@@ -257,9 +258,11 @@
     <ClInclude Include="FTriangleLine.h" />
     <ClInclude Include="FTriangleLineTargets.h" />
     <ClInclude Include="FTriangleLineType.h" />
+    <ClInclude Include="FTriangleOutput.h" />
     <ClInclude Include="FTrianglePoint.h" />
     <ClInclude Include="FTrianglePointType.h" />
     <ClInclude Include="FTriangleProductionStager.h" />
+    <ClInclude Include="FTriangleReverseTranslationMode.h" />
     <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
     <ClInclude Include="FTriangleWorldTracer.h" />
@@ -403,6 +406,7 @@
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
     <ClCompile Include="FTriangle.cpp" />
+    <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />

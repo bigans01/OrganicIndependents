@@ -795,6 +795,15 @@
     <ClInclude Include="ZDimLineScanner.h">
       <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
     </ClInclude>
+    <ClInclude Include="DoublePoint.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleOutput.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleReverseTranslationMode.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1021,6 +1030,9 @@
     </ClCompile>
     <ClCompile Include="ZDimLineScanner.cpp">
       <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleContainer.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

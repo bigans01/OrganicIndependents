@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "FTriangleFracturerBase.h"
 
-void FTriangleFracturerBase::transferFTriangleMetadata(ECBPolyPoint in_fracturePoint0,
-	ECBPolyPoint in_fracturePoint1,
-	ECBPolyPoint in_fracturePoint2,
+void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePoint0,
+	DoublePoint in_fracturePoint1,
+	DoublePoint in_fracturePoint2,
 	ECBPolyPoint in_fractureEmptyNormal,
 	BoundaryOrientation in_originBoundaryOrientation,
 	PerfectClampEnum in_originPerfectClampValue)
@@ -24,6 +24,50 @@ void FTriangleFracturerBase::setOutputRef(std::unordered_map<EnclaveKeyDef::Encl
 void FTriangleFracturerBase::printFracturerPoints()
 {
 	fracturerPoints.printAllPoints();
+}
+
+void FTriangleFracturerBase::analyzeAndCleanupStagers()
+{
+	// the set that will contain invalid stagers to erase.
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> invalidStagerKeys;
+
+	int preModifyStagerMapSize = stagerMap.size();
+	std::cout << "Size of stager map, pre-cleanup:" << preModifyStagerMapSize << std::endl;
+
+	// analyze everything in the stagerMap.
+	for (auto& currentStager : stagerMap)
+	{
+		std::cout << "Analyzing stager at key: ";
+		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
+		currentStagerKey.printKey();
+		std::cout << std::endl;
+
+		// check if the stager has met the conditions for being valid (i.e., at least 3 lines)
+		bool isStagerValid = currentStager.second.analyzeAndReorganize();
+		if (!isStagerValid)
+		{
+			std::cout << "NOTICE: Detected stager as invalid, will remove. " << std::endl;
+			invalidStagerKeys.insert(currentStager.first);
+		}
+	}
+
+	// erase the invalid stagers.
+	for (auto& currentInvalid : invalidStagerKeys)
+	{	
+		std::cout << "Erasing element at: ";
+		EnclaveKeyDef::EnclaveKey keyCopy = currentInvalid;
+		keyCopy.printKey();
+		std::cout << std::endl;
+
+		stagerMap.erase(currentInvalid);
+	}
+
+	int postModifyStagerMapSize = stagerMap.size();
+	std::cout << "stagerMap size, pre-modify: " << preModifyStagerMapSize << " | post-modify: "<< postModifyStagerMapSize << std::endl;
+
+	std::cout << "(FTriangleFracturerBase::analyzeAndCleanupStagers) done with cleanup.";
+	int doneCleanup = 0;
+	std::cin >> doneCleanup;
 }
 
 std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsableRayCasters()

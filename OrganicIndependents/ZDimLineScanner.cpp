@@ -259,6 +259,7 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		auto currentLineTargetData = currentLine.retrieveProducedTargets();
 		for (auto& currentTargetKey : currentLineTargetData.affectedKeys)
 		{
+			// for each key, insert a copy of the FTriangleLine (insertableLine) into the appropriate keyed stager.
 			(*dimensionalStagerRef)[currentTargetKey].insertLine(currentLineTargetData.insertableLine);
 
 			std::cout << ">> Printing out lines at affected key, ";

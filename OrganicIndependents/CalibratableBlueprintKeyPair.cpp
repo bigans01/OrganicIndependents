@@ -1,6 +1,15 @@
 #include "stdafx.h"
 #include "CalibratableBlueprintKeyPair.h"
 
+void CalibratableBlueprintKeyPair::initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, DoublePoint in_pointA, DoublePoint in_pointB, DoublePoint in_pointC)
+{
+	startKey = in_startKey;
+	endKey = in_endKey;
+	pointA = in_pointA;
+	pointB = in_pointB;
+	pointC = in_pointC;
+}
+
 void CalibratableBlueprintKeyPair::initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC)
 {
 	startKey = in_startKey;

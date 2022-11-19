@@ -60,6 +60,7 @@ class IndependentUtils
 		static EnclaveKeyDef::EnclaveKey lookupBlueprintBorderKey(ECBPPOrientationResults in_results, ECBBorderLineList* in_borderLineListRef, ECBPolyPoint in_originPoint, ECBPolyPoint in_interceptPoint);
 		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static EnclaveKeyDef::EnclaveKey getUncalibratedBlueprintKeyForPoint(ECBPolyPoint in_point);
+		static EnclaveKeyDef::EnclaveKey getUncalibratedBlueprintKeyForPoint(DoublePoint in_point);
 		static ECBPolyPoint getBlueprintTracingEndpointForIsolatedPrimaryT2(ECBPolyPoint in_pointA, ECBPolyPoint in_slope, ECBBorderLineList* in_borderLineList, EnclaveKeyDef::EnclaveKey in_blueprintKey);
 
 		static ECBBorderValues getBlueprintLimits(EnclaveKeyDef::EnclaveKey in_Key);
@@ -78,10 +79,12 @@ class IndependentUtils
 		static ECBPPOrientationResults GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList);
 		static ECBBorderLineList determineBorderLines(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPolyPoint roundPolyPointToHundredths(ECBPolyPoint in_pointToCheck);
+		static glm::vec3 roundVec3ToHundredths(glm::vec3 in_vec3);
 		static BorderMDFaceList getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static ECBPolyPoint findNormalizedPoint(ECBPolyPoint in_pointA);
 		static ECBPolyPoint findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static ECBPolyPoint findNormalizedSlope(DoublePoint in_pointA, DoublePoint in_pointB);
 		static float findNormalizedDirection(float in_dimValueA, float in_dimValueB);
 		static void printOrientationEnum(ECBPPOrientations in_pointOrientation);
 		static ECBPolyPoint snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit);

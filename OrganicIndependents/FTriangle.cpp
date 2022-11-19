@@ -50,3 +50,8 @@ void FTriangle::printProducedPoints()
 {
 	fracturerMachine->printFracturerPoints();
 }
+
+std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* FTriangle::fetchOutputContainerRef()
+{
+	return &outputContainers;
+}

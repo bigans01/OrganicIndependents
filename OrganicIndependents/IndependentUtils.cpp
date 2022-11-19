@@ -3205,6 +3205,31 @@ EnclaveKeyDef::EnclaveKey IndependentUtils::getUncalibratedBlueprintKeyForPoint(
 	return rawKey;
 }
 
+EnclaveKeyDef::EnclaveKey IndependentUtils::getUncalibratedBlueprintKeyForPoint(DoublePoint in_point)
+{
+	EnclaveKeyDef::EnclaveKey rawKey(0, 0, 0);
+
+	// check x
+	if (in_point.x != 0.0f)
+	{
+		rawKey.x = floor(in_point.x / 32);
+	}
+
+	// check y
+	if (in_point.y != 0.0f)
+	{
+		rawKey.y = floor(in_point.y / 32);
+	}
+
+	// check z
+	if (in_point.z != 0.0f)
+	{
+		rawKey.z = floor(in_point.z / 32);
+	}
+
+	return rawKey;
+}
+
 ECBPolyPoint IndependentUtils::getBlueprintTracingEndpointForIsolatedPrimaryT2(ECBPolyPoint in_pointA, ECBPolyPoint in_slope, ECBBorderLineList* in_borderLineList, EnclaveKeyDef::EnclaveKey in_blueprintKey)
 {
 	//std::cout << "*********** calling for primary t2 isolation; Key is: " << in_blueprintKey.x << ", " << in_blueprintKey.y << ", " << in_blueprintKey.z << std::endl;
@@ -5778,6 +5803,15 @@ ECBPolyPoint IndependentUtils::roundPolyPointToHundredths(ECBPolyPoint in_polyPo
 	return calibratedPoint;
 }
 
+glm::vec3 IndependentUtils::roundVec3ToHundredths(glm::vec3 in_vec3)
+{
+	glm::vec3 calibratedPoint;
+	calibratedPoint.x = IndependentUtils::roundToHundredth(in_vec3.x);
+	calibratedPoint.y = IndependentUtils::roundToHundredth(in_vec3.y);
+	calibratedPoint.z = IndependentUtils::roundToHundredth(in_vec3.z);
+	return calibratedPoint;
+}
+
 ECBPolyPoint IndependentUtils::roundPolyPointToThousandths(ECBPolyPoint in_polyPoint)
 {
 	ECBPolyPoint calibratedPoint;
@@ -7160,6 +7194,51 @@ ECBPolyPoint IndependentUtils::findNormalizedPoint(ECBPolyPoint in_pointA)
 }
 
 ECBPolyPoint IndependentUtils::findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB)
+{
+	ECBPolyPoint returnPoint;
+	//std::cout << "(pre-normalization) point A values: " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << std::endl;
+	//std::cout << "(pre-normalization) point B values: " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << std::endl;
+	//returnPoint.x = (in_pointB.x - in_pointA.x) / abs(in_pointB.x - in_pointA.x);	// get normalized x
+
+	// make sure x slope is not 0
+	if (!((in_pointB.x - in_pointA.x) == 0.0f))
+	{
+		returnPoint.x = (in_pointB.x - in_pointA.x) / abs(in_pointB.x - in_pointA.x);	// " y
+	}
+	else
+	{
+		returnPoint.x = 0.0f;
+	}
+
+
+
+	// make sure y slope is not 0 
+	if (!((in_pointB.y - in_pointA.y) == 0.0f))
+	{
+		returnPoint.y = (in_pointB.y - in_pointA.y) / abs(in_pointB.y - in_pointA.y);	// " y
+	}
+	else
+	{
+		returnPoint.y = 0.0f;
+	}
+
+	// make sure z slope is not 0
+	if (!((in_pointB.z - in_pointA.z) == 0.0f))
+	{
+		returnPoint.z = (in_pointB.z - in_pointA.z) / abs(in_pointB.z - in_pointA.z);	// " y
+	}
+	else
+	{
+		//std::cout << "WARNING>>>>>: ZERO Z slope DETECTED! " << std::endl;
+		returnPoint.z = 0.0f;
+	}
+
+	// returnPoint.z = (in_pointB.z - in_pointA.z) / abs(in_pointB.z - in_pointA.z);	// " z
+	//std::cout << "normalized slope return val is: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << std::endl;
+	return returnPoint;
+}
+
+ECBPolyPoint IndependentUtils::findNormalizedSlope(DoublePoint in_pointA, DoublePoint in_pointB)
 {
 	ECBPolyPoint returnPoint;
 	//std::cout << "(pre-normalization) point A values: " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << std::endl;

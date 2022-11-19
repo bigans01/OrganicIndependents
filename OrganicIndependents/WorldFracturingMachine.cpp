@@ -7,12 +7,23 @@ void WorldFracturingMachine::runFracturing()
 	rayCastDimInterval = 32.0f;
 
 	determineUncalibratedBlueprintKeys();	// Step 1: get the uncalibrated keys.
-	calibrateOriginBlueprintKeys();			// Step 2: calibrate the keys.
-	translateTriangleByBlueprintKeys();		// first, do any required translations.
-	runWorldTracing();						// second, create exterior FTriangleLines.
-	buildAndRunWorldFRayCasters();			// third, determine the ray casters we have to use for the FTriangle, and run them.
-	determineAndBuildFLineScanners();		// fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
+	calibrateOriginBlueprintKeys();			// Step 2: calibrate the keys
+	translateTriangleByBlueprintKeys();		// Step 3: do any required translations.
+	loadLocalizedPoints();					// Step 4: Once we have translated, load the DoublePoints into ECBPolyPoints
+											// (don't worry about double to float conversion, as the float values should be very small, and far less than 80000.00~, where the precision loss begins to occur)
+	runWorldTracing();						// Step 5: create exterior FTriangleLines.
+	buildAndRunWorldFRayCasters();			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
+	buildAndRunFLineScanners();				// Step 7: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 											// and then run them.
+
+	analyzeAndCleanupStagers();				// Step 8 (from base class): run analysis on the stagers.
+
+	reverseTranslateStagerLines();			// Step 9: reverse translate the stager line points; the choice made is dependent on the reverse
+											// transation mode.
+
+	buildWorldMachineTriangleContainers();	// Step 10: build the FTriangleContainers, according to what this class specifies.
+
+	// when everything is done, we need to translate back.
 
 	// as a test, get all points with X = 64.0f.
 	float xValue = 64.0f;
@@ -49,7 +60,7 @@ void WorldFracturingMachine::calibrateOriginBlueprintKeys()
 	pairC.calibrate();
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
-	// once everyting has been calibrated, we can store the keys for each point.
+	// once everything has been calibrated, we can store the keys for each point.
 	std::cout << "Calibrated keys for each point are: " << std::endl;
 	for (int x = 0; x < 3; x++)
 	{
@@ -84,13 +95,154 @@ void WorldFracturingMachine::calibrateOriginBlueprintKeys()
 
 void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 {
+	// the sets for x/y/z that will contain the min.
+	std::set<int> keyedXValues;
+	std::set<int> keyedYValues;
+	std::set<int> keyedZValues;
 
+	// insert all the values.
+	for (int x = 0; x < 3; x++)
+	{
+		keyedXValues.insert(originFTriangleLineKeypairs[x].keyA.x);
+		keyedYValues.insert(originFTriangleLineKeypairs[x].keyA.y);
+		keyedZValues.insert(originFTriangleLineKeypairs[x].keyA.z);
+	}
+
+	// create an EnclaveKey that has the min values (just use the begin of each set, since the minimum value is there.)
+	EnclaveKeyDef::EnclaveKey minimumKey(*keyedXValues.begin(), *keyedYValues.begin(), *keyedZValues.begin());
+
+	std::cout << "Minimum key value is: ";
+	minimumKey.printKey();
+	std::cout << std::endl;
+
+	// fetch the inverted key; this will be the value of the translationKey.
+	translationKey = minimumKey.getInvertedKey();
+	std::cout << "Inverted minimum key (aka, translationKey) is: ";
+	translationKey.printKey();
+	std::cout << std::endl;
+
+	adjustBlueprintKeysByValue(translationKey);
+
+	DoublePoint pointAdjustmentValue(translationKey.x*32.0f, translationKey.y*32.0f, translationKey.z*32.0f);
+	std::cout << "pointAdjustmentValue is: ";
+	pointAdjustmentValue.printPointCoords();
+	std::cout << std::endl;
+
+	adjustPointsByValue(pointAdjustmentValue);
+
+	std::cout << "Done with translation by blueprint keys. " << std::endl;
+	int doneTranslate = 3;
+	std::cin >> doneTranslate;
+}
+
+void WorldFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKey in_adjustingKey)
+{
+	for (int x = 0; x < 3; x++)
+	{
+		originFTriangleKeys[x] += in_adjustingKey;
+		originFTriangleLineKeypairs[x].keyA += in_adjustingKey;
+		originFTriangleLineKeypairs[x].keyB += in_adjustingKey;
+	}
+}
+
+void WorldFracturingMachine::adjustPointsByValue(DoublePoint in_adjustingPoint)
+{
+	for (int x = 0; x < 3; x++)
+	{
+		originFTrianglePoints[x] += in_adjustingPoint;
+		originFTrianglePoints[x].roundHundredth();
+	}
+}
+
+void WorldFracturingMachine::loadLocalizedPoints()
+{
+	for (int x = 0; x < 3; x++)
+	{
+		localizedFTrianglePoints[x].x = float(originFTrianglePoints[x].x);
+		localizedFTrianglePoints[x].y = float(originFTrianglePoints[x].y);
+		localizedFTrianglePoints[x].z = float(originFTrianglePoints[x].z);
+	}
+}
+
+void WorldFracturingMachine::reverseTranslateStagerLines()
+{
+	for (auto& currentStager : stagerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentTranslationKey;
+		switch (translationMode)
+		{
+			case FTriangleReverseTranslationMode::ABSOLUTE:
+			{
+				// when in ABSOLUTE mode, all points will be translated by the 
+				// reverse value of the translationKey;
+				currentTranslationKey = translationKey.getInvertedKey();
+				break;
+			}
+			case FTriangleReverseTranslationMode::LOCALIZED:
+			{
+				// when in LOCALIZED mode, all points will be translated by the
+				// reverse value of the key that the maps to the stager.
+				EnclaveKeyDef::EnclaveKey currentMapKeyCopy = currentStager.first;
+				currentTranslationKey = currentMapKeyCopy.getInvertedKey();
+				break;
+			}
+		}
+
+		std::cout << "Reverse translation key is: ";
+		currentTranslationKey.printKey();
+		std::cout << std::endl;
+		
+	
+		// with the key determined, do the translation.
+		EnclaveKeyDef::EnclaveKey debugKeyOutput = currentStager.first;
+		std::cout << "Translating lines for key at: "; debugKeyOutput.printKey();
+		std::cout << std::endl;
+
+		currentStager.second.translateLines(currentTranslationKey, rayCastDimInterval);
+	}
+
+	std::cout << "Done with reverseTranslateStagerLines()" << std::endl;
+	int translationWait = 3;
+	std::cin >> translationWait;
+}
+
+void WorldFracturingMachine::buildWorldMachineTriangleContainers()
+{
+	// get the current key of each mapped stager;
+	// we will need to apply the inverse of the translationKey to this, in order to determine
+	// the appropriate Blueprint key to use for each mapped FTriangleContainer.
+	for (auto& currentStager: stagerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
+		currentStagerKey += translationKey.getInvertedKey();	// apply the inverse of the translationKey.
+
+		std::cout << "Creating World machine FTriangleContainer, at key: ";
+		currentStagerKey.printKey();
+		std::cout << std::endl;
+
+		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+
+		// Remember: the WorldFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::BLUEPRINT.
+		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLUEPRINT, 
+															originFTriangleEmptynormal, 
+															originBoundaryOrientation,
+															currentStagerKey);
+
+		std::cout << "Lines in this container are: " << std::endl;
+		(*ftfOutputRef)[currentStagerKey].printConstructionLines();
+	}
+
+	std::cout << "Done with buildWorldMachineTriangleContainers()." << std::endl;
+	int buildDone = 3;
+	std::cin >> buildDone;
 }
 
 void WorldFracturingMachine::runWorldTracing()
 {
 	FTriangleWorldTracer worldTracer;
-	worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, originFTrianglePoints);
+	//worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, originFTrianglePoints);
+	worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, localizedFTrianglePoints);
 	worldTracer.runLineTracing();
 }
 
@@ -124,7 +276,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
-																		originFTrianglePoints,
+																		//originFTrianglePoints,
+																		localizedFTrianglePoints,
 																		&fracturerPoints);
 				//selectedRayCasters[FRayCasterTypeEnum::X_RAY]->insertIntoTestVec(5);
 				//std::cout << "!!!!!! DONE with insert vector for X ray. " << std::endl;
@@ -150,7 +303,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
-																		originFTrianglePoints,
+																		//originFTrianglePoints,
+																		localizedFTrianglePoints,
 																		&fracturerPoints);
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
 			}
@@ -171,7 +325,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
-																		originFTrianglePoints,
+																		//originFTrianglePoints,
+																		localizedFTrianglePoints,
 																		&fracturerPoints);
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
 			}
@@ -199,7 +354,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
-					originFTrianglePoints,
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
 					&fracturerPoints);
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->buildAndCastRays();
 			}
@@ -226,7 +382,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
-					originFTrianglePoints,
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
 					&fracturerPoints);
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
 			}
@@ -253,7 +410,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
-					originFTrianglePoints,
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
 					&fracturerPoints);
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
 			}
@@ -264,7 +422,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 
 }
 
-void WorldFracturingMachine::determineAndBuildFLineScanners()
+void WorldFracturingMachine::buildAndRunFLineScanners()
 {
 	auto acceptablePermits = getValidPermits();
 	auto XYZLists = getScanningIntervals(32.0f);
@@ -280,11 +438,11 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.xList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for XDimLineScanner. (goes forward toward positive X)" << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for XDimLineScanner. (goes forward toward positive X)" << std::endl;
 		int startBackwardXValue = getScanDimensionalStartKey(LineScanPermit::SCAN_X);
 		int startForwardXValue = startBackwardXValue + 1;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward X start key is: " << startBackwardXValue << std::endl;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward X start key is: " << startForwardXValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward X start key is: " << startBackwardXValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward X start key is: " << startForwardXValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> xScanner(new XDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_X] = xScanner;
@@ -307,11 +465,11 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.yList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for YDimLineScanner. (goes forward toward positive Y)" << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for YDimLineScanner. (goes forward toward positive Y)" << std::endl;
 		int startBackwardYValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Y);
 		int startForwardYValue = startBackwardYValue + 1;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> yScanner(new YDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_Y] = yScanner;
@@ -333,11 +491,11 @@ void WorldFracturingMachine::determineAndBuildFLineScanners()
 		!(XYZLists.zList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): criteria met for ZDimLineScanner. (goes forward toward positive Z)" << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for ZDimLineScanner. (goes forward toward positive Z)" << std::endl;
 		int startBackwardZValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Z);
 		int startForwardZValue = startBackwardZValue + 1;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
-		std::cout << "(WorldFracturingMachine::determineAndBuildFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
+		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> zScanner(new ZDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_Z] = zScanner;
