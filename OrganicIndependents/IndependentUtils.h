@@ -97,6 +97,7 @@ class IndependentUtils
 
 		static int checkIfFaceListsMatch(BorderMDFaceList in_faceListA, BorderMDFaceList in_faceListB, int in_numberOfMatches);
 		static float roundToHundredth(float in_float);
+		static double roundToHundredth(double in_double);
 		static float roundToThousandths(float in_float);
 		static float roundToTenThousandths(float in_float);
 		static EnclaveKeyDef::EnclaveKey retrieveBorderDirection(ECBPPOrientationResults in_results, BorderDataMap* in_dataMapRef);

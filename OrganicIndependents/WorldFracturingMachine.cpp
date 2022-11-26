@@ -211,6 +211,9 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 	// get the current key of each mapped stager;
 	// we will need to apply the inverse of the translationKey to this, in order to determine
 	// the appropriate Blueprint key to use for each mapped FTriangleContainer.
+	//
+	// If a container needs to be deleted, put into the container containerRemovalSet.
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> containerRemovalSet;
 	for (auto& currentStager: stagerMap)
 	{
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
@@ -229,8 +232,22 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 															originBoundaryOrientation,
 															currentStagerKey);
 
+		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
+		// which is determined by the call to runBoundaryTests below.
+		bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(translationMode, currentStagerKey, originFTriangleEmptynormal);
+		if (shouldContainerBeDeleted)
+		{
+			containerRemovalSet.insert(currentStagerKey);
+		}
+
 		std::cout << "Lines in this container are: " << std::endl;
 		(*ftfOutputRef)[currentStagerKey].printConstructionLines();
+	}
+
+	// Erase any keyed, empty containers that were in the containerRemovalSet.
+	for (auto& currentContainerToRemove : containerRemovalSet)
+	{
+		(*ftfOutputRef).erase(currentContainerToRemove);
 	}
 
 	std::cout << "Done with buildWorldMachineTriangleContainers()." << std::endl;

@@ -5848,6 +5848,11 @@ float IndependentUtils::roundToHundredth(float in_float)
 	return calcedFloat;
 }
 
+double IndependentUtils::roundToHundredth(double in_double)
+{
+	return double(floor(in_double * 100 + 0.5) / 100);
+}
+
 float IndependentUtils::roundToThousandths(float in_float)
 {
 	float calcedFloat = float(floor(in_float * 1000 + 0.5) / 1000);

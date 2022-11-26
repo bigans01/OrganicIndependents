@@ -9,6 +9,7 @@ public:
 
 	ECBPolyPoint() {};
 	ECBPolyPoint(float in_x, float in_y, float in_z) : x(in_x), y(in_y), z(in_z) {};
+	ECBPolyPoint(glm::vec3 in_vec3) : x(in_vec3.x), y(in_vec3.y), z(in_vec3.z) {};
 
 	ECBPolyPoint& operator+=(const ECBPolyPoint& ecbPolyPoint_b)
 	{

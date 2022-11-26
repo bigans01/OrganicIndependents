@@ -90,6 +90,24 @@ class DoublePoint
 			z -= in_doublePointB.z;
 			return *this;
 		}
+
+		DoublePoint operator-(const DoublePoint& in_doublePointB)
+		{
+			DoublePoint returnPoint;
+			returnPoint.x = (x - in_doublePointB.x);
+			returnPoint.y = (y - in_doublePointB.y);
+			returnPoint.z = (z - in_doublePointB.z);
+			return returnPoint;
+		}
+
+		DoublePoint operator+(const DoublePoint& in_doublePointB)
+		{
+			DoublePoint returnPoint;
+			returnPoint.x = (x + in_doublePointB.x);
+			returnPoint.y = (y + in_doublePointB.y);
+			returnPoint.z = (z + in_doublePointB.z);
+			return returnPoint;
+		}
 		
 		double x = 0.0f;
 		double y = 0.0f;

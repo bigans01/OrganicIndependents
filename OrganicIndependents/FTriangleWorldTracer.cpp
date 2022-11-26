@@ -46,6 +46,8 @@ void FTriangleWorldTracer::runLineTracing()
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint, FTrianglePointType::EXTERIOR));
 			FTriangleLine newExteriorLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
 
+			
+
 			std::cout << "(FTriangleWorldTracer): inserting line with points: A -> ";
 			currentBeginPoint.printPointCoords();
 			std::cout << " | B -> ";
@@ -53,6 +55,70 @@ void FTriangleWorldTracer::runLineTracing()
 			std::cout << std::endl;
 
 			(*tracerStagerRef)[currentTracerKey].insertLine(newExteriorLine);
+
+			// check for additional key adjustments, for x/y/z, when the line is perfectly clamped to any of those.
+			// For X
+			float moduloXpointA = fmod(currentBeginPoint.x, 32.0f);
+			float moduloXpointB = fmod(currentEndPoint.x, 32.0f);
+			if 
+			(
+				(moduloXpointA == 0.0f)
+				&&
+				(moduloXpointB == 0.0f)
+				&&
+				(currentBeginPoint.x == currentEndPoint.x)
+			)
+			{
+				EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
+				(*tracerStagerRef)[negativeXKey].insertLine(newExteriorLine);
+			}
+
+			// For Y
+			float moduloYpointA = fmod(currentBeginPoint.y, 32.0f);
+			float moduloYpointB = fmod(currentEndPoint.y, 32.0f);
+			if
+			(
+				(moduloYpointA == 0.0f)
+				&&
+				(moduloYpointB == 0.0f)
+				&&
+				(currentBeginPoint.y == currentEndPoint.y)
+			)
+			{
+				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y -1, currentTracerKey.z);
+				(*tracerStagerRef)[negativeYKey].insertLine(newExteriorLine);
+			}
+
+			// For Z
+			float moduloZpointA = fmod(currentBeginPoint.z, 32.0f);
+			float moduloZpointB = fmod(currentEndPoint.z, 32.0f);
+			if 
+			(
+				(moduloZpointA == 0.0f)
+				&&
+				(moduloZpointB == 0.0f)
+				&&
+				(currentBeginPoint.z == currentEndPoint.z)
+			)
+			{
+				/*
+				std::cout << "!! Alert: found matching Z values; points are:" << std::endl;
+				currentBeginPoint.printPointCoords();
+				std::cout << std::endl;
+				currentEndPoint.printPointCoords();
+				std::cout << std::endl;
+
+				std::cout << "!! currentTracerKey is: ";
+				currentTracerKey.printKey();
+				std::cout << std::endl;
+
+				int waitVal = 3;
+				std::cin >> waitVal;
+				*/
+
+				EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
+				(*tracerStagerRef)[negativeZKey].insertLine(newExteriorLine);
+			}
 
 			currentTracer.traverseLineOnce();
 		}

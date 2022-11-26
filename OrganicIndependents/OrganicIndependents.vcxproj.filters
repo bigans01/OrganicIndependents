@@ -795,14 +795,14 @@
     <ClInclude Include="ZDimLineScanner.h">
       <Filter>Header Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner</Filter>
     </ClInclude>
-    <ClInclude Include="DoublePoint.h">
-      <Filter>Header Files\FracturableTriangle</Filter>
-    </ClInclude>
     <ClInclude Include="FTriangleOutput.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
     <ClInclude Include="FTriangleReverseTranslationMode.h">
       <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublePoint.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

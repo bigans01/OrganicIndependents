@@ -70,6 +70,12 @@ class FTriangleOutput
 		ECBPolyPoint fractureEmptyNormal;
 		BoundaryOrientation fractureRequiredOrientation = BoundaryOrientation::NONE;	// must be set by constructor.
 		PerfectClampEnum fractureRequiredClampValue = PerfectClampEnum::NONE;	// must be set by constructor
+
+		// this flag determines if this instance of the FTriangleOutput should be purged, because the intended emptyNormal direction
+		// of its BoundaryOrientation doesn't match with it's fractureEmptyNormal. This specific operation will be performed by the function,
+		// FTriangleContainer::FTriangleContainerBounds.runBoundaryToNormalAnalysis will run this test, and set to true if the test doesn't pass
+		// (that is, the fractureEmptyNormal's value and the BoundaryOrientation-associated normal value don't match -- i.e, POS_X -> 1,0,0)
+		bool nonAlignedBoundaryDetected = false;
 };
 
 #endif

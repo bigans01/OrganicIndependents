@@ -90,4 +90,52 @@ void YSliceLine::determineYLineOutputs()
 
 		lineTargets = determinedTargets;
 	}
+	else if (perfectlyAlignedToXGridLine)
+	{
+		std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to X. " << std::endl;
+		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
+
+		EnclaveKeyDef::EnclaveKey backwardYKey(currentLineXDim, currentBackwardYValue, currentLineZDim);
+		EnclaveKeyDef::EnclaveKey forwardYKey(currentLineXDim, currentForwardYValue, currentLineZDim);
+		EnclaveKeyDef::EnclaveKey backwardYKeyXNegative(currentLineXDim - 1, currentBackwardYValue, currentLineZDim);
+		EnclaveKeyDef::EnclaveKey forwardYKeyXNegative(currentLineXDim - 1, currentForwardYValue, currentLineZDim);
+
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> targetKeys;
+		targetKeys.insert(backwardYKey);
+		targetKeys.insert(forwardYKey);
+		targetKeys.insert(backwardYKeyXNegative);
+		targetKeys.insert(forwardYKeyXNegative);
+
+		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::ZSLICE_SCANNED),
+			targetKeys);
+
+		lineTargets = determinedTargets;
+
+		int alignedToYWait = 3;
+		std::cin >> alignedToYWait;
+	}
+	else if (perfectlyAlignedToZGridLine)
+	{
+		std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to Z. " << std::endl;
+		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
+
+		EnclaveKeyDef::EnclaveKey backwardYKey(currentLineXDim, currentBackwardYValue, currentLineZDim);
+		EnclaveKeyDef::EnclaveKey forwardYKey(currentLineXDim, currentForwardYValue, currentLineZDim);
+		EnclaveKeyDef::EnclaveKey backwardYKeyZNegative(currentLineXDim, currentBackwardYValue, currentLineZDim - 1);
+		EnclaveKeyDef::EnclaveKey forwardYKeyZNegative(currentLineXDim, currentForwardYValue, currentLineZDim - 1);
+
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> targetKeys;
+		targetKeys.insert(backwardYKey);
+		targetKeys.insert(forwardYKey);
+		targetKeys.insert(backwardYKeyZNegative);
+		targetKeys.insert(forwardYKeyZNegative);
+
+		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::ZSLICE_SCANNED),
+			targetKeys);
+
+		lineTargets = determinedTargets;
+
+		int alignedToYWait = 3;
+		std::cin >> alignedToYWait;
+	}
 }
