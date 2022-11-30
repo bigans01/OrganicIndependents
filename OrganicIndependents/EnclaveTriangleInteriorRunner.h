@@ -23,7 +23,7 @@ public:
 		std::map<int, OrganicWrappedBBFan>* in_wrappedBBFanMapRef,
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_exteriorTracedBlocksRef,
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_allTracedBlocksRef,
-		short in_materialID,
+		TriangleMaterial in_materialID,
 		short in_isPolyPerfectlyClamped,
 		ECBPolyPoint emptyNormal,
 		EnclaveKeyDef::EnclaveKey in_blockKey,
@@ -46,7 +46,7 @@ public:
 	ECBPolyPoint normalizedPrimaryLineSlope;	// the normalized direction of the line slope
 	bool debugModeFlag = false;
 
-	short materialID;
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;
 	short isPolyPerfectlyClamped;
 	ECBPolyPoint emptyNormal;
 	int segmentCount = 0;						// determines special condition

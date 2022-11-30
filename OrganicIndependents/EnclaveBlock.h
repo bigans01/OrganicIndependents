@@ -30,7 +30,7 @@ public:
 	PrimarySegmentTracker blockSegmentTracker;  // keeps track of line segments that have entered this block.
 
 	// functions for interfacing with the underlying FanManager.
-	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, short in_materialID);	// adds a new EnclaveBlockTriangle to the block; this will eventually need the mutex, EnclaveCollectionMap::enclaveCollectionMapMutex passed to it, so that it may then pass it to the call to checkForOutsourcingLimits (heap allocation safety on the maps)
+	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);	// adds a new EnclaveBlockTriangle to the block; this will eventually need the mutex, EnclaveCollectionMap::enclaveCollectionMapMutex passed to it, so that it may then pass it to the call to checkForOutsourcingLimits (heap allocation safety on the maps)
 	void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);
 	PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);						// check if the input parameter exists in the structarray; returns the location of the found point (only really used if it exists)
 	PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);

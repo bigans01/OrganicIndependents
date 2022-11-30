@@ -20,7 +20,7 @@ public:
 		return numberOfTertiaries;
 	}
 
-	unsigned short materialID = 0;
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;
 	unsigned char numberOfTertiaries = 0;
 	//unsigned char faceAlignment = 0;
 	BoundaryPolyIndicator faceAlignment;

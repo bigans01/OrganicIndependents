@@ -34,7 +34,7 @@ class EnclaveTriangle
 {
 public:
 	// core EnclaveTriangle components
-	short enclaveTriangleMaterialID = 0;				// is the triangle dirt, stone, snow, wood, etc
+	TriangleMaterial enclaveTriangleMaterialID = TriangleMaterial::NOVAL;				// is the triangle dirt, stone, snow, wood, etc
 	short isEnclaveTrianglePolyPerfectlyClamped = 0;	// determines if the entire polygon is perfectly clamped to x, y, or z azis
 	bool isTriangleValid = true;						// determines if this EnclaveTriangle successfully ran its trace through the Enclave without any issues;
 														// this value will be set to false if there are any issues with tracing.

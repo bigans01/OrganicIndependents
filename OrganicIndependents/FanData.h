@@ -10,7 +10,7 @@ class FanData
 public:
 	FanData() {};
 	FanData(unsigned char in_intArrayPtr[],
-		unsigned short in_materialID,
+		TriangleMaterial in_materialID,
 		unsigned char in_numberOfTertiaries,
 		//unsigned char in_faceAlignment,
 		BoundaryPolyIndicator in_faceAlignment,
@@ -27,7 +27,7 @@ public:
 	}
 
 	FanData(unsigned int in_intArrayPtr[],
-		short in_materialID,
+		TriangleMaterial in_materialID,
 		unsigned char in_numberOfTertiaries,
 		//unsigned char in_faceAlignment,
 		BoundaryPolyIndicator in_faceAlignment,
@@ -44,7 +44,7 @@ public:
 	}
 
 	unsigned int pointArray[8] = { 0 };
-	unsigned short materialID = 0;
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;
 	unsigned char numberOfTertiaries = 0;
 	//unsigned char faceAlignment = 0;
 	BoundaryPolyIndicator faceAlignment;

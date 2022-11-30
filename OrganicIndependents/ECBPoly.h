@@ -14,7 +14,7 @@ public:
 	ECBPoly(ECBPolyType in_polyType) : polyType(in_polyType) {};
 	ECBPolyType polyType = ECBPolyType::FREE;
 	std::unordered_map<int, ECBPolyLine> lineMap;
-	short materialID = 0;			// is the triangle dirt, stone, snow, wood, etc
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;			// is the triangle dirt, stone, snow, wood, etc
 	short isPolyPerfectlyClamped = 0;					// determines if the entire polygon is perfectly clamped to x, y, or z azis
 	ECBPolyPoint mrp;
 	ECBPolyPoint emptyNormal;

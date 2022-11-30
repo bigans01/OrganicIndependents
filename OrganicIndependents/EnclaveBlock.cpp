@@ -21,7 +21,7 @@ ECBPolyPoint EnclaveBlock::getEmptyNormalFromTriangle(int in_index)
 	return manager.getEmptyNormalFromTriangle(in_index);
 }
 
-void EnclaveBlock::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, short in_materialID)
+void EnclaveBlock::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID)
 {
 	manager.processTertiaryData(in_polyMetaData, in_materialID);
 }

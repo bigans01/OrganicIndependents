@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FanManager.h"
 
-void FanManager::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, short in_materialID)
+void FanManager::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID)
 {
 	//std::cout << "starting fill..." << std::endl;
 	// determine number of points to iterate over, based on the number of triangles

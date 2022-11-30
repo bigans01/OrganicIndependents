@@ -7,7 +7,7 @@
 class ECBPolySkeleton
 {
 public:
-	short materialID = 0;
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;
 	short isPolyPerfectlyClamped = 0;
 	ECBPolyPoint points[3];	// points of the Poly
 	ECBPolyPoint emptyNormal;				// empty normal

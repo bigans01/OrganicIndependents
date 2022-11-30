@@ -34,9 +34,9 @@ class OrganicWrappedBBFan
 		FatFan poly;
 		EnclaveBlockVertex vertices[8];
 
-		void buildBBFan(BlockCircuit* in_blockCircuitRef, short in_materialID, ECBPolyPoint in_emptyNormal);
+		void buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleMaterial in_materialID, ECBPolyPoint in_emptyNormal);
 		void buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef, 
-											 short in_materialID, 
+											TriangleMaterial in_materialID,
 											 ECBPolyPoint in_emptyNormal,
 											 BoundaryPolyIndicator in_boundaryPolyIndicator);
 		int checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);

@@ -198,7 +198,7 @@ public:
 		return *this;
 	}
 
-	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, short in_materialID);									// used by EnclaveBlock::processTertiaryData
+	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);									// used by EnclaveBlock::processTertiaryData
 	void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);															// used by EnclaveBlock::insertBBFanFromRawEnclave
 	PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);														// used by EnclaveBlock::checkIfPointExists
 	PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);												// used by EnclaveBlock::checkIfNearbyPointExists

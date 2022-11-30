@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OrganicWrappedBBFan.h"
 
-void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_materialID, ECBPolyPoint in_emptyNormal)
+void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleMaterial in_materialID, ECBPolyPoint in_emptyNormal)
 {
 	// Step 1: load the points.
 	//std::cout << "********* Loading points: " << std::endl;
@@ -22,7 +22,7 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, short in_
 }
 
 void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
-	short in_materialID,
+	TriangleMaterial in_materialID,
 	ECBPolyPoint in_emptyNormal,
 	BoundaryPolyIndicator in_boundaryPolyIndicator)
 {

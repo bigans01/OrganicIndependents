@@ -10,7 +10,7 @@ EnclaveTriangleInteriorRunner::EnclaveTriangleInteriorRunner(ECBPolyPoint in_beg
 	std::map<int, OrganicWrappedBBFan>* in_wrappedBBFanMapRef,
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_exteriorTracedBlocksRef,
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_allTracedBlocksRef,
-	short in_materialID,
+	TriangleMaterial in_materialID,
 	short in_isPolyPerfectlyClamped,
 	ECBPolyPoint in_emptyNormal,
 	EnclaveKeyDef::EnclaveKey in_blockKey,

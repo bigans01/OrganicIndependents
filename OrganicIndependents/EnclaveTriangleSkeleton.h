@@ -11,7 +11,7 @@ class EnclaveTriangleSkeleton
 {
 public:
 	ECBPolyPoint points[3];
-	short materialID = 0;			// is the triangle dirt, stone, snow, wood, etc
+	TriangleMaterial materialID = TriangleMaterial::NOVAL;			// is the triangle dirt, stone, snow, wood, etc
 	short isPolyPerfectlyClamped = 0;					// determines if the entire polygon is perfectly clamped to x, y, or z azis
 	//ECBPolyPoint mrp;				// probably not needed, but comment out just in case.
 	ECBPolyPoint emptyNormal;
@@ -48,7 +48,7 @@ public:
 
 	void printSkeletonTriangle()
 	{
-		std::cout << "Material: " << materialID << " | Empty normal: "; emptyNormal.printPointCoords();
+		std::cout << "Material: " << int(materialID) << " | Empty normal: "; emptyNormal.printPointCoords();
 		for (int x = 0; x < 3; x++)
 		{
 			std::cout << " | point " << x << ": ";

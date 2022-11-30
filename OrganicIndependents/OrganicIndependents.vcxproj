@@ -360,6 +360,7 @@
     <ClInclude Include="TracingLineBoundingBox.h" />
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
+    <ClInclude Include="TriangleMaterial.h" />
     <ClInclude Include="UniquePointContainer.h" />
     <ClInclude Include="Vec3Pair.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
