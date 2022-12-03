@@ -102,9 +102,33 @@ class IndependentUtils
 		static float roundToTenThousandths(float in_float);
 		static EnclaveKeyDef::EnclaveKey retrieveBorderDirection(ECBPPOrientationResults in_results, BorderDataMap* in_dataMapRef);
 
-		static ECBPolyPoint getAppropriateSlopeToUse(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag);
-		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheck(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
-		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces);
+		static ECBPolyPoint getAppropriateSlopeToUse(BorderDataMap* in_dataMapRef, 
+													ECBPPOrientationResults in_beginOrientationResults, 
+													ECBPolyPoint in_xInt, 
+													ECBPolyPoint in_yInt, 
+													ECBPolyPoint in_zInt, 
+													EnclaveKeyDef::EnclaveKey in_moveVals, 
+													PerfectClampEnum in_perfectClampValue,
+													int in_debugFlag);
+		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheck(BorderDataMap* in_dataMapRef, 
+													ECBPPOrientationResults in_beginOrientationResults, 
+													ECBPolyPoint in_xInt, 
+													ECBPolyPoint in_yInt, 
+													ECBPolyPoint in_zInt, 
+													EnclaveKeyDef::EnclaveKey in_moveVals, 
+													PerfectClampEnum in_perfectClampValue, 
+													int in_debugFlag, 
+													ECBPolyPoint in_intendedFaces);
+
+		static ECBPolyPoint getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef,
+													ECBPPOrientationResults in_beginOrientationResults,
+													ECBPolyPoint in_xIntOrig,
+													ECBPolyPoint in_yIntOrig,
+													ECBPolyPoint in_zIntOrig,
+													EnclaveKeyDef::EnclaveKey in_moveVals,
+													PerfectClampEnum in_perfectClampValue,
+													int in_debugFlag,
+													ECBPolyPoint in_intendedFaces);
 
 		static void checkForSecondarySlopeInversion(ECBPolyPoint in_intendedFaces, EnclaveKeyDef::EnclaveKey in_moveVals, ECBPolyPoint* in_xIntRef, ECBPolyPoint* in_yIntRef, ECBPolyPoint* in_zIntRef);
 
@@ -114,12 +138,19 @@ class IndependentUtils
 
 		static ECBPolyType convertIntToPolyType(int in_polyTypeInt);
 
-
-		static InterceptValidity determineInterceptValidity(ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, ECBPolyPoint in_slopeToCheck, int in_perfectClampValue);
+		static InterceptValidity determineInterceptValidity(ECBPolyPoint in_xInt, 
+															ECBPolyPoint in_yInt, 
+															ECBPolyPoint in_zInt, 
+															ECBPolyPoint in_slopeToCheck, 
+															PerfectClampEnum in_perfectClampValue);
 		static int checkIfPolyPointsMatch(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static ECBPolyPoint getInterceptToUseFromLine(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2, InterceptValidity in_firstInterceptValidity, InterceptValidity in_secondInterceptValidity, EnclaveKeyDef::EnclaveKey in_moveVals);
 		static ECBPolyPoint getInterceptToUseFromLineDebug(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2, InterceptValidity in_firstInterceptValidity, InterceptValidity in_secondInterceptValidity, EnclaveKeyDef::EnclaveKey in_moveVals);
-		static ECBPolyPoint getInterceptToUseFromCorner(ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope, int in_perfectClampValue, EnclaveKeyDef::EnclaveKey in_moveVals);
+		static ECBPolyPoint getInterceptToUseFromCorner(ECBPolyPoint in_xSlope, 
+														ECBPolyPoint in_ySlope, 
+														ECBPolyPoint in_zSlope, 
+														PerfectClampEnum in_perfectClampValue,
+														EnclaveKeyDef::EnclaveKey in_moveVals);
 		static bool checkIfInterceptIsValid(ECBPolyPoint in_interceptToCheck);
 		static ECBPolyPoint getBlockTracingEndpoint(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef);
 		static ECBPolyPoint getBlockTracingEndpointDebug(ECBPolyPoint in_beginPoint, ECBPolyPoint in_slope, BlockBorderLineList* in_blockBorderRef);
@@ -149,7 +180,6 @@ class IndependentUtils
 		static int determineIntendedFaceValidity(int in_xyorz, float in_suggestedIntendedFace, float in_normalizedDirectionFloat, ECBPolyPoint in_xyorzIntercept, ECBPolyPoint in_slopeOfAB);
 
 		static ECBPoly buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, 
-													   ECBPolyPoint in_ECBPolyMRP,
 			                                           EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
 			                                           EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation);
 		static ECBPolyPoint translateEnclavePointToWorldSpace(ECBPolyPoint in_pointToTranslate,

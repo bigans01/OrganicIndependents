@@ -12,8 +12,7 @@ class EnclaveTriangleSkeleton
 public:
 	ECBPolyPoint points[3];
 	TriangleMaterial materialID = TriangleMaterial::NOVAL;			// is the triangle dirt, stone, snow, wood, etc
-	short isPolyPerfectlyClamped = 0;					// determines if the entire polygon is perfectly clamped to x, y, or z azis
-	//ECBPolyPoint mrp;				// probably not needed, but comment out just in case.
+	PerfectClampEnum isPolyPerfectlyClamped = PerfectClampEnum::NONE;					// determines if the entire polygon is perfectly clamped to x, y, or z axis
 	ECBPolyPoint emptyNormal;
 	BoundaryPolyIndicator skeletonBoundaryIndicatorValue;
 	EnclaveTriangle inflateToEnclaveTriangle()

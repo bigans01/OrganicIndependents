@@ -3,12 +3,11 @@
 #ifndef ECBPOLYSKELETON_H
 #define ECBPOLYSKELETON_H
 
-
 class ECBPolySkeleton
 {
 public:
 	TriangleMaterial materialID = TriangleMaterial::NOVAL;
-	short isPolyPerfectlyClamped = 0;
+	PerfectClampEnum isPolyPerfectlyClamped = PerfectClampEnum::NONE;
 	ECBPolyPoint points[3];	// points of the Poly
 	ECBPolyPoint emptyNormal;				// empty normal
 	ECBPolyPoint mrp;						// mass reference point

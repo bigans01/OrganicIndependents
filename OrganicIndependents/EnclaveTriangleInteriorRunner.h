@@ -24,7 +24,7 @@ public:
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_exteriorTracedBlocksRef,
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_allTracedBlocksRef,
 		TriangleMaterial in_materialID,
-		short in_isPolyPerfectlyClamped,
+		PerfectClampEnum in_isPolyPerfectlyClamped,
 		ECBPolyPoint emptyNormal,
 		EnclaveKeyDef::EnclaveKey in_blockKey,
 		int in_segmentCount,
@@ -47,7 +47,7 @@ public:
 	bool debugModeFlag = false;
 
 	TriangleMaterial materialID = TriangleMaterial::NOVAL;
-	short isPolyPerfectlyClamped;
+	PerfectClampEnum isPolyPerfectlyClamped = PerfectClampEnum::NONE;
 	ECBPolyPoint emptyNormal;
 	int segmentCount = 0;						// determines special condition
 	int traceCount = 0;

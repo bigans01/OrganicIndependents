@@ -6,7 +6,8 @@ void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePo
 	DoublePoint in_fracturePoint2,
 	ECBPolyPoint in_fractureEmptyNormal,
 	BoundaryOrientation in_originBoundaryOrientation,
-	PerfectClampEnum in_originPerfectClampValue)
+	PerfectClampEnum in_originPerfectClampValue,
+	TriangleMaterial in_originMaterial)
 {
 	originFTrianglePoints[0] = in_fracturePoint0;
 	originFTrianglePoints[1] = in_fracturePoint1;
@@ -14,6 +15,7 @@ void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePo
 	originFTriangleEmptynormal = in_fractureEmptyNormal;
 	originBoundaryOrientation = in_originBoundaryOrientation;
 	originPerfectClampValue = in_originPerfectClampValue;
+	originMaterial = in_originMaterial;
 }
 
 void FTriangleFracturerBase::setOutputRef(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* in_outputRef)

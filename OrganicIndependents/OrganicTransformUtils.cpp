@@ -20,7 +20,7 @@ EnclaveTriangleSkeleton OrganicTransformUtils::buildTriangleSkeletonRaw(ECBPolyP
 																		ECBPolyPoint in_pointB, 
 																		ECBPolyPoint in_pointC, 
 																		TriangleMaterial in_materialID,
-																		short in_isPolyPerfectlyClamped, 
+																		PerfectClampEnum in_isPolyPerfectlyClamped, 
 																		ECBPolyPoint in_emptyNormal,
 																		BoundaryPolyIndicator in_skeletonBoundaryIndicator)
 {

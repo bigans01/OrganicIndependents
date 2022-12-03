@@ -5888,7 +5888,14 @@ EnclaveKeyDef::EnclaveKey IndependentUtils::retrieveBorderDirection(ECBPPOrienta
 	return returnPoint;
 }
 
-ECBPolyPoint IndependentUtils::getAppropriateSlopeToUse(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xIntOrig, ECBPolyPoint in_yIntOrig, ECBPolyPoint in_zIntOrig, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag)
+ECBPolyPoint IndependentUtils::getAppropriateSlopeToUse(BorderDataMap* in_dataMapRef, 
+														ECBPPOrientationResults in_beginOrientationResults,
+														ECBPolyPoint in_xIntOrig, 
+														ECBPolyPoint in_yIntOrig, 
+														ECBPolyPoint in_zIntOrig, 
+														EnclaveKeyDef::EnclaveKey in_moveVals, 
+														PerfectClampEnum in_perfectClampValue, 
+														int in_debugFlag)
 {
 	ECBPolyPoint interceptToUse;
 	FaceListMeta tempStorage;	// set up the face list meta variable
@@ -6007,7 +6014,15 @@ ECBPolyPoint IndependentUtils::getAppropriateSlopeToUse(BorderDataMap* in_dataMa
 	return interceptToUse;
 }
 
-ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xIntOrig, ECBPolyPoint in_yIntOrig, ECBPolyPoint in_zIntOrig, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces)
+ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(BorderDataMap* in_dataMapRef,
+																			ECBPPOrientationResults in_beginOrientationResults, 
+																			ECBPolyPoint in_xIntOrig, 
+																			ECBPolyPoint in_yIntOrig, 
+																			ECBPolyPoint in_zIntOrig, 
+																			EnclaveKeyDef::EnclaveKey in_moveVals,
+																			PerfectClampEnum in_perfectClampValue, 
+																			int in_debugFlag, 
+																			ECBPolyPoint in_intendedFaces)
 {
 	ECBPolyPoint interceptToUse;
 	FaceListMeta tempStorage;	// set up the face list meta variable
@@ -6192,7 +6207,15 @@ ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(Bor
 	return interceptToUse;
 }
 
-ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, ECBPPOrientationResults in_beginOrientationResults, ECBPolyPoint in_xIntOrig, ECBPolyPoint in_yIntOrig, ECBPolyPoint in_zIntOrig, EnclaveKeyDef::EnclaveKey in_moveVals, int in_perfectClampValue, int in_debugFlag, ECBPolyPoint in_intendedFaces)
+ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheckIgnoreWarning(BorderDataMap* in_dataMapRef, 
+																						ECBPPOrientationResults in_beginOrientationResults, 
+																						ECBPolyPoint in_xIntOrig, 
+																						ECBPolyPoint in_yIntOrig, 
+																						ECBPolyPoint in_zIntOrig, 
+																						EnclaveKeyDef::EnclaveKey in_moveVals, 
+																						PerfectClampEnum in_perfectClampValue, 
+																						int in_debugFlag, 
+																						ECBPolyPoint in_intendedFaces)
 {
 	ECBPolyPoint interceptToUse;
 	FaceListMeta tempStorage;	// set up the face list meta variable
@@ -6518,7 +6541,11 @@ ECBPolyType IndependentUtils::convertIntToPolyType(int in_polyTypeInt)
 }
 
 
-InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_xInt, ECBPolyPoint in_yInt, ECBPolyPoint in_zInt, ECBPolyPoint in_slopeToCheck, int in_perfectClampValue)
+InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_xInt, 
+															ECBPolyPoint in_yInt, 
+															ECBPolyPoint in_zInt, 
+															ECBPolyPoint in_slopeToCheck, 
+															PerfectClampEnum in_perfectClampValue)
 {
 	InterceptValidity validity = InterceptValidity::VALID;	// initially set as valid, but may change to invalid.
 //std::cout << "#### Perfect clamp value test:  " << in_perfectClampValue << std::endl;
@@ -6542,26 +6569,25 @@ InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_x
 	}
 	// x check.
 	if
-		(
+	(
 		(checkIfPolyPointsMatch(in_xInt, in_slopeToCheck) == 1)
-			&&
-
-
+		
+		&&
 			!(checkIfPolyPointsMatch(in_xInt, in_yInt) == 1)				// can't match another slope, if it's going to be invalid.
 			&&																//
 			!(checkIfPolyPointsMatch(in_xInt, in_zInt) == 1)				//
 
 
 			&&
-			(in_perfectClampValue == 1)
-			)
+			(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_X)	// is it clamped to X?
+	)
 	{
 		//std::cout << "!!! X-intercept slopes are invalid! " << std::endl;
 		validity = InterceptValidity::INVALID;
 	}
 
 	else if
-		(
+	(
 		(checkIfPolyPointsMatch(in_yInt, in_slopeToCheck) == 1)
 			&&
 
@@ -6572,8 +6598,8 @@ InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_x
 
 
 			&&
-			(in_perfectClampValue == 2)
-			)
+			(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_Y)	// is it clamped to Y
+	)
 	{
 		//std::cout << "!!! Y-intercept slopes are invalid! " << std::endl;
 		validity = InterceptValidity::INVALID;
@@ -6591,7 +6617,7 @@ InterceptValidity IndependentUtils::determineInterceptValidity(ECBPolyPoint in_x
 
 
 			&&
-			(in_perfectClampValue == 3)
+			(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_Z)	// is it clamped to Z?
 			)
 	{
 		//std::cout << "!!! Z-intercept slopes are invalid! " << std::endl;
@@ -6802,7 +6828,11 @@ ECBPolyPoint IndependentUtils::getInterceptToUseFromLineDebug(ECBPolyPoint in_in
 	return returnPoint;
 }
 
-ECBPolyPoint IndependentUtils::getInterceptToUseFromCorner(ECBPolyPoint in_xSlope, ECBPolyPoint in_ySlope, ECBPolyPoint in_zSlope, int in_perfectClampValue, EnclaveKeyDef::EnclaveKey in_moveVals)
+ECBPolyPoint IndependentUtils::getInterceptToUseFromCorner(ECBPolyPoint in_xSlope, 
+														ECBPolyPoint in_ySlope, 
+														ECBPolyPoint in_zSlope, 
+														PerfectClampEnum in_perfectClampValue, 
+														EnclaveKeyDef::EnclaveKey in_moveVals)
 {
 	ECBPolyPoint returnPoint;
 	int x_intercept_invalid = 0;	// for storing if the x intercept value is valid selection, start at 0 (meaning its valid)
@@ -6817,7 +6847,7 @@ ECBPolyPoint IndependentUtils::getInterceptToUseFromCorner(ECBPolyPoint in_xSlop
 		||
 		(in_moveVals.z == normalized_x_intercept.z)
 		||
-		(in_perfectClampValue == 1)	// x clamp check
+		(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_X)	// x clamp check
 		)
 	{
 		x_intercept_invalid = 1;
@@ -6829,7 +6859,7 @@ ECBPolyPoint IndependentUtils::getInterceptToUseFromCorner(ECBPolyPoint in_xSlop
 		||
 		(in_moveVals.z == normalized_y_intercept.z)
 		||
-		(in_perfectClampValue == 2)	// y clamp check
+		(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_Y)	// y clamp check
 		)
 	{
 		y_intercept_invalid = 1;
@@ -6841,7 +6871,7 @@ ECBPolyPoint IndependentUtils::getInterceptToUseFromCorner(ECBPolyPoint in_xSlop
 		||
 		(in_moveVals.y == normalized_z_intercept.y)
 		||
-		(in_perfectClampValue == 3)	// z clamp check
+		(in_perfectClampValue == PerfectClampEnum::CLAMPED_TO_Z)	// z clamp check
 		)
 	{
 		z_intercept_invalid = 1;
@@ -10351,7 +10381,6 @@ int IndependentUtils::determineIntendedFaceValidity(int in_xyorz, float in_sugge
 
 
 ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, 
-														  ECBPolyPoint in_ECBPolyMRP, 
 														  EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
 														  EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation)
 {
@@ -10386,7 +10415,6 @@ ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enc
 	returnPoly.lineMap[2] = polyLine2;
 	returnPoly.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnPoly.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
-	returnPoly.mrp = in_ECBPolyMRP;
 	returnPoly.emptyNormal = in_enclaveTriangle.emptyNormal;
 	return returnPoly;
 }

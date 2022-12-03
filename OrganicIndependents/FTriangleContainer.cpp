@@ -18,7 +18,8 @@ void FTriangleContainer::printConstructionLines()
 void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 										ECBPolyPoint in_parentEmptyNormal,
 										BoundaryOrientation in_parentOrientation,
-										EnclaveKeyDef::EnclaveKey in_containerBounds)
+										EnclaveKeyDef::EnclaveKey in_containerBounds,
+										TriangleMaterial in_containerMaterial)
 {
 	// Below: a big triangle that is way too close to a grid's line border; should still run fine.
 	
@@ -58,7 +59,11 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 		std::cout << "1: " << leadingLineIter->pointA.x << ", " << leadingLineIter->pointA.y << ", " << leadingLineIter->pointA.z << std::endl;
 		std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
 
-		FTriangleOutput newOutput = formOutput(newFrame, in_parentEmptyNormal, in_parentTriangleType, in_containerBounds);
+		FTriangleOutput newOutput = formOutput(newFrame, 
+											in_parentEmptyNormal, 
+											in_parentTriangleType, 
+											in_containerBounds,
+											in_containerMaterial);
 		fracturedTriangles[fracturedTriangles.size()] = newOutput;
 
 		leadingLineIter++;
@@ -118,7 +123,8 @@ bool FTriangleContainer::areNormalsDirectionallyAligned(ECBPolyPoint in_normalA,
 FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFrame,
 	ECBPolyPoint in_parentEmptyNormal,
 	FTriangleType in_typeForBoundingBasis,
-	EnclaveKeyDef::EnclaveKey in_boundingKey)
+	EnclaveKeyDef::EnclaveKey in_boundingKey, 
+	TriangleMaterial in_outputMaterial)
 {
 	// Step 1: Finding the empty normal.
 	//
@@ -150,7 +156,8 @@ FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFr
 		in_typeForBoundingBasis,
 		finalNormal,
 		selectedOrientation,
-		selectedPerfectClampValue);
+		selectedPerfectClampValue,
+		in_outputMaterial);
 
 	return outputTriangle;
 }

@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "PrimaryLineT2MultiTracer.h"
 
-PrimaryLineT2MultiTracer::PrimaryLineT2MultiTracer(PrimaryLineT2Array* in_PLT2ArrayRef, ECBBorderLineList* in_blueprintBorderLines, BorderDataMap* in_borderDataMapRef, EnclaveKeyDef::EnclaveKey in_blueprintKey, int in_perfectClampFlag)
+PrimaryLineT2MultiTracer::PrimaryLineT2MultiTracer(PrimaryLineT2Array* in_PLT2ArrayRef, 
+													ECBBorderLineList* in_blueprintBorderLines, 
+													BorderDataMap* in_borderDataMapRef, 
+													EnclaveKeyDef::EnclaveKey in_blueprintKey, 
+													PerfectClampEnum in_perfectClampFlag)
 {
 	PLT2ArrayRef = in_PLT2ArrayRef;
 	blueprintBorderLinesRef = in_blueprintBorderLines;
@@ -27,11 +31,11 @@ void PrimaryLineT2MultiTracer::calculateFaceMatchCount()
 {
 	//std::cout << "-----------------------------------------------------!!!!! Attempting calculation of face match count... " << std::endl;
 	if
-		(
-		(currentPerfectClampValue >= 1)
+	(
+		(currentPerfectClampValue != PerfectClampEnum::NONE)
 			//&&
 			//(primaryLinkArray.totalNumberOfLinks != 0)
-			)
+	)
 	{
 		//std::cout << "Perfect clamp value pass... " << std::endl;
 		// resulting bool array

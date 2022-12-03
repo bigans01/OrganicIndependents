@@ -4,7 +4,6 @@
 #define FTRIANGLEOUTPUT_H
 
 #include "FTriangleType.h"
-#include "PerfectClampEnum.h"
 
 /*
 
@@ -31,7 +30,8 @@ class FTriangleOutput
 			FTriangleType in_destinedGridType,
 			ECBPolyPoint in_fractureEmptyNormal,
 			BoundaryOrientation in_requiredOrientation,
-			PerfectClampEnum in_perfectClampValue)
+			PerfectClampEnum in_perfectClampValue,
+			TriangleMaterial in_outputTriangleMaterial)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
@@ -42,6 +42,8 @@ class FTriangleOutput
 															// constant, and passable to the produced FTriangles in the outputContainers member.
 			fractureRequiredOrientation = in_requiredOrientation;
 			fractureRequiredClampValue = in_perfectClampValue;
+
+			outputTriangleMaterial = in_outputTriangleMaterial;
 		};
 
 		FTriangleOutput(DoublePoint in_fracturePoint0,
@@ -50,7 +52,8 @@ class FTriangleOutput
 			FTriangleType in_destinedGridType,
 			ECBPolyPoint in_fractureEmptyNormal,
 			BoundaryOrientation in_requiredOrientation,
-			PerfectClampEnum in_perfectClampValue)
+			PerfectClampEnum in_perfectClampValue,
+			TriangleMaterial in_outputTriangleMaterial)
 		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
@@ -60,6 +63,8 @@ class FTriangleOutput
 															// constant, and passable to the produced FTriangles in the outputContainers member.
 			fractureRequiredOrientation = in_requiredOrientation;
 			fractureRequiredClampValue = in_perfectClampValue;
+
+			outputTriangleMaterial = in_outputTriangleMaterial;
 		}
 
 
@@ -70,6 +75,8 @@ class FTriangleOutput
 		ECBPolyPoint fractureEmptyNormal;
 		BoundaryOrientation fractureRequiredOrientation = BoundaryOrientation::NONE;	// must be set by constructor.
 		PerfectClampEnum fractureRequiredClampValue = PerfectClampEnum::NONE;	// must be set by constructor
+
+		TriangleMaterial outputTriangleMaterial = TriangleMaterial::NOVAL;	// in reality, this will be something other than NOVAL (GRASS, DIRT, etc)
 
 		// this flag determines if this instance of the FTriangleOutput should be purged, because the intended emptyNormal direction
 		// of its BoundaryOrientation doesn't match with it's fractureEmptyNormal. This specific operation will be performed by the function,

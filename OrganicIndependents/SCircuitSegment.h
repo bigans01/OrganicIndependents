@@ -20,7 +20,7 @@ public:
 	int indexOfNextSegment = 0;
 	CircuitSegmentType type = CircuitSegmentType::NOVAL;
 	ECBPolyPoint targetPoint;
-	short perfectClampValue = 0;		// set by the SCircuit
+	PerfectClampEnum perfectClampValue = PerfectClampEnum::NONE;		// set by the SCircuit
 	short debugFlag = 0;
 
 	BlockBorderLineList* blockBorderLineListRef;

@@ -230,7 +230,8 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLUEPRINT, 
 															originFTriangleEmptynormal, 
 															originBoundaryOrientation,
-															currentStagerKey);
+															currentStagerKey,
+															originMaterial);
 
 		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
 		// which is determined by the call to runBoundaryTests below.

@@ -7,7 +7,6 @@
 #include "FTriangleType.h"
 #include "FTriangleFracturerBase.h"
 #include "WorldFracturingMachine.h"
-#include "PerfectClampEnum.h"
 
 /*
 
@@ -39,7 +38,8 @@ class FTriangle
 				  FTriangleType in_originType,
 				  ECBPolyPoint in_fractureEmptyNormal,
 				  BoundaryOrientation in_requiredOrientation,
-				  PerfectClampEnum in_perfectClampValue)
+				  PerfectClampEnum in_perfectClampValue,
+				  TriangleMaterial in_fractureMaterial)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
@@ -50,6 +50,8 @@ class FTriangle
 															// constant, and passable to the produced FTriangles in the outputContainers member.
 			fractureRequiredOrientation = in_requiredOrientation;
 			fractureRequiredClampValue = in_perfectClampValue;
+
+			fractureMaterial = in_fractureMaterial;
 		}
 
 		// constructor for big points (double); does the same stuff as above; 
@@ -60,7 +62,8 @@ class FTriangle
 				FTriangleType in_originType,
 				ECBPolyPoint in_fractureEmptyNormal,
 				BoundaryOrientation in_requiredOrientation,
-				PerfectClampEnum in_perfectClampValue)
+				PerfectClampEnum in_perfectClampValue,
+				TriangleMaterial in_fractureMaterial)
 		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
@@ -70,6 +73,8 @@ class FTriangle
 															// constant, and passable to the produced FTriangles in the outputContainers member.
 			fractureRequiredOrientation = in_requiredOrientation;
 			fractureRequiredClampValue = in_perfectClampValue;
+
+			fractureMaterial = in_fractureMaterial;
 		}
 
 		// constructor for creating an FTriangle from an FTriangleOutput
@@ -83,6 +88,8 @@ class FTriangle
 
 			fractureRequiredOrientation = in_outputTriangle.fractureRequiredOrientation;
 			fractureRequiredClampValue = in_outputTriangle.fractureRequiredClampValue;
+
+			fractureMaterial = in_outputTriangle.outputTriangleMaterial;
 		};
 
 		void fracture();	// fractures the FTriangle down into the next level; 
@@ -102,6 +109,8 @@ class FTriangle
 		ECBPolyPoint fractureEmptyNormal;	// the empty normal to compare against when building the FTriangleContainers.
 		BoundaryOrientation fractureRequiredOrientation = BoundaryOrientation::NONE;	// must be set by constructor.
 		PerfectClampEnum fractureRequiredClampValue = PerfectClampEnum::NONE;	// must be set by constructor
+
+		TriangleMaterial fractureMaterial = TriangleMaterial::NOVAL;	// in reality, this will need to be set to something other than NOVAL. (GRASS, DIRT, etc)
 
 		std::shared_ptr<FTriangleFracturerBase> fracturerMachine;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher> outputContainers;

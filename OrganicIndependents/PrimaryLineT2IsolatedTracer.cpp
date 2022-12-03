@@ -13,7 +13,7 @@ PrimaryLineT2IsolatedTracer::PrimaryLineT2IsolatedTracer(int in_lineID,
 	BorderDataMap* in_borderDataMapRef,
 	ECBPolyPoint in_intendedFaces,
 	PrimaryLineT2Array* in_primaryLineT2ArrayRef,
-	int in_perfectClampFlag,
+	PerfectClampEnum in_perfectClampFlag,
 	int in_x_clamp,
 	int in_y_clamp,
 	int in_z_clamp
@@ -56,7 +56,7 @@ PrimaryLineT2IsolatedTracer::PrimaryLineT2IsolatedTracer(int in_lineID,
 	//std::cout << "::::: Post secondary line complete. (3) " << std::endl;
 }
 
-void PrimaryLineT2IsolatedTracer::determineInitialTrace(int in_perfectClampFlag)
+void PrimaryLineT2IsolatedTracer::determineInitialTrace(PerfectClampEnum in_perfectClampFlag)
 {
 	moveVals = IndependentUtils::retrieveBorderDirection(currentEndOrientation, borderDataMapRef);	// get the move vals
 
@@ -207,7 +207,7 @@ void PrimaryLineT2IsolatedTracer::determineInitialTrace(int in_perfectClampFlag)
 		primaryLineT2ArrayRef->addNewPrimaryT2Line(newPLT2);
 
 		// check if the first 3 points have any common faces (rootBegin, rootEnd, currentTraceResults)...if this is true, set the  requried match count to 2.
-		if (perfectClampValue >= 1)		// remember: 1 = x perfect clamp, 2 = y perfect clamp, 3 = z perfect clamp
+		if (perfectClampValue != PerfectClampEnum::NONE)		// remember: 1 = x perfect clamp, 2 = y perfect clamp, 3 = z perfect clamp
 		{
 			int hasCommonFaces = IndependentUtils::checkIfPointsExistOnSameFace(rootBeginFaceList, rootEndFaceList, currentTraceResults.resultingFaceList, 0);
 			if (hasCommonFaces == 1)
@@ -650,7 +650,7 @@ ECBPolyPoint PrimaryLineT2IsolatedTracer::getInterceptToUseFromCorner(ECBPolyPoi
 		||
 		(moveVals.z == normalized_x_intercept.z)
 		||
-		(perfectClampValue == 1)	// x clamp check
+		(perfectClampValue == PerfectClampEnum::CLAMPED_TO_X)	// x clamp check
 		)
 	{
 		x_intercept_invalid = 1;
@@ -662,7 +662,7 @@ ECBPolyPoint PrimaryLineT2IsolatedTracer::getInterceptToUseFromCorner(ECBPolyPoi
 		||
 		(moveVals.z == normalized_y_intercept.z)
 		||
-		(perfectClampValue == 2)	// y clamp check
+		(perfectClampValue == PerfectClampEnum::CLAMPED_TO_Y)	// y clamp check
 		)
 	{
 		y_intercept_invalid = 1;
@@ -674,7 +674,7 @@ ECBPolyPoint PrimaryLineT2IsolatedTracer::getInterceptToUseFromCorner(ECBPolyPoi
 		||
 		(moveVals.y == normalized_z_intercept.y)
 		||
-		(perfectClampValue == 3)	// z clamp check
+		(perfectClampValue == PerfectClampEnum::CLAMPED_TO_Z)	// z clamp check
 		)
 	{
 		z_intercept_invalid = 1;

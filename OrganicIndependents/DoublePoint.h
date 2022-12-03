@@ -20,6 +20,7 @@ class DoublePoint
 		DoublePoint(double in_x, double in_y, double in_z) : x(in_x), y(in_y), z(in_z) {};
 		DoublePoint(float in_x, float in_y, float in_z) : x(in_x), y(in_y), z(in_z) {};
 		DoublePoint(glm::vec3 in_vec3) : x(in_vec3.x), y(in_vec3.y), z(in_vec3.z) {};
+		DoublePoint(ECBPolyPoint in_polyPoint) : x(in_polyPoint.x), y(in_polyPoint.y), z(in_polyPoint.z) {};
 
 		// copy operators
 		DoublePoint& operator=(const ECBPolyPoint& in_polyPoint)

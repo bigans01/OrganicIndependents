@@ -28,7 +28,7 @@ public:
 	char IDofLine = 100;			// ID of the line, 0 1 and 2 are reserved, so we can't initialize to those (100 chosen for no apparent reason)
 	char IDofLinkedLine = 0;	// ID of the linked line (the line whose endpoint would be equal to this line's begin point, if that were to occur)
 	short IDofNextLine = 0;		// ID of the next line in the sequence
-	short perfectClampValue = 0;			// the perfect clamp value
+	PerfectClampEnum perfectClampValue = PerfectClampEnum::NONE;			// the perfect clamp value
 	int doesLineHaveTwoPrimaryT1Points = 0;	// indicates if both the end and begin poinst are actually primary T1 points
 	void calibrate(ECBPolyPoint in_pointC);
 

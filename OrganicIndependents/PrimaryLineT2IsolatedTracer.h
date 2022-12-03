@@ -28,7 +28,7 @@ public:
 		BorderDataMap* in_borderDataMapRef,
 		ECBPolyPoint in_intendedFaces,
 		PrimaryLineT2Array* in_primaryLineT2ArrayRef,
-		int in_perfectClampFlag,
+		PerfectClampEnum in_perfectClampFlag,
 		int in_x_clamp,
 		int in_y_clamp,
 		int in_z_clamp
@@ -53,14 +53,14 @@ public:
 	BorderMDFaceList usedFaceList;		// stores the faces that actually had a line travel on them per turn
 	BorderDataMap* borderDataMapRef;		// reference to the border data map
 	short faceMatchFlag = 0;
-	short perfectClampValue = 0;
+	PerfectClampEnum perfectClampValue = PerfectClampEnum::NONE;
 	short parentLineID = 0;
 	short matchRequiredCount = 1;		// 1 is the default; 2 would be during a perfect clamp on the blueprint border
 	EnclaveKeyDef::EnclaveKey moveVals;
 	EnclaveKeyDef::EnclaveKey blueprintKey;
 	bool isRunValid = true;				// assume true 99.99% of the time
 
-	void determineInitialTrace(int in_perfectClampFlag);			// initial trace function
+	void determineInitialTrace(PerfectClampEnum in_perfectClampFlag);			// initial trace function
 	void determineTrace();
 	void determineFinalTrace();										// for setting up the final trace value
 	ECBPolyPoint getInterceptToUseFromLine(ECBPolyPoint in_intercept1, ECBPolyPoint in_intercept2);

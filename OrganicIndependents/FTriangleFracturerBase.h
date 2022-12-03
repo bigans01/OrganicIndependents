@@ -7,7 +7,6 @@
 #include "EnclaveKeyPair.h"
 #include "CalibratableBlueprintKeyPair.h"
 #include "FTriangleTracerBase.h"
-#include "PerfectClampEnum.h"
 #include "FRayCasterInitData.h"
 #include "FRayCasterQuadBase.h"
 #include "XFRayCastQuad.h"
@@ -29,7 +28,8 @@ class FTriangleFracturerBase
 			DoublePoint in_fracturePoint2,
 			ECBPolyPoint in_fractureEmptyNormal,
 			BoundaryOrientation in_originBoundaryOrientation,
-			PerfectClampEnum in_originPerfectClampValue);
+			PerfectClampEnum in_originPerfectClampValue,
+			TriangleMaterial in_originMaterial);
 		void printFracturerPoints();
 
 		// required virtual functions
@@ -44,6 +44,7 @@ class FTriangleFracturerBase
 		ECBPolyPoint originFTriangleEmptynormal;
 		BoundaryOrientation originBoundaryOrientation = BoundaryOrientation::NONE;	// must be set by constructor
 		PerfectClampEnum originPerfectClampValue = PerfectClampEnum::NONE;	// must be set by constructor
+		TriangleMaterial originMaterial = TriangleMaterial::NOVAL;
 		float rayCastDimInterval = 0.0f;	// the distance, measured in float, between each ray cast. Must be set by the derived class.
 
 		EnclaveKeyPair originFTriangleLineKeypairs[3];		// These are the keypair values used to trace an FTriangleLine through it's respective space;

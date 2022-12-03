@@ -11,7 +11,7 @@ EnclaveTriangleInteriorRunner::EnclaveTriangleInteriorRunner(ECBPolyPoint in_beg
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_exteriorTracedBlocksRef,
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>* in_allTracedBlocksRef,
 	TriangleMaterial in_materialID,
-	short in_isPolyPerfectlyClamped,
+	PerfectClampEnum in_isPolyPerfectlyClamped,
 	ECBPolyPoint in_emptyNormal,
 	EnclaveKeyDef::EnclaveKey in_blockKey,
 	int in_segmentCount,
@@ -218,7 +218,7 @@ void EnclaveTriangleInteriorRunner::fillCircuitMetaData(BlockCircuit* in_circuit
 	ECBPPOrientationResults newPointOrientation = IndependentUtils::GetPointOrientation(newPoint, in_blockBorderLineList);
 	BorderMDFaceList newFaceList = IndependentUtils::getFaceList(newPointOrientation, in_borderDataMap);
 
-	if (isPolyPerfectlyClamped >= 1)	// only do the below if it's perfectly clamped to a dimension.
+	if (isPolyPerfectlyClamped != PerfectClampEnum::NONE)	// only do the below if it's perfectly clamped to a dimension.
 	{
 		int hasCommonFaces = IndependentUtils::checkIfPointsExistOnSameFace(in_circuitRef->segmentArray[segmentToDetermineMatchThreshold].segment.startFaces, in_circuitRef->segmentArray[segmentToDetermineMatchThreshold].segment.endFaces, newFaceList, 0);
 		if (hasCommonFaces == 1)

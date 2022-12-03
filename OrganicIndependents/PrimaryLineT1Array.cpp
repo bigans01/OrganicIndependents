@@ -113,13 +113,13 @@ int PrimaryLineT1Array::checkForTrianglePoints(ECBTrianglePointArray* in_triangl
 	return pointCount;
 }
 
-void PrimaryLineT1Array::adjustForEnclavePerfectClamping(short in_perfectClampValue)
+void PrimaryLineT1Array::adjustForEnclavePerfectClamping(PerfectClampEnum in_perfectClampValue)
 {
 	//std::cout << "!!! Attempting adjust for perfect clamping... " << std::endl;
 	switch (in_perfectClampValue)
 	{
-		// perfect clamp on X
-		case 1: 
+		// perfect clamp on X (enum value 1)
+		case PerfectClampEnum::CLAMPED_TO_X:
 		{
 			if (linkArray[0].beginPointMeta.enclaveKey.x == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
 			{
@@ -139,8 +139,8 @@ void PrimaryLineT1Array::adjustForEnclavePerfectClamping(short in_perfectClampVa
 			break;
 		}
 
-		// perfect clamp on Y
-		case 2:
+		// perfect clamp on Y (enum value 2)
+		case PerfectClampEnum::CLAMPED_TO_Y:
 		{
 			if (linkArray[0].beginPointMeta.enclaveKey.y == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
 			{
@@ -160,8 +160,8 @@ void PrimaryLineT1Array::adjustForEnclavePerfectClamping(short in_perfectClampVa
 			break;
 		}
 
-		// perfect clamp on Z
-		case 3:
+		// perfect clamp on Z (enum value 3)
+		case PerfectClampEnum::CLAMPED_TO_Z:
 		{
 			if (linkArray[0].beginPointMeta.enclaveKey.z == 1)				// if the enclaveKey y is 1, it means that the enclave keys have been "pushed" into the next enclave via Y. 
 			{
@@ -183,7 +183,12 @@ void PrimaryLineT1Array::adjustForEnclavePerfectClamping(short in_perfectClampVa
 	}
 }
 
-void PrimaryLineT1Array::produceT2Lines(EnclaveKeyDef::EnclaveKey in_key, int in_perfectClampFlag, ECBPolyLineSlopesArray* in_polyLineSlopesPtr, ECBBorderLineList* in_blueprintBorderLines, PrimaryLineT2Array* in_primaryLineT2ArrayRef, BorderDataMap* in_borderDataMapRef)
+void PrimaryLineT1Array::produceT2Lines(EnclaveKeyDef::EnclaveKey in_key, 
+									PerfectClampEnum in_perfectClampFlag, 
+									ECBPolyLineSlopesArray* in_polyLineSlopesPtr, 
+									ECBBorderLineList* in_blueprintBorderLines, 
+									PrimaryLineT2Array* in_primaryLineT2ArrayRef, 
+									BorderDataMap* in_borderDataMapRef)
 {
 	borderDataMapRef = in_borderDataMapRef;	// set the border data map
 
@@ -257,7 +262,7 @@ void PrimaryLineT1Array::runT2LinesStandard(EnclaveKeyDef::EnclaveKey in_key, EC
 	ECBPolyPoint primaryLineT1PointA, primaryLineT1PointB, primaryLineT1PointC;
 	PrimaryLineT1* primaryLineRef = NULL;
 	int lineID = 0;					// will be changed to appropriate value
-	int clampValueToCheck;			// the clamp value to pass during the creation of the T2 line
+	PerfectClampEnum clampValueToCheck = PerfectClampEnum::NONE;			// the clamp value to pass during the creation of the T2 line
 
 	ECBPolyLineSlopesArray testArray;
 
@@ -292,15 +297,15 @@ void PrimaryLineT1Array::runT2LinesStandard(EnclaveKeyDef::EnclaveKey in_key, EC
 
 
 			clampValueToCheck = linkArray[x].perfectClampValue;
-			if (clampValueToCheck == 1)
+			if (clampValueToCheck == PerfectClampEnum::CLAMPED_TO_X)
 			{
 				//std::cout << "::::produced secondary line will be clamped to x" << std::endl;
 			}
-			else if (clampValueToCheck == 2)
+			else if (clampValueToCheck == PerfectClampEnum::CLAMPED_TO_Y)
 			{
 				//std::cout << "::::produced secondary line will be clamped to y" << std::endl;
 			}
-			else if (clampValueToCheck == 3)
+			else if (clampValueToCheck == PerfectClampEnum::CLAMPED_TO_Z)
 			{
 				//std::cout << "::::produced secondary line will be clamped to z" << std::endl;
 			}
@@ -339,7 +344,11 @@ void PrimaryLineT1Array::runT2LinesStandard(EnclaveKeyDef::EnclaveKey in_key, EC
 	//std::cout << "::::: Post secondary line complete. (4) " << std::endl;
 }
 
-void PrimaryLineT1Array::runT2LinesMulti(EnclaveKeyDef::EnclaveKey in_key, ECBPolyLineSlopesArray* in_polyLineSlopesPtr, ECBBorderLineList* in_blueprintBorderLines, PrimaryLineT2Array* in_primaryLineT2ArrayRef, int in_perfectClampFlag)
+void PrimaryLineT1Array::runT2LinesMulti(EnclaveKeyDef::EnclaveKey in_key, 
+										ECBPolyLineSlopesArray* in_polyLineSlopesPtr, 
+										ECBBorderLineList* in_blueprintBorderLines, 
+										PrimaryLineT2Array* in_primaryLineT2ArrayRef, 
+										PerfectClampEnum in_perfectClampFlag)
 {
 	//std::cout << "++++++++++++++MULTI LINE CALL" << std::endl;
 	ECBBorderLineList pointABorderLineList;

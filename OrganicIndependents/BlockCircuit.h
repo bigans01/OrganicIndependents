@@ -18,7 +18,10 @@ class BlockCircuit
 {
 public:
 	BlockCircuit() {};
-	BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, BorderDataMap* in_borderDataMapRef, int in_perfectClampValue, PolyDebugLevel in_debugLevel);
+	BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, 
+				BorderDataMap* in_borderDataMapRef, 
+				PerfectClampEnum in_perfectClampValue, 
+				PolyDebugLevel in_debugLevel);
 
 	SCircuitSegment segmentArray[4];	// stores up to for segments
 	short currentSegmentIndex = 0;
@@ -38,7 +41,7 @@ public:
 	bool checkForDuplicatePoints(MicroPolyPointContainer* in_containerRef);	// temporarily added on 8/7/2022; may be removed after coming up with a solution.
 
 private:
-	int perfectClampValue = 0;
+	PerfectClampEnum perfectClampValue = PerfectClampEnum::NONE;
 	PolyLogger logger;
 	PolyDebugLevel debugLevel = PolyDebugLevel::NONE;
 

@@ -659,7 +659,7 @@ void EnclaveTriangle::runInteriorRunners(PrimaryLineT1Array* in_linkArrayRef, Bl
 						(
 							(finder == true)						// only do this if there is a parallel detection.
 							&&
-							(isEnclaveTrianglePolyPerfectlyClamped == 0)			// it's unnecessary to do this check if the triangle is in true 2 dimensions, and not 3d. 
+							(isEnclaveTrianglePolyPerfectlyClamped == PerfectClampEnum::NONE)			// it's unnecessary to do this check if the triangle is in true 2 dimensions, and not 3d. 
 						)
 						{
 							tempSet = terminatingSetRef->constructSpecialSet(in_linkArrayRef->linkArray[x].IDofLine, int(result.otherSegment.lineID));
@@ -860,11 +860,11 @@ void EnclaveTriangle::runInteriorRunnersDebug(PrimaryLineT1Array* in_linkArrayRe
 						std::map<int, TerminatingSet> tempSet;
 
 						if
-							(
+						(
 							(finder == true)						// only do this if there is a parallel detection.
-								&&
-								(isEnclaveTrianglePolyPerfectlyClamped == 0)			// it's unnecessary to do this check if the triangle is in true 2 dimensions, and not 3d. 
-								)
+							&&
+							(isEnclaveTrianglePolyPerfectlyClamped == PerfectClampEnum::NONE)			// it's unnecessary to do this check if the triangle is in true 2 dimensions, and not 3d. 
+						)
 						{
 
 
@@ -1084,7 +1084,7 @@ void EnclaveTriangle::fillCircuitMetaData(BlockCircuit* in_circuitRef, BlockBord
 	ECBPPOrientationResults newPointOrientation = IndependentUtils::GetPointOrientation(newPoint, in_blockBorderLineList);
 	BorderMDFaceList newFaceList = IndependentUtils::getFaceList(newPointOrientation, in_borderDataMap);
 
-	if (isEnclaveTrianglePolyPerfectlyClamped >= 1)	// only do the below if it's perfectly clamped to a dimension.
+	if (isEnclaveTrianglePolyPerfectlyClamped != PerfectClampEnum::NONE)	// only do the below if it's perfectly clamped to a dimension.
 	{
 		int hasCommonFaces = IndependentUtils::checkIfPointsExistOnSameFace(in_circuitRef->segmentArray[segmentToDetermineMatchThreshold].segment.startFaces, in_circuitRef->segmentArray[segmentToDetermineMatchThreshold].segment.endFaces, newFaceList, 0);
 		if (hasCommonFaces == 1)
@@ -1102,7 +1102,7 @@ void EnclaveTriangle::fillCircuitMetaDataAndCheckValidity(BlockCircuit* in_circu
 {
 	int matchRequiredCount = 1;
 	// determine the appropriate match threshold, based on perfect clamp value.
-	if (isEnclaveTrianglePolyPerfectlyClamped >= 1)	// only do the below if it's perfectly clamped to a dimension.
+	if (isEnclaveTrianglePolyPerfectlyClamped != PerfectClampEnum::NONE)	// only do the below if it's perfectly clamped to a dimension.
 	{
 		// resulting bool array
 		bool boolArray[3];

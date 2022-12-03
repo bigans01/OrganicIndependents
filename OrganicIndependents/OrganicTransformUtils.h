@@ -14,7 +14,7 @@ public:
 															ECBPolyPoint in_pointB, 
 															ECBPolyPoint in_pointC, 
 															TriangleMaterial in_materialID,
-															short in_isPolyPerfectlyClamped, 
+															PerfectClampEnum in_isPolyPerfectlyClamped,
 															ECBPolyPoint in_emptyNormal,
 															BoundaryPolyIndicator in_skeletonBoundaryIndicator);
 	static EnclaveTriangle inflateEnclaveTriangle(EnclaveTriangleSkeleton in_enclaveTriangleSkeleton);

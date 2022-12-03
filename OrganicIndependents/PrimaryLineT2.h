@@ -5,6 +5,7 @@
 
 #include "ECBPolyPointLocation.h"
 #include "ECBPolyLineSlopesArray.h"
+
 class IndependentUtils;
 class PrimaryLineT2
 {
@@ -20,7 +21,7 @@ public:
 	ECBPolyPointLocation beginPointMeta;
 	ECBPolyPointLocation endPointMeta;
 	short IDofParentLine = 0;
-	short perfectClampValue = 0;			// the perfect clamp value
+	PerfectClampEnum perfectClampValue = PerfectClampEnum::NONE;			// the perfect clamp value
 	int trueLineID = 0;
 	void calibrate(ECBPolyPoint in_pointC);
 	void isCalibrateable(float* in_remainderPtr, int* in_blockLocationPtr, int* in_chunkLocationPtr, float in_normalizedSlopeValue, float in_pointAxyz, float in_pointBxyz, float in_pointCxyz);

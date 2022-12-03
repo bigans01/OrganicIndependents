@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "BlockCircuit.h"
 
-BlockCircuit::BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, BorderDataMap* in_borderDataMapRef, int in_perfectClampValue, PolyDebugLevel in_debugLevel)
+BlockCircuit::BlockCircuit(BlockBorderLineList* in_blockBorderLineListRef, 
+							BorderDataMap* in_borderDataMapRef, 
+							PerfectClampEnum in_perfectClampValue,
+							PolyDebugLevel in_debugLevel)
 {
 	//std::cout << "############### !!! Block Circuit constructor call!! " << std::endl;
 

@@ -5,7 +5,6 @@
 
 #include "FTriangleLine.h"
 #include "FTriangleType.h"
-#include "PerfectClampEnum.h"
 #include "FTriangleOutput.h"
 #include "FTriangleReverseTranslationMode.h"
 
@@ -36,7 +35,8 @@ class FTriangleContainer
 		void produceFTriangles(FTriangleType in_parentTriangleType,
 								ECBPolyPoint in_parentEmptyNormal,
 								BoundaryOrientation in_parentOrientation,
-								EnclaveKeyDef::EnclaveKey in_containerBounds);
+								EnclaveKeyDef::EnclaveKey in_containerBounds,
+								TriangleMaterial in_containerMaterial);
 
 		// Below: this function will run the boundary tests for each FTriangleOutput, against
 		// an instance of FTriangleContainerBounds. That instance will do boundary orientations,
@@ -98,7 +98,8 @@ class FTriangleContainer
 		FTriangleOutput formOutput(OutputTriangleFrame in_triangleFrame,
 			ECBPolyPoint in_parentEmptyNormal,
 			FTriangleType in_typeForBoundingBasis,
-			EnclaveKeyDef::EnclaveKey in_boundingKey);
+			EnclaveKeyDef::EnclaveKey in_boundingKey,
+			TriangleMaterial in_outputMaterial);
 };
 
 #endif

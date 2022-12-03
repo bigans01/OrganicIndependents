@@ -1377,7 +1377,6 @@ ECBPoly PolyUtils::produceECBPolyFromECBPolySkeleton(ECBPolySkeleton in_skeleton
 
 	returnPoly.materialID = in_skeleton.materialID;
 	returnPoly.isPolyPerfectlyClamped = in_skeleton.isPolyPerfectlyClamped;
-	returnPoly.mrp = in_skeleton.mrp;
 	returnPoly.emptyNormal = in_skeleton.emptyNormal;
 	return returnPoly;
 }
@@ -1393,7 +1392,8 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 	original2 = in_originalPoly.lineMap[2].pointA;
 
 	// created translated points
-	ECBPolyPoint translated0, translated1, translated2, translatedMRP;
+	ECBPolyPoint translated0, translated1, translated2;
+	ECBPolyPoint translatedMRP;
 
 	// translate point 0
 	translated0 = original0;
@@ -1414,7 +1414,6 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 	translated2.z = original2.z - (in_originalBlueprintKey.z * 32);
 
 	// translatedMRP
-	translatedMRP = in_originalPoly.mrp;
 	translatedMRP.x = translatedMRP.x - (in_originalBlueprintKey.x * 32);
 	translatedMRP.y = translatedMRP.y - (in_originalBlueprintKey.y * 32);
 	translatedMRP.z = translatedMRP.z - (in_originalBlueprintKey.z * 32);
@@ -1443,7 +1442,6 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 	// construct the poly's metadata
 	returnPoly.materialID = in_originalPoly.materialID;
 	returnPoly.isPolyPerfectlyClamped = in_originalPoly.isPolyPerfectlyClamped;
-	returnPoly.mrp = translatedMRP;
 	returnPoly.emptyNormal = in_originalPoly.emptyNormal;
 	return returnPoly;
 }

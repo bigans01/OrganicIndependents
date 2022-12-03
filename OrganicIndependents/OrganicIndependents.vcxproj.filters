@@ -1037,5 +1037,8 @@
     <ClCompile Include="FTriangleContainer.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
+    <ClCompile Include="ECBPoly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

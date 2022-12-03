@@ -35,7 +35,7 @@ class EnclaveTriangle
 public:
 	// core EnclaveTriangle components
 	TriangleMaterial enclaveTriangleMaterialID = TriangleMaterial::NOVAL;				// is the triangle dirt, stone, snow, wood, etc
-	short isEnclaveTrianglePolyPerfectlyClamped = 0;	// determines if the entire polygon is perfectly clamped to x, y, or z azis
+	PerfectClampEnum isEnclaveTrianglePolyPerfectlyClamped = PerfectClampEnum::NONE;	// determines if the entire polygon is perfectly clamped to x, y, or z azis
 	bool isTriangleValid = true;						// determines if this EnclaveTriangle successfully ran its trace through the Enclave without any issues;
 														// this value will be set to false if there are any issues with tracing.
 	ECBPolyLine lineArray[3];							// the 3 ECBPolyLine that are used as a basis to trace the EnclaveTriangle through an Enclave.

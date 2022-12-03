@@ -19,14 +19,18 @@
 class PrimaryLineT2MultiTracer
 {
 public:
-	PrimaryLineT2MultiTracer(PrimaryLineT2Array* in_PLT2ArrayRef, ECBBorderLineList* in_blueprintBorderLines, BorderDataMap* in_borderDataMapRef, EnclaveKeyDef::EnclaveKey in_blueprintKey, int in_perfectClampFlag);	// constructor
+	PrimaryLineT2MultiTracer(PrimaryLineT2Array* in_PLT2ArrayRef, 
+							ECBBorderLineList* in_blueprintBorderLines, 
+							BorderDataMap* in_borderDataMapRef, 
+							EnclaveKeyDef::EnclaveKey in_blueprintKey, 
+							PerfectClampEnum in_perfectClampFlag);	// constructor
 	PrimaryLineT2Array* PLT2ArrayRef;			// a reference to the T2 array that will be modified
 	ECBBorderLineList* blueprintBorderLinesRef;
 	PrimaryLineT1LinkArray primaryLinkArray;	// for storing the primary links
 	BorderDataMap* borderDataMapRef;			// pointer to the border data map
 	void beginRun();	// begins the run; called after primaryLinkArray.setNextLinks() is called
 	int faceMatchCount = 1;		// number of faces that match for a run to complete. Default is 1, but should be 2 for a perfect clamp condition.
-	int currentPerfectClampValue = 0;	// perfect clamp value, of the current PT2 we are on (doesn't really matter, it will be the same for all 3 lines; look into this later)
+	PerfectClampEnum currentPerfectClampValue = PerfectClampEnum::NONE;	// perfect clamp value, of the current PT2 we are on (doesn't really matter, it will be the same for all 3 lines; look into this later)
 	EnclaveKeyDef::EnclaveKey moveVals;			// movevals for current PT2 line 
 	EnclaveKeyDef::EnclaveKey blueprintKey;		// blueprint key for calculating borders for new PT2 lines
 	ECBPPOrientationResults nextPrimaryBeginOrientation; // the very initial begin point; always the same

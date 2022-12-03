@@ -36,7 +36,8 @@ void FTriangle::setupAndRunFracturerMachine()
 														fracturePoints[2], 
 														fractureEmptyNormal,
 														fractureRequiredOrientation,
-														fractureRequiredClampValue);
+														fractureRequiredClampValue,
+														fractureMaterial);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 
