@@ -161,18 +161,62 @@ void OrganicRawEnclave::updateOREForRMass()
 	blockSkeletonMap = rMassSolidsMap;	// assumes that setBlockSkeletons has been called before this function.
 }
 
-void OrganicRawEnclave::setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet)
+void OrganicRawEnclave::setPendingRMatterSolids(std::mutex* in_mutexRef, 
+												Operable3DEnclaveKeySet in_skeletonBlockSet,
+												Operable3DEnclaveKeySet in_filledClaimedNonSolids)
 {
 	// this function will eventually need to be edited to set the metadata for the EnclaveBlockSkeletons that will go into
 	// rMassSolidMap. (Noted on 2/15/2022)
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+
 	rMassSolidsMap.clear();	
+
+	// first, generate exposed block copies. Compare that set against the in_filledClaimedNonSolids set.
+	// If a key in the claimed filled non solid is NOT found in the exposed block copies, it is a false removal, 
+	// because it means that it should of been exposed, but was not (i.e, it produced no triangles). As a result, it needs to be solid.
+	// To do that, simply throw it into the rMassSolidsMap.
+	//
+	// This check has to be done, because it was discovered around 12/3/2022 that there are 
+	// rare cases where a LANDLOCKED RMatter block is ignored in the call to RMorphableMeshGroup::scanForSolidBlocks,
+	// when it has at least one TRACE_BIT is detected in it's area, but then the block that is claimed to be no longer LANDLOCKED
+	// never becomes an EXPOSED block -- thus resulting in a "hole."
+	//
+	// Thus, if the claimed non-LANDLOCKED block contains an INNER_MASS, but did not end up becoming EXPOSED,
+	// it needs to go back to being LANDLOCKED.
+
+	auto exposedBlocks = produceBlockCopies();
+	for (auto& currentClaimedNonFilled : in_filledClaimedNonSolids.getSet())
+	{
+		int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle((currentClaimedNonFilled).x, (currentClaimedNonFilled).y, (currentClaimedNonFilled).z);
+		auto matchFinder = exposedBlocks.find(blockCoordsToSingle);
+
+		// if there was no match, it means that realistically, the block is still solid.	
+		if (matchFinder == exposedBlocks.end())
+		{
+			EnclaveBlockSkeleton newSkeleton;
+			rMassSolidsMap[blockCoordsToSingle] = newSkeleton;
+		}
+		
+	}
+	
+
+	/*
 	auto skeletonsBegin = in_skeletonBlockSet.begin();
 	auto skeletonsEnd = in_skeletonBlockSet.end();
 	for (; skeletonsBegin != skeletonsEnd; skeletonsBegin++)
 	{
 		EnclaveBlockSkeleton newSkeleton;
 		int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle((*skeletonsBegin).x, (*skeletonsBegin).y, (*skeletonsBegin).z);
+		rMassSolidsMap[blockCoordsToSingle] = newSkeleton;
+	}
+	*/
+
+	// I'm not sure how this for loop below automatically set up it's looping from the Operable3DEnclaveKeySet,
+	// but hey -- it works and is probably OK. (I left the old code comemnted out in a block above)
+	for (auto& currentSkeletonCoord : in_skeletonBlockSet)
+	{
+		EnclaveBlockSkeleton newSkeleton;
+		int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle((currentSkeletonCoord).x, (currentSkeletonCoord).y, (currentSkeletonCoord).z);
 		rMassSolidsMap[blockCoordsToSingle] = newSkeleton;
 	}
 }
@@ -1296,7 +1340,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 
 	// part 4: generate the block triangles, and put them into the tempBlockMap before the function returns; these are the "exposed" blocks.
 	std::map<int, EnclaveBlock> exposedBlockMap;
-	tempOtsSGM.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &exposedBlockMap, &total_triangles);
+	tempOtsSGM.simulateExposedBlockGeneration(&exposedBlockMap);
 	return exposedBlockMap;
 }
 

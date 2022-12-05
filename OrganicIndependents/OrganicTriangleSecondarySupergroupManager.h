@@ -11,100 +11,18 @@
 class OrganicTriangleSecondarySupergroupManager
 {
 public:
-	std::map<int, OrganicTriangleSecondarySupergroup> secondarySupergroups;
-	void insertSecondary(int in_polyID, int in_supergroupID, OrganicTriangleSecondary in_organicTriangleSecondary)
-	{
-		secondarySupergroups[in_polyID].insertOrganicTriangleSecondary(in_supergroupID, in_organicTriangleSecondary);
-	}
+	std::map<int, OrganicTriangleSecondarySupergroup> secondarySupergroups;		// the public available map of all the supergroups.
+	void insertSecondary(int in_polyID, int in_supergroupID, OrganicTriangleSecondary in_organicTriangleSecondary);	// insert an OrganicTriangleSecondary, with the given poly id, into the given supergroup id.
+	void generateBlockTrianglesFromSecondaries(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,	// generates the triangles for EnclaveBlocks, and loads them into the passed in map, 
+		std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,												// and also updates the number of total triangles in the ORE.
+		int* in_totalTrianglesRef);																		// DO NOT USE this function to produce block copies for arbitrary purposes;
+																										// this function should only really be used by
+																										// the function OrganicRawEnclave::createBlocksFromOrganicTriangleSecondaries
 
-	void generateBlockTrianglesFromSecondaries(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,
-		std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,
-		int* in_totalTrianglesRef)
-	{
-		auto supergroupsBegin = secondarySupergroups.begin();
-		auto supergroupsEnd = secondarySupergroups.end();
-		for (; supergroupsBegin != supergroupsEnd; supergroupsBegin++)		// iterate through each super group.
-		{
-			auto subgroupsBegin = supergroupsBegin->second.secondarySubgroups.begin();
-			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
-			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
-			{
-				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
-				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
-				{
-					auto wrappedBBFanBegin = tertiariesBegin->second.triangleMap.begin();
-					auto wrappedBBFanEnd = tertiariesBegin->second.triangleMap.end();
-					for (; wrappedBBFanBegin != wrappedBBFanEnd; wrappedBBFanBegin++)
-					{
-						EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(wrappedBBFanBegin->first);
-						auto blockFinder = (*in_skeletonMapRef).find(wrappedBBFanBegin->first);
-						if (blockFinder == (*in_skeletonMapRef).end())		// if it isn't in the skeleton map, we'll display it.
-						{
-							int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-							EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
-							blockRef->insertBBFanFromRawEnclave(wrappedBBFanBegin->second);
-							*in_totalTrianglesRef += wrappedBBFanBegin->second.poly.numberOfTertiaries;	// increment the number of total_triangles, for when we eventually load into an Enclave itself.
-						}
-					}
-				}
-			}
-		}
-	}
-
-	bool willSecondariesProduceFans()
-	{
-		bool willSecondariesProduce = false;
-
-		auto supergroupsBegin = secondarySupergroups.begin();
-		auto supergroupsEnd = secondarySupergroups.end();
-		for (; supergroupsBegin != supergroupsEnd; supergroupsBegin++)		// iterate through each super group.
-		{
-			auto subgroupsBegin = supergroupsBegin->second.secondarySubgroups.begin();
-			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
-			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
-			{
-				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
-				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
-				{
-					if (tertiariesBegin->second.triangleMap.size() != 0)
-					{
-						willSecondariesProduce = true;
-						break;
-					}
-				}
-			}
-		}
-		return willSecondariesProduce;
-	}
-
-	std::set<int> generateTouchedBlockList()
-	{
-		std::set<int> touchedSet;	// the set to return
-		auto supergroupsBegin = secondarySupergroups.begin();
-		auto supergroupsEnd = secondarySupergroups.end();
-		for (; supergroupsBegin != supergroupsEnd; supergroupsBegin++)		// iterate through each super group.
-		{
-			auto subgroupsBegin = supergroupsBegin->second.secondarySubgroups.begin();
-			auto subgroupsEnd = supergroupsBegin->second.secondarySubgroups.end();
-			for (; subgroupsBegin != subgroupsEnd; subgroupsBegin++)				// for each supergroup, check each subgroup.
-			{
-				auto tertiariesBegin = subgroupsBegin->second.enclaveTriangleTertiaryContainer.begin();
-				auto tertiariesEnd = subgroupsBegin->second.enclaveTriangleTertiaryContainer.end();
-				for (; tertiariesBegin != tertiariesEnd; tertiariesBegin++)		// for each subgroup, iterate through each tertiary.
-				{
-					auto wrappedBBFanBegin = tertiariesBegin->second.triangleMap.begin();
-					auto wrappedBBFanEnd = tertiariesBegin->second.triangleMap.end();
-					for (; wrappedBBFanBegin != wrappedBBFanEnd; wrappedBBFanBegin++)
-					{
-						touchedSet.insert(wrappedBBFanBegin->first);	// insert the resulting value into the set	
-					}
-				}
-			}
-		}
-		return touchedSet;
-	}
+	void simulateExposedBlockGeneration(std::map<int, EnclaveBlock>* in_enclaveBlockMapRef);	// generates the triangles for EnclaveBlocks, and puts them into the passed in map --
+																								// and that's it. Can be used in multiple queries, as it does not affect any component of an ORE directly.
+	bool willSecondariesProduceFans();			// check any instances of OrganicWrappedBBFan would be produced by this instance.
+	std::set<int> generateTouchedBlockList();	// functionally the same as simulateExposedBlockGeneration, but does not return EnclaveBlock instances -- just their int-equivalent EnclaveKeys.
 };
 
 #endif

@@ -113,9 +113,15 @@ public:
 	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);							// checks to see if a block exists as a skeleton, should only ever be used with the function
 																											// ECBMap::getBlockStateFromPopulatedORE.
 	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
-	void setPendingRMatterSolids(std::mutex* in_mutexRef, Operable3DEnclaveKeySet in_skeletonBlockSet);		// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
-																											// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
-																											// before the call to updateOREForRmass.																										
+
+	void setPendingRMatterSolids(std::mutex* in_mutexRef,													// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
+								Operable3DEnclaveKeySet in_skeletonBlockSet,								// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
+								Operable3DEnclaveKeySet in_filledClaimedNonSolids);							// before the call to updateOREForRmass. It also checks to ensure that RMorphableMesh objects (see OrganicGLWinLib)
+																											// that were originally LANDLOCKED (i.e, a blockSkeleton) but flagged for removal --AND-- had inner mass detected, actually
+																											// produced exposed blocks. If the case was that they didn't produce an EXPOSED block, the LANDLOCKED block is put back in, 
+																											// producing a blockSkeleton.
+																											
+																																																					
 
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 

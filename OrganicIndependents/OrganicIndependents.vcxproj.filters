@@ -1040,5 +1040,8 @@
     <ClCompile Include="ECBPoly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp">
+      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -422,6 +422,7 @@
     <ClCompile Include="OrganicRawEnclave.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
+    <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
     <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />
