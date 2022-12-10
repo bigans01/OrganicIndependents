@@ -50,6 +50,25 @@ public:
 			return *this;
 		}
 
+		EnclaveKey operator+(const EnclaveKey& enclaveKey_b)
+		{
+			EnclaveKey returnKey;
+			returnKey.x = x + enclaveKey_b.x;
+			returnKey.y = y + enclaveKey_b.y;
+			returnKey.z = z + enclaveKey_b.z;
+			return returnKey;
+		}
+
+		EnclaveKey operator-(const EnclaveKey& enclaveKey_b)
+		{
+			EnclaveKey returnKey;
+			returnKey.x = x - enclaveKey_b.x;
+			returnKey.y = y - enclaveKey_b.y;
+			returnKey.z = z - enclaveKey_b.z;
+			return returnKey;
+		}
+
+
 		// operator overloading (required)
 		bool operator==(const EnclaveKey &other) const
 		{

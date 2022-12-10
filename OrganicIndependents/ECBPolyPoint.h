@@ -36,6 +36,25 @@ public:
 		return returnPoint;
 	}
 
+	ECBPolyPoint operator+(const ECBPolyPoint& in_pointB)
+	{
+		ECBPolyPoint returnPoint;
+		returnPoint.x = (x + in_pointB.x);
+		returnPoint.y = (y + in_pointB.y);
+		returnPoint.z = (z + in_pointB.z);
+		return returnPoint;
+	}
+
+
+	ECBPolyPoint operator*(const float& in_multiplier)
+	{
+		ECBPolyPoint returnPoint;
+		returnPoint.x = x * -1;
+		returnPoint.y = y * -1;
+		returnPoint.z = z * -1;
+		return returnPoint;
+	}
+
 	bool operator==(const ECBPolyPoint& in_otherPoint)
 	{
 		return (x == in_otherPoint.x

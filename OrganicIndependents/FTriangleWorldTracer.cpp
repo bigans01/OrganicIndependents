@@ -2,6 +2,93 @@
 #include "FTriangleWorldTracer.h"
 #include "FTrianglePoint.h"
 
+void FTriangleWorldTracer::LineLocalizer::determineValues()
+{
+	std::set<int> keyedXValues;
+	std::set<int> keyedYValues;
+	std::set<int> keyedZValues;
+
+	keyedXValues.insert(localizedBeginKey.x);
+	keyedYValues.insert(localizedBeginKey.y);
+	keyedZValues.insert(localizedBeginKey.z);
+
+	keyedXValues.insert(localizedEndKey.x);
+	keyedYValues.insert(localizedEndKey.y);
+	keyedZValues.insert(localizedEndKey.z);
+
+	// create an EnclaveKey that has the min values (just use the begin of each set, since the minimum value is there.)
+	EnclaveKeyDef::EnclaveKey minimumKey(*keyedXValues.begin(), *keyedYValues.begin(), *keyedZValues.begin());
+
+	// fetch the inverted key; this will be the value of the translationKey.
+	invertingKey = minimumKey.getInvertedKey();
+
+	ECBPolyPoint pointAdjustmentValue(invertingKey.x*32.0f, invertingKey.y*32.0f, invertingKey.z*32.0f);
+	invertingPointValue = IndependentUtils::roundPolyPointToHundredths(pointAdjustmentValue);
+
+	// apply the inverted values
+	localizedBeginKey += invertingKey;
+	localizedEndKey += invertingKey;
+
+	localizedStartPoint = IndependentUtils::roundPolyPointToHundredths(localizedStartPoint + invertingPointValue);
+	localizedEndPoint = IndependentUtils::roundPolyPointToHundredths(localizedEndPoint + invertingPointValue);
+
+}
+
+ECBPolyPoint FTriangleWorldTracer::LineLocalizer::getRevertedPoint(ECBPolyPoint in_pointToRevert)
+{
+	ECBPolyPoint revertedValue = invertingPointValue * -1;
+	return IndependentUtils::roundPolyPointToHundredths(in_pointToRevert + revertedValue);
+	return revertedValue;
+}
+
+EnclaveKeyDef::EnclaveKey FTriangleWorldTracer::LineLocalizer::getRevertedKey(EnclaveKeyDef::EnclaveKey in_keyToApplyTo)
+{
+	return in_keyToApplyTo + (invertingKey.getInvertedKey());
+}
+
+
+
+
+
+
+
+
+
+bool FTriangleWorldTracer::WorldLineTracer::checkIfRunComplete()
+{
+	bool isComplete = false;
+	if (currentKey == endKey)
+	{
+		isComplete = true;
+		shouldTraceStop = true;
+	}
+	return isComplete;
+}
+
+void FTriangleWorldTracer::WorldLineTracer::traverseLineOnce()
+{
+	//std::cout << "currentKey Value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << std::endl;	// test output only
+	//std::cout << "nextKeyAdd Value: " << nextKeyAdd.x << ", " << nextKeyAdd.y << ", " << nextKeyAdd.z << std::endl;
+	currentKey += nextKeyAdd;
+	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
+	ECBIntersectMeta resultantIntersect = IndependentUtils::findCBIv2(currentIterationEndpoint,
+		endPoint,
+		currentKey,
+		endKey,
+		lineBoundingBox);
+	//std::cout << "--Resultant intersect at traverseLineOnce: " << resultantIntersect.intersectedPoint.x << ", " << resultantIntersect.intersectedPoint.y << ", " << resultantIntersect.intersectedPoint.z << std::endl;
+	nextKeyAdd = resultantIntersect.incrementingKey;
+	currentIterationBeginPoint = currentIterationEndpoint;			// set the begin point to be the previous end point
+	currentIterationEndpoint = resultantIntersect.intersectedPoint; // set the new end point
+}
+
+
+
+
+
+
+
+
 void FTriangleWorldTracer::runLineTracing()
 {
 	for (int x = 0; x < 3; x++)
@@ -16,13 +103,18 @@ void FTriangleWorldTracer::runLineTracing()
 			case 2: { beginPointIndex = 2; endPointIndex = 0; break;}
 		}
 
-		//TracingLineBoundingBox currentTracerBoundingBox(tracingLineKeypairs[x].keyA,
-		//											    tracingLineKeypairs[x].keyB);
-		WorldLineTracer currentTracer(tracingLineKeypairs[x].keyA,
-											tracingLineKeypairs[x].keyB,
-											fTrianglePoints[beginPointIndex],
-											fTrianglePoints[endPointIndex]);
+		// The values to use for the currentTracer, will have to come from the LineLocalizer.
+		
+		LineLocalizer newLocalizer(tracingLineKeypairs[x].keyA,
+									tracingLineKeypairs[x].keyB,
+									fTrianglePoints[beginPointIndex],
+									fTrianglePoints[endPointIndex]);
 
+		WorldLineTracer currentTracer(newLocalizer.localizedBeginKey,
+									  newLocalizer.localizedEndKey,
+									  newLocalizer.localizedStartPoint,
+									  newLocalizer.localizedEndPoint);
+		
 		// we must always enter the below while loop at least once,
 		// to put in at least one FTriangleLine. Therefore, we will check if the run is complete once
 		// we are already in the while loop, and not before. If checkIfRunComplete does return true
@@ -42,25 +134,19 @@ void FTriangleWorldTracer::runLineTracing()
 			auto currentBeginPoint = currentTracer.currentIterationBeginPoint;
 			auto currentEndPoint = currentTracer.currentIterationEndpoint;
 
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentBeginPoint, FTrianglePointType::EXTERIOR));
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint, FTrianglePointType::EXTERIOR));
-			FTriangleLine newExteriorLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
 
-			
-
-			std::cout << "(FTriangleWorldTracer): inserting line with points: A -> ";
-			currentBeginPoint.printPointCoords();
-			std::cout << " | B -> ";
-			currentEndPoint.printPointCoords();
-			std::cout << std::endl;
-
-			(*tracerStagerRef)[currentTracerKey].insertLine(newExteriorLine);
+			ECBPolyPoint revertedBeginPoint = newLocalizer.getRevertedPoint(currentBeginPoint);
+			ECBPolyPoint revertedEndPoint = newLocalizer.getRevertedPoint(currentEndPoint);
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
+			FTriangleLine newRevertedLine(revertedBeginPoint, revertedEndPoint, FTriangleLineType::EXTERIOR);
+			(*tracerStagerRef)[newLocalizer.getRevertedKey(currentTracerKey)].insertLine(newRevertedLine);
 
 			// check for additional key adjustments, for x/y/z, when the line is perfectly clamped to any of those.
 			// For X
 			float moduloXpointA = fmod(currentBeginPoint.x, 32.0f);
 			float moduloXpointB = fmod(currentEndPoint.x, 32.0f);
-			if 
+			if
 			(
 				(moduloXpointA == 0.0f)
 				&&
@@ -70,7 +156,7 @@ void FTriangleWorldTracer::runLineTracing()
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
-				(*tracerStagerRef)[negativeXKey].insertLine(newExteriorLine);
+				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeXKey)].insertLine(newRevertedLine);
 			}
 
 			// For Y
@@ -85,14 +171,14 @@ void FTriangleWorldTracer::runLineTracing()
 				(currentBeginPoint.y == currentEndPoint.y)
 			)
 			{
-				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y -1, currentTracerKey.z);
-				(*tracerStagerRef)[negativeYKey].insertLine(newExteriorLine);
+				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
+				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeYKey)].insertLine(newRevertedLine);
 			}
 
 			// For Z
 			float moduloZpointA = fmod(currentBeginPoint.z, 32.0f);
 			float moduloZpointB = fmod(currentEndPoint.z, 32.0f);
-			if 
+			if
 			(
 				(moduloZpointA == 0.0f)
 				&&
@@ -101,25 +187,10 @@ void FTriangleWorldTracer::runLineTracing()
 				(currentBeginPoint.z == currentEndPoint.z)
 			)
 			{
-				/*
-				std::cout << "!! Alert: found matching Z values; points are:" << std::endl;
-				currentBeginPoint.printPointCoords();
-				std::cout << std::endl;
-				currentEndPoint.printPointCoords();
-				std::cout << std::endl;
-
-				std::cout << "!! currentTracerKey is: ";
-				currentTracerKey.printKey();
-				std::cout << std::endl;
-
-				int waitVal = 3;
-				std::cin >> waitVal;
-				*/
-
 				EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
-				(*tracerStagerRef)[negativeZKey].insertLine(newExteriorLine);
+				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeZKey)].insertLine(newRevertedLine);
 			}
-
+			
 			currentTracer.traverseLineOnce();
 		}
 		std::cout << "Completed traversal of line " << x << std::endl;
