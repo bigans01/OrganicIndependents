@@ -111,8 +111,9 @@ void ZSliceLine::determineZLineOutputs()
 
 		lineTargets = determinedTargets;
 
-		int alignedToYWait = 3;
-		std::cin >> alignedToYWait;
+		// FTDEBUG, (uncomment when needed for debugging)
+		//int alignedToYWait = 3;
+		//std::cin >> alignedToYWait;
 	}
 	else if (perfectlyAlignedToYGridLine)
 	{
@@ -132,7 +133,8 @@ void ZSliceLine::determineZLineOutputs()
 
 		lineTargets = determinedTargets;
 
-		int alignedToYWait = 3;
-		std::cin >> alignedToYWait;
+		// FTDEBUG, (uncomment when needed for debugging)
+		//int alignedToYWait = 3;
+		//std::cin >> alignedToYWait;
 	}
 }

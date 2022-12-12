@@ -92,8 +92,7 @@ void XSliceLine::determineXLineOutputs()
 	}
 	else if (perfectlyAlignedToYGridLine)
 	{
-		std::cout << "(XSliceLine::determineCalculatedMoveVal): found line as being aligned to Y. " << std::endl;
-		std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
+	
 
 		EnclaveKeyDef::EnclaveKey backwardXKey(currentBackwardXValue, currentLineYDim, currentLineZDim);
 		EnclaveKeyDef::EnclaveKey forwardXKey(currentForwardXValue, currentLineYDim, currentLineZDim);
@@ -111,8 +110,11 @@ void XSliceLine::determineXLineOutputs()
 
 		lineTargets = determinedTargets;
 
-		int alignedToYWait = 3;
-		std::cin >> alignedToYWait;
+		// FTDEBUG, (uncomment when needed for debugging)
+		//std::cout << "(XSliceLine::determineCalculatedMoveVal): found line as being aligned to Y. " << std::endl;
+		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
+		//int alignedToYWait = 3;
+		//std::cin >> alignedToYWait;
 	}
 	else if (perfectlyAlignedToZGridLine)
 	{

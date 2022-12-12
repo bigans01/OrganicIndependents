@@ -67,9 +67,10 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 	int postModifyStagerMapSize = stagerMap.size();
 	std::cout << "stagerMap size, pre-modify: " << preModifyStagerMapSize << " | post-modify: "<< postModifyStagerMapSize << std::endl;
 
-	std::cout << "(FTriangleFracturerBase::analyzeAndCleanupStagers) done with cleanup.";
-	int doneCleanup = 0;
-	std::cin >> doneCleanup;
+	// FTDEBUG, (uncomment when needed for debugging)
+	//std::cout << "(FTriangleFracturerBase::analyzeAndCleanupStagers) done with cleanup.";
+	//int doneCleanup = 0;
+	//std::cin >> doneCleanup;
 }
 
 std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsableRayCasters()

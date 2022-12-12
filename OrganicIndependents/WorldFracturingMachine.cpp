@@ -130,9 +130,11 @@ void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 
 	adjustPointsByValue(pointAdjustmentValue);
 
-	std::cout << "Done with translation by blueprint keys. " << std::endl;
-	int doneTranslate = 3;
-	std::cin >> doneTranslate;
+	// FTDEBUG, (uncomment when needed for debugging)
+
+	//std::cout << "Done with translation by blueprint keys. " << std::endl;
+	//int doneTranslate = 3;
+	//std::cin >> doneTranslate;
 }
 
 void WorldFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKey in_adjustingKey)
@@ -201,9 +203,10 @@ void WorldFracturingMachine::reverseTranslateStagerLines()
 		currentStager.second.translateLines(currentTranslationKey, rayCastDimInterval);
 	}
 
-	std::cout << "Done with reverseTranslateStagerLines()" << std::endl;
-	int translationWait = 3;
-	std::cin >> translationWait;
+	// FTDEBUG, (uncomment when needed for debugging)
+	//std::cout << "Done with reverseTranslateStagerLines()" << std::endl;
+	//int translationWait = 3;
+	//std::cin >> translationWait;
 }
 
 void WorldFracturingMachine::buildWorldMachineTriangleContainers()
@@ -251,9 +254,10 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 		(*ftfOutputRef).erase(currentContainerToRemove);
 	}
 
-	std::cout << "Done with buildWorldMachineTriangleContainers()." << std::endl;
-	int buildDone = 3;
-	std::cin >> buildDone;
+	// FTDEBUG, (uncomment when needed for debugging)
+	//std::cout << "Done with buildWorldMachineTriangleContainers()." << std::endl;
+	//int buildDone = 3;
+	//std::cin >> buildDone;
 }
 
 void WorldFracturingMachine::runWorldTracing()
