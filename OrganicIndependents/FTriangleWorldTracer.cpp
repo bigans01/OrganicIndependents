@@ -71,11 +71,15 @@ void FTriangleWorldTracer::WorldLineTracer::traverseLineOnce()
 	//std::cout << "nextKeyAdd Value: " << nextKeyAdd.x << ", " << nextKeyAdd.y << ", " << nextKeyAdd.z << std::endl;
 	currentKey += nextKeyAdd;
 	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
-	ECBIntersectMeta resultantIntersect = IndependentUtils::findCBIv2(currentIterationEndpoint,
-		endPoint,
-		currentKey,
-		endKey,
-		lineBoundingBox);
+
+	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(currentIterationEndpoint,
+																			endPoint,
+																			currentKey,
+																			endKey,
+																			lineBoundingBox, 
+																			FTraceType::BLUEPRINT_TRACE);
+
+
 	//std::cout << "--Resultant intersect at traverseLineOnce: " << resultantIntersect.intersectedPoint.x << ", " << resultantIntersect.intersectedPoint.y << ", " << resultantIntersect.intersectedPoint.z << std::endl;
 	nextKeyAdd = resultantIntersect.incrementingKey;
 	currentIterationBeginPoint = currentIterationEndpoint;			// set the begin point to be the previous end point

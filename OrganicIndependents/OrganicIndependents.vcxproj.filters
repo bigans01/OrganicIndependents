@@ -807,6 +807,24 @@
     <ClInclude Include="TriangleMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FTriangleUtils.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTraceType.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FIntersectMeta.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTraceBorderValues.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTraceBorderLineList.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTraceOrientationResults.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1042,6 +1060,9 @@
     </ClCompile>
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp">
       <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleUtils.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

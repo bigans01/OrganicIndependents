@@ -92,11 +92,14 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 				// This feature will probably eventually be extended to other points of the overall Organic libraries, but it is being tested here for now.
 				TracingLineBoundingBox bbToUse(beginKey, endKey);
 				lineBoundingBox = bbToUse;
-				ECBIntersectMeta resultantIntersect = IndependentUtils::findCBIv2(beginPoint, 
-																				  endPoint, 
-																				  beginKey, 
-																				  endKey,
-																				lineBoundingBox);	// do the initial set up; beginKey will be replaced by currentKey in later function calls
+
+
+				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(beginPoint,
+																				endPoint,
+																				beginKey,
+																				endKey,
+																				lineBoundingBox,
+																				FTraceType::BLUEPRINT_TRACE);
 
 				nextKeyAdd = resultantIntersect.incrementingKey;					// the next key add will be a result from previous function call
 				currentIterationBeginPoint = beginPoint;							// set the initial value of the begin point

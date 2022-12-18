@@ -6,6 +6,8 @@
 #include "FTriangleProductionStager.h"
 #include "EnclaveKeyPair.h"
 #include "FTriangleLine.h"
+#include "FTriangleUtils.h"
+#include "FIntersectMeta.h"
 
 /*
 

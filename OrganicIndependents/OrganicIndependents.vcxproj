@@ -247,11 +247,16 @@
     <ClInclude Include="FanData.h" />
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
+    <ClInclude Include="FIntersectMeta.h" />
     <ClInclude Include="FRayCasterInitData.h" />
     <ClInclude Include="FRayCasterQuadBase.h" />
     <ClInclude Include="FRayCasterTypeEnum.h" />
     <ClInclude Include="FRayIntersectionMachine.h" />
     <ClInclude Include="FRayIntersectionRoundingMode.h" />
+    <ClInclude Include="FTraceBorderLineList.h" />
+    <ClInclude Include="FTraceBorderValues.h" />
+    <ClInclude Include="FTraceOrientationResults.h" />
+    <ClInclude Include="FTraceType.h" />
     <ClInclude Include="FTriangle.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
@@ -265,6 +270,7 @@
     <ClInclude Include="FTriangleReverseTranslationMode.h" />
     <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
+    <ClInclude Include="FTriangleUtils.h" />
     <ClInclude Include="FTriangleWorldTracer.h" />
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
@@ -411,6 +417,7 @@
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
+    <ClCompile Include="FTriangleUtils.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
