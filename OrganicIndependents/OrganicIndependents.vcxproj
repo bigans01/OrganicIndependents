@@ -417,6 +417,7 @@
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
+    <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />

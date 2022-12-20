@@ -1418,6 +1418,11 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 	translatedMRP.y = translatedMRP.y - (in_originalBlueprintKey.y * 32);
 	translatedMRP.z = translatedMRP.z - (in_originalBlueprintKey.z * 32);
 
+	// perform rounding operations
+	translated0 = IndependentUtils::roundPolyPointToHundredths(translated0);
+	translated1 = IndependentUtils::roundPolyPointToHundredths(translated1);
+	translated2 = IndependentUtils::roundPolyPointToHundredths(translated2);
+
 	// new lines
 	TriangleLine line1, line2, line3;
 	line1.pointA = translated0;

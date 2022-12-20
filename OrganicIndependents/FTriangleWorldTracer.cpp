@@ -107,12 +107,25 @@ void FTriangleWorldTracer::runLineTracing()
 			case 2: { beginPointIndex = 2; endPointIndex = 0; break;}
 		}
 
-		// The values to use for the currentTracer, will have to come from the LineLocalizer.
+		// Before the LineLocalizer is initialized, check to see if we need to re-orient (swap the points/keys) of the line we're looking at.
+		// The easiest way to do this, is to get copies of the data we will use, and then swap those.
+		EnclaveKeyDef::EnclaveKey tracingKeyA = tracingLineKeypairs[x].keyA;
+		EnclaveKeyDef::EnclaveKey tracingKeyB = tracingLineKeypairs[x].keyB;
+		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
+		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
 		
-		LineLocalizer newLocalizer(tracingLineKeypairs[x].keyA,
-									tracingLineKeypairs[x].keyB,
-									fTrianglePoints[beginPointIndex],
-									fTrianglePoints[endPointIndex]);
+		// Call the re-orientation check function here; if reorientRequired = true, we'll have to swap it the values of tracingKeyA/tracingKeyB and
+		// tracingPointA/tracingPointB. 
+		
+		// reorientRequired = .... ?
+
+		// The values to use for the currentTracer, will have to come from the LineLocalizer.
+		LineLocalizer newLocalizer(tracingKeyA,
+									tracingKeyB,
+									tracingPointA,
+									tracingPointB);
+
+		
 
 		WorldLineTracer currentTracer(newLocalizer.localizedBeginKey,
 									  newLocalizer.localizedEndKey,
@@ -126,6 +139,9 @@ void FTriangleWorldTracer::runLineTracing()
 		while (currentTracer.shouldTraceStop == false)
 		{
 			currentTracer.checkIfRunComplete();
+
+			std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> currentCandidateAffectedKeys;
+
 
 			// do stuff here
 			// ...
@@ -144,7 +160,9 @@ void FTriangleWorldTracer::runLineTracing()
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
 			FTriangleLine newRevertedLine(revertedBeginPoint, revertedEndPoint, FTriangleLineType::EXTERIOR);
-			(*tracerStagerRef)[newLocalizer.getRevertedKey(currentTracerKey)].insertLine(newRevertedLine);
+
+			//(*tracerStagerRef)[newLocalizer.getRevertedKey(currentTracerKey)].insertLine(newRevertedLine);
+			currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(currentTracerKey));
 
 			// check for additional key adjustments, for x/y/z, when the line is perfectly clamped to any of those.
 			// For X
@@ -160,7 +178,8 @@ void FTriangleWorldTracer::runLineTracing()
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
-				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeXKey)].insertLine(newRevertedLine);
+				//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeXKey)].insertLine(newRevertedLine);
+				currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(negativeXKey));
 			}
 
 			// For Y
@@ -176,7 +195,8 @@ void FTriangleWorldTracer::runLineTracing()
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
-				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeYKey)].insertLine(newRevertedLine);
+				//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeYKey)].insertLine(newRevertedLine);
+				currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(negativeYKey));
 			}
 
 			// For Z
@@ -192,11 +212,21 @@ void FTriangleWorldTracer::runLineTracing()
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
-				(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeZKey)].insertLine(newRevertedLine);
+				//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeZKey)].insertLine(newRevertedLine);
+				currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(negativeZKey));
 			}
 			
+			// put the candidate data, into a new TracerLineRecord, and push that record back.
+			TracerLineRecord newRecord(newRevertedLine, currentCandidateAffectedKeys);
+			lineCandidates.push_back(newRecord);
+
+
 			currentTracer.traverseLineOnce();
 		}
+
+		// once the current line has been finished, run the application logic. The application logic 
+		// will take into account whether or not the 
+		runCandidateApplicationLogic();
 		std::cout << "Completed traversal of line " << x << std::endl;
 	}
 }

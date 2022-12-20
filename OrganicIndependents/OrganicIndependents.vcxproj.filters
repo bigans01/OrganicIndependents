@@ -1064,5 +1064,8 @@
     <ClCompile Include="FTriangleUtils.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
+    <ClCompile Include="FTriangleTracerBase.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
