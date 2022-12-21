@@ -48,16 +48,11 @@ class FTriangleUtils
 			FTraceType in_fTraceType);
 
 		static ECBPolyPoint roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey);		// rounds a point to appropriate precision, based off blueprint coords
-
 		static ECBPolyPoint determinePolyPointPrecisionLimits(ECBPolyPoint in_polyPoint);
-
 		static float roundToHundredth(float in_float);
 		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
-
 		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
-
 		static FTraceOrientationResults getFTracePointOrientation(ECBPolyPoint in_pointToCheck, FTraceBorderLineList* in_borderLineList);
-
 		static EnclaveKeyDef::EnclaveKey getFTraceCalibratedKey(ECBPolyPoint in_originPoint,
 			ECBPolyPoint in_interceptPoint,
 			FTraceBorderLineList* in_borderLineListRef);
@@ -66,6 +61,9 @@ class FTriangleUtils
 																FTraceBorderLineList* in_borderLineListRef,
 																ECBPolyPoint in_originPoint, 
 																ECBPolyPoint in_interceptPoint);
+
+		static ECBPolyPoint findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static bool isLinePositivelyOriented(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);	// checks if the given Line A>B is positively oriented; returns false if not.
 
 		
 

@@ -59,12 +59,16 @@ class FTriangleTracerBase
 		ECBPolyPoint fTrianglePoints[3];
 		bool reorientRequired = false;		// if true, it means we had to make the line "positive oriented", and we'll have to insert
 											// the lines into the tracerStagerRef in reverse order, when we call runCandidateApplicationLogic.
-		void swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,
+
+		//  Below: this function is used to swap the point/key values of the line,
+		//	in the event that a call to FTriangleUtils::isLinePositivelyOriented returns false
+		void swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,		
 						EnclaveKeyDef::EnclaveKey* in_keyB,
 						ECBPolyPoint* in_pointA,
 						ECBPolyPoint* in_pointB);
 
-		void runCandidateApplicationLogic();
+		void runCandidateApplicationLogic();	// run each FTriangleLine that was produced, and put them into the appropriate keyed FTriangleProductionStager (in tracerStagerRef)
+												// (i.e., every time an instance of FTriangleWorldTracer::WorldLineTracer iterated during it's trace)
 };
 
 #endif

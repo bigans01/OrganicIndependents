@@ -2635,3 +2635,186 @@ ECBPolyPoint FTriangleUtils::roundToNearestLineOrCorner(int in_xoryorz,
 
 	return calibratedPoint;
 }
+
+ECBPolyPoint FTriangleUtils::findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB)
+{
+	ECBPolyPoint returnPoint;
+	//std::cout << "(pre-normalization) point A values: " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << std::endl;
+	//std::cout << "(pre-normalization) point B values: " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << std::endl;
+	//returnPoint.x = (in_pointB.x - in_pointA.x) / abs(in_pointB.x - in_pointA.x);	// get normalized x
+
+	// make sure x slope is not 0
+	if (!((in_pointB.x - in_pointA.x) == 0.0f))
+	{
+		returnPoint.x = (in_pointB.x - in_pointA.x) / abs(in_pointB.x - in_pointA.x);	// " y
+	}
+	else
+	{
+		returnPoint.x = 0.0f;
+	}
+
+
+
+	// make sure y slope is not 0 
+	if (!((in_pointB.y - in_pointA.y) == 0.0f))
+	{
+		returnPoint.y = (in_pointB.y - in_pointA.y) / abs(in_pointB.y - in_pointA.y);	// " y
+	}
+	else
+	{
+		returnPoint.y = 0.0f;
+	}
+
+	// make sure z slope is not 0
+	if (!((in_pointB.z - in_pointA.z) == 0.0f))
+	{
+		returnPoint.z = (in_pointB.z - in_pointA.z) / abs(in_pointB.z - in_pointA.z);	// " y
+	}
+	else
+	{
+		//std::cout << "WARNING>>>>>: ZERO Z slope DETECTED! " << std::endl;
+		returnPoint.z = 0.0f;
+	}
+
+	// returnPoint.z = (in_pointB.z - in_pointA.z) / abs(in_pointB.z - in_pointA.z);	// " z
+	//std::cout << "normalized slope return val is: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << std::endl;
+	return returnPoint;
+}
+
+bool FTriangleUtils::isLinePositivelyOriented(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB)
+{
+	// assume it's not oriented, towards positives.
+	bool isLineOriented = false;
+
+	enum class SlopeDim
+	{
+		NOVAL,
+		X_SLOPE,
+		Y_SLOPE,
+		Z_SLOPE
+	};
+
+	struct PointSlopeData
+	{
+		PointSlopeData() {};
+		PointSlopeData(ECBPolyPoint in_dataForSlope)
+		{
+			dimMap[SlopeDim::X_SLOPE] = in_dataForSlope.x;
+			dimMap[SlopeDim::Y_SLOPE] = in_dataForSlope.y;
+			dimMap[SlopeDim::Z_SLOPE] = in_dataForSlope.z;
+		}
+
+		int getPositiveDimCount()
+		{
+			int positiveCount = 0;
+			for (auto& currentDim : dimMap)
+			{
+				if (currentDim.second == 1.0f)
+				{
+					positiveCount++;
+				}
+			}
+			return positiveCount;
+		}
+
+		SlopeDim getOnlyPositiveDim()
+		{
+			SlopeDim posDim = SlopeDim::NOVAL;
+			for (auto& currentDim : dimMap)
+			{
+				if (currentDim.second == 1.0f)
+				{
+					posDim = currentDim.first;
+				}
+			}
+			return posDim;
+		}
+
+		std::map<SlopeDim, float> dimMap;
+	};
+
+	// Find two sets of PointSlopeData: one for A>B, and one for B<A.
+	auto normalizedAB = findNormalizedSlope(in_pointA, in_pointB);
+	auto normalizedBA = findNormalizedSlope(in_pointB, in_pointA);
+
+	// Form two instances of PointSlopeData.
+	PointSlopeData normalizedABData(normalizedAB);
+	PointSlopeData normalizedBAData(normalizedBA);
+
+	// Get the number of positives from each one.
+	int posCountAB = normalizedABData.getPositiveDimCount();
+	int posCountBA = normalizedBAData.getPositiveDimCount();
+
+
+	// Debug output:
+	in_pointA.printPointCoords();
+	std::cout << "Line AB: point A: ";
+	in_pointA.printPointCoords();
+	std::cout << " | point B: ";
+	in_pointB.printPointCoords();
+	std::cout << std::endl;
+
+	std::cout << "Pos count AB:" << posCountAB << std::endl;
+	std::cout << "Pos count BA:" << posCountBA << std::endl;
+
+	// There should be two conditions to check:
+	//	-if posCountAB >= 2, no swap is needed.
+	//	-if posCountAB == posCountBA, we'll need to do a compare.
+	if (posCountAB >= 2)
+	{
+		std::cout << "AB had >= 2 positives; already positive oriented. " << std::endl;
+		isLineOriented = true;
+	}
+
+	// The only way posCountAB could equal posCountBA is if there's exactly 1 positive dim in each.
+	else if (posCountAB == posCountBA)
+	{
+		// in this condition, we need to check whether its AB or BA that contains the preferred
+		// case. The order is: X_SLOPE, Y_SLOPE, Z_SLOPE. I.e, positive X_SLOPE takes precedence always.
+		SlopeDim dimPrefArray[3];
+		dimPrefArray[0] = SlopeDim::X_SLOPE;
+		dimPrefArray[1] = SlopeDim::Y_SLOPE;
+		dimPrefArray[2] = SlopeDim::Z_SLOPE;
+
+		SlopeDim abMatchedPositive = normalizedABData.getOnlyPositiveDim();
+		int abMatchRun = 0;
+		for (int x = 0; x < 3; x++)
+		{
+			if (abMatchedPositive == dimPrefArray[x])
+			{
+				abMatchRun = x;
+				break;
+			}
+		}
+
+		SlopeDim baMatchedPositive = normalizedBAData.getOnlyPositiveDim();
+		int baMatchRun = 0;
+		for (int x = 0; x < 3; x++)
+		{
+			if (baMatchedPositive == dimPrefArray[x])
+			{
+				baMatchRun = x;
+				break;
+			}
+		}
+
+		// if abMatchRun is < baMatchRun, we don't have to orient.
+		// That is because, abMatchRun would match the priority before baMatchRun does, which means that A>B is already oriented.
+		if (abMatchRun < baMatchRun)
+		{
+			isLineOriented = true;
+		}
+	}
+
+	else if 
+	(
+		(posCountAB == 1)
+		&&
+		(posCountBA < 1)
+	)
+	{
+		isLineOriented = true;
+	}
+
+	return isLineOriented;
+}

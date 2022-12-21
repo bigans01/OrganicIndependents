@@ -19,13 +19,6 @@ void FTriangleTracerBase::swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,
 
 void FTriangleTracerBase::runCandidateApplicationLogic()
 {
-	// do swap logic checks here
-	//
-	// ...
-
-
-
-	// once logic checks are done, roll out the lines to their appropriate keys.
 	for (auto& currentLineData : lineCandidates)
 	{
 		for (auto& currentLineDataKey : currentLineData.applicableSet)

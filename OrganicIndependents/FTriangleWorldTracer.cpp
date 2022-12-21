@@ -113,11 +113,19 @@ void FTriangleWorldTracer::runLineTracing()
 		EnclaveKeyDef::EnclaveKey tracingKeyB = tracingLineKeypairs[x].keyB;
 		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
 		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
-		
-		// Call the re-orientation check function here; if reorientRequired = true, we'll have to swap it the values of tracingKeyA/tracingKeyB and
-		// tracingPointA/tracingPointB. 
-		
-		// reorientRequired = .... ?
+
+		// Remember, to guarantee 100% similiar tracing, we need to make sure that the two points 
+		// consisting of a line either run as AB or BA (never both); which one to use is dependent on whichever
+		// one is "positively oriented." If AB is not positively oriented, BA must be, so all we will have to do is swap the data, via
+		// a call to swapValues below.
+		//
+		// Call the re-orientation check function here; 
+		// Test for required swapping; if the return value is false -- which would indicate that the line isn't positively oriented --
+		// then we need to postively orient the line, which is done by swapping the points and keys.
+		if (!FTriangleUtils::isLinePositivelyOriented(tracingPointA, tracingPointB))
+		{
+			swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
+		}
 
 		// The values to use for the currentTracer, will have to come from the LineLocalizer.
 		LineLocalizer newLocalizer(tracingKeyA,
