@@ -29,7 +29,7 @@ void ZFRayCastQuad::buildAndCastRays()
 		{
 			currentYLocation += quadRayCastInterval;
 			currentYLocation = IndependentUtils::roundToHundredth(currentYLocation);
-			std::cout << "ZFRayCast built: X -> " << currentXLocation << " | Y -> " << currentYLocation << " | Min Z: -> " << minZDimValue <<  " | Max Z: -> " << maxZDimValue << std::endl;
+			//std::cout << "ZFRayCast built: X -> " << currentXLocation << " | Y -> " << currentYLocation << " | Min Z: -> " << minZDimValue <<  " | Max Z: -> " << maxZDimValue << std::endl;
 
 			ZFRay currentZFRay(currentXLocation, currentYLocation, minZDimValue, maxZDimValue);
 			zFRayVector.push_back(currentZFRay);

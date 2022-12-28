@@ -34,21 +34,24 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> invalidStagerKeys;
 
 	int preModifyStagerMapSize = stagerMap.size();
-	std::cout << "Size of stager map, pre-cleanup:" << preModifyStagerMapSize << std::endl;
+	//std::cout << "Size of stager map, pre-cleanup:" << preModifyStagerMapSize << std::endl;
 
 	// analyze everything in the stagerMap.
 	for (auto& currentStager : stagerMap)
 	{
+		// Below: FTDEBUG (uncomment when done)
+		/*
 		std::cout << "Analyzing stager at key: ";
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 		currentStagerKey.printKey();
 		std::cout << std::endl;
+		*/
 
 		// check if the stager has met the conditions for being valid (i.e., at least 3 lines)
 		bool isStagerValid = currentStager.second.analyzeAndReorganize();
 		if (!isStagerValid)
 		{
-			std::cout << "NOTICE: Detected stager as invalid, will remove. " << std::endl;
+			//std::cout << "NOTICE: Detected stager as invalid, will remove. " << std::endl;
 			invalidStagerKeys.insert(currentStager.first);
 		}
 	}
@@ -56,16 +59,19 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 	// erase the invalid stagers.
 	for (auto& currentInvalid : invalidStagerKeys)
 	{	
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "Erasing element at: ";
 		EnclaveKeyDef::EnclaveKey keyCopy = currentInvalid;
 		keyCopy.printKey();
 		std::cout << std::endl;
+		*/
 
 		stagerMap.erase(currentInvalid);
 	}
 
-	int postModifyStagerMapSize = stagerMap.size();
-	std::cout << "stagerMap size, pre-modify: " << preModifyStagerMapSize << " | post-modify: "<< postModifyStagerMapSize << std::endl;
+	//int postModifyStagerMapSize = stagerMap.size();
+	//std::cout << "stagerMap size, pre-modify: " << preModifyStagerMapSize << " | post-modify: "<< postModifyStagerMapSize << std::endl;
 
 	// FTDEBUG, (uncomment when needed for debugging)
 	//std::cout << "(FTriangleFracturerBase::analyzeAndCleanupStagers) done with cleanup.";
@@ -111,9 +117,12 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	int yGridWidth = maxY - minY;
 	int zGridWidth = maxZ - minZ;
 
+	// Below: FTDEBUG (uncomment when needed
+	/*
 	std::cout << "xGridWidth: " << xGridWidth << std::endl;
 	std::cout << "yGridWidth: " << yGridWidth << std::endl;
 	std::cout << "zGridWidth: " << zGridWidth << std::endl;
+	*/
 
 	// check for valid X grid (requires Y and Z grid width >= 1)
 	if
@@ -123,7 +132,7 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 		(zGridWidth >= 1)
 	)
 	{
-		std::cout << "Found valid X grid. " << std::endl;
+		//std::cout << "Found valid X grid. " << std::endl;
 
 		// requires: minY/maxY, minZ/maxZ, and the max of our target ray cast dim (so maxX)
 		FRayCasterInitData xData(minY, maxY, minZ, maxZ, rayCastDimInterval, minX, maxX);
@@ -138,7 +147,7 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 		(zGridWidth >= 1)
 	)
 	{
-		std::cout << "Found valid Y grid. " << std::endl;
+		//std::cout << "Found valid Y grid. " << std::endl;
 
 		// requires: minX/maxX, minZ/maxZ, and the max of our target ray cast dim (so maxY)
 		FRayCasterInitData yData(minX, maxX, minZ, maxZ, rayCastDimInterval, minY, maxY);
@@ -153,7 +162,7 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 		(yGridWidth >= 1)
 	)
 	{
-		std::cout << "Found valid Z grid. " << std::endl;
+		//std::cout << "Found valid Z grid. " << std::endl;
 
 		// requires: minX/maxX, minY/maxY, and the max of our target ray cast dim (so maxZ)
 		FRayCasterInitData zData(minX, maxX, minY, maxY, rayCastDimInterval, minZ, maxZ);
@@ -383,6 +392,8 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 	maxZ = *zKeyValues.rbegin();
 
 	
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "Min/Max interval values are: " << std::endl;
 	std::cout << "minX: " << minX << std::endl;
 	std::cout << "maxX: " << maxX << std::endl;
@@ -390,7 +401,7 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 	std::cout << "maxY: " << maxY << std::endl;
 	std::cout << "minZ: " << minZ << std::endl;
 	std::cout << "maxZ: " << maxZ << std::endl;
-	
+	*/
 
 	int xGridWidth = maxX - minX;
 	int yGridWidth = maxY - minY;
@@ -404,7 +415,7 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 		for (int x = 0; x < xGridWidth; x++)
 		{
 			returnLists.xList.insert(currentX);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted X list value: " << currentX << std::endl;
+			//std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted X list value: " << currentX << std::endl;
 			currentX = IndependentUtils::roundToHundredth(currentX + in_fixedIntervalValue);
 		}
 	}
@@ -416,7 +427,7 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 		for (int y = 0; y < yGridWidth; y++)
 		{
 			returnLists.yList.insert(currentY);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Y list value: " << currentY << std::endl;
+			//std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Y list value: " << currentY << std::endl;
 			currentY = IndependentUtils::roundToHundredth(currentY + in_fixedIntervalValue);
 		}
 	}
@@ -428,7 +439,7 @@ FTriangleFracturerBase::LineScanLists FTriangleFracturerBase::getScanningInterva
 		for (int z = 0; z < zGridWidth; z++)
 		{
 			returnLists.zList.insert(currentZ);
-			std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Z list value: " << currentZ << std::endl;
+			//std::cout << "(FTriangleFracturerBase::getScanningIntervals) -> inserted Z list value: " << currentZ << std::endl;
 			currentZ = IndependentUtils::roundToHundredth(currentZ + in_fixedIntervalValue);
 		}
 	}

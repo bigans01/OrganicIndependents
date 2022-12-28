@@ -235,6 +235,7 @@ void FTriangleWorldTracer::runLineTracing()
 		// once the current line has been finished, run the application logic. The application logic 
 		// will take into account whether or not the 
 		runCandidateApplicationLogic();
-		std::cout << "Completed traversal of line " << x << std::endl;
+
+		//std::cout << "Completed traversal of line " << x << std::endl;
 	}
 }

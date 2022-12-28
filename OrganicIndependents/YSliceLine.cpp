@@ -65,7 +65,7 @@ void YSliceLine::determineYLineOutputs()
 	XZDimMoveVal determinedMoveVal(calculatedXDimMove, calculatedZDimMove);
 	calculatedMoveVal = determinedMoveVal;
 
-	std::cout << "(YSliceLine::determineCalculatedMoveVal): X/Z move vals are: Y -> " << calculatedMoveVal.x << " | Z -> " << calculatedMoveVal.z << std::endl;
+	//std::cout << "(YSliceLine::determineCalculatedMoveVal): X/Z move vals are: Y -> " << calculatedMoveVal.x << " | Z -> " << calculatedMoveVal.z << std::endl;
 
 	// unless the line is perfectly clamped to X or Z, proceed normally.
 	if (!perfectlyAlignedToXGridLine && !perfectlyAlignedToZGridLine)
@@ -73,6 +73,8 @@ void YSliceLine::determineYLineOutputs()
 		EnclaveKeyDef::EnclaveKey backwardYKey(currentLineXDim, currentBackwardYValue, currentLineZDim);
 		EnclaveKeyDef::EnclaveKey forwardYKey(currentLineXDim, currentForwardYValue, currentLineZDim);
 
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "Backward key is: ";
 		backwardYKey.printKey();
 		std::cout << std::endl;
@@ -80,6 +82,7 @@ void YSliceLine::determineYLineOutputs()
 		std::cout << "Forward key is: ";
 		forwardYKey.printKey();
 		std::cout << std::endl;
+		*/
 
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> targetKeys;
 		targetKeys.insert(backwardYKey);
@@ -92,7 +95,8 @@ void YSliceLine::determineYLineOutputs()
 	}
 	else if (perfectlyAlignedToXGridLine)
 	{
-		std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to X. " << std::endl;
+		// Below: FTDEBUG (uncomment when needed)
+		//std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to X. " << std::endl;
 		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
 
 		EnclaveKeyDef::EnclaveKey backwardYKey(currentLineXDim, currentBackwardYValue, currentLineZDim);
@@ -116,7 +120,7 @@ void YSliceLine::determineYLineOutputs()
 	}
 	else if (perfectlyAlignedToZGridLine)
 	{
-		std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to Z. " << std::endl;
+		//std::cout << "(YSliceLine::determineCalculatedMoveVal): found line as being aligned to Z. " << std::endl;
 		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
 
 		EnclaveKeyDef::EnclaveKey backwardYKey(currentLineXDim, currentBackwardYValue, currentLineZDim);

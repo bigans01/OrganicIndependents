@@ -65,7 +65,7 @@ void ZSliceLine::determineZLineOutputs()
 	XYDimMoveVal determinedMoveVal(calculatedXDimMove, calculatedYDimMove);
 	calculatedMoveVal = determinedMoveVal;
 
-	std::cout << "(ZSliceLine::determineCalculatedMoveVal): X/Y move vals are: Y -> " << calculatedMoveVal.x << " | Z -> " << calculatedMoveVal.y << std::endl;
+	//std::cout << "(ZSliceLine::determineCalculatedMoveVal): X/Y move vals are: Y -> " << calculatedMoveVal.x << " | Z -> " << calculatedMoveVal.y << std::endl;
 
 	// unless the line is perfectly clamped to X or Y, proceed normally.
 	if (!perfectlyAlignedToXGridLine && !perfectlyAlignedToYGridLine)
@@ -73,6 +73,8 @@ void ZSliceLine::determineZLineOutputs()
 		EnclaveKeyDef::EnclaveKey backwardZKey(currentLineXDim, currentLineYDim, currentBackwardZValue);
 		EnclaveKeyDef::EnclaveKey forwardZKey(currentLineXDim, currentLineYDim, currentForwardZValue);
 
+		// Below: FTDEBUG (uncomment when done)
+		/*
 		std::cout << "Backward key is: ";
 		backwardZKey.printKey();
 		std::cout << std::endl;
@@ -80,6 +82,7 @@ void ZSliceLine::determineZLineOutputs()
 		std::cout << "Forward key is: ";
 		forwardZKey.printKey();
 		std::cout << std::endl;
+		*/
 
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> targetKeys;
 		targetKeys.insert(backwardZKey);
@@ -92,7 +95,7 @@ void ZSliceLine::determineZLineOutputs()
 	}
 	else if (perfectlyAlignedToXGridLine)
 	{
-		std::cout << "(ZSliceLine::determineCalculatedMoveVal): found line as being aligned to X. " << std::endl;
+		//std::cout << "(ZSliceLine::determineCalculatedMoveVal): found line as being aligned to X. " << std::endl;
 		//std::cout << "currentLineYDim value is: " << currentLineYDim << std::endl;
 
 		EnclaveKeyDef::EnclaveKey backwardZKey(currentLineXDim, currentLineYDim, currentBackwardZValue);

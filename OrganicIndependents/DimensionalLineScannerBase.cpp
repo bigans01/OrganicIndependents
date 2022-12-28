@@ -162,7 +162,7 @@ int DimensionalLineScannerBase::findClosestPointIndex(FTrianglePoint in_pointA, 
 {
 	std::map<int, float> distances;
 
-	std::cout << "(DimensionalLineScannerBase::findClosestPointIndex): size of points to search is: " << in_searchablePointsMapRef->size() << std::endl;
+	//std::cout << "(DimensionalLineScannerBase::findClosestPointIndex): size of points to search is: " << in_searchablePointsMapRef->size() << std::endl;
 
 	for (auto& currentSearchablePoint : *in_searchablePointsMapRef)
 	{
@@ -182,6 +182,8 @@ int DimensionalLineScannerBase::findClosestPointIndex(FTrianglePoint in_pointA, 
 		}
 	}
 
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "Original point to find min distance was: ";
 	in_pointA.printPointData();
 	std::cout << std::endl;
@@ -189,6 +191,7 @@ int DimensionalLineScannerBase::findClosestPointIndex(FTrianglePoint in_pointA, 
 	std::cout << "Index of minimum point was: " << currentMinIndex << " | distance was: " << currentMinDistance << " | point was: ";
 	(*in_searchablePointsMapRef)[currentMinIndex].printPointData();
 	std::cout << std::endl;
+	*/
 
 	return currentMinIndex;
 }

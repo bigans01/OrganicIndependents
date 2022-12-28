@@ -7,17 +7,20 @@ void ZDimLineScanner::runScan()
 	{
 		auto currentZPoints = dimensionalUniquePointsRef->getAllPointsWithZ(currentFixedZ);
 		
+		/*
 		std::cout << "(ZDimLineScanner::runScan): Starting scan at fixed Z value of: " << currentFixedZ << std::endl;
 		std::cout << "(ZDimLineScanner::runScan): dimensionalScanBackwardKey value is: " << dimensionalScanBackwardKey << std::endl;
 		std::cout << "(ZDimLineScanner::runScan): dimensionalScanForwardKey value is: " << dimensionalScanForwardKey << std::endl;
 
 		std::cout << "(ZDimLineScanner::runScan): points for Z value of " << currentFixedZ << " are: " << std::endl;
+		
 
 		for (auto& printPoints : currentZPoints)
 		{
 			printPoints.printPointData();
 			std::cout << std::endl;
 		}
+		*/
 
 		// Need two passes:
 		// 1. Determine the number of exterior points at this Z-coordinate value.
@@ -42,12 +45,12 @@ void ZDimLineScanner::runScan()
 		// First statement is the typical case.
 		if (numberOfExteriorPoints == 2)
 		{
-			std::cout << "Typical case (2 exterior points), found for the scanned area at X " << currentFixedZ << std::endl;
+			//std::cout << "Typical case (2 exterior points), found for the scanned area at X " << currentFixedZ << std::endl;
 			handleNormalXYScan(&currentZPoints, currentFixedZ);
 		}
 		else if (numberOfExteriorPoints > 2)
 		{
-			std::cout << "Outlier case (More than 2 exterior points), found for the scanned are at X " << currentFixedZ << std::endl;
+			//std::cout << "Outlier case (More than 2 exterior points), found for the scanned are at X " << currentFixedZ << std::endl;
 			handleAbnormalXYScan(&currentZPoints, currentFixedZ);
 		}
 
@@ -65,10 +68,6 @@ void ZDimLineScanner::handleNormalXYScan(std::vector<FTrianglePoint>* in_pointsV
 		// if it's an exterior point, put into the exterior vector.
 		if (xyScannedPoint.pointType == FTrianglePointType::EXTERIOR)
 		{
-			std::cout << "Found exterior point: ";
-			xyScannedPoint.printPointData();
-			std::cout << std::endl;
-
 			exteriorPointVector.push_back(xyScannedPoint);
 		}
 
@@ -97,10 +96,6 @@ void ZDimLineScanner::handleAbnormalXYScan(std::vector<FTrianglePoint>* in_point
 		// if it's an exterior point, put into the exterior vector.
 		if (xyScannedPoint.pointType == FTrianglePointType::EXTERIOR)
 		{
-			std::cout << "Found exterior point: ";
-			xyScannedPoint.printPointData();
-			std::cout << std::endl;
-
 			exteriorPointVector.push_back(xyScannedPoint);
 		}
 
@@ -115,15 +110,6 @@ void ZDimLineScanner::handleAbnormalXYScan(std::vector<FTrianglePoint>* in_point
 	auto correctedPoints = reorganizePoints(exteriorPointVector, interiorPoints);
 
 	// there should be two endpoints
-
-	std::cout << "Abnormal Z, point A: ";
-	correctedPoints.endpoints.begin()->printPointData();
-	std::cout << std::endl;
-
-	std::cout << "Abnormal Z, point B: ";
-	correctedPoints.endpoints.rbegin()->printPointData();
-	std::cout << std::endl;
-
 	determineXandYSigns(*correctedPoints.endpoints.begin(), *correctedPoints.endpoints.rbegin());
 	auto currentSliceXYDim = determineStartingXYDimForSlice(*correctedPoints.endpoints.begin(), *correctedPoints.endpoints.rbegin());
 	produceZSliceLines(&correctedPoints.endpoints,
@@ -135,11 +121,14 @@ void ZDimLineScanner::handleAbnormalXYScan(std::vector<FTrianglePoint>* in_point
 XYDim ZDimLineScanner::determineStartingXYDimForSlice(FTrianglePoint in_pointA, FTrianglePoint in_pointB)
 {
 	// Print the points.
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "Points used for determineXYDimForSlice: " << std::endl;
 	in_pointA.printPointData();
 	std::cout << std::endl;
 	in_pointB.printPointData();
 	std::cout << std::endl;
+	*/
 
 	// Check X.
 	int nonModuloX = int(floor(in_pointA.point.x / fixedDimensionalInterval));
@@ -152,7 +141,7 @@ XYDim ZDimLineScanner::determineStartingXYDimForSlice(FTrianglePoint in_pointA, 
 	{
 		if (in_pointB.point.x < in_pointA.point.x)
 		{
-			std::cout << "(ZDimLineScanner::determineStartingXYDimForSlice): Had to adjust nonModuloX." << std::endl;
+			//std::cout << "(ZDimLineScanner::determineStartingXYDimForSlice): Had to adjust nonModuloX." << std::endl;
 			nonModuloX--;
 		}
 	}
@@ -166,14 +155,14 @@ XYDim ZDimLineScanner::determineStartingXYDimForSlice(FTrianglePoint in_pointA, 
 	{
 		if (in_pointB.point.y < in_pointA.point.y)
 		{
-			std::cout << "(ZDimLineScanner::determineStartingXYDimForSlice): Had to adjust nonModuloY." << std::endl;
+			//std::cout << "(ZDimLineScanner::determineStartingXYDimForSlice): Had to adjust nonModuloY." << std::endl;
 			nonModuloY--;	// decrement by one.
 		}
 	}
 
-	std::cout << "Starting X and Y dim values for pointA for this slice, at Z " << in_pointA.point.z << " are: " << std::endl;
-	std::cout << "X: " << nonModuloX << std::endl;
-	std::cout << "Y: " << nonModuloY << std::endl;
+	//std::cout << "Starting X and Y dim values for pointA for this slice, at Z " << in_pointA.point.z << " are: " << std::endl;
+	//std::cout << "X: " << nonModuloX << std::endl;
+	//std::cout << "Y: " << nonModuloY << std::endl;
 
 	XYDim returnDim(nonModuloX, nonModuloY);
 	return returnDim;
@@ -187,6 +176,8 @@ void ZDimLineScanner::determineXandYSigns(FTrianglePoint in_pointA, FTrianglePoi
 	xDimSign = absoluteDirections.x;
 	yDimSign = absoluteDirections.y;
 
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "Point A for slope: ";
 	in_pointA.printPointData();
 	std::cout << std::endl;
@@ -197,6 +188,7 @@ void ZDimLineScanner::determineXandYSigns(FTrianglePoint in_pointA, FTrianglePoi
 
 	std::cout << "xDimSign for this slice scan: " << xDimSign << std::endl;
 	std::cout << "yDimSign for this slice scan: " << yDimSign << std::endl;
+	*/
 }
 
 void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPointsVectorRef,
@@ -208,7 +200,7 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 
 	// The total number of scans required is equal to the total number of points minus 1.
 	int totalNumberOfScans = int(in_endPointsVectorRef->size()) + int(in_nonendPointsMapRef->size()) - 1;
-	std::cout << "(ZDimLineScanner::produceXDimLines): number of line spawns to call: " << totalNumberOfScans << std::endl;
+	//std::cout << "(ZDimLineScanner::produceXDimLines): number of line spawns to call: " << totalNumberOfScans << std::endl;
 
 	// (???) Before moving over the last point in the vector, use both points in the vector to determine what the starting
 	// Y and Z values will be.
@@ -217,8 +209,8 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 	(*in_nonendPointsMapRef)[in_nonendPointsMapRef->size()] = *in_endPointsVectorRef->rbegin();
 	in_endPointsVectorRef->pop_back();
 
-	std::cout << "(ZDimLineScanner::produceXDimLines): size of in_endpointsVectorRef is now: " << in_endPointsVectorRef->size() << std::endl;
-	std::cout << "(ZDimLineScanner::produceXDimLines): size of in_nonendPointsMapRef is now: " << in_nonendPointsMapRef->size() << std::endl;
+	//std::cout << "(ZDimLineScanner::produceXDimLines): size of in_endpointsVectorRef is now: " << in_endPointsVectorRef->size() << std::endl;
+	//std::cout << "(ZDimLineScanner::produceXDimLines): size of in_nonendPointsMapRef is now: " << in_nonendPointsMapRef->size() << std::endl;
 
 	// now, iterate an amount of times equal to totalNumberOfScans;
 	// the very first point in the iterations will be the begin point of the in_endPointsVectorRef.
@@ -234,6 +226,8 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		// use the indexOfClosestPoint to fetch the point we will be using; remember we will have to erase this point at the end.
 		FTrianglePoint currentPointB = (*in_nonendPointsMapRef)[indexOfClosestPoint];
 
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "(ZDimLineScanner::produceZSliceLines): preparing new line with the following points, at fixed Z: " << in_currentDimZ << std::endl;
 		std::cout << "Current line, pointA: ";
 		currentPointA.printPointData();
@@ -247,6 +241,7 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		// ..
 
 		std::cout << "XYDim used for next line (currentLine) will be: X -> " << currentLineXYDim.x << " | Y -> " << currentLineXYDim.y << std::endl;
+		*/
 
 		ZSliceLine currentLine(currentLineXYDim,
 								currentPointA.point,
@@ -262,11 +257,8 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 			// for each key, insert a copy of the FTriangleLine (insertableLine) into the appropriate keyed stager.
 			(*dimensionalStagerRef)[currentTargetKey].insertLine(currentLineTargetData.insertableLine);
 
-			std::cout << ">> Printing out lines at affected key, ";
-			EnclaveKeyDef::EnclaveKey weirdKey = currentTargetKey;
-			weirdKey.printKey();
-			std::cout << ": " << std::endl;
-			(*dimensionalStagerRef)[currentTargetKey].printLines();
+			// Below: FTDEBUG (uncomment when needed)
+			//(*dimensionalStagerRef)[currentTargetKey].printLines();
 		}
 
 		// remember, we must increment the value of currentLineXYDim by the move vals.

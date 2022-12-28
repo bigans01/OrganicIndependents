@@ -114,10 +114,13 @@ FRayIntersectionMachine::FRayIntersectionResult FRayIntersectionMachine::runInte
 	// If we got to this point, and both withinS AND withinSAndT are true, the point is valid.
 	if (withinS && withinSandT)
 	{
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "(FRayIntersectionMachine): intersecting point found, for the ray with points ";
 		std::cout << "A: (" << rayToCast.vecA.x << ", " << rayToCast.vecA.y << ", " << rayToCast.vecA.z << ") ";
 		std::cout << "B: (" << rayToCast.vecB.x << ", " << rayToCast.vecB.y << ", " << rayToCast.vecB.z << "); point of intersection was: "; 
 		std::cout << intersectionCandidatePoint.x << ", " << intersectionCandidatePoint.y << ", " << intersectionCandidatePoint.z << std::endl;
+		*/
 
 		return FRayIntersectionResult(rayToCast.vecA, 
 									intersectionCandidatePoint, 

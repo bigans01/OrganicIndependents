@@ -39,9 +39,12 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 	// the number of triangles to produce is always equal to the number of lines - 2.
 	int totalTrianglesToProduce = constructionLines.size() - 2;
 
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "Producing " << totalTrianglesToProduce  << " initial FTriangles for key at: ";
 	in_containerBounds.printKey();
 	std::cout << std::endl;
+	*/
 
 	// the root point will be point A of the very first line.
 	DoublePoint rootPoint = constructionLines.begin()->pointA;
@@ -54,10 +57,13 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 	{
 		OutputTriangleFrame newFrame(rootPoint, leadingLineIter->pointA, leadingLineIter->pointB);
 
-		std::cout << "Created new frame, with points: " << std::endl;
-		std::cout << "0: " << rootPoint.x << ", " << rootPoint.y << ", " << rootPoint.z << std::endl;
-		std::cout << "1: " << leadingLineIter->pointA.x << ", " << leadingLineIter->pointA.y << ", " << leadingLineIter->pointA.z << std::endl;
-		std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
+		// Below: FTDEBUG (uncomment when needed)
+		/*
+		//std::cout << "Created new frame, with points: " << std::endl;
+		//std::cout << "0: " << rootPoint.x << ", " << rootPoint.y << ", " << rootPoint.z << std::endl;
+		//std::cout << "1: " << leadingLineIter->pointA.x << ", " << leadingLineIter->pointA.y << ", " << leadingLineIter->pointA.z << std::endl;
+		//std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
+		*/
 
 		FTriangleOutput newOutput = formOutput(newFrame, 
 											in_parentEmptyNormal, 
@@ -109,7 +115,7 @@ bool FTriangleContainer::areNormalsDirectionallyAligned(ECBPolyPoint in_normalA,
 
 	if (signageMatchCounter > 0)
 	{
-		std::cout << "!! ---> No swap required." << std::endl;
+		//std::cout << "!! ---> No swap required." << std::endl;
 		areNormalsAligned = true;
 	}
 	else if (signageMatchCounter == 0)
@@ -132,14 +138,14 @@ FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFr
 	// the normal produced by the points is directionally aligned to the parent's empty normal.
 	if (!areNormalsDirectionallyAligned(in_parentEmptyNormal,in_triangleFrame.getNormal()))
 	{
-		std::cout << "!! Had to do point swap for normal change." << std::endl;
+		//std::cout << "!! Had to do point swap for normal change." << std::endl;
 		in_triangleFrame.swapForNormalChange();
 	}
 
 	
 
 	auto finalNormal = in_triangleFrame.getNormal();
-	std::cout << "Calculated empty normal is: " << finalNormal.x << ", " << finalNormal.y << ", " << finalNormal.z << std::endl;
+	//std::cout << "Calculated empty normal is: " << finalNormal.x << ", " << finalNormal.y << ", " << finalNormal.z << std::endl;
 
 	// with the normal out of the way, find the other items required for the FOutputTriangle
 
@@ -169,7 +175,7 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 	// the folloiwing bool should be set to true, if there are no FTriangleOutput instances remaining in the container.
 	bool shouldContainerBeDeleted = false;
 
-	std::cout << "!! Starting run of boundary tests. " << std::endl;
+	//std::cout << "!! Starting run of boundary tests. " << std::endl;
 
 	// first, get the directional signs of the parent normal.
 	ECBPolyPoint parentNormalDirections = IndependentUtils::findNormalizedPoint(in_parentEmptyNormal);
@@ -187,7 +193,7 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 	{
 		case FTriangleType::BLUEPRINT:
 		{
-			std::cout << "!! Selecting BLUEPRINT bounds. " << std::endl;
+			//std::cout << "!! Selecting BLUEPRINT bounds. " << std::endl;
 			float boundaryInterval = 32.0f;
 			EnclaveKeyDef::EnclaveKey blueprintBoundaryMultiplier;
 
@@ -198,7 +204,7 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 			}
 			else if (in_reverseTranslationMode == FTriangleReverseTranslationMode::ABSOLUTE)
 			{
-				std::cout << "selecting bounding mode for ABSOLUTE. " << std::endl;
+				//std::cout << "selecting bounding mode for ABSOLUTE. " << std::endl;
 				blueprintBoundaryMultiplier = in_boundingKey;
 			}
 
@@ -227,15 +233,21 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 		}
 	}
 
-	bounds.printBounds();
+	// Below: FTDEBUG (uncomment when needed)
+	// bounds.printBounds();
+
 	std::set<int> trianglesToRemove;
 	for (auto& currentOutputTriangle : fracturedTriangles)
 	{
 		bool wasCurrentTriangleOrientated = bounds.runTriangleOrientationAnalysis(&currentOutputTriangle.second);
+
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		if (wasCurrentTriangleOrientated)
 		{
 			std::cout << "!!!! NOTICE: triangle was orientated." << std::endl;
 		}
+		*/
 
 		// if a BoundaryOrientation was detected, that Boundary must be compared against the emptyNormal of the parent FTriangle.
 		// If these two values do not aligned, that corresponding FTriangleOutput will have to be purged (aka, mark its nonAlignedBoundaryDetected as true)
@@ -262,12 +274,12 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 
 	if (fracturedTriangles.size() == 0)
 	{
-		std::cout << "!!! NOTICE: no output triangles contained in this instance of FTriangleContainer; it should be removed/deleted." << std::endl;
+		//std::cout << "!!! NOTICE: no output triangles contained in this instance of FTriangleContainer; it should be removed/deleted." << std::endl;
 		shouldContainerBeDeleted = true;
 	}
 
+	//std::cout << "!! Ending run of boundary tests. " << std::endl;
 	return shouldContainerBeDeleted;
-	std::cout << "!! Ending run of boundary tests. " << std::endl;
 }
 
 FTriangleContainer::OutputTriangleFrame::OutputTriangleFrame()
@@ -419,9 +431,13 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, posXBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, POS_X bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the POS_X direction. " << std::endl;
+				*/
+
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -433,9 +449,13 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, negXBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, NEG_X bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the NEG_X direction. " << std::endl;
+				*/
+
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -443,18 +463,25 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 
 		case BoundaryOrientation::POS_Y:
 		{
+			// Below: FTDEBUG (uncomment when needed)
+			/*
 			std::cout << "! Attempting POS_Y case handle. " << std::endl;
 			std::cout << "! Target triangle empty normal is: ";
 			in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 			std::cout << std::endl;
+			*/
 
 			ECBPolyPoint posYBoundaryNormal(0, 1, 0);
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, posYBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, POS_Y bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the POS_Y direction. " << std::endl;
+				*/
+
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -462,18 +489,24 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 
 		case BoundaryOrientation::NEG_Y:
 		{
+			// Below: FTDEBUG (uncomment when needed)
+			/*
 			std::cout << "! Attempting NEG_Y case handle. " << std::endl;
 			std::cout << "! Target triangle empty normal is: ";
 			in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 			std::cout << std::endl;
+			*/
 
 			ECBPolyPoint negYBoundaryNormal(0, -1, 0);
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, negYBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, NEG_Y bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the POS_Y direction. " << std::endl;
+				*/
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -485,9 +518,12 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, posZBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, POS_Z bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the POS_Z direction. " << std::endl;
+				*/
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -499,9 +535,12 @@ void FTriangleContainer::FTriangleContainerBounds::runBoundaryToNormalAnalysis(F
 			bool aligned = FTriangleContainer::areNormalsDirectionallyAligned(in_fTriangleOutputRef->fractureEmptyNormal, negZBoundaryNormal);
 			if (!aligned)
 			{
+				// Below: FTDEBUG (uncomment when needed)
+				/*
 				std::cout << "!!! Warning, NEG_Z bound triangle's normal, ";
 				in_fTriangleOutputRef->fractureEmptyNormal.printPointCoords();
 				std::cout << " is not in the NEG_Z direction. " << std::endl;
+				*/
 				in_fTriangleOutputRef->nonAlignedBoundaryDetected = true;
 			}
 			break;
@@ -519,7 +558,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 		(in_fTriangleOutputRef->fracturePoints[0].x == in_fTriangleOutputRef->fracturePoints[2].x)
 	)
 	{
-		std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_X. " << std::endl;
+		// Below: FTDEBUG (uncomment when needed)
+		//std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_X. " << std::endl;
+
 		in_fTriangleOutputRef->fractureRequiredClampValue = PerfectClampEnum::CLAMPED_TO_X;
 	}
 
@@ -531,7 +572,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 		(in_fTriangleOutputRef->fracturePoints[0].y == in_fTriangleOutputRef->fracturePoints[2].y)
 	)
 	{
-		std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_Y. " << std::endl;
+		// Below: FTDEBUG (uncomment when needed)
+		// std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_Y. " << std::endl;
+
 		in_fTriangleOutputRef->fractureRequiredClampValue = PerfectClampEnum::CLAMPED_TO_Y;
 	}
 
@@ -543,7 +586,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 		(in_fTriangleOutputRef->fracturePoints[0].z == in_fTriangleOutputRef->fracturePoints[2].z)
 	)
 	{
-		std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_Z. " << std::endl;
+		// Below: FTDEBUG (uncomment when needed)
+		//std::cout << "(FTriangleContainerBounds::runPerfectClampAnalysis) -> found FTirangleOutput as being CLAMPED_TO_Z. " << std::endl;
+
 		in_fTriangleOutputRef->fractureRequiredClampValue = PerfectClampEnum::CLAMPED_TO_Z;
 	}
 }

@@ -2745,24 +2745,15 @@ bool FTriangleUtils::isLinePositivelyOriented(ECBPolyPoint in_pointA, ECBPolyPoi
 	int posCountAB = normalizedABData.getPositiveDimCount();
 	int posCountBA = normalizedBAData.getPositiveDimCount();
 
-
-	// Debug output:
-	in_pointA.printPointCoords();
-	std::cout << "Line AB: point A: ";
-	in_pointA.printPointCoords();
-	std::cout << " | point B: ";
-	in_pointB.printPointCoords();
-	std::cout << std::endl;
-
-	std::cout << "Pos count AB:" << posCountAB << std::endl;
-	std::cout << "Pos count BA:" << posCountBA << std::endl;
+	//std::cout << "Pos count AB:" << posCountAB << std::endl;
+	//std::cout << "Pos count BA:" << posCountBA << std::endl;
 
 	// There should be two conditions to check:
 	//	-if posCountAB >= 2, no swap is needed.
 	//	-if posCountAB == posCountBA, we'll need to do a compare.
 	if (posCountAB >= 2)
 	{
-		std::cout << "AB had >= 2 positives; already positive oriented. " << std::endl;
+		//std::cout << "AB had >= 2 positives; already positive oriented. " << std::endl;
 		isLineOriented = true;
 	}
 

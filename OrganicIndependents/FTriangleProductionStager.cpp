@@ -9,7 +9,7 @@ void FTriangleProductionStager::insertLine(FTriangleLine in_lineToInsert)
 	{
 		if (lineToScan == in_lineToInsert)
 		{
-			std::cout << "NOTICE: duplicate line found, will not insert line. " << std::endl;
+			//std::cout << "NOTICE: duplicate line found, will not insert line. " << std::endl;
 			lineExists = true;
 			duplicatesFound = true;
 			break;
@@ -28,22 +28,28 @@ void FTriangleProductionStager::translateLines(EnclaveKeyDef::EnclaveKey in_tran
 										in_translationKey.y*in_fixedDimensionInterval,
 										in_translationKey.z*in_fixedDimensionInterval);
 
+	// FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "--Old line values: " << std::endl;
 	for (auto& currentLine : stagerLines)
 	{
 		currentLine.printLine();
 	}
+	*/
 	
 	for (auto& currentLine : stagerLines)
 	{
 		currentLine.translateLine(calculatedTranslationValue);
 	}
 
+	// FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "--New line values (after translation): " << std::endl;
 	for (auto& currentLine : stagerLines)
 	{
 		currentLine.printLine();
 	}
+	*/
 }
 
 void FTriangleProductionStager::printLines()
@@ -64,7 +70,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 	// assume it's valid.
 	bool isStagerValid = true;
 
-	std::cout << "(FTriangleProductionStager::analyzeAndReorganize(): cleaning up..." << std::endl;
+	//std::cout << "(FTriangleProductionStager::analyzeAndReorganize(): cleaning up..." << std::endl;
 	std::string dupesFound = "";
 
 	// remember, a duplicate doesn't necessarily mean it's bad. This is just for debug information.
@@ -74,7 +80,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 		case (true): { dupesFound = "true"; break;}
 	}
 
-	std::cout << "Number of lines: " << int(stagerLines.size()) << " | duplicatesFound: " << dupesFound << std::endl;
+	//std::cout << "Number of lines: " << int(stagerLines.size()) << " | duplicatesFound: " << dupesFound << std::endl;
 
 	// if the number of lines is just 1, it's definitely bad.
 	if (int(stagerLines.size()) == 1)
@@ -88,13 +94,14 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 	{
 		std::vector<FTriangleLine> newLineVector;
 
-		
+		// FTDEBUG, (uncomment when needed for debugging)
+		/*
 		std::cout << "############ Before operating, lines are: " << std::endl;
 		for (auto& prePrint : stagerLines)
 		{
 			prePrint.printLine();
 		}
-		
+		*/
 
 		// get the very first line from the vector, push it into the newLineVector, and then erase it from stagerLines.
 		auto currentFTriangleLine = stagerLines.front();
@@ -108,24 +115,23 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			remainingLineMap[remainingLineMap.size()] = remainingStagerLine;
 		}
 		
-		// we must loop a number of times, where the number to loop is equal to the number of remaining lines in stagerLines (we already removed one already).
+		// FTDEBUG, (uncomment when needed for debugging)
+		/*
 		std::cout << "Remaining stagerLines to run are: " << remainingLineMap.size() << std::endl;
 		for (auto& remaining : remainingLineMap)
 		{
 			remaining.second.printLine();
 		}
+		*/
 
-		//FTriangleLine originalLatest = *newLineVector.rbegin();
-		//std::cout << "--Original latest new line is: ";
-		//originalLatest.printLine();
-
+		// we must loop a number of times, where the number to loop is equal to the number of remaining lines in stagerLines (we already removed one already).
 		int initialRemaining = remainingLineMap.size();
 		for (int x = 0; x < initialRemaining; x++)
 		{
 			bool nextLineFound = false;
 			int remainingLineIndex = 0;
 
-			std::cout << "Remaining stager lines to scan: " << remainingLineMap.size() << std::endl;
+			//std::cout << "Remaining stager lines to scan: " << remainingLineMap.size() << std::endl;
 
 			bool lastLineScan = false;
 			if (remainingLineMap.size() <= 2)
@@ -170,7 +176,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			}
 		}
 
-		std::cout << "Size of remainingLineMap.size(), after loops: " << remainingLineMap.size() << std::endl;
+		//std::cout << "Size of remainingLineMap.size(), after loops: " << remainingLineMap.size() << std::endl;
 
 		
 		// set stagerLines to be the newLineVector.
@@ -194,6 +200,8 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			isStagerValid = false;
 		}
 
+		// FTDEBUG, (uncomment when needed for debugging)
+		/*
 		// otherwise, everything checked out ok.
 		else
 		{
@@ -205,6 +213,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			}
 
 		}
+		*/
 	}
 
 	return isStagerValid;

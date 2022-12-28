@@ -27,7 +27,7 @@ void FTriangle::setupAndRunFracturerMachine()
 	{
 		case FTriangleType::WORLD:
 		{
-			std::cout << "Selected WORLD fracturer. " << std::endl;
+			//std::cout << "Selected WORLD fracturer. " << std::endl;
 
 			std::shared_ptr<FTriangleFracturerBase> worldFracturer(new (WorldFracturingMachine));
 			fracturerMachine = worldFracturer;

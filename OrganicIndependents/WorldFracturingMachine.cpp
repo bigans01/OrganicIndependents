@@ -24,15 +24,6 @@ void WorldFracturingMachine::runFracturing()
 	buildWorldMachineTriangleContainers();	// Step 10: build the FTriangleContainers, according to what this class specifies.
 
 	// when everything is done, we need to translate back.
-
-	// as a test, get all points with X = 64.0f.
-	float xValue = 64.0f;
-	std::cout << "(WorldFracturingMachine::runFracturing): printing X points that have a value of " << xValue << ": " << std::endl;
-	for (auto& x64points : fracturerPoints.getAllPointsWithX(xValue))
-	{
-		x64points.printPointData();
-		std::cout << std::endl;
-	}
 }
 
 void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
@@ -61,17 +52,24 @@ void WorldFracturingMachine::calibrateOriginBlueprintKeys()
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
 	// once everything has been calibrated, we can store the keys for each point.
-	std::cout << "Calibrated keys for each point are: " << std::endl;
+	// Below: FTDEBUG (uncomment when needed)
+	//std::cout << "Calibrated keys for each point are: " << std::endl;
 	for (int x = 0; x < 3; x++)
 	{
 		originFTriangleKeys[x] = originFTriangleLineKeypairs[x].keyA;
+		
+		// Below: FTDEBUG (uncomment when needed.
+		/*
 		std::cout << "Point " << x << ": ";
 		originFTrianglePoints[x].printPointCoords();
 		std::cout << " Key: ";
 		originFTriangleKeys[x].printKey();
 		std::cout << std::endl;
+		*/
 	}
 
+	// Below: FTDEBUG (uncomment when needed)
+	/*
 	std::cout << "(WorldFracturingMachine::calibrateOriginBlueprintKeys) -> finished calibrating blueprint keys; keys are: " << std::endl;
 	
 	std::cout << "FTriangle line 0: " << std::endl;
@@ -91,6 +89,7 @@ void WorldFracturingMachine::calibrateOriginBlueprintKeys()
 	std::cout << "point B: "; originFTrianglePoints[0].printPointCoords(); std::cout << std::endl;
 	std::cout << "point A key: "; originFTriangleLineKeypairs[2].keyA.printKey(); std::cout << std::endl;
 	std::cout << "point B key: "; originFTriangleLineKeypairs[2].keyB.printKey(); std::cout << std::endl;	
+	*/
 }
 
 void WorldFracturingMachine::translateTriangleByBlueprintKeys()
@@ -111,22 +110,33 @@ void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 	// create an EnclaveKey that has the min values (just use the begin of each set, since the minimum value is there.)
 	EnclaveKeyDef::EnclaveKey minimumKey(*keyedXValues.begin(), *keyedYValues.begin(), *keyedZValues.begin());
 
+	// Below: FTDEBUG (uncomment when needed.
+	/*
 	std::cout << "Minimum key value is: ";
 	minimumKey.printKey();
 	std::cout << std::endl;
+	*/
 
 	// fetch the inverted key; this will be the value of the translationKey.
 	translationKey = minimumKey.getInvertedKey();
+
+	// Below: FTDEBUG (uncomment when needed.
+	/*
 	std::cout << "Inverted minimum key (aka, translationKey) is: ";
 	translationKey.printKey();
 	std::cout << std::endl;
+	*/
 
 	adjustBlueprintKeysByValue(translationKey);
 
 	DoublePoint pointAdjustmentValue(translationKey.x*32.0f, translationKey.y*32.0f, translationKey.z*32.0f);
+
+	// Below: FTDEBUG (uncomment when needed.
+	/*
 	std::cout << "pointAdjustmentValue is: ";
 	pointAdjustmentValue.printPointCoords();
 	std::cout << std::endl;
+	*/
 
 	adjustPointsByValue(pointAdjustmentValue);
 
@@ -190,15 +200,17 @@ void WorldFracturingMachine::reverseTranslateStagerLines()
 			}
 		}
 
+		// Below: FTDEBUG (uncomment when needed.
+		/*
 		std::cout << "Reverse translation key is: ";
 		currentTranslationKey.printKey();
 		std::cout << std::endl;
-		
-	
+			
 		// with the key determined, do the translation.
 		EnclaveKeyDef::EnclaveKey debugKeyOutput = currentStager.first;
 		std::cout << "Translating lines for key at: "; debugKeyOutput.printKey();
 		std::cout << std::endl;
+		*/
 
 		currentStager.second.translateLines(currentTranslationKey, rayCastDimInterval);
 	}
@@ -222,9 +234,12 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 		currentStagerKey += translationKey.getInvertedKey();	// apply the inverse of the translationKey.
 
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "Creating World machine FTriangleContainer, at key: ";
 		currentStagerKey.printKey();
 		std::cout << std::endl;
+		*/
 
 		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
 
@@ -244,8 +259,11 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 			containerRemovalSet.insert(currentStagerKey);
 		}
 
+		// Below: FTDEBUG (uncomment when needed)
+		/*
 		std::cout << "Lines in this container are: " << std::endl;
 		(*ftfOutputRef)[currentStagerKey].printConstructionLines();
+		*/
 	}
 
 	// Erase any keyed, empty containers that were in the containerRemovalSet.
@@ -280,12 +298,14 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 		// the typical case, when we aren't clamped to anything: check all 3 ray casters.
 		case PerfectClampEnum::NONE:
 		{
-			std::cout << "No perfect clamp value detected; checking for all 3 ray casters. " << std::endl;
+			//std::cout << "No perfect clamp value detected; checking for all 3 ray casters. " << std::endl;
 
 			// check for X ray caster.
 			auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
 			if (checkForXRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found X-ray caster, data is: " << std::endl;
 				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
 				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
@@ -294,6 +314,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
@@ -313,6 +334,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 			auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
 			if (checkForYRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found Y-ray caster, data is: " << std::endl;
 				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
 				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
@@ -321,6 +344,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
@@ -335,6 +359,8 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 			auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
 			if (checkForZRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found Z-ray caster, data is: " << std::endl;
 				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
 				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
@@ -343,6 +369,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
@@ -359,11 +386,13 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 		// check for X ray only.
 		case PerfectClampEnum::CLAMPED_TO_X:
 		{
-			std::cout << "X clamp value detected, checking for X ray caster. " << std::endl;
+			//std::cout << "X clamp value detected, checking for X ray caster. " << std::endl;
 			// check for X ray caster.
 			auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
 			if (checkForXRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found X-ray caster, data is: " << std::endl;
 				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
 				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
@@ -372,6 +401,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
@@ -387,11 +417,13 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 
 		case PerfectClampEnum::CLAMPED_TO_Y:
 		{
-			std::cout << "Y clamp value detected, checking for Y ray caster. " << std::endl;
+			//std::cout << "Y clamp value detected, checking for Y ray caster. " << std::endl;
 			// check for Y ray caster.
 			auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
 			if (checkForYRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found Y-ray caster, data is: " << std::endl;
 				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
 				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
@@ -400,6 +432,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
@@ -415,11 +448,13 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 
 		case PerfectClampEnum::CLAMPED_TO_Z:
 		{
-			std::cout << "Z clamp value detected, checking for Z ray caster. " << std::endl;
+			//std::cout << "Z clamp value detected, checking for Z ray caster. " << std::endl;
 			// check for Z ray caster.
 			auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
 			if (checkForZRayCaster != acceptedRayCasterTypes.end())
 			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
 				std::cout << "Found Z-ray caster, data is: " << std::endl;
 				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
 				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
@@ -428,6 +463,7 @@ void WorldFracturingMachine::buildAndRunWorldFRayCasters()
 				std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
 				std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
 				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
+				*/
 
 				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
 				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
@@ -460,11 +496,11 @@ void WorldFracturingMachine::buildAndRunFLineScanners()
 		!(XYZLists.xList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for XDimLineScanner. (goes forward toward positive X)" << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for XDimLineScanner. (goes forward toward positive X)" << std::endl;
 		int startBackwardXValue = getScanDimensionalStartKey(LineScanPermit::SCAN_X);
 		int startForwardXValue = startBackwardXValue + 1;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward X start key is: " << startBackwardXValue << std::endl;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward X start key is: " << startForwardXValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward X start key is: " << startBackwardXValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward X start key is: " << startForwardXValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> xScanner(new XDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_X] = xScanner;
@@ -487,11 +523,11 @@ void WorldFracturingMachine::buildAndRunFLineScanners()
 		!(XYZLists.yList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for YDimLineScanner. (goes forward toward positive Y)" << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for YDimLineScanner. (goes forward toward positive Y)" << std::endl;
 		int startBackwardYValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Y);
 		int startForwardYValue = startBackwardYValue + 1;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Y start key is: " << startBackwardYValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Y start key is: " << startForwardYValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> yScanner(new YDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_Y] = yScanner;
@@ -513,11 +549,11 @@ void WorldFracturingMachine::buildAndRunFLineScanners()
 		!(XYZLists.zList.empty())
 	)
 	{
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for ZDimLineScanner. (goes forward toward positive Z)" << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): criteria met for ZDimLineScanner. (goes forward toward positive Z)" << std::endl;
 		int startBackwardZValue = getScanDimensionalStartKey(LineScanPermit::SCAN_Z);
 		int startForwardZValue = startBackwardZValue + 1;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
-		std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): backward Z start key is: " << startBackwardZValue << std::endl;
+		//std::cout << "(WorldFracturingMachine::buildAndRunFLineScanners()): forward Z start key is: " << startForwardZValue << std::endl;
 
 		std::shared_ptr<DimensionalLineScannerBase> zScanner(new ZDimLineScanner);
 		lineScannerMap[LineScanPermit::SCAN_Z] = zScanner;
