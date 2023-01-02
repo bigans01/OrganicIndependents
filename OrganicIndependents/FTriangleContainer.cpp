@@ -198,11 +198,11 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 			EnclaveKeyDef::EnclaveKey blueprintBoundaryMultiplier;
 
 			// if we're localized, the key is just going to be 0,0,0.
-			if (in_reverseTranslationMode == FTriangleReverseTranslationMode::LOCALIZED)
+			if (in_reverseTranslationMode == FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE)
 			{
 				blueprintBoundaryMultiplier = EnclaveKeyDef::EnclaveKey(0, 0, 0);
 			}
-			else if (in_reverseTranslationMode == FTriangleReverseTranslationMode::ABSOLUTE)
+			else if (in_reverseTranslationMode == FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE)
 			{
 				//std::cout << "selecting bounding mode for ABSOLUTE. " << std::endl;
 				blueprintBoundaryMultiplier = in_boundingKey;

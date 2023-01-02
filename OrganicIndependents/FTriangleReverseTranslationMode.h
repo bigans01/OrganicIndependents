@@ -15,8 +15,8 @@ Description:
 
 enum class FTriangleReverseTranslationMode
 {
-	ABSOLUTE,
-	LOCALIZED
+	ABSOLUTE_TRANSLATE,
+	LOCALIZED_TRANSLATE
 };
 
 #endif

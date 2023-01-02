@@ -183,14 +183,14 @@ void WorldFracturingMachine::reverseTranslateStagerLines()
 		EnclaveKeyDef::EnclaveKey currentTranslationKey;
 		switch (translationMode)
 		{
-			case FTriangleReverseTranslationMode::ABSOLUTE:
+			case FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE:
 			{
 				// when in ABSOLUTE mode, all points will be translated by the 
 				// reverse value of the translationKey;
 				currentTranslationKey = translationKey.getInvertedKey();
 				break;
 			}
-			case FTriangleReverseTranslationMode::LOCALIZED:
+			case FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE:
 			{
 				// when in LOCALIZED mode, all points will be translated by the
 				// reverse value of the key that the maps to the stager.

@@ -4,20 +4,23 @@
 #define ENCALVETRIANGLECONTAINER_H
 
 #include "EnclaveTriangle.h"
+#include "FTriangleContainer.h"
 
 class EnclaveTriangleContainer
 {
-public:
-	//EnclaveTriangle triangles[6];	// stores up to 6 triangles.
-	std::map<int, EnclaveTriangle> triangles;
-	int triangleCount = 0;
+	public:
+		EnclaveTriangleContainer();
+		EnclaveTriangleContainer(FTriangleContainer in_fTriangleContainer);
 
-	void insertTriangle(EnclaveTriangle in_enclaveTriangle);							// used by EnclavePolyFracturer::EnclavePolyFracturer
-	void insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle);	// used by OrganicRawEnclave::spawnEnclaveTriangleContainers
+		std::map<int, EnclaveTriangle> triangles;
+		int triangleCount = 0;
 
-	bool checkForYSliceBlocks(int in_yCoord);
-	void printTrianglesInContainer();
-	void printTouchedBlocksPerTriangle();
+		void insertTriangle(EnclaveTriangle in_enclaveTriangle);							// used by EnclavePolyFracturer::EnclavePolyFracturer
+		void insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle);	// used by OrganicRawEnclave::spawnEnclaveTriangleContainers
+
+		bool checkForYSliceBlocks(int in_yCoord);
+		void printTrianglesInContainer();
+		void printTouchedBlocksPerTriangle();
 };
 
 #endif

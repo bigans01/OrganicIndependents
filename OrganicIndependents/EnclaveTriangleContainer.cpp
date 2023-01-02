@@ -1,6 +1,18 @@
 #include "stdafx.h"
 #include "EnclaveTriangleContainer.h"
 
+
+EnclaveTriangleContainer::EnclaveTriangleContainer()
+{
+
+}
+
+EnclaveTriangleContainer::EnclaveTriangleContainer(FTriangleContainer in_fTriangleContainer)
+{
+
+}
+
+
 void EnclaveTriangleContainer::insertTriangle(EnclaveTriangle in_enclaveTriangle)
 {
 	triangles[triangleCount++] = in_enclaveTriangle;

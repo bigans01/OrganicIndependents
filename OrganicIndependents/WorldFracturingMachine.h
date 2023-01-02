@@ -56,7 +56,7 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 													// respectively, this key will be -1, -2, -3. Its value is determined by the function WorldFracturingMachine::translateTriangleByBlueprintKeys().
 
 
-		FTriangleReverseTranslationMode translationMode = FTriangleReverseTranslationMode::ABSOLUTE;	// the value used by the function reverseTranslateStagerLines()
+		FTriangleReverseTranslationMode translationMode = FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE;	// the value used by the function reverseTranslateStagerLines()
 																										// to determine the method of reverse translation.
 };
 
