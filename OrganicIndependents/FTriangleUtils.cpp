@@ -404,9 +404,9 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 
 		case FTraceType::ORE_TRACE:
 		{
-			x_intercept_coords = in_XYZinterceptCoords.triPoints[0];
-			y_intercept_coords = in_XYZinterceptCoords.triPoints[1];
-			z_intercept_coords = in_XYZinterceptCoords.triPoints[2];
+			x_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[0]);
+			y_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[1]);
+			z_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[2]);
 			break;
 		}
 
@@ -2272,6 +2272,14 @@ float FTriangleUtils::roundToHundredth(float in_float)
 	//std::cout << "Original float: " << in_float << std::endl;
 	//std::cout << "Calc'ed float is: " << calcedFloat << std::endl;
 	return calcedFloat;
+}
+
+ECBPolyPoint FTriangleUtils::roundPointToHundredth(ECBPolyPoint in_polyPoint)
+{
+	float roundedX = float(floor(in_polyPoint.x * 100 + 0.5) / 100);
+	float roundedY = float(floor(in_polyPoint.y * 100 + 0.5) / 100);
+	float roundedZ = float(floor(in_polyPoint.z * 100 + 0.5) / 100);
+	return ECBPolyPoint(roundedX, roundedY, roundedZ);
 }
 
 float FTriangleUtils::roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit)

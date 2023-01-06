@@ -44,6 +44,26 @@ void FTriangle::setupAndRunFracturerMachine()
 			hasFracturingCompleted = true;
 			break;
 		}
+
+		case FTriangleType::BLUEPRINT:
+		{
+			std::cout << "Selected BLUEPRINT fracturer. " << std::endl;
+
+			std::shared_ptr<FTriangleFracturerBase> blueprintFracturer(new (BlueprintFracturingMachine));
+			fracturerMachine = blueprintFracturer;
+			fracturerMachine->transferFTriangleMetadata(fracturePoints[0],
+														fracturePoints[1],
+														fracturePoints[2],
+														fractureEmptyNormal,
+														fractureRequiredOrientation,
+														fractureRequiredClampValue,
+														fractureMaterial);
+			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->runFracturing();
+
+			hasFracturingCompleted = true;
+			break;
+		}
 	}
 }
 

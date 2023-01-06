@@ -7,6 +7,7 @@
 #include "FTriangleType.h"
 #include "FTriangleFracturerBase.h"
 #include "WorldFracturingMachine.h"
+#include "BlueprintFracturingMachine.h"
 
 /*
 

@@ -11,7 +11,9 @@
 Description:
 
 Instantiated by an FTriangle instance that has an FTriangleType::WORLD after
-the FTriangle's fracture() function is called.
+the FTriangle's fracture() function is called. Once instantiated and set up, the runFracturing() function
+of this class needs to be called to produce the output. Reference the function FTriangle::setupAndRunFracturerMachine()
+for more details.
 
 This class is the only class that should have to translate an OSContouredTriangle into
 near-0 coordinates (but it will still have to reverse translate like all the others)

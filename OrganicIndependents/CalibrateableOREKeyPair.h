@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CALIBRATABLEBLUEPRINTKEYPAIR_H
-#define CALIBRATABLEBLUEPRINTKEYPAIR_H
+#ifndef CALIBRATEABLEOREKEYPAIR_H
+#define CALIBRATEABLEOREKEYPAIR_H
 
 #include "EnclaveKeyPair.h"
 
@@ -9,12 +9,12 @@
 
 Description:
 
-Given two point/key links (ie., pointA/startKey and pointB/endKey), and a third point -- all points of which fall in a valid WORLD coordinate --
+Given two point/key links (ie., pointA/startKey and pointB/endKey), and a third point -- all points of which fall in a valid local BLUEPRINT coordinate that has a range from 0.0 to 32.0f --
 this class is designed to edit/adjust the copied values so that any points that lie directly on a grid line/corner are calibrated appropriately.
 
 */
 
-class CalibratableBlueprintKeyPair
+class CalibrateableOREKeyPair
 {
 	public:
 		EnclaveKeyDef::EnclaveKey startKey;

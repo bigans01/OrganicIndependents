@@ -172,6 +172,7 @@
     <ClInclude Include="BlockFlagStates.h" />
     <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlockSearchMeta.h" />
+    <ClInclude Include="BlueprintFracturingMachine.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="BlueprintTransformRefs.h" />
     <ClInclude Include="BorderDataMap.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="BoundaryOrientation.h" />
     <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CalibratableBlueprintKeyPair.h" />
+    <ClInclude Include="CalibrateableOREKeyPair.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="Cycle.h" />
@@ -258,6 +260,7 @@
     <ClInclude Include="FTraceOrientationResults.h" />
     <ClInclude Include="FTraceType.h" />
     <ClInclude Include="FTriangle.h" />
+    <ClInclude Include="FTriangleBlueprintTracer.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
     <ClInclude Include="FTriangleLine.h" />
@@ -392,10 +395,12 @@
     <ClCompile Include="BlockBorderMDLine.cpp" />
     <ClCompile Include="BlockCircuit.cpp" />
     <ClCompile Include="BlockFlags.cpp" />
+    <ClCompile Include="BlueprintFracturingMachine.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
     <ClCompile Include="BorderDataMap.cpp" />
     <ClCompile Include="BorderMDFaceList.cpp" />
     <ClCompile Include="CalibratableBlueprintKeyPair.cpp" />
+    <ClCompile Include="CalibrateableOREKeyPair.cpp" />
     <ClCompile Include="DimensionalLineScannerBase.cpp" />
     <ClCompile Include="DynamicBorderLineList.cpp" />
     <ClCompile Include="DynamicLinePointSynchronizer.cpp" />
@@ -414,6 +419,7 @@
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
     <ClCompile Include="FTriangle.cpp" />
+    <ClCompile Include="FTriangleBlueprintTracer.cpp" />
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />

@@ -50,6 +50,7 @@ class FTriangleUtils
 		static ECBPolyPoint roundToAppropriatePrecisionForHundredths(ECBPolyPoint in_polyPoint, EnclaveKeyDef::EnclaveKey in_blueprintKey);		// rounds a point to appropriate precision, based off blueprint coords
 		static ECBPolyPoint determinePolyPointPrecisionLimits(ECBPolyPoint in_polyPoint);
 		static float roundToHundredth(float in_float);
+		static ECBPolyPoint roundPointToHundredth(ECBPolyPoint in_polyPoint);
 		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
 		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static FTraceOrientationResults getFTracePointOrientation(ECBPolyPoint in_pointToCheck, FTraceBorderLineList* in_borderLineList);

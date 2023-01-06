@@ -145,6 +145,18 @@
     <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\ZDimLineScanner">
       <UniqueIdentifier>{c7671f8f-e053-4bc4-a41e-49f6822ea7cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FracturingMachines\World">
+      <UniqueIdentifier>{60067bf7-3c47-4079-a6b5-f4cbe526feff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FracturingMachines\Blueprint">
+      <UniqueIdentifier>{e6afe290-2fc9-499d-9d57-d8d1efcbc6a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\World">
+      <UniqueIdentifier>{08f08cad-c1c3-4297-b68f-49b07d69c89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\Blueprint">
+      <UniqueIdentifier>{47be6e4f-cfe9-4005-9375-3f934dadcef6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -687,9 +699,6 @@
     <ClInclude Include="FTriangleContainer.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
-    <ClInclude Include="WorldFracturingMachine.h">
-      <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
-    </ClInclude>
     <ClInclude Include="CalibratableBlueprintKeyPair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -824,6 +833,18 @@
     </ClInclude>
     <ClInclude Include="FTraceOrientationResults.h">
       <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldFracturingMachine.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\World</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintFracturingMachine.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="CalibrateableOREKeyPair.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleBlueprintTracer.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1001,9 +1022,6 @@
     <ClCompile Include="FTriangle.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
-    <ClCompile Include="WorldFracturingMachine.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
-    </ClCompile>
     <ClCompile Include="CalibratableBlueprintKeyPair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1065,6 +1083,18 @@
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleTracerBase.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldFracturingMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines\World</Filter>
+    </ClCompile>
+    <ClCompile Include="BlueprintFracturingMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibrateableOREKeyPair.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleBlueprintTracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClCompile>
   </ItemGroup>
