@@ -30,7 +30,8 @@ class BlueprintFracturingMachine : public FTriangleFracturerBase
 		void loadLocalizedBlueprintPoints();	// Step 3:  directly load the DoublePoint > ECBPolyPoint type conversions into the localizedFTrianglePoints array.
 												//			The localizedFTrianglePoints is used by other functions to load point data.
 		void runBlueprintTracing();				// Step 4:  create exterior FTriangleLines.
-		void buildAndRunBlueprintFRayCasters();	// Step 5:  determine the FRayCasters that this machine will have to use
+
+		void reverseTranslateBlueprintStagerLines();	// Step 8: Reverse translate stager lines, to localized style, so that they are compatible with the 0.0f to 4.0f boundaries of an ORE.
 
 		EnclaveKeyDef::EnclaveKey getUncalibratedOREKeyForPoint(DoublePoint in_point);	// A utility function for this class, that determines uncalibrate ORE keys of a point.
 

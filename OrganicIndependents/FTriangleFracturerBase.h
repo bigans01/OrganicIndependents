@@ -45,7 +45,8 @@ class FTriangleFracturerBase
 		BoundaryOrientation originBoundaryOrientation = BoundaryOrientation::NONE;	// must be set by constructor
 		PerfectClampEnum originPerfectClampValue = PerfectClampEnum::NONE;	// must be set by constructor
 		TriangleMaterial originMaterial = TriangleMaterial::NOVAL;
-		float rayCastDimInterval = 0.0f;	// the distance, measured in float, between each ray cast. Must be set by the derived class.
+		float rayCastDimInterval = 0.0f;	// the distance, measured in float, between each ray cast. Must be set by the derived class. Should be set to 32.0f, 4.0f, or 1.0f;
+											// The chosen value must be set manually by the specified class derived from this base class (such as WorldFracturingMachine).
 
 		EnclaveKeyPair originFTriangleLineKeypairs[3];		// These are the keypair values used to trace an FTriangleLine through it's respective space;
 															// this must be handled by the derived class of this base class. These should have an initial value,
@@ -97,11 +98,18 @@ class FTriangleFracturerBase
 		std::set<LineScanPermit> getValidPermits();
 		int getScanDimensionalStartKey(LineScanPermit in_dimensionToFetch);
 		void erasePermitFromSet(DifferingDimValues in_dimValueForErase, std::set<LineScanPermit>* in_permitMapRef);
-		std::map<FRayCasterTypeEnum, FRayCasterInitData> getUsableRayCasters();		// uses the values of the originFTriangleKeys (which must be calibrated before this) to determine
+		std::map<FRayCasterTypeEnum, FRayCasterInitData> getUsableRayCasters();		// uses the values of the originFTriangleKeys (which must be calibrated before this) to determine;
+																					// the value of the interval used for the FRayCasterInitData is equivalent to the rayCastDimInterval that must be already set,
+																					// before this function is called.
 		void setOutputRef(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* in_outputRef);	// set a reference
 																																		// to the map that we will output fracture results to.
 		void analyzeAndCleanupStagers(); // check the stagerMap for any bad instances (bad number of lines, etc);
 										 // for valid stagers, the lines of said stagers are put into the proper sequential order.
+
+		void buildAndRunFRayCasters();
+
+		void buildAndRunFLineScanners();	// builds and runs the FLineScanners, based on the value of rayCastDimInterval that represents the fixed grid length.
+
 };
 
 #endif

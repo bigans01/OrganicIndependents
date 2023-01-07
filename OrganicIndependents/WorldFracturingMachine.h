@@ -38,12 +38,10 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 													//		   we will have to put those localized values into the localizedFTrianglePoints array (see base class)
 
 		void runWorldTracing();						// Step 5: create exterior FTriangleLines.
-		void buildAndRunWorldFRayCasters();			// Step 6: determine the FRayCasters that this machine will have to use
-		void buildAndRunFLineScanners();			// Step 7: build the line scanners, and run them.
 
 													// Step 8: See base class function, analyzeAndCleanupStagers()											
 
-		void reverseTranslateStagerLines();			// Step 9: apply the appropriate translation to stager lines; uses the inverse of the translationKey
+		void reverseTranslateWorldStagerLines();			// Step 9: apply the appropriate translation to stager lines; uses the inverse of the translationKey
 
 		void buildWorldMachineTriangleContainers();	// Step 10: build the FTriangleContainers, according to what this class specifies.
 
