@@ -83,6 +83,18 @@ class FTriangleOutput
 		// FTriangleContainer::FTriangleContainerBounds.runBoundaryToNormalAnalysis will run this test, and set to true if the test doesn't pass
 		// (that is, the fractureEmptyNormal's value and the BoundaryOrientation-associated normal value don't match -- i.e, POS_X -> 1,0,0)
 		bool nonAlignedBoundaryDetected = false;
+
+		// a simple debug function that prints out the points of an output triangle.
+		void printOutputTrianglePoints()
+		{
+			std::cout << "Output triangle points are: ";
+			for (int x = 0; x < 3; x++)
+			{
+				std::cout << " [" << x << "]: ";
+				fracturePoints[x].printPointCoords();
+			}
+			std::cout << std::endl;
+		}
 };
 
 #endif

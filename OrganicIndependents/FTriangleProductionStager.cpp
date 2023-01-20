@@ -197,6 +197,25 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 		)
 		{
 			std::cout << "!! Bad line sequence detected!" << std::endl;
+			/*
+			std::cout << "!! Reasons: ";
+
+			if (remainingLineMap.size() != 0)
+			{
+				std::cout << " :: lineMapSize not 0 :: | ";
+			}
+
+			if (stagerLines.rbegin()->pointB != stagerLines.begin()->pointA)
+			{
+				std::cout << " :: begin and end points don't match :: | ";
+			}
+
+			if (newLineVector.size() < 3)
+			{
+				std::cout << " :: number of lines is less than 3 :: | ";
+			}
+			std::cout << std::endl;
+			*/
 			isStagerValid = false;
 		}
 

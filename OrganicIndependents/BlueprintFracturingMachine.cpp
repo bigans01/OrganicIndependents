@@ -33,6 +33,8 @@ void BlueprintFracturingMachine::runFracturing()
 
 	reverseTranslateBlueprintStagerLines(); // Step 8: Reverse translate the stager lines, in a FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE fashion.
 
+	buildBlueprintMachineTriangleContainers();	// Step 9: Produce the outputs (the type of the 
+
 	// Step 9: build the FTriangleOutputs, and remove the ones that are not correctly boundary oriented.
 
 }
@@ -132,6 +134,56 @@ void BlueprintFracturingMachine::reverseTranslateBlueprintStagerLines()
 		EnclaveKeyDef::EnclaveKey currentTranslationKey = currentMapKeyCopy.getInvertedKey();
 		currentStager.second.translateLines(currentTranslationKey, rayCastDimInterval);
 	}
+}
+
+void BlueprintFracturingMachine::buildBlueprintMachineTriangleContainers()
+{
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> containerRemovalSet;
+	for (auto& currentStager : stagerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
+
+		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+		// Remember: the BlueprintFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::ORE.
+		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::ORE,
+			originFTriangleEmptynormal,
+			originBoundaryOrientation,
+			currentStagerKey,
+			originMaterial);
+
+		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
+		// which is determined by the call to runBoundaryTests below.
+		bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE, currentStagerKey, originFTriangleEmptynormal);
+		if (shouldContainerBeDeleted)
+		{
+			containerRemovalSet.insert(currentStagerKey);
+		}
+
+	}
+
+	// Erase any keyed, empty containers that were in the containerRemovalSet.
+	for (auto& currentContainerToRemove : containerRemovalSet)
+	{
+		(*ftfOutputRef).erase(currentContainerToRemove);
+	}
+
+	// Lastly, for debug only: print out the triangles in each container:
+	std::cout << "-------Printing out output container triangles. " << std::endl;
+	for (auto& currentContainer : *ftfOutputRef)
+	{
+		std::cout << "Output triangles for ORE key ";
+		EnclaveKeyDef::EnclaveKey curentKey = currentContainer.first;
+		curentKey.printKey();
+		std::cout << ": " << std::endl;
+
+		currentContainer.second.printProducedFTriangles();
+
+	}
+
+	std::cout << "Done printing out container triangles. " << std::endl;
+	int junkInTrunk = 0;
+	std::cin >> junkInTrunk;
 }
 
 EnclaveKeyDef::EnclaveKey BlueprintFracturingMachine::getUncalibratedOREKeyForPoint(DoublePoint in_point)

@@ -107,6 +107,10 @@ void FTriangleBlueprintTracer::runLineTracing()
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint, FTrianglePointType::EXTERIOR));
 			FTriangleLine newTriangleLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
 
+			// Remember: we must always insert the exterior line at least once, before the special
+			// logic that follows is done.
+			currentCandidateAffectedKeys.insert(currentTracerKey);
+
 
 			// check for additional key adjustments, for x/y/z, when the line is perfectly clamped to any of those.
 			// For X

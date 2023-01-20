@@ -45,6 +45,8 @@ class FTriangleContainer
 		bool runBoundaryTests(FTriangleReverseTranslationMode in_reverseTranslationMode,
 								EnclaveKeyDef::EnclaveKey in_boundingKey,
 								ECBPolyPoint in_parentEmptyNormal);
+
+		void printProducedFTriangles();	// debug only: print the points contained within all FTriangleOutputs
 	private:
 		std::vector<FTriangleLine> constructionLines;
 		static bool areNormalsDirectionallyAligned(ECBPolyPoint in_normalA, ECBPolyPoint in_normalB);	// takes in two normals, checks to see if their

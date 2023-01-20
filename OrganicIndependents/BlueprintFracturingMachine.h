@@ -33,6 +33,8 @@ class BlueprintFracturingMachine : public FTriangleFracturerBase
 
 		void reverseTranslateBlueprintStagerLines();	// Step 8: Reverse translate stager lines, to localized style, so that they are compatible with the 0.0f to 4.0f boundaries of an ORE.
 
+		void buildBlueprintMachineTriangleContainers();	// Step 9: Generate the FTriangleOutputs (the value of destinedGridType in all of these should be FTriangletype::ORE)
+
 		EnclaveKeyDef::EnclaveKey getUncalibratedOREKeyForPoint(DoublePoint in_point);	// A utility function for this class, that determines uncalibrate ORE keys of a point.
 
 };

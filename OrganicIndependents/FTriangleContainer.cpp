@@ -76,6 +76,14 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 	}
 }
 
+void FTriangleContainer::printProducedFTriangles()
+{
+	for (auto& currentTriangle : fracturedTriangles)
+	{
+		currentTriangle.second.printOutputTrianglePoints();
+	}
+}
+
 bool FTriangleContainer::areNormalsDirectionallyAligned(ECBPolyPoint in_normalA, ECBPolyPoint in_normalB)
 {
 	bool areNormalsAligned = false;

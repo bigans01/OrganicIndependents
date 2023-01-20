@@ -51,7 +51,16 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 		bool isStagerValid = currentStager.second.analyzeAndReorganize();
 		if (!isStagerValid)
 		{
-			//std::cout << "NOTICE: Detected stager as invalid, will remove. " << std::endl;
+			/*
+			std::cout << "NOTICE: Detected stager as invalid, at key "; 
+			EnclaveKeyDef::EnclaveKey currentKey = currentStager.first;
+			currentKey.printKey();
+			std::cout << " will remove. " << std::endl;
+
+			int invalidRemoval = 3;
+			std::cin >> invalidRemoval;
+			*/
+
 			invalidStagerKeys.insert(currentStager.first);
 		}
 	}
