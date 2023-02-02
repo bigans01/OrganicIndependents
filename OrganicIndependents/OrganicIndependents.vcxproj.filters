@@ -846,6 +846,12 @@
     <ClInclude Include="FTriangleBlueprintTracer.h">
       <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClInclude>
+    <ClInclude Include="FKeyCalibrationMode.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleKeySetCalibrator.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1096,6 +1102,9 @@
     </ClCompile>
     <ClCompile Include="FTriangleBlueprintTracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleKeySetCalibrator.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

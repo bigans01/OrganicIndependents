@@ -5869,20 +5869,33 @@ EnclaveKeyDef::EnclaveKey IndependentUtils::retrieveBorderDirection(ECBPPOrienta
 {
 	EnclaveKeyDef::EnclaveKey returnPoint;
 	// check for faces
+
+	//std::cout << "!!!! -> starting, retrieveBorderDirection. " << std::endl;
+	//std::cout << "!!! Size of faceMap is: " << in_dataMapRef->faceMap.size() << std::endl;
+
 	if (in_results.otype == ECBPPOrientations::FACE)
 	{
+		//std::cout << "!!! Attempting grab for FACE. " << std::endl;
 		returnPoint = in_dataMapRef->faceMap[in_results.osubtype].borderLimits;
 		//std::cout << "(face) Limits are: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << " " << std::endl;
 	}
 	else if (in_results.otype == ECBPPOrientations::LINE)
 	{
+		//std::cout << "!!! Attempting grab for LINE. " << std::endl;
 		returnPoint = in_dataMapRef->lineMap[in_results.osubtype].borderLimits;
 		//std::cout << "(line) Limits are: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << " " << std::endl;
 	}
 	else if (in_results.otype == ECBPPOrientations::CORNER)
 	{
+		//std::cout << "!!! Attempting grab for CORNER. " << std::endl;
 		returnPoint = in_dataMapRef->cornerMap[in_results.osubtype].borderLimits;
 		//std::cout << "(corner) Limits are: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << " " << std::endl;
+	}
+	else
+	{
+		int warningHalt = 3;
+		std::cout << "!!!! WARNING: otype is not FACE, LINE, or CORNER!!!" << std::endl;
+		std::cin >> warningHalt;
 	}
 
 	return returnPoint;

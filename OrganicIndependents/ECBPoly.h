@@ -29,6 +29,7 @@ class ECBPoly
 		TriangleMaterial materialID = TriangleMaterial::NOVAL;				// is the triangle dirt, stone, snow, wood, etc
 		PerfectClampEnum isPolyPerfectlyClamped = PerfectClampEnum::NONE;	// determines if the entire polygon is perfectly clamped to x, y, or z azis
 		ECBPolyPoint emptyNormal;	// the empty normal that represents the direction of empty space in relation to this ECBPoly.
+		BoundaryOrientation polyBoundaryOrientation = BoundaryOrientation::NONE;	// must be set by the FTriangleOutput constructor.
 
 		void printLineData();	// print all the point data of each ECBPolyLine
 	private:

@@ -22,7 +22,8 @@ they exist in the UniquePointContainer used by the base class (that comes later)
 class FTriangleWorldTracer : public FTriangleTracerBase
 {
 	public:
-		void runLineTracing();
+		void runLineTracing();	// traces FTriangleLine instances throughout the selected world space, using the scannerKeys EnclaveKeyDef array from
+								// FTriangleFracturerBase.
 	private:
 		
 		// This struct is designed to localize a line as close to 0,0,0 as can possibly be; using this will ensure that

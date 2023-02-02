@@ -8,17 +8,23 @@ void YDimLineScanner::runScan()
 		auto currentYPoints = dimensionalUniquePointsRef->getAllPointsWithY(currentFixedY);
 
 		/*
-		std::cout << "(YDimLineScanner::runScan): Starting scan at fixed Y value of: " << currentFixedY << std::endl;
-		std::cout << "(YDimLineScanner::runScan): dimensionalScanBackwardKey value is: " << dimensionalScanBackwardKey << std::endl;
-		std::cout << "(YDimLineScanner::runScan): dimensionalScanForwardKey value is: " << dimensionalScanForwardKey << std::endl;
-
-		std::cout << "(YDimLineScanner::runScan): points for Y value of " << currentFixedY << " are: " << std::endl;
-		
-
-		for (auto& printPoints : currentYPoints)
+		if (currentFixedY == 4.0f)
 		{
-			printPoints.printPointData();
-			std::cout << std::endl;
+			std::cout << "(YDimLineScanner::runScan): Starting scan at fixed Y value of: " << currentFixedY << std::endl;
+			std::cout << "(YDimLineScanner::runScan): dimensionalScanBackwardKey value is: " << dimensionalScanBackwardKey << std::endl;
+			std::cout << "(YDimLineScanner::runScan): dimensionalScanForwardKey value is: " << dimensionalScanForwardKey << std::endl;
+
+			std::cout << "(YDimLineScanner::runScan): points for Y value of " << currentFixedY << " are: " << std::endl;
+
+
+			for (auto& printPoints : currentYPoints)
+			{
+				printPoints.printPointData();
+				std::cout << std::endl;
+			}
+
+			int printYDone = 3;
+			std::cin >> printYDone;
 		}
 		*/
 

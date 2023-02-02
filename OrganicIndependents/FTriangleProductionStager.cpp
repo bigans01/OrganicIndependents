@@ -94,13 +94,19 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 	{
 		std::vector<FTriangleLine> newLineVector;
 
+		// a copy of the lines, used for debugging, in case something goes wrong.
+		std::vector<FTriangleLine> debugCopy = stagerLines;
+
 		// FTDEBUG, (uncomment when needed for debugging)
+		
 		/*
 		std::cout << "############ Before operating, lines are: " << std::endl;
 		for (auto& prePrint : stagerLines)
 		{
 			prePrint.printLine();
 		}
+		int debugPrint = 3;
+		std::cin >> debugPrint;
 		*/
 
 		// get the very first line from the vector, push it into the newLineVector, and then erase it from stagerLines.
@@ -122,6 +128,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 		{
 			remaining.second.printLine();
 		}
+		int debugPrint = 3;
 		*/
 
 		// we must loop a number of times, where the number to loop is equal to the number of remaining lines in stagerLines (we already removed one already).
@@ -197,7 +204,12 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 		)
 		{
 			std::cout << "!! Bad line sequence detected!" << std::endl;
-			/*
+			std::cout << "!! Original lines were: " << std::endl;
+			for (auto& currentDebugLine : debugCopy)
+			{
+				currentDebugLine.printLine();
+			}
+			
 			std::cout << "!! Reasons: ";
 
 			if (remainingLineMap.size() != 0)
@@ -215,7 +227,10 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 				std::cout << " :: number of lines is less than 3 :: | ";
 			}
 			std::cout << std::endl;
-			*/
+
+			int badSequenceWait = 3;
+			std::cin >> badSequenceWait;
+			
 			isStagerValid = false;
 		}
 

@@ -94,6 +94,7 @@ bool BlockCircuit::fillSegmentArrayMetaDataFromCircuit(int in_faceMatchThreshold
 	calculateSegmentLinks(in_faceMatchThreshold);
 	//std::cout << "SEGMENT COUNT: -> " << currentSegmentCount << std::endl;
 
+	//std::cout << "!! START Performing > 1 segment check... " << std::endl;
 	if (currentSegmentCount > 1)
 	{
 		//std::cout << "SEGMENT COUNT: -> " << currentSegmentCount << std::endl;
@@ -102,6 +103,7 @@ bool BlockCircuit::fillSegmentArrayMetaDataFromCircuit(int in_faceMatchThreshold
 		determineFinalTypeForLastSegment();
 	}
 
+	//std::cout << "!! DONE Performing > 1 segment check... " << std::endl;
 	/*
 	std::cout << "##### Segment count is: " << currentSegmentCount << std::endl;
 	for (int x = 0; x < currentSegmentCount; x++)
@@ -111,6 +113,7 @@ bool BlockCircuit::fillSegmentArrayMetaDataFromCircuit(int in_faceMatchThreshold
 	*/
 
 	bool validityResult = gatherCircuitPointsWithString("fillSegmentArrayData #2", in_point0, in_point1, in_point2);	// gather points from the segment(s)
+	//std::cout << "!!! Done getting circuit points... " << std::endl;
 	if (validityResult == false)
 	{
 		//std::cout << "(BlockCircuit): bad circuit detected in call to function, fillSegmentArrayMetaDataFromCircuit" << std::endl;
@@ -302,6 +305,8 @@ bool BlockCircuit::gatherCircuitPointsWithString(std::string in_optionalString, 
 		MicroPolyPointContainer currentContainer = segmentArray[x].getCircuitPoints(circuitEnclaveKey, circuitBlockKey, in_point0, in_point1, in_point2, in_optionalString);
 		//(circuitEnclaveKey, circuitBlockKey, in_point0, in_point1, in_point2, "BlockCircuit::gatherCircuitPoints (with points 1)");
 
+		//std::cout << "!!! Finished getCircuitPoints of current Segment... " << std::endl;
+
 		// only do the following if the container was valid
 		if (currentContainer.isContainerValid == true)
 		{
@@ -322,7 +327,7 @@ bool BlockCircuit::gatherCircuitPointsWithString(std::string in_optionalString, 
 		}
 		else if (currentContainer.isContainerValid == false)
 		{
-			//std::cout << "(BlockCircuit): circuit is not valid; called by function gatherCircuitPointsWithString " << std::endl;
+			std::cout << "(BlockCircuit): circuit is not valid; called by function gatherCircuitPointsWithString " << std::endl;
 			isCircuitValid = false;
 		}
 	}

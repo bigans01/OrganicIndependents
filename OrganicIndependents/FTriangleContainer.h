@@ -32,7 +32,7 @@ class FTriangleContainer
 		std::map<int, FTriangleOutput> fracturedTriangles;
 		void insertConstructionLines(std::vector<FTriangleLine> in_constructionLines);
 		void printConstructionLines();
-		void produceFTriangles(FTriangleType in_parentTriangleType,
+		void produceFTriangles(FTriangleType in_destinedTriangleType,
 								ECBPolyPoint in_parentEmptyNormal,
 								BoundaryOrientation in_parentOrientation,
 								EnclaveKeyDef::EnclaveKey in_containerBounds,

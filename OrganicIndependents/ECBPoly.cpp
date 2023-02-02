@@ -31,6 +31,8 @@ ECBPoly::ECBPoly(FTriangleOutput in_completeTriangleOutput)
 	isPolyPerfectlyClamped = in_completeTriangleOutput.fractureRequiredClampValue;
 
 	emptyNormal = in_completeTriangleOutput.fractureEmptyNormal;
+
+	polyBoundaryOrientation = in_completeTriangleOutput.fractureRequiredOrientation;
 }
 
 void ECBPoly::printLineData()

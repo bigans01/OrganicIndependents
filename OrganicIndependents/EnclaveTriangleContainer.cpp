@@ -9,7 +9,16 @@ EnclaveTriangleContainer::EnclaveTriangleContainer()
 
 EnclaveTriangleContainer::EnclaveTriangleContainer(FTriangleContainer in_fTriangleContainer)
 {
+	// iterate through each FTriangleOutput in the FTriangleContainer; 1 FTriangleOutput = 1 EnclaveTriangle.
+	for (auto& currentFTriangleOutput : in_fTriangleContainer.fracturedTriangles)
+	{
+		EnclaveTriangle currentTriangle(currentFTriangleOutput.second);
+		triangles[triangleCount++] = currentTriangle;
+	}
 
+	//std::cout << "(EnclaveTriangleContainer): size of triangles, after using FTriangle method, is now: " << triangles.size() << std::endl;
+	//int sizeWait = 3;
+	//std::cin >> sizeWait;
 }
 
 

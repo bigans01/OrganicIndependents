@@ -18,6 +18,8 @@
 #include "TerminatingSetContainer.h"
 #include "SegmentResult.h"
 //#include "PrimaryLineT1Array.h"
+#include "FTriangleOutput.h"
+#include "PolyUtils.h"
 
 /*
 
@@ -33,6 +35,10 @@ class IndependentUtils;
 class EnclaveTriangle
 {
 public:
+	// custom constructor, meant for use with FTriangleOutput
+	EnclaveTriangle();
+	EnclaveTriangle(FTriangleOutput in_fTriangleOutput);
+
 	// core EnclaveTriangle components
 	TriangleMaterial enclaveTriangleMaterialID = TriangleMaterial::NOVAL;				// is the triangle dirt, stone, snow, wood, etc
 	PerfectClampEnum isEnclaveTrianglePolyPerfectlyClamped = PerfectClampEnum::NONE;	// determines if the entire polygon is perfectly clamped to x, y, or z azis
@@ -108,6 +114,7 @@ private:
 
 	ECBPolyPoint getTraceResultForEndpointSegment(BlockCircuit* in_circuitRef, int in_segmentIndex, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 	PrimaryLineT1Array generatePrimaryLineT1Array(PolyRunDirection in_polyRunDirection);
+	ECBPolyPoint convertDoublePointToECBPolyPointForEnclaveTriangle(DoublePoint in_doublePointToConvert);
 
 	// tracing maps
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> exteriorTracedBlocks;	// a set to register exterior-traced blocks.
@@ -117,6 +124,8 @@ private:
 	EnclaveKeyDef::EnclaveKey currentEnclaveKey;
 
 	int attemptLimit = 16; // the number of times an EnclaveLineRunner may attempt its completion run before being halted, and the run has to begin again.
+
+
 };
 
 #endif

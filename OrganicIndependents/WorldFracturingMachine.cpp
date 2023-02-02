@@ -3,16 +3,28 @@
 
 void WorldFracturingMachine::runFracturing()
 {
+	std::cout << "(WorldFracturingMachine) !!! Start of runFracturing(). " << std::endl;
+	std::cout << "Points are: " << std::endl;
+	for (int x = 0; x < 3; x++)
+	{
+		originFTrianglePoints[x].printPointCoords();
+		std::cout << std::endl;
+	}
+
+
 	// set the ray cast interval to 32.0f
 	rayCastDimInterval = 32.0f;
 
 	determineUncalibratedBlueprintKeys();	// Step 1: get the uncalibrated keys.
-	calibrateOriginBlueprintKeys();			// Step 2: calibrate the keys
+	calibrateFTriangleLineAndScannerBlueprintKeys();			// Step 2: calibrate the keys
 	translateTriangleByBlueprintKeys();		// Step 3: do any required translations.
 	loadLocalizedPoints();					// Step 4: Once we have translated, load the DoublePoints into ECBPolyPoints
 											// (don't worry about double to float conversion, as the float values should be very small, and far less than 80000.00~, where the precision loss begins to occur)
 	runWorldTracing();						// Step 5: create exterior FTriangleLines.
+	
 	buildAndRunFRayCasters();			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
+	//buildAndRunFRayCasters(originFTriangleKeys);			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
+
 	buildAndRunFLineScanners();				// Step 7: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 											// and then run them.
 
@@ -34,38 +46,59 @@ void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
 	}
 }
 
-void WorldFracturingMachine::calibrateOriginBlueprintKeys()
+void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 {
-	CalibratableBlueprintKeyPair pairA;
-	pairA.initialize(originFTriangleKeys[0], originFTriangleKeys[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
-	pairA.calibrate();
+	// Primer: this function determines the appropriate Blueprint key sets to use for FTriangleLine tracing and scanning.
+
+	// we can't use auto for the below operation, because for some reason C++ thinks it should be an array of ref's and not a copy...
+	EnclaveKeyDef::EnclaveKey triangleKeysCopy[3];
+	for (int x = 0; x < 3; x++)
+	{
+		triangleKeysCopy[x] = originFTriangleKeys[x];
+	}
+
+
+	FTriangleKeySetCalibrator pairA(FTriangleType::WORLD);
+	pairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	pairA.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[0] = pairA.getBeginAndEndKeys();
 
-	CalibratableBlueprintKeyPair pairB;
-	pairB.initialize(originFTriangleKeys[1], originFTriangleKeys[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
-	pairB.calibrate();
+	FTriangleKeySetCalibrator pairB(FTriangleType::WORLD);
+	pairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
 
-	CalibratableBlueprintKeyPair pairC;
-	pairC.initialize(originFTriangleKeys[2], originFTriangleKeys[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
-	pairC.calibrate();
+	FTriangleKeySetCalibrator pairC(FTriangleType::WORLD);
+	pairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
-	// once everything has been calibrated, we can store the keys for each point.
-	// Below: FTDEBUG (uncomment when needed)
-	//std::cout << "Calibrated keys for each point are: " << std::endl;
+	// Store the calibrated Blueprint keys for the FTriangle lines.
 	for (int x = 0; x < 3; x++)
 	{
 		originFTriangleKeys[x] = originFTriangleLineKeypairs[x].keyA;
-		
-		// Below: FTDEBUG (uncomment when needed.
-		/*
-		std::cout << "Point " << x << ": ";
-		originFTrianglePoints[x].printPointCoords();
-		std::cout << " Key: ";
-		originFTriangleKeys[x].printKey();
-		std::cout << std::endl;
-		*/
+	}
+
+	// Once key pairs for the FTriangleLines have been established, do the same for the scanningKeys.
+
+	FTriangleKeySetCalibrator scanPairA(FTriangleType::WORLD);
+	scanPairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	scanPairA.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
+	scanningKeypairs[0] = scanPairA.getBeginAndEndKeys();
+
+	FTriangleKeySetCalibrator scanPairB(FTriangleType::WORLD);
+	scanPairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	scanPairB.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
+	scanningKeypairs[1] = scanPairB.getBeginAndEndKeys();
+
+	FTriangleKeySetCalibrator scanPairC(FTriangleType::WORLD);
+	scanPairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	scanPairC.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
+	scanningKeypairs[2] = scanPairC.getBeginAndEndKeys();
+
+	for (int x = 0; x < 3; x++)
+	{
+		scanningKeys[x] = originFTriangleLineKeypairs[x].keyA;
 	}
 
 	// Below: FTDEBUG (uncomment when needed)
@@ -154,6 +187,10 @@ void WorldFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKe
 		originFTriangleKeys[x] += in_adjustingKey;
 		originFTriangleLineKeypairs[x].keyA += in_adjustingKey;
 		originFTriangleLineKeypairs[x].keyB += in_adjustingKey;
+
+		scanningKeys[x] += in_adjustingKey;
+		scanningKeypairs[x].keyA += in_adjustingKey;
+		scanningKeypairs[x].keyB += in_adjustingKey;
 	}
 }
 

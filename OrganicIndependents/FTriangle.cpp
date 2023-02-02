@@ -47,7 +47,7 @@ void FTriangle::setupAndRunFracturerMachine()
 
 		case FTriangleType::BLUEPRINT:
 		{
-			std::cout << "Selected BLUEPRINT fracturer. " << std::endl;
+			//std::cout << "Selected BLUEPRINT fracturer. " << std::endl;
 
 			std::shared_ptr<FTriangleFracturerBase> blueprintFracturer(new (BlueprintFracturingMachine));
 			fracturerMachine = blueprintFracturer;

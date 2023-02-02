@@ -4,6 +4,7 @@
 #define CALIBRATEABLEOREKEYPAIR_H
 
 #include "EnclaveKeyPair.h"
+#include "FKeyCalibrationMode.h"
 
 /*
 
@@ -25,10 +26,17 @@ class CalibrateableOREKeyPair
 
 		void initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, DoublePoint in_pointA, DoublePoint in_pointB, DoublePoint in_pointC);
 		void initialize(EnclaveKeyDef::EnclaveKey in_startKey, EnclaveKeyDef::EnclaveKey in_endKey, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC);
-		void calibrate();
+		void calibrate(FKeyCalibrationMode in_calibrationMode);
 		EnclaveKeyPair getBeginAndEndKeys();
 	private:
-		void isCalibratable(int* in_blueprintLocationPtr, float in_normalizedSlopeValue, float in_pointAxyz, float in_pointBxyz, float in_pointCxyz, float in_keyAfloat, float in_keyBfloat);
+		void isCalibratable(int* in_blueprintLocationPtr, 
+							float in_normalizedSlopeValue, 
+							float in_pointAxyz, 
+							float in_pointBxyz, 
+							float in_pointCxyz, 
+							float in_keyAfloat, 
+							float in_keyBfloat,
+							FKeyCalibrationMode in_calibrationMode);
 };
 
 #endif

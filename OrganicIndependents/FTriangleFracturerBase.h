@@ -18,6 +18,7 @@
 #include "ZDimLineScanner.h"
 #include "FTriangleContainer.h"
 #include "FTriangleReverseTranslationMode.h"
+#include "FTriangleKeySetCalibrator.h"
 
 class FTriangleFracturerBase
 {
@@ -50,7 +51,10 @@ class FTriangleFracturerBase
 
 		EnclaveKeyPair originFTriangleLineKeypairs[3];		// These are the keypair values used to trace an FTriangleLine through it's respective space;
 															// this must be handled by the derived class of this base class. These should have an initial value,
-															// but then the keys may be calibrated (i.e, such as with WorldFracturingMachine::calibrateOriginBlueprintKeys())
+															// but then the keys may be calibrated (i.e, such as with WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys())
+		EnclaveKeyDef::EnclaveKey originFTriangleKeys[3];	// the origin keys of the FTriangle points; these must be set appropriately by
+															// the derived class of this base class (i.e, in a WorldFracturingMachine this would be 
+															// the calibrated blueprint keys; in a BlueprintFracturingMachine it'be the EnclaveKey, etc)
 															// which will update their values.
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* ftfOutputRef = nullptr;	// a pointer to the map that stores
 																																// the output triangles that are a result of the 
@@ -59,13 +63,18 @@ class FTriangleFracturerBase
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleProductionStager, EnclaveKeyDef::KeyHasher> stagerMap;	// a map of stagers; this must be passed as a reference
 																														// to the selected tracing class (i.e, FTriangleWorldTracer, FTriangleBlueprintTracer, etc)
 
-		EnclaveKeyDef::EnclaveKey originFTriangleKeys[3];	// the origin keys of the FTriangle points; these must be set appropriately by
-															// the derived class of this base class (i.e, in a WorldFracturingMachine this would be 
-															// the calibrated blueprint keys; in a BlueprintFracturingMachine it'be the EnclaveKey, etc)
+		EnclaveKeyPair scanningKeypairs[3];		// These are keypairs used to determine the fixed ray-cast interval ranges;
+												// they are used to populate the appropriate values of the scanningKeys[3] member of this class,
+												// which is done with a specialized function of each derived class.
+												// (i.e, the function BlueprintFracturingMachine::calibrateFTriangleLineAndScannerOREKeys()).
+
+		EnclaveKeyDef::EnclaveKey scanningKeys[3];	// Setup by functions as BlueprintFracturingMachine::calibrateFTriangleLineAndScannerOREKeys(),
+													// This key set represents the valid range of fixed raycasting dimensions for X/Y/Z.
+													// Currently required for use by the virtual function FTriangleTracerBase::runLineTracing()
 
 		UniquePointContainer fracturerPoints;				// any point that will be used by any line, or anywhere in the triangle for that matter, should go here.
 															// This includes but is not limited to: the original points of the triangle, traced exterior points, and ray-casted points.
-																// which FRayCasterQuadBase-derived classes to build.
+															// which FRayCasterQuadBase-derived classes to build.
 		std::map<FRayCasterTypeEnum, std::shared_ptr<FRayCasterQuadBase>> selectedRayCasters;	// a map of selected ray casters, that must be executed.
 																								// Must be called by derived class that is based off this one.
 

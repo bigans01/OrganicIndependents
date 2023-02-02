@@ -112,7 +112,15 @@ void FTriangleBlueprintTracer::runLineTracing()
 			currentCandidateAffectedKeys.insert(currentTracerKey);
 
 
-			// check for additional key adjustments, for x/y/z, when the line is perfectly clamped to any of those.
+			// FTriangleLine instances which are perfectly aligned to a grid line, must be inserted into both sections that the line borders on those dimension(s).
+			// I.e, a line with points 4,1.5,0 and 4,2.5,4 is perfectly aligned to X, and in a BlueprintLineTracer this would need to exist at 
+			// the keys 0,0,0, and 1,0,0, since the X = 4.0f sits between both of those keys. In this scenario, the positive-side key is
+			// always inserted by default, so we must manually enter the negative value.
+			//
+			// Remember, the EnclaveKeyDef set to use for this operation is equivalent to what is produced by calling an instance of
+			// FTriangleKeySetCalibrator, constructed with an FTriangleType::BLUEPRINT value, and using FKeyCalibrationMode::FTRIANGLE_LINE when calling
+			// calibrate(). The values will be stored in the FTriangleFracturerBase::scannerKeys[] array.
+
 			// For X
 			float moduloXpointA = fmod(currentBeginPoint.x, 4.0f);
 			float moduloXpointB = fmod(currentEndPoint.x, 4.0f);

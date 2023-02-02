@@ -26,7 +26,7 @@ class BlueprintFracturingMachine : public FTriangleFracturerBase
 		void runFracturing();
 	private:
 		void determineUncalibratedOREKeys();	// Step 1:  find the uncalibrated ORE keys.
-		void calibrateOriginOREKeys();			// Step 2:  calibrate the ORE origin keys.
+		void calibrateFTriangleLineAndScannerOREKeys();			// Step 2:  calibrate the ORE origin keys.
 		void loadLocalizedBlueprintPoints();	// Step 3:  directly load the DoublePoint > ECBPolyPoint type conversions into the localizedFTrianglePoints array.
 												//			The localizedFTrianglePoints is used by other functions to load point data.
 		void runBlueprintTracing();				// Step 4:  create exterior FTriangleLines.

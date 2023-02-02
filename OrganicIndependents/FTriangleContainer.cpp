@@ -15,7 +15,7 @@ void FTriangleContainer::printConstructionLines()
 	}
 }
 
-void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
+void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType,
 										ECBPolyPoint in_parentEmptyNormal,
 										BoundaryOrientation in_parentOrientation,
 										EnclaveKeyDef::EnclaveKey in_containerBounds,
@@ -67,7 +67,7 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_parentTriangleType,
 
 		FTriangleOutput newOutput = formOutput(newFrame, 
 											in_parentEmptyNormal, 
-											in_parentTriangleType, 
+											in_destinedTriangleType, 
 											in_containerBounds,
 											in_containerMaterial);
 		fracturedTriangles[fracturedTriangles.size()] = newOutput;
@@ -224,7 +224,7 @@ bool FTriangleContainer::runBoundaryTests(FTriangleReverseTranslationMode in_rev
 		// For ORE bounds, we always assume that the output is LOCALIZED; so just use a key of 0,0,0 and interval of 4.0f.
 		case FTriangleType::ORE:
 		{
-			std::cout << "!! Selecting ORE bounds. " << std::endl;
+			//std::cout << "!! Selecting ORE bounds. " << std::endl;
 			float boundaryInterval = 4.0f;
 			FTriangleContainerBounds decidedBounds(EnclaveKeyDef::EnclaveKey(0, 0, 0), boundaryInterval);
 			bounds = decidedBounds;

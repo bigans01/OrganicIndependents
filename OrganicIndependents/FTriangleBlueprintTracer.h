@@ -19,7 +19,8 @@ are fed into the stager map referenced by tracerStagerRef (see base class for de
 class FTriangleBlueprintTracer : public FTriangleTracerBase
 {
 	public: 
-		void runLineTracing();
+		void runLineTracing();	// traces FTriangleLine instances throughout the selected world space, using the scannerKeys EnclaveKeyDef array from
+								// FTriangleFracturerBase.
 
 	private:
 

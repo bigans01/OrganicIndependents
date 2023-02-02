@@ -140,7 +140,8 @@ void XSliceLine::determineXLineOutputs()
 		lineTargets = determinedTargets;
 
 
-		int alignedToZWait = 3;
-		std::cin >> alignedToZWait;
+		//std::cout << "!!! Found line aligned to Z..." << std::endl;
+		//int alignedToZWait = 3;
+		//std::cin >> alignedToZWait;
 	}
 }

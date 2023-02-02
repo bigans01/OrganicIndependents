@@ -40,7 +40,7 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 		{
 			if (currentPointIndex != currentComparedPoint.first)
 			{
-				std::cout << "Generating comparison..." << std::endl;
+				//std::cout << "Generating comparison..." << std::endl;
 				PointComparison newComparison(comparablePoint.first,
 					comparablePoint.second.point,
 					currentComparedPoint.first,
@@ -59,8 +59,8 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 
 				if (doesComparisonAlreadyExist == false)
 				{
-					std::cout << "Inserted new comparison: " << std::endl;
-					newComparison.printComparison();
+					//std::cout << "Inserted new comparison: " << std::endl;
+					//newComparison.printComparison();
 					comparisonTracker[comparisonTracker.size()] = newComparison;
 				}
 			}
@@ -108,9 +108,9 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 			(currentPointToTryAndMove.first == targetComparison.pointBid))
 		)
 		{
-			std::cout << "Moving point over: ";
-			currentPointToTryAndMove.second.printPointData();
-			std::cout << std::endl;
+			//std::cout << "Moving point over: ";
+			//currentPointToTryAndMove.second.printPointData();
+			//std::cout << std::endl;
 
 			nonEndpointPointsMap[nonEndpointPointsMap.size()] = currentPointToTryAndMove.second;
 			removalIndices.insert(currentPointToTryAndMove.first);
@@ -129,7 +129,7 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 	// erase the EXTERIOR points we moved into the interior map above.
 	for (auto& currentExteriorIDToRemove : removalIndices)
 	{
-		std::cout << "!!! Erasing element at: " << currentExteriorIDToRemove << std::endl;
+		//std::cout << "!!! Erasing element at: " << currentExteriorIDToRemove << std::endl;
 		endpointsPointMap.erase(currentExteriorIDToRemove);
 	}
 
@@ -142,8 +142,8 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 	}
 	*/
 
-	std::cout << "Number of endpoints: " << endpointsPointMap.size() << std::endl;
-	std::cout << "Number of non-endpoints: " << nonEndpointPointsMap.size() << std::endl;
+	//std::cout << "Number of endpoints: " << endpointsPointMap.size() << std::endl;
+	//std::cout << "Number of non-endpoints: " << nonEndpointPointsMap.size() << std::endl;
 
 	std::vector<FTrianglePoint> finalEndpointsVector;
 	finalEndpointsVector.push_back(endpointsPointMap.begin()->second);

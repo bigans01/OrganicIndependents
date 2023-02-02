@@ -2,6 +2,44 @@
 #include "EnclaveTriangle.h"
 #include "PrimaryLineT1Array.h"
 
+EnclaveTriangle::EnclaveTriangle()
+{
+
+}
+
+EnclaveTriangle::EnclaveTriangle(FTriangleOutput in_fTriangleOutput)
+{
+	TriangleLine line1, line2, line3;
+
+	// rounding points isn't necessary, as it should already be done with an FTriangle.
+	ECBPolyPoint roundedPoint1 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[0]);
+	ECBPolyPoint roundedPoint2 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[1]);
+	ECBPolyPoint roundedPoint3 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[2]);
+
+	line1.pointA = roundedPoint1;
+	line1.pointB = roundedPoint2;
+
+	line2.pointA = roundedPoint2;
+	line2.pointB = roundedPoint3;
+
+	line3.pointA = roundedPoint3;
+	line3.pointB = roundedPoint1;
+
+	bool isValid1 = PolyUtils::determineLineInterceptSlopesDebugForEnclaveTriangle(&line1, roundedPoint3, roundedPoint1, roundedPoint2, roundedPoint3);
+	bool isValid2 = PolyUtils::determineLineInterceptSlopesDebugForEnclaveTriangle(&line2, roundedPoint1, roundedPoint1, roundedPoint2, roundedPoint3);
+	bool isValid3 = PolyUtils::determineLineInterceptSlopesDebugForEnclaveTriangle(&line3, roundedPoint2, roundedPoint1, roundedPoint2, roundedPoint3);
+
+	// add each line to the triangle
+	lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);		// line consists of points 1 and 2, so third = point 3
+	lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);		// line consists of points 2 and 3, so third = point 1
+	lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);		// line consists of points 3 and 1, so third = point 2
+
+	enclaveTriangleMaterialID = in_fTriangleOutput.outputTriangleMaterial;
+	isEnclaveTrianglePolyPerfectlyClamped = in_fTriangleOutput.fractureRequiredClampValue;
+
+	emptyNormal = in_fTriangleOutput.fractureEmptyNormal;
+}
+
 void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, 
 								BorderDataMap* in_borderDataMap, 
 								EnclaveKeyDef::EnclaveKey in_key, 
@@ -12,10 +50,13 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	// prepare poly data
 	currentEnclaveKey = in_key;
 
-	//std::cout << "############### Executing run for triangle, with points: [" << lineArray[0].pointA.x << ", " << lineArray[0].pointA.y << ", " << lineArray[0].pointA.z << "] [ "
-																			 // << lineArray[1].pointA.x << ", " << lineArray[1].pointA.y << ", " << lineArray[1].pointA.z << "] [ " 
-																			  //<< lineArray[2].pointA.x << ", " << lineArray[2].pointA.y << ", " << lineArray[2].pointA.z << "]" << std::endl;
-
+	/*
+	std::cout << "############### Executing run for triangle, with points: [" << lineArray[0].pointA.x << ", " << lineArray[0].pointA.y << ", " << lineArray[0].pointA.z << "] [ "
+																			  << lineArray[1].pointA.x << ", " << lineArray[1].pointA.y << ", " << lineArray[1].pointA.z << "] [ " 
+																			  << lineArray[2].pointA.x << ", " << lineArray[2].pointA.y << ", " << lineArray[2].pointA.z << "]" << std::endl;
+	*/
+	
+	
 	//std::cout << "!!!!!!!!!!!!!!!!!!!! !!! Producing forward array " << std::endl;
 	PrimaryLineT1Array forwardPrimaryLineArray = generatePrimaryLineT1Array(PolyRunDirection::NORMAL);						// generate the forward (NORMAL) run array
 	//std::cout << "!!!!!!!!!!!!!!!!!!!! !!! Producing reverse array " << std::endl;
@@ -29,20 +70,25 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	//std::cout << "##### Passed run tests... " << std::endl;
 	if (isTriangleValid == true)	// don't bother running if its invalid
 	{
-		//std::cout << "######## Run of poly lines complete.. " << std::endl;
+		//std::cout << "######## Start run of poly lines... " << std::endl;
 		runPolyLinesThroughEnclave(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap);							// generate the exterior segments using the forward array
 		runPolyLinesForReverseTerminatingContainer(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);			// run the exterior segments using the reverse array, to produce the reverse terminating set
+		//std::cout << "######## End run of poly lines... " << std::endl;
 
 		//runPolyLinesThroughEnclaveReverse(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap);
 
 		forwardTerminatingContainer.buildTerminatingSets();		// build the terminating sets (required before an interior run.)
 		reverseTerminatingContainer.buildTerminatingSets();
+		//std::cout << "!!! Finished build of terminating sets... " << std::endl;
 
 		generateExteriorLineSegmentsET(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, in_key, in_badRunFlag);						// build the exterior segments, fill the circuit data for them, using the forward array
+		//std::cout << "!!! Finished exterior line segment generation... " << std::endl;
 		if (isTriangleValid == true)	// don't bother running if its invalid
 		{
+			//std::cout << "!!! Attemtping interior runs... " << std::endl;
 			runInteriorRunners(&forwardPrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::NORMAL);
 			runInteriorRunners(&reversePrimaryLineArray, in_blockBorderLineList, in_borderDataMap, PolyRunDirection::REVERSE);
+			//std::cout << "!!! Done Attemtping interior runs... " << std::endl;
 		}
 	}
 	else if (isTriangleValid == false)
@@ -54,6 +100,8 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
 	purgeBadFans();
 	runBoundaryOrientationPass();	// ensure that triangles that are on block borders have their BoundaryPolyIndicators set appropriately.
+
+	//std::cout << "############## Done executing EnclaveTriangle run. " << std::endl;
 }
 
 void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, 
@@ -168,6 +216,13 @@ void EnclaveTriangle::resetRunMetaData()
 	currentEnclaveKey = EnclaveKeyDef::EnclaveKey(0, 0, 0);
 	OrganicTriangleTertiary tertiaryReset;
 	enclaveTriangleTertiary = tertiaryReset;
+}
+
+ECBPolyPoint EnclaveTriangle::convertDoublePointToECBPolyPointForEnclaveTriangle(DoublePoint in_doublePointToConvert)
+{
+	return ECBPolyPoint(float(in_doublePointToConvert.x),
+		float(in_doublePointToConvert.y),
+		float(in_doublePointToConvert.z));
 }
 
 PrimaryLineT1Array EnclaveTriangle::generatePrimaryLineT1Array(PolyRunDirection in_polyRunDirection)
@@ -1100,6 +1155,7 @@ void EnclaveTriangle::fillCircuitMetaData(BlockCircuit* in_circuitRef, BlockBord
 
 void EnclaveTriangle::fillCircuitMetaDataAndCheckValidity(BlockCircuit* in_circuitRef, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key)
 {
+	//std::cout << "!! Start of fillCircuitMetaDataAndCheckValidity..." << std::endl;
 	int matchRequiredCount = 1;
 	// determine the appropriate match threshold, based on perfect clamp value.
 	if (isEnclaveTrianglePolyPerfectlyClamped != PerfectClampEnum::NONE)	// only do the below if it's perfectly clamped to a dimension.
@@ -1154,9 +1210,20 @@ void EnclaveTriangle::fillCircuitMetaDataAndCheckValidity(BlockCircuit* in_circu
 		}
 	}
 
+	//std::cout << "!! Passed segment loop...points are:" << std::endl;
 	ECBPolyPoint point_0 = lineArray[0].pointA;
 	ECBPolyPoint point_1 = lineArray[1].pointA;
 	ECBPolyPoint point_2 = lineArray[2].pointA;
+
+	/*
+	point_0.printPointCoords();
+	std::cout << std::endl;
+	point_1.printPointCoords();
+	std::cout << std::endl;
+	point_2.printPointCoords();
+	std::cout << std::endl;
+	*/
+
 	isTriangleValid = in_circuitRef->fillSegmentArrayMetaDataFromCircuit(matchRequiredCount, in_key, point_0, point_1, point_2);
 }
 

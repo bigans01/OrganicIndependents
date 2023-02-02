@@ -28,7 +28,7 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 		void runFracturing();
 	private:
 		void determineUncalibratedBlueprintKeys();	// Step 1: find the uncalibrated blueprint keys.
-		void calibrateOriginBlueprintKeys();		// Step 2: calibrate the blueprint origin keys.
+		void calibrateFTriangleLineAndScannerBlueprintKeys();		// Step 2: calibrate the blueprint origin keys.
 
 		// Below: because we are working in world-space to produce triangles bound in a blueprint, and because there is no X/Y/Z limit, 
 		// we should translate the triangle to a more manageable range (somewhere around 0,0,0). To do this, we will get the min X/Y/Z 

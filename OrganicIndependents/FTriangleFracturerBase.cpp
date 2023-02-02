@@ -107,9 +107,9 @@ std::map<FRayCasterTypeEnum, FRayCasterInitData> FTriangleFracturerBase::getUsab
 	// throw each x/y/z into it's appropriate set; remember, sets are automatically ordered from least to greatest.
 	for (int x = 0; x < 3; x++)
 	{
-		xKeyValues.insert(originFTriangleKeys[x].x);
-		yKeyValues.insert(originFTriangleKeys[x].y);
-		zKeyValues.insert(originFTriangleKeys[x].z);
+		xKeyValues.insert(scanningKeys[x].x);
+		yKeyValues.insert(scanningKeys[x].y);
+		zKeyValues.insert(scanningKeys[x].z);
 	}
 
 	// the begin of a set of ints is the least value, the rbegin is the greatest value.
@@ -486,7 +486,9 @@ void FTriangleFracturerBase::buildAndRunFLineScanners()
 			startBackwardXValue,
 			startForwardXValue,
 			rayCastDimInterval);
+		//std::cout << "!! Start of run for SCAN_X..." << std::endl;
 		lineScannerMap[LineScanPermit::SCAN_X]->runScan();
+		//std::cout << "!! End of run for SCAN_X..." << std::endl;
 
 	}
 
@@ -513,7 +515,9 @@ void FTriangleFracturerBase::buildAndRunFLineScanners()
 			startBackwardYValue,
 			startForwardYValue,
 			rayCastDimInterval);
+		//std::cout << "!! Start of run for SCAN_Y..." << std::endl;
 		lineScannerMap[LineScanPermit::SCAN_Y]->runScan();
+		//std::cout << "!! End of run for SCAN_Y..." << std::endl;
 	}
 
 	// For XYLineScanner (Moves along fixed Z interval, makes lines with X/Y)
@@ -539,8 +543,17 @@ void FTriangleFracturerBase::buildAndRunFLineScanners()
 			startBackwardZValue,
 			startForwardZValue,
 			rayCastDimInterval);
+		//std::cout << "!! Start of run for SCAN_Z..." << std::endl;
 		lineScannerMap[LineScanPermit::SCAN_Z]->runScan();
+		//std::cout << "!! End of run for SCAN_Z..." << std::endl;
 	}
+
+	/*
+	std::cout << "!!! Done printing scan dims. " << std::endl;
+	int scanDimsWait = 3;
+	std::cin >> scanDimsWait;
+	*/
+	
 }
 
 void FTriangleFracturerBase::buildAndRunFRayCasters()
@@ -552,187 +565,187 @@ void FTriangleFracturerBase::buildAndRunFRayCasters()
 	// be used. So we can just use a simple switch statement here.
 	switch (originPerfectClampValue)
 	{
-		// the typical case, when we aren't clamped to anything: check all 3 ray casters.
-	case PerfectClampEnum::NONE:
-	{
-		//std::cout << "No perfect clamp value detected; checking for all 3 ray casters. " << std::endl;
-
-		// check for X ray caster.
-		auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
-		if (checkForXRayCaster != acceptedRayCasterTypes.end())
+			// the typical case, when we aren't clamped to anything: check all 3 ray casters.
+		case PerfectClampEnum::NONE:
 		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found X-ray caster, data is: " << std::endl;
-			std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
-			std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
-			std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMin << std::endl;
-			std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
-			*/
+			//std::cout << "No perfect clamp value detected; checking for all 3 ray casters. " << std::endl;
 
-			std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			//selectedRayCasters[FRayCasterTypeEnum::X_RAY]->insertIntoTestVec(5);
-			//std::cout << "!!!!!! DONE with insert vector for X ray. " << std::endl;
+			// check for X ray caster.
+			auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
+			if (checkForXRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found X-ray caster, data is: " << std::endl;
+				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
+				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
+				std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMin << std::endl;
+				std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
+				*/
 
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY]->buildAndCastRays();
+				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				//selectedRayCasters[FRayCasterTypeEnum::X_RAY]->insertIntoTestVec(5);
+				//std::cout << "!!!!!! DONE with insert vector for X ray. " << std::endl;
+
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->buildAndCastRays();
 
 
+			}
+
+			// check for Y ray caster.
+			auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
+			if (checkForYRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found Y-ray caster, data is: " << std::endl;
+				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
+				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
+				std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMin << std::endl;
+				std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
+				*/
+
+				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
+			}
+
+			// check for Z ray caster.
+			auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
+			if (checkForZRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found Z-ray caster, data is: " << std::endl;
+				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
+				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
+				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMin << std::endl;
+				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
+				*/
+
+				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
+			}
+
+			break;
 		}
 
-		// check for Y ray caster.
-		auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
-		if (checkForYRayCaster != acceptedRayCasterTypes.end())
+		// check for X ray only.
+		case PerfectClampEnum::CLAMPED_TO_X:
 		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found Y-ray caster, data is: " << std::endl;
-			std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
-			std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
-			std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMin << std::endl;
-			std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
-			*/
+			//std::cout << "X clamp value detected, checking for X ray caster. " << std::endl;
+			// check for X ray caster.
+			auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
+			if (checkForXRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found X-ray caster, data is: " << std::endl;
+				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
+				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
+				std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMin << std::endl;
+				std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
+				*/
 
-			std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
+				std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				selectedRayCasters[FRayCasterTypeEnum::X_RAY]->buildAndCastRays();
+			}
+
+			break;
 		}
 
-		// check for Z ray caster.
-		auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
-		if (checkForZRayCaster != acceptedRayCasterTypes.end())
+		case PerfectClampEnum::CLAMPED_TO_Y:
 		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found Z-ray caster, data is: " << std::endl;
-			std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
-			std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
-			std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMin << std::endl;
-			std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
-			*/
+			//std::cout << "Y clamp value detected, checking for Y ray caster. " << std::endl;
+			// check for Y ray caster.
+			auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
+			if (checkForYRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found Y-ray caster, data is: " << std::endl;
+				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
+				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
+				std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMin << std::endl;
+				std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
+				*/
 
-			std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
+				std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
+			}
+
+			break;
 		}
 
-		break;
-	}
-
-	// check for X ray only.
-	case PerfectClampEnum::CLAMPED_TO_X:
-	{
-		//std::cout << "X clamp value detected, checking for X ray caster. " << std::endl;
-		// check for X ray caster.
-		auto checkForXRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::X_RAY);
-		if (checkForXRayCaster != acceptedRayCasterTypes.end())
+		case PerfectClampEnum::CLAMPED_TO_Z:
 		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found X-ray caster, data is: " << std::endl;
-			std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMin << std::endl;
-			std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimOneMax << std::endl;
-			std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMin << std::endl;
-			std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (X min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (X max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY].rayCastInterval << std::endl;
-			*/
+			//std::cout << "Z clamp value detected, checking for Z ray caster. " << std::endl;
+			// check for Z ray caster.
+			auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
+			if (checkForZRayCaster != acceptedRayCasterTypes.end())
+			{
+				// Below: FTDEBUG (uncomment when needed.
+				/*
+				std::cout << "Found Z-ray caster, data is: " << std::endl;
+				std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
+				std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
+				std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMin << std::endl;
+				std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMax << std::endl;
+				std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
+				std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
+				std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
+				*/
 
-			std::shared_ptr<FRayCasterQuadBase> xRayCaster(new (XFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY] = xRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::X_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			selectedRayCasters[FRayCasterTypeEnum::X_RAY]->buildAndCastRays();
+				std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
+					//originFTrianglePoints,
+					localizedFTrianglePoints,
+					&fracturerPoints);
+				selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
+			}
+
+			break;
 		}
-
-		break;
-	}
-
-	case PerfectClampEnum::CLAMPED_TO_Y:
-	{
-		//std::cout << "Y clamp value detected, checking for Y ray caster. " << std::endl;
-		// check for Y ray caster.
-		auto checkForYRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Y_RAY);
-		if (checkForYRayCaster != acceptedRayCasterTypes.end())
-		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found Y-ray caster, data is: " << std::endl;
-			std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMin << std::endl;
-			std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimOneMax << std::endl;
-			std::cout << "Z min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMin << std::endl;
-			std::cout << "Z max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (Y min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (Y max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY].rayCastInterval << std::endl;
-			*/
-
-			std::shared_ptr<FRayCasterQuadBase> yRayCaster(new (YFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY] = yRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Y_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			selectedRayCasters[FRayCasterTypeEnum::Y_RAY]->buildAndCastRays();
-		}
-
-		break;
-	}
-
-	case PerfectClampEnum::CLAMPED_TO_Z:
-	{
-		//std::cout << "Z clamp value detected, checking for Z ray caster. " << std::endl;
-		// check for Z ray caster.
-		auto checkForZRayCaster = acceptedRayCasterTypes.find(FRayCasterTypeEnum::Z_RAY);
-		if (checkForZRayCaster != acceptedRayCasterTypes.end())
-		{
-			// Below: FTDEBUG (uncomment when needed.
-			/*
-			std::cout << "Found Z-ray caster, data is: " << std::endl;
-			std::cout << "X min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMin << std::endl;
-			std::cout << "X max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimOneMax << std::endl;
-			std::cout << "Y min: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMin << std::endl;
-			std::cout << "Y max: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].dimTwoMax << std::endl;
-			std::cout << "Target dim (Z min): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMin << std::endl;
-			std::cout << "Target dim (Z max): " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastDimMax << std::endl;
-			std::cout << "Interval: " << acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY].rayCastInterval << std::endl;
-			*/
-
-			std::shared_ptr<FRayCasterQuadBase> zRayCaster(new (ZFRayCastQuad));
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY] = zRayCaster;
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->initialize(acceptedRayCasterTypes[FRayCasterTypeEnum::Z_RAY],
-				//originFTrianglePoints,
-				localizedFTrianglePoints,
-				&fracturerPoints);
-			selectedRayCasters[FRayCasterTypeEnum::Z_RAY]->buildAndCastRays();
-		}
-
-		break;
-	}
 	}
 
 }

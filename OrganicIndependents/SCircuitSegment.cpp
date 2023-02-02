@@ -125,6 +125,10 @@ MicroPolyPointContainer SCircuitSegment::getCircuitPoints(EnclaveKeyDef::Enclave
 	enclaveKey = in_enclaveKey;
 	blockKey = in_blockKey;
 
+	//std::cout << "!! --> Checking borderDataMapRef validity..." << std::endl;
+	//int faceSize = borderDataMapRef->faceMap.size();
+	//std::cout << "!! --> Done checking borderDataMapRef validity... " << std::endl;
+
 	//std::cout << "********* calling getCircuitPoints ******************* " << std::endl;
 
 	// standalone type
@@ -302,7 +306,10 @@ MicroPolyPointContainer SCircuitSegment::generatePointsForStandalone()
 	container.insertNewPoint(currentSegmentBegin);
 	container.insertNewPoint(currentSegmentEnd);
 
+	//std::cout << "!!! Attempting get of new segments. " << std::endl;
 	MicroPolyPointContainer subContainer = getNewSegments(segment);
+	//std::cout << "!!! Finished getting new segments; number of points was: " << subContainer.numberOfPoints << std::endl;
+
 	for (int x = 0; x < (subContainer.numberOfPoints - 1); x++)
 	{
 		container.insertNewPoint(subContainer.pointArray[x]);
@@ -463,6 +470,11 @@ MicroPolyPointContainer SCircuitSegment::getNewSegments(PrimarySegmentMeta in_se
 	//std::cout << ">>>>>>>>>>> Printing PrimarySegmentMeta data: " << std::endl;
 	//std::cout << "! Intended Faces: " << in_segmentMeta.intendedFaces.x << ", " << in_segmentMeta.intendedFaces.y << ", " << in_segmentMeta.intendedFaces.z << std::endl;
 
+	//std::cout << "!!! Checking size of borderDataMapRef faceLists..." << std::endl;
+	//int someSize = borderDataMapRef->faceMap.size();
+	//std::cout << "!!! -> Size of faceLists is: " << someSize << std::endl;
+	//std::cout << "!!! Done checking size of faceLists..." << std::endl;
+
 	segmentLogger.log(">>>>>>>>>>> Printing PrimarySegmentMeta data: ", "\n");
 	segmentLogger.log("! Intended Faces: ", in_segmentMeta.intendedFaces.x, ", ", in_segmentMeta.intendedFaces.y, ", ", in_segmentMeta.intendedFaces.z, "\n");
 
@@ -481,18 +493,27 @@ MicroPolyPointContainer SCircuitSegment::getNewSegments(PrimarySegmentMeta in_se
 	//BorderMDFaceList currentFace = in_segmentMeta.endFaces;
 
 	// set up the orientation variables
+	//std::cout << "!! attempting to get orientations..." << std::endl;
 	ECBPPOrientationResults currentOrientation = IndependentUtils::GetPointOrientation(in_segmentMeta.endPoint, blockBorderLineListRef);
 	ECBPPOrientationResults terminatingOrientation = IndependentUtils::GetPointOrientation(targetPoint, blockBorderLineListRef);
+	//std::cout << "!! done attempting to get orientations..." << std::endl;
 
 	BorderMDFaceList currentFaceList = in_segmentMeta.endFaces;
+	//std::cout << "!!! attempting to get terminatingFaceList..." << std::endl;
 	BorderMDFaceList terminatingFaceList = IndependentUtils::getFaceList(terminatingOrientation, borderDataMapRef);
+	//std::cout << "!!! done getting terminatingFaceList..." << std::endl;
 
 
 	EnclaveKeyDef::EnclaveKey moveVals = IndependentUtils::retrieveBorderDirection(currentOrientation, borderDataMapRef);		// get the orientation of the beginning end point.
-
+	//std::cout << "!!! Done getting move vals... " << std::endl;
 
 	// TESTING ONLY (begin)
 	ECBPolyPoint normalizedSlope = IndependentUtils::findNormalizedSlope(in_segmentMeta.startPoint, in_segmentMeta.endPoint);
+
+	//std::cout << "!!! Done finding normalizedSlope... " << std::endl;
+
+
+
 	ECBPolyPoint moveValsFromKey;
 	moveValsFromKey.x = float(moveVals.x);
 	moveValsFromKey.y = float(moveVals.y);

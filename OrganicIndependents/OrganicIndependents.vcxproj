@@ -181,6 +181,7 @@
     <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CalibratableBlueprintKeyPair.h" />
     <ClInclude Include="CalibrateableOREKeyPair.h" />
+    <ClInclude Include="FKeyCalibrationMode.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="Cycle.h" />
@@ -263,6 +264,7 @@
     <ClInclude Include="FTriangleBlueprintTracer.h" />
     <ClInclude Include="FTriangleContainer.h" />
     <ClInclude Include="FTriangleFracturerBase.h" />
+    <ClInclude Include="FTriangleKeySetCalibrator.h" />
     <ClInclude Include="FTriangleLine.h" />
     <ClInclude Include="FTriangleLineTargets.h" />
     <ClInclude Include="FTriangleLineType.h" />
@@ -422,6 +424,7 @@
     <ClCompile Include="FTriangleBlueprintTracer.cpp" />
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
+    <ClCompile Include="FTriangleKeySetCalibrator.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
