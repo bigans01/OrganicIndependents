@@ -3,7 +3,7 @@
 
 void BlueprintFracturingMachine::runFracturing()
 {
-	/*
+	
 	std::cout << "(BlueprintFracturingMachine) !!! Start of runFracturing(). " << std::endl;
 	std::cout << "Points are: " << std::endl;
 	for (int x = 0; x < 3; x++)
@@ -11,7 +11,7 @@ void BlueprintFracturingMachine::runFracturing()
 		originFTrianglePoints[x].printPointCoords();
 		std::cout << std::endl;
 	}
-	*/
+	
 
 	// set the ray cast interval to 4.0f
 	rayCastDimInterval = 4.0f;
@@ -32,18 +32,21 @@ void BlueprintFracturingMachine::runFracturing()
 
 	
 	buildAndRunFRayCasters(); // Step 5: buildAndRunBlueprintFRayCasters() -- determine the ray casters we have to use for the FTriangle, and run them.
-	buildAndRunFLineScanners();	// Step 6: buildAndRunFLineScanners figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
+
+	runRaycastCollisionResolver(); // Step 6: (NEW step) check for any situations where a External-InteriorRayCast occurs, and mitigate it.
+
+	buildAndRunFLineScanners();	// Step 7: buildAndRunFLineScanners figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 								//		   and then run them.
 
 	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
 
 
 
-	analyzeAndCleanupStagers(); // Step 7: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
+	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
 
-	reverseTranslateBlueprintStagerLines(); // Step 8: Reverse translate the stager lines, in a FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE fashion.
+	reverseTranslateBlueprintStagerLines(); // Step 9: Reverse translate the stager lines, in a FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE fashion.
 
-	buildBlueprintMachineTriangleContainers();	// Step 9: Produce the outputs (the type of the 
+	buildBlueprintMachineTriangleContainers();	// Step 10: Produce the outputs (the type of the 
 
 	// Step 9: build the FTriangleOutputs, and remove the ones that are not correctly boundary oriented.
 

@@ -39,11 +39,11 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 
 		void runWorldTracing();						// Step 5: create exterior FTriangleLines.
 
-													// Step 8: See base class function, analyzeAndCleanupStagers()											
+													// Step 9: See base class function, analyzeAndCleanupStagers()											
 
-		void reverseTranslateWorldStagerLines();			// Step 9: apply the appropriate translation to stager lines; uses the inverse of the translationKey
+		void reverseTranslateWorldStagerLines();			// Step 10: apply the appropriate translation to stager lines; uses the inverse of the translationKey
 
-		void buildWorldMachineTriangleContainers();	// Step 10: build the FTriangleContainers, according to what this class specifies.
+		void buildWorldMachineTriangleContainers();	// Step 11: build the FTriangleContainers, according to what this class specifies.
 
 		// translation assisting functions.
 		void adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKey in_adjustingKey);

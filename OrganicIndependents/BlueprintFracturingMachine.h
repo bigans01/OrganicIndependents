@@ -31,9 +31,9 @@ class BlueprintFracturingMachine : public FTriangleFracturerBase
 												//			The localizedFTrianglePoints is used by other functions to load point data.
 		void runBlueprintTracing();				// Step 4:  create exterior FTriangleLines.
 
-		void reverseTranslateBlueprintStagerLines();	// Step 8: Reverse translate stager lines, to localized style, so that they are compatible with the 0.0f to 4.0f boundaries of an ORE.
+		void reverseTranslateBlueprintStagerLines();	// Step 9: Reverse translate stager lines, to localized style, so that they are compatible with the 0.0f to 4.0f boundaries of an ORE.
 
-		void buildBlueprintMachineTriangleContainers();	// Step 9: Generate the FTriangleOutputs (the value of destinedGridType in all of these should be FTriangletype::ORE)
+		void buildBlueprintMachineTriangleContainers();	// Step 10: Generate the FTriangleOutputs (the value of destinedGridType in all of these should be FTriangletype::ORE)
 
 		EnclaveKeyDef::EnclaveKey getUncalibratedOREKeyForPoint(DoublePoint in_point);	// A utility function for this class, that determines uncalibrate ORE keys of a point.
 

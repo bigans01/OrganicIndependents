@@ -88,6 +88,7 @@ class UniquePointContainer
 		}
 
 	private:
+		friend class FExteriorRaycastCollisionResolver;
 		std::vector<FTrianglePoint> points;
 };
 

@@ -852,6 +852,12 @@
     <ClInclude Include="FTriangleKeySetCalibrator.h">
       <Filter>Header Files\FracturableTriangle\FracturingMachines</Filter>
     </ClInclude>
+    <ClInclude Include="FExteriorRaycastCollisionResolver.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FPotentialCollisionEnum.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1104,6 +1110,9 @@
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleKeySetCalibrator.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FExteriorRaycastCollisionResolver.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>

@@ -72,7 +72,14 @@ void ZDimLineScanner::handleNormalXYScan(std::vector<FTrianglePoint>* in_pointsV
 		}
 
 		// otherwise, put it into the interior container.
-		else if (xyScannedPoint.pointType == FTrianglePointType::INTERIOR)
+		else if 
+		(
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_XRAYCAST)
+			||
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_YRAYCAST)
+			||
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_ZRAYCAST)
+		)
 		{
 			interiorPoints[interiorPoints.size()] = xyScannedPoint;
 		}
@@ -100,7 +107,14 @@ void ZDimLineScanner::handleAbnormalXYScan(std::vector<FTrianglePoint>* in_point
 		}
 
 		// otherwise, put it into the interior container.
-		else if (xyScannedPoint.pointType == FTrianglePointType::INTERIOR)
+		else if 
+		(
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_XRAYCAST)
+			||
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_YRAYCAST)
+			||
+			(xyScannedPoint.pointType == FTrianglePointType::INTER_FROM_ZRAYCAST)
+		)
 		{
 			interiorPoints[interiorPoints.size()] = xyScannedPoint;
 		}

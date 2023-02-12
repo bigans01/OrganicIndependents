@@ -40,10 +40,22 @@ class FRayIntersectionMachine
 																	// The other values in the enum list are there for logic purposes, and may be used in the future if we need to take
 																	// the enum class out of this one and make it it's own class.
 
+			// The selected rounding mode to use for the intersection machine is directly correlated with the 
+			// FTrianglePointType value, so we can just use a switch statement below to set the FTrianglePointType for the point 
+			// we will be attempting an insert for.
+			FTrianglePointType determinedType = FTrianglePointType::NOVAL;
+			switch (in_interceptionType)
+			{
+				case FRayIntersectionRoundingMode::ROUND_FOR_X: { determinedType = FTrianglePointType::INTER_FROM_XRAYCAST; break; }
+				case FRayIntersectionRoundingMode::ROUND_FOR_Y: { determinedType = FTrianglePointType::INTER_FROM_YRAYCAST; break; }
+				case FRayIntersectionRoundingMode::ROUND_FOR_Z: { determinedType = FTrianglePointType::INTER_FROM_ZRAYCAST; break; }
+			}
+
+
 			// If we did intersect, convert the point and insert (in a perfect world, we probably wouldn't need to convert, but that's not important right now)
 			if (currentIntersectionResult.intersectionType == FRayIntersectionType::INTERSECTS)
 			{
-				intersectorUniquePointsRef->insertFTrianglePoint(FTrianglePoint(currentIntersectionResult.intersectedPoint, FTrianglePointType::INTERIOR));
+				intersectorUniquePointsRef->insertFTrianglePoint(FTrianglePoint(currentIntersectionResult.intersectedPoint, determinedType));
 			}
 		}
 	private:

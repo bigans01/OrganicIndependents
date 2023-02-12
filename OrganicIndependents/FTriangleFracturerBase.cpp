@@ -749,3 +749,8 @@ void FTriangleFracturerBase::buildAndRunFRayCasters()
 	}
 
 }
+
+void FTriangleFracturerBase::runRaycastCollisionResolver()
+{
+	FExteriorRaycastCollisionResolver collResolver(&fracturerPoints, rayCastDimInterval);
+}

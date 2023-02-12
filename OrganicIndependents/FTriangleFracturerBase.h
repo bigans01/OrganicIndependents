@@ -19,6 +19,7 @@
 #include "FTriangleContainer.h"
 #include "FTriangleReverseTranslationMode.h"
 #include "FTriangleKeySetCalibrator.h"
+#include "FExteriorRaycastCollisionResolver.h"
 
 class FTriangleFracturerBase
 {
@@ -117,7 +118,15 @@ class FTriangleFracturerBase
 
 		void buildAndRunFRayCasters();
 
+		void runRaycastCollisionResolver();	// (NEW, as of 2/10/2023) this function calls an instance of FExteriorRaycastCollisionResolver, which is a 
+											// class that is used to see if any FTrianglePoint instances that are of an EXTERIOR type, actually cross paths
+											// with a ray that is used to cast an INTERIOR point (for instance, an FTrianglePoint having a FTrianglePointType of INTER_FROM_YRAYCAST).
+											// If a collision is detected between the EXTERIOR point and the INTER* type point (which is known as a External-InteriorRayCast collision),
+											// the EXTERIOR point takes precedence, and the INTER* point must be erased.
+
 		void buildAndRunFLineScanners();	// builds and runs the FLineScanners, based on the value of rayCastDimInterval that represents the fixed grid length.
+
+
 
 };
 

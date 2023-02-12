@@ -24,16 +24,17 @@ void WorldFracturingMachine::runFracturing()
 	
 	buildAndRunFRayCasters();			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
 	//buildAndRunFRayCasters(originFTriangleKeys);			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
+	runRaycastCollisionResolver();				// Step 7: (NEW step): check for any situations where a External-InteriorRayCast occurs, and mitigate it.
 
-	buildAndRunFLineScanners();				// Step 7: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
+	buildAndRunFLineScanners();				// Step 8: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 											// and then run them.
 
-	analyzeAndCleanupStagers();				// Step 8 (from base class): run analysis on the stagers.
+	analyzeAndCleanupStagers();				// Step 9 (from base class): run analysis on the stagers.
 
-	reverseTranslateWorldStagerLines();			// Step 9: reverse translate the stager line points; the choice made is dependent on the reverse
+	reverseTranslateWorldStagerLines();			// Step 10: reverse translate the stager line points; the choice made is dependent on the reverse
 											// transation mode.
 
-	buildWorldMachineTriangleContainers();	// Step 10: build the FTriangleContainers, according to what this class specifies.
+	buildWorldMachineTriangleContainers();	// Step 11: build the FTriangleContainers, according to what this class specifies.
 
 	// when everything is done, we need to translate back.
 }

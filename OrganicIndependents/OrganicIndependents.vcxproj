@@ -181,6 +181,7 @@
     <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CalibratableBlueprintKeyPair.h" />
     <ClInclude Include="CalibrateableOREKeyPair.h" />
+    <ClInclude Include="FExteriorRaycastCollisionResolver.h" />
     <ClInclude Include="FKeyCalibrationMode.h" />
     <ClInclude Include="CircuitSegmentType.h" />
     <ClInclude Include="CursorPathTraceContainer.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="FanManager.h" />
     <ClInclude Include="FatFan.h" />
     <ClInclude Include="FIntersectMeta.h" />
+    <ClInclude Include="FPotentialCollisionEnum.h" />
     <ClInclude Include="FRayCasterInitData.h" />
     <ClInclude Include="FRayCasterQuadBase.h" />
     <ClInclude Include="FRayCasterTypeEnum.h" />
@@ -418,6 +420,7 @@
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
+    <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
     <ClCompile Include="FTriangle.cpp" />
