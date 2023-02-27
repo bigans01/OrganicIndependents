@@ -232,6 +232,24 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			std::cin >> badSequenceWait;
 			
 			isStagerValid = false;
+
+			//FTLResolverStickSaw sawResolver;
+			//sawResolver.initLineResolver(debugCopy);
+			//sawResolver.runAttemptedResolution();
+
+			// Because this stager instance couldn't find a solution in the lines,
+			// we must delegate that responsibility to an instance of
+			// FTriangleLineResolutionMachine.
+			FTriangleLineResolutionMachine solver(debugCopy);
+			solver.runResolutionSequence();
+			if (solver.resolutionFound)
+			{
+				std::cout << "!! Solution was found in FTriangleLineResolutionMachine; setting that as the new set of lines. " << std::endl;
+				int solutionFound = 3;
+				std::cin >> solutionFound;
+				stagerLines = solver.solutionLines;
+				isStagerValid = true;
+			}
 		}
 
 		// FTDEBUG, (uncomment when needed for debugging)

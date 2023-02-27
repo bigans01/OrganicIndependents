@@ -4,6 +4,7 @@
 #define FTRIANGLEPRODUCTIONSTAGER_H
 
 #include "FTriangleLine.h"
+#include "FTriangleLineResolutionMachine.h"
 
 /*
 

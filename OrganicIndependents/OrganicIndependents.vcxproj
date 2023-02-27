@@ -258,6 +258,7 @@
     <ClInclude Include="FRayCasterTypeEnum.h" />
     <ClInclude Include="FRayIntersectionMachine.h" />
     <ClInclude Include="FRayIntersectionRoundingMode.h" />
+    <ClInclude Include="FTLResolverStickSaw.h" />
     <ClInclude Include="FTraceBorderLineList.h" />
     <ClInclude Include="FTraceBorderValues.h" />
     <ClInclude Include="FTraceOrientationResults.h" />
@@ -268,6 +269,8 @@
     <ClInclude Include="FTriangleFracturerBase.h" />
     <ClInclude Include="FTriangleKeySetCalibrator.h" />
     <ClInclude Include="FTriangleLine.h" />
+    <ClInclude Include="FTriangleLineResolutionMachine.h" />
+    <ClInclude Include="FTriangleLineResolverBase.h" />
     <ClInclude Include="FTriangleLineTargets.h" />
     <ClInclude Include="FTriangleLineType.h" />
     <ClInclude Include="FTriangleOutput.h" />
@@ -423,11 +426,14 @@
     <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
+    <ClCompile Include="FTLResolverStickSaw.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleBlueprintTracer.cpp" />
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleKeySetCalibrator.cpp" />
+    <ClCompile Include="FTriangleLineResolutionMachine.cpp" />
+    <ClCompile Include="FTriangleLineResolverBase.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
