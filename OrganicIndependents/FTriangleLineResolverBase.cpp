@@ -99,8 +99,8 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 			(newLineVector.size() < 3)
 		)
 		{
-			std::cout << "!! Bad line sequence detected!" << std::endl;
-			std::cout << "!! Original lines were: " << std::endl;
+			std::cout << "(FTriangleLineResolverBase) !! Bad line sequence detected!" << std::endl;
+			std::cout << "(FTriangleLineResolverBase) !! Original lines were: " << std::endl;
 			for (auto& currentDebugLine : debugCopy)
 			{
 				currentDebugLine.printLine();
@@ -123,10 +123,6 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 				std::cout << " :: number of lines is less than 3 :: | ";
 			}
 			std::cout << std::endl;
-
-			int badSequenceWait = 3;
-			std::cin >> badSequenceWait;
-
 			areLinesValid = false;
 		}
 		else

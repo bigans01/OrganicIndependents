@@ -86,32 +86,32 @@ class FTrianglePoint
 				if (hitsXPlane && hitsYPlane && hitsZPlane)
 				{
 					returnEnum = FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_ALL_RAYS;
-					std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_ALL_RAYS. Values are: "; 
-					std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
+					//std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_ALL_RAYS. Values are: "; 
+					//std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
 				}
 
 				// CASE 2: only the Y and Z planes are hit, so there is potential for an X-ray cast to hit the EXTERIOR point.
 				else if (hitsYPlane && hitsZPlane)
 				{
 					returnEnum = FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_X_RAY;
-					std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_X_RAY. Values are: ";
-					std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
+					//std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_X_RAY. Values are: ";
+					//std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
 				}
 
 				// CASE 2: only the X and Z planes are hit, so there is potential for an Y-ray cast to hit the EXTERIOR point.
 				else if (hitsXPlane && hitsZPlane)
 				{
 					returnEnum = FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Y_RAY;
-					std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_Y_RAY. Values are: ";
-					std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
+					//std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_Y_RAY. Values are: ";
+					//std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
 				}
 
 				// CASE 3: only the X and Y planes are hit, so there is potential for an Z-ray cast to hit the EXTERIOR point.
 				else if (hitsXPlane && hitsYPlane)
 				{
 					returnEnum = FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Z_RAY;
-					std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_Z_RAY. Values are: ";
-					std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
+					//std::cout << "(FTrianglePoint) point found as having POTENTIAL_COLLISION_BY_Z_RAY. Values are: ";
+					//std::cout << point.x << ", " << point.y << ", " << point.z << std::endl;
 				}
 			}
 

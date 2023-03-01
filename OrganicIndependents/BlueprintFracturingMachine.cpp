@@ -3,7 +3,7 @@
 
 void BlueprintFracturingMachine::runFracturing()
 {
-	
+	/*
 	std::cout << "(BlueprintFracturingMachine) !!! Start of runFracturing(). " << std::endl;
 	std::cout << "Points are: " << std::endl;
 	for (int x = 0; x < 3; x++)
@@ -11,7 +11,7 @@ void BlueprintFracturingMachine::runFracturing()
 		originFTrianglePoints[x].printPointCoords();
 		std::cout << std::endl;
 	}
-	
+	*/
 
 	// set the ray cast interval to 4.0f
 	rayCastDimInterval = 4.0f;

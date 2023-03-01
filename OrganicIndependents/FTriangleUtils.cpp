@@ -665,19 +665,19 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 			}
 			else if ((dist_to_Z < dist_to_X) && (in_slopeDirection.z != 0.0f))	// Z-face gets intersected before X/Y
 			{
-				std::cout << "(Z-line) OPTION 2: entry check" << std::endl;
+				//std::cout << "(Z-line) OPTION 2: entry check" << std::endl;
 				//pointToCheck = z_intercept_coords;	// make pointToCheck equal to z coord, since it hits a z face before x/y
 				//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(2, z_intercept_coords, isPointOnALine);
 				pointToCheck = roundToNearestLineOrCorner(2, z_intercept_coords, isPointOnALine, &borderLimits, in_fTraceType);
 				if (in_slopeDirection.z == 1.0f)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.SouthFace, in_originPoint, pointToCheck);
-					std::cout << "X/Y distances match, but Z is hit first (positive z): " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+					//std::cout << "X/Y distances match, but Z is hit first (positive z): " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 				else if (in_slopeDirection.z == -1.0f)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.NorthFace, in_originPoint, pointToCheck);
-					std::cout << "X/Y distances match, but Z is hit first (negative z)" << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
+					//std::cout << "X/Y distances match, but Z is hit first (negative z)" << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 				//if 
 			}

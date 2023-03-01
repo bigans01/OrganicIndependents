@@ -112,10 +112,10 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 						bool collisionDetected = currentOtherPoints.checkFor2DMatch(currentRecord.pcPoint.y, currentRecord.pcPoint.z, FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_X_RAY);
 						if (collisionDetected)
 						{
-							std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_X_RAY, against the point "
-								<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
+							//std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_X_RAY, against the point "
+							//	<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
 
-							std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
+							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
 							pointsToRemove.push_back(currentOtherPoints.point);
 						}
@@ -127,10 +127,10 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 						bool collisionDetected = currentOtherPoints.checkFor2DMatch(currentRecord.pcPoint.x, currentRecord.pcPoint.z, FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Y_RAY);
 						if (collisionDetected)
 						{
-							std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_Y_RAY, against the point "
-								<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
+							//std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_Y_RAY, against the point "
+							//	<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
 
-							std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
+							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
 							pointsToRemove.push_back(currentOtherPoints.point);
 						}
@@ -142,10 +142,10 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 						bool collisionDetected = currentOtherPoints.checkFor2DMatch(currentRecord.pcPoint.x, currentRecord.pcPoint.y, FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Z_RAY);
 						if (collisionDetected)
 						{
-							std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_Z_RAY, against the point "
-								<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
+							//std::cout << "The exterior point of (" << currentRecord.pcPoint.x << ", " << currentRecord.pcPoint.y << ", " << currentRecord.pcPoint.z << ") was detected as having a COLLISION_BY_Z_RAY, against the point "
+							//	<< "(" << currentOtherPoints.point.x << ", " << currentOtherPoints.point.y << ", " << currentOtherPoints.point.z << ")" << std::endl;
 
-							std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
+							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
 							pointsToRemove.push_back(currentOtherPoints.point);
 						}

@@ -43,9 +43,11 @@ bool FTLResolverStickSaw::runAttemptedResolution()
 				currentLine.printLine();
 			}
 
-			std::cout << "(FTLResolverStickRaw): Done printing resolution lines. Enter a number to continue." << std::endl;
-			int foundSolution = 3;
-			std::cin >> foundSolution;
+			std::cout << "(FTLResolverStickRaw): Done printing resolution lines." << std::endl;
+
+			//std::cout << "(FTLResolverStickRaw): Done printing resolution lines. Enter a number to continue." << std::endl;
+			//int foundSolution = 3;
+			//std::cin >> foundSolution;
 
 			break;
 		}

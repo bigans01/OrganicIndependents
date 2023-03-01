@@ -203,8 +203,8 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			(newLineVector.size() < 3)
 		)
 		{
-			std::cout << "!! Bad line sequence detected!" << std::endl;
-			std::cout << "!! Original lines were: " << std::endl;
+			std::cout << "!! -> Bad line sequence detected!" << std::endl;
+			std::cout << "!! -> Original lines were: " << std::endl;
 			for (auto& currentDebugLine : debugCopy)
 			{
 				currentDebugLine.printLine();
@@ -228,10 +228,13 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			}
 			std::cout << std::endl;
 
-			int badSequenceWait = 3;
-			std::cin >> badSequenceWait;
+			//int badSequenceWait = 3;
+			//std::cin >> badSequenceWait;
+			std::cout << "!! -> Done printing bad line metadata. " << std::endl;
 			
-			isStagerValid = false;
+			isStagerValid = false;	// we will set this to false,
+									// but if the FTriangleLineResolutionMachine figures out a solution,
+									// it will get set back to true.
 
 			//FTLResolverStickSaw sawResolver;
 			//sawResolver.initLineResolver(debugCopy);
@@ -244,11 +247,17 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			solver.runResolutionSequence();
 			if (solver.resolutionFound)
 			{
-				std::cout << "!! Solution was found in FTriangleLineResolutionMachine; setting that as the new set of lines. " << std::endl;
-				int solutionFound = 3;
-				std::cin >> solutionFound;
+				//std::cout << "!! Solution was found in FTriangleLineResolutionMachine; setting that as the new set of lines. " << std::endl;
+				//int solutionFound = 3;
+				//std::cin >> solutionFound;
 				stagerLines = solver.solutionLines;
 				isStagerValid = true;
+			}
+			else if (!solver.resolutionFound)
+			{
+				std::cout << "!!! WARNING: solution was not found in the FTriangleLineResolutionMachine! Input number to continue." << std::endl;
+				int notFound = 3;
+				std::cin >> notFound;
 			}
 		}
 
