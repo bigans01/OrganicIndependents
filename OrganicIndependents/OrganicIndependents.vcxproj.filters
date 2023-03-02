@@ -169,6 +169,12 @@
     <Filter Include="Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers">
       <UniqueIdentifier>{5ee56f5a-2f64-48a5-87b7-1c0d74c11f51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FracturingMachines\ORE">
+      <UniqueIdentifier>{9d0bcc8d-8b2d-408e-a60f-d3f389784d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\ORE">
+      <UniqueIdentifier>{a637ba17-b49b-4e54-9e34-830b014d59e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -873,11 +879,20 @@
     <ClInclude Include="FTriangleLineResolverBase.h">
       <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClInclude>
-    <ClInclude Include="FTLResolverStickSaw.h">
-      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
-    </ClInclude>
     <ClInclude Include="FTriangleLineResolutionMachine.h">
       <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="OREFracturingMachine.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleORETracer.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="FTLResolverScannedStickSaw.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="FTLResolverExteriorStickSaw.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1139,11 +1154,20 @@
     <ClCompile Include="FTriangleLineResolverBase.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClCompile>
-    <ClCompile Include="FTLResolverStickSaw.cpp">
-      <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
-    </ClCompile>
     <ClCompile Include="FTriangleLineResolutionMachine.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="OREFracturingMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines\ORE</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleORETracer.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="FTLResolverScannedStickSaw.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="FTLResolverExteriorStickSaw.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

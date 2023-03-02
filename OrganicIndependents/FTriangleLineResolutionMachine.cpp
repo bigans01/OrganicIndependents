@@ -9,7 +9,8 @@ FTriangleLineResolutionMachine::FTriangleLineResolutionMachine(std::vector<FTria
 
 void FTriangleLineResolutionMachine::setupResolvers()
 {
-	resolverMap[0] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverStickSaw());
+	resolverMap[0] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverExteriorStickSaw());
+	resolverMap[1] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverScannedStickSaw());
 }
 
 void FTriangleLineResolutionMachine::runResolutionSequence()

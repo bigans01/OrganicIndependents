@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "FTLResolverStickSaw.h"
+#include "FTLResolverExteriorStickSaw.h"
 
-bool FTLResolverStickSaw::runAttemptedResolution()
+bool FTLResolverExteriorStickSaw::runAttemptedResolution()
 {
 	bool resolutionFound = false;
 

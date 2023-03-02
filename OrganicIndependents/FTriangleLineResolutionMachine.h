@@ -4,7 +4,8 @@
 #define FTRIANGLELINERESOLUTIONMACHINE_H
 
 #include "FTriangleLineResolverBase.h"
-#include "FTLResolverStickSaw.h"
+#include "FTLResolverExteriorStickSaw.h"
+#include "FTLResolverScannedStickSaw.h"
 
 /*
 

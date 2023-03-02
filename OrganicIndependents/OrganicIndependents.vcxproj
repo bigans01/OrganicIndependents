@@ -258,7 +258,8 @@
     <ClInclude Include="FRayCasterTypeEnum.h" />
     <ClInclude Include="FRayIntersectionMachine.h" />
     <ClInclude Include="FRayIntersectionRoundingMode.h" />
-    <ClInclude Include="FTLResolverStickSaw.h" />
+    <ClInclude Include="FTLResolverScannedStickSaw.h" />
+    <ClInclude Include="FTLResolverExteriorStickSaw.h" />
     <ClInclude Include="FTraceBorderLineList.h" />
     <ClInclude Include="FTraceBorderValues.h" />
     <ClInclude Include="FTraceOrientationResults.h" />
@@ -273,6 +274,7 @@
     <ClInclude Include="FTriangleLineResolverBase.h" />
     <ClInclude Include="FTriangleLineTargets.h" />
     <ClInclude Include="FTriangleLineType.h" />
+    <ClInclude Include="FTriangleORETracer.h" />
     <ClInclude Include="FTriangleOutput.h" />
     <ClInclude Include="FTrianglePoint.h" />
     <ClInclude Include="FTrianglePointType.h" />
@@ -308,6 +310,7 @@
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OREDependencyState.h" />
+    <ClInclude Include="OREFracturingMachine.h" />
     <ClInclude Include="OrganicLineBase.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
     <ClInclude Include="ORELodState.h" />
@@ -426,7 +429,8 @@
     <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
-    <ClCompile Include="FTLResolverStickSaw.cpp" />
+    <ClCompile Include="FTLResolverScannedStickSaw.cpp" />
+    <ClCompile Include="FTLResolverExteriorStickSaw.cpp" />
     <ClCompile Include="FTriangle.cpp" />
     <ClCompile Include="FTriangleBlueprintTracer.cpp" />
     <ClCompile Include="FTriangleContainer.cpp" />
@@ -434,6 +438,7 @@
     <ClCompile Include="FTriangleKeySetCalibrator.cpp" />
     <ClCompile Include="FTriangleLineResolutionMachine.cpp" />
     <ClCompile Include="FTriangleLineResolverBase.cpp" />
+    <ClCompile Include="FTriangleORETracer.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
@@ -445,6 +450,7 @@
     <ClCompile Include="NeighboringBlockLocationSet.cpp" />
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
     <ClCompile Include="NeighboringORELocationSet.cpp" />
+    <ClCompile Include="OREFracturingMachine.cpp" />
     <ClCompile Include="OrganicRawEnclave.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />

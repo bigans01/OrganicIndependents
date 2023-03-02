@@ -96,7 +96,10 @@ void FTriangleKeySetCalibrator::isCalibratable(int* in_blueprintLocationPtr,
 	//	B.)	The slope for the selected dimension, between pointA and pointC, is negative.
 	//
 	// This means that it is impossible for CONDITION 1 and CONDITION 2 to both simulataneously exist.
-	// However, we only check for CONDITION 2 ray-casting/scanning logic. 
+	//
+	// However, we only check for CONDITION 2 ray-casting/scanning logic. Because the FTriangleLine runs perfectly on a grid line, the perfectly aligned dimension(s)
+	// (there can be up to 2, but 3 is impossible) need to be adjusted before scanning begins, prior to being used to determine the set of keys to use when FTriangleFracturerBase::getScanningIntervals() is called.
+
 
 	// Below: Only do this check if we are calibrating for FTRIANGLE_SCANNER
 	if (in_calibrationMode == FKeyCalibrationMode::FTRIANGLE_SCANNER)

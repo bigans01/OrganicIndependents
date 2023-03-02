@@ -4,7 +4,6 @@
 #define BLUEPRINTFRACTURINGMACHINE_H
 
 #include "FTriangleFracturerBase.h"
-#include "CalibrateableOREKeyPair.h"
 #include "FTriangleBlueprintTracer.h"
 
 /*

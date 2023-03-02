@@ -236,7 +236,7 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 									// but if the FTriangleLineResolutionMachine figures out a solution,
 									// it will get set back to true.
 
-			//FTLResolverStickSaw sawResolver;
+			//FTLResolverExteriorStickSaw sawResolver;
 			//sawResolver.initLineResolver(debugCopy);
 			//sawResolver.runAttemptedResolution();
 

@@ -9,7 +9,7 @@
 
 Description:
 
-This is the base class that all of the FTriangleLine resolution algorithms are based on (i.e, the FTLResolverStickSaw class)
+This is the base class that all of the FTriangleLine resolution algorithms are based on (i.e, the FTLResolverExteriorStickSaw class)
 
 */
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FTRIANGLEBLUEPRINTTRACER_H
-#define FTRIANGLEBLUEPRINTTRACER_H
+#ifndef FTRIANGLEORETRACER_H
+#define FTRIANGLEORETRACER_H
 
 #include "FTriangleTracerBase.h"
 #include "TracingLineBoundingBox.h"
@@ -10,43 +10,42 @@
 
 Description:
 
-Used by the fracturing class, BlueprintFracturingMachine, this class is designed to trace an FTriangle's lines through a singular BLUEPRINT space,
-in order to produce FTriangles that would exist in ORE space. The lines (FTriangleLines) produced by the WorldLineTracer struct below
+Used by the fracturing class, OREFracturingMachine, this class is designed to trace an FTriangle's lines through a singular ORE space,
+in order to produce FTriangles that would exist in BLOCK space. The lines (FTriangleLines) produced by the ORELineTracer struct below
 are fed into the stager map referenced by tracerStagerRef (see base class for details).
 
 */
 
-class FTriangleBlueprintTracer : public FTriangleTracerBase
+class FTriangleORETracer : public FTriangleTracerBase
 {
-	public: 
-		void runLineTracing();	// traces FTriangleLine instances throughout the selected world space, using the scannerKeys EnclaveKeyDef array from
-								// FTriangleFracturerBase.
+	public:
+		void runLineTracing();
 
 	private:
 
-		// A struct that traces the lines of a triangle that exists in Blueprint space.
-		struct BlueprintLineTracer
+		// A struct that traces the lines of a triangle that exists in ORE space.
+		struct ORELineTracer
 		{
-			BlueprintLineTracer(EnclaveKeyDef::EnclaveKey in_beginKey,
+			ORELineTracer(EnclaveKeyDef::EnclaveKey in_beginKey,
 				EnclaveKeyDef::EnclaveKey in_endKey,
 				ECBPolyPoint in_beginPoint,
 				ECBPolyPoint in_endPoint) :
-					beginKey(in_beginKey),
-					currentKey(in_beginKey),
-					endKey(in_endKey),
-					beginPoint(in_beginPoint),
-					endPoint(in_endPoint)
+				beginKey(in_beginKey),
+				currentKey(in_beginKey),
+				endKey(in_endKey),
+				beginPoint(in_beginPoint),
+				endPoint(in_endPoint)
 			{
 				TracingLineBoundingBox bbToUse(beginKey, endKey);
 				lineBoundingBox = bbToUse;
 
-				// As we are tracing a triangle that exists in BLUEPRINT space into ORE space, we need to ensure that the bounds of each cell are that of an ORE (so 4.0f)
+				// As we are tracing a triangle that exists in ORE space into BLOCK space, we need to ensure that the bounds of each cell are that of a BLOCK (so 1.0f)
 				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(beginPoint,
 					endPoint,
 					beginKey,
 					endKey,
 					lineBoundingBox,
-					FTraceType::ORE_TRACE);
+					FTraceType::BLOCK_TRACE);
 
 				nextKeyAdd = resultantIntersect.incrementingKey;					// the next key add will be a result from previous function call
 				currentIterationBeginPoint = beginPoint;							// set the initial value of the begin point
