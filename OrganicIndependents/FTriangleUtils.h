@@ -66,8 +66,8 @@ class FTriangleUtils
 		static ECBPolyPoint findNormalizedSlope(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
 		static bool isLinePositivelyOriented(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);	// checks if the given Line A>B is positively oriented; returns false if not.
 
-		
 
+		
 };
 
 #endif

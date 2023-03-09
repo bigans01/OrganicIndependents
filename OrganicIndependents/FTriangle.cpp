@@ -64,6 +64,27 @@ void FTriangle::setupAndRunFracturerMachine()
 			hasFracturingCompleted = true;
 			break;
 		}
+
+		case FTriangleType::ORE:
+		{
+			//std::cout << "Selected ORE fracturer. " << std::endl;
+			std::shared_ptr<FTriangleFracturerBase> oreFracturer(new (OREFracturingMachine));
+			fracturerMachine = oreFracturer;
+			fracturerMachine->transferFTriangleMetadata(fracturePoints[0],
+				fracturePoints[1],
+				fracturePoints[2],
+				fractureEmptyNormal,
+				fractureRequiredOrientation,
+				fractureRequiredClampValue,
+				fractureMaterial);
+			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->runFracturing();
+
+			hasFracturingCompleted = true;
+			break;
+		}
+
+
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "FTriangleFracturerBase.h"
 #include "WorldFracturingMachine.h"
 #include "BlueprintFracturingMachine.h"
+#include "OREFracturingMachine.h"
 
 /*
 

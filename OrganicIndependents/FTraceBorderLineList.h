@@ -43,6 +43,18 @@ class FTraceBorderLineList
 		ECBBorder SouthFace;
 		ECBBorder TopFace;
 		ECBBorder BottomFace;
+
+		void printCorners()
+		{
+				std::cout << "corner_UpperNW: " << corner_UpperNW.cornerPoint.x << ", " << corner_UpperNW.cornerPoint.y << ", " << corner_UpperNW.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_UpperSW: " << corner_UpperSW.cornerPoint.x << ", " << corner_UpperSW.cornerPoint.y << ", " << corner_UpperSW.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_UpperSE: " << corner_UpperSE.cornerPoint.x << ", " << corner_UpperSE.cornerPoint.y << ", " << corner_UpperSE.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_UpperNE: " << corner_UpperNE.cornerPoint.x << ", " << corner_UpperNE.cornerPoint.y << ", " << corner_UpperNE.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_LowerNW: " << corner_LowerNW.cornerPoint.x << ", " << corner_LowerNW.cornerPoint.y << ", " << corner_LowerNW.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_LowerSW: " << corner_LowerSW.cornerPoint.x << ", " << corner_LowerSW.cornerPoint.y << ", " << corner_LowerSW.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_LowerSE: " << corner_LowerSE.cornerPoint.x << ", " << corner_LowerSE.cornerPoint.y << ", " << corner_LowerSE.cornerPoint.z << ", " << std::endl;
+				std::cout << "corner_LowerNE: " << corner_LowerNE.cornerPoint.x << ", " << corner_LowerNE.cornerPoint.y << ", " << corner_LowerNE.cornerPoint.z << ", " << std::endl;
+		}
 };
 
 #endif

@@ -15,6 +15,9 @@ void OREFracturingMachine::runFracturing()
 	loadLocalizedOREPoints();
 
 	runORETracing();
+
+	std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
+	fracturerPoints.printAllPoints();
 }
 
 void OREFracturingMachine::determineUncalibratedBlockKeys()

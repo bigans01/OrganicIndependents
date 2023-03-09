@@ -24,6 +24,11 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 		//std::cout << "!!! CONDITION 1 entry" << std::endl;
 		//std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
 		//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+		//std::cout << ">>>>>>>>> Keys: " << std::endl;
+		//in_pointAKey.printKey();
+		//in_pointBKey.printKey();
+
 		ECBPolyPoint resultantSlope;
 		resultantSlope.x = in_pointB.x - in_pointA.x;
 		resultantSlope.y = in_pointB.y - in_pointA.y;
@@ -412,12 +417,34 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 
 		case FTraceType::BLOCK_TRACE:
 		{
-			x_intercept_coords = in_XYZinterceptCoords.triPoints[0];
-			y_intercept_coords = in_XYZinterceptCoords.triPoints[1];
-			z_intercept_coords = in_XYZinterceptCoords.triPoints[2];
+			x_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[0]);
+			y_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[1]);
+			z_intercept_coords = roundPointToHundredth(in_XYZinterceptCoords.triPoints[2]);
 			break;
 		}
 	}
+
+	/*
+	std::cout << "!!!!!!!! (TEMP DEBUG) Origin point is: " << in_originPoint.x << ", " << in_originPoint.y << ", " << in_originPoint.z << std::endl;
+
+	std::cout << "----------------coords are: " << std::endl;
+	std::cout << "X: " << x_intercept_coords.x << ", " << x_intercept_coords.y << ", " << x_intercept_coords.z << std::endl;
+	std::cout << "Y: " << y_intercept_coords.x << ", " << y_intercept_coords.y << ", " << y_intercept_coords.z << std::endl;
+	std::cout << "Z: " << z_intercept_coords.x << ", " << z_intercept_coords.y << ", " << z_intercept_coords.z << std::endl;
+
+	std::cout << "----------------slope direction is: " << std::endl;
+	std::cout << in_slopeDirection.x << ", " << in_slopeDirection.y << ", " << in_slopeDirection.z << std::endl;
+
+	//in_slopeDirection = calibrateNormalizedSlope(in_slopeDirection, in_originPoint, &pointABorderLineList);
+
+	std::cout << "----------------calibrated slope direction is: " << std::endl;
+	std::cout << in_slopeDirection.x << ", " << in_slopeDirection.y << ", " << in_slopeDirection.z << std::endl;
+
+	if (dist_to_X == dist_to_Z)
+	{
+		std::cout << "!!! NOTICE: dist_to_X equals dist_to_Z. " << std::endl;
+	}
+	*/
 
 	// Below: This is the value that will contain the final point to use.
 	ECBPolyPoint pointToCheck;
@@ -586,6 +613,56 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 	}
 
 	// Step 2: check if the resulting point is a border line intercept
+
+	/*
+
+	IMPORTANT NOTE ON LINE INTERCEPTS:
+
+	(For the example below, reference the screenshot bad_line_hit_match_post_rounding_3_7_2022.jpg,
+	 for evidence about how this might happen)
+
+	It was observed, on or around 3/7/2023, that it is possible for a in_slopeDirection value to be 
+	technically invalid, in some rare edge cases, when the rounding logic on the x/y/z intercept coords is
+	performed. As a real example, consider the origin point (2.98, 1, 2.98) and the endpoint it's normalized slope 
+	was based off of -- (4, 1.23, 4). Obviously, the directional slope is 1,1,1. In this case, we have two points that have 
+	similiar distance, so either one can be selected -- the two points in question being the X and Z intercepts.
+	In other words, "dist_to_X" equals "dist_to_Z"
+
+	However, in at least one case when this function is called with the given slope direction and origin point  above,
+	it is possible for the selected intercept to no longer "match" against the slope of 1,1,1, after rounding has occured.
+
+	For example, if the selected intercept (I) value was (3, 1.0023, 3), BEFORE rounding the intercepts, then 
+	this technically matches a normalized slope of 1,1,1, when considering I against the origin (O). So,
+	the normalized slope of I - O is 1,1,1. 
+
+	But, if (I) gets rounded to nearest hundredth, it becomes (3, 1, 3). Now when this value is compared to 
+	the origin in I - O, the slope is actually 1, 0, 1. Although (3,1,3) is technically a corner point,
+	the if/else check on the corner fails, the reason being that the if clause that should handle this, which would be:
+
+			(dist_to_X == dist_to_Z)
+			&&
+			((in_originPoint.y == ((in_Key1.y*cellLength) + cellLength)) || (in_originPoint.y == in_Key1.y*cellLength))
+			&&
+			in_slopeDirection.y == 0.0f
+			
+	fails, because the in_slopeDirection.y value is actually 1.0f, and not 0.
+
+	In reality, the selected point of (3, 1, 3) when compared against (2.98, 1, 2.98), equates
+	to a normalized directional slope of 1,0,1. Even though it should technically still hit a corner,
+	that logic can't be entered because of the slope change that occurred after rounding the intercepted point
+	before it gets used. In other words, the y-value of 0 in the slope prevents it from entering the intended logic.
+
+	That being said, the line check logic that comes after the corner check logic can still catch this.
+	We must simply make sure that the range of the dimension we are checking against is changed from
+	
+	Y > lower range AND Y < upper range
+	
+	TO
+
+	Y >= lower range AND Y <= upper range
+	
+
+	*/
 	else if ((dist_to_X == dist_to_Y) || (dist_to_Y == dist_to_Z) || (dist_to_X == dist_to_Z))
 	{
 		//std::cout << "STEP 2 ENTRY" << std::endl;
@@ -620,7 +697,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.y == pointABorderLineList.corner_LowerNW.cornerPoint.y)
 					&&
-					(pointToCheck.z > pointABorderLineList.corner_LowerNW.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_LowerSW.cornerPoint.z)			// is z between the LowerNW and LowerSW corners, but not equal to either of them?
+					(pointToCheck.z >= pointABorderLineList.corner_LowerNW.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_LowerSW.cornerPoint.z)			// is z between the LowerNW and LowerSW corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_lowerWest, in_originPoint, pointToCheck);	// get the shifting key
@@ -632,7 +709,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.y == pointABorderLineList.corner_UpperNW.cornerPoint.y)
 					&&
-					(pointToCheck.z > pointABorderLineList.corner_UpperNW.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_UpperSW.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					(pointToCheck.z >= pointABorderLineList.corner_UpperNW.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_UpperSW.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_upperWest, in_originPoint, pointToCheck);	// get the shifting key
@@ -644,7 +721,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.y == pointABorderLineList.corner_UpperNE.cornerPoint.y)
 					&&
-					(pointToCheck.z > pointABorderLineList.corner_UpperNE.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_UpperSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					(pointToCheck.z >= pointABorderLineList.corner_UpperNE.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_UpperSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_upperEast, in_originPoint, pointToCheck);	// get the shifting key				
@@ -655,7 +732,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.y == pointABorderLineList.corner_LowerNE.cornerPoint.y)
 					&&
-					(pointToCheck.z > pointABorderLineList.corner_LowerNE.cornerPoint.z	&& pointToCheck.z < pointABorderLineList.corner_LowerSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
+					(pointToCheck.z >= pointABorderLineList.corner_LowerNE.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_LowerSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_lowerEast, in_originPoint, pointToCheck);	// get the shifting key
@@ -686,8 +763,22 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 		else if ((dist_to_X == dist_to_Z) && (dist_to_X != 0.0f))
 		{
 			//std::cout << "STEP 2:2 ENTRY: Y-lines " << std::endl;
+			/*
+			std::cout << "Slope directions: " << std::endl;
+			std::cout << in_slopeDirection.x << std::endl;
+			std::cout << in_slopeDirection.y << std::endl;
+			std::cout << in_slopeDirection.z << std::endl;
+			*/
+
 			//pointToCheck = OrganicUtils::roundToNearestBlockLineOrCorner(0, x_intercept_coords, isPointOnALine);
 			pointToCheck = roundToNearestLineOrCorner(0, x_intercept_coords, isPointOnALine, &borderLimits, in_fTraceType);
+
+			//std::cout << "Point to check is now: " << std::endl;
+			//std::cout << pointToCheck.x << ", " << pointToCheck.y << ", " << pointToCheck.z << std::endl;
+		
+			//std::cout << "*** printing current corners..." << std::endl;
+			//pointABorderLineList.printCorners();
+
 
 			if (
 				(dist_to_Y > dist_to_X) && (in_slopeDirection.y != 0.0f)			// condition 1:	if Y's distance is greater  than X (could also be z here), AND it's slope is not 0, we go with x/z distance point
@@ -700,7 +791,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerNE.cornerPoint.z)
 					&&
-					(pointToCheck.y > pointABorderLineList.corner_LowerNE.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperNE.cornerPoint.y)
+					(pointToCheck.y >= pointABorderLineList.corner_LowerNE.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperNE.cornerPoint.y)
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_northEast, in_originPoint, pointToCheck);	// get the shifting key
@@ -712,7 +803,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerSE.cornerPoint.z)
 					&&
-					(pointToCheck.y > pointABorderLineList.corner_LowerSE.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperSE.cornerPoint.y)
+					(pointToCheck.y >= pointABorderLineList.corner_LowerSE.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperSE.cornerPoint.y)
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_southEast, in_originPoint, pointToCheck);	// get the shifting key
@@ -723,7 +814,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)
 					&&
-					(pointToCheck.y > pointABorderLineList.corner_LowerSW.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperSW.cornerPoint.y)
+					(pointToCheck.y >= pointABorderLineList.corner_LowerSW.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperSW.cornerPoint.y)
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_southWest, in_originPoint, pointToCheck);	// get the shifting key
@@ -734,7 +825,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z)
 					&&
-					(pointToCheck.y > pointABorderLineList.corner_LowerNW.cornerPoint.y	&& pointToCheck.y < pointABorderLineList.corner_UpperNW.cornerPoint.y)
+					(pointToCheck.y >= pointABorderLineList.corner_LowerNW.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperNW.cornerPoint.y)
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_northWest, in_originPoint, pointToCheck);	// get the shifting key
@@ -785,7 +876,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerNW.cornerPoint.z)
 					&&
-					(pointToCheck.x > pointABorderLineList.corner_LowerNW.cornerPoint.x	&&		pointToCheck.x < pointABorderLineList.corner_LowerNE.cornerPoint.x)	// is x between the LowerNW and LowerNE corners, but not equal to either of them?
+					(pointToCheck.x >= pointABorderLineList.corner_LowerNW.cornerPoint.x	&&	pointToCheck.x <= pointABorderLineList.corner_LowerNE.cornerPoint.x)	// is x between the LowerNW and LowerNE corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_lowerNorth, in_originPoint, pointToCheck);	// get the shifting key
@@ -796,7 +887,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_LowerSW.cornerPoint.z)
 					&&
-					(pointToCheck.x > pointABorderLineList.corner_LowerSW.cornerPoint.x	&&	pointToCheck.x < pointABorderLineList.corner_LowerSE.cornerPoint.x)		// is x between the LowerSW and LowerSE corners, but not equal to either of them?
+					(pointToCheck.x >= pointABorderLineList.corner_LowerSW.cornerPoint.x	&&	pointToCheck.x <= pointABorderLineList.corner_LowerSE.cornerPoint.x)		// is x between the LowerSW and LowerSE corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_lowerSouth, in_originPoint, pointToCheck);	// get the shifting key
@@ -807,7 +898,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_UpperSW.cornerPoint.z)
 					&&
-					(pointToCheck.x > pointABorderLineList.corner_UpperSW.cornerPoint.x	&& pointToCheck.x < pointABorderLineList.corner_UpperSE.cornerPoint.x)			// is x between the UpperSW and UpperSE corners, but not equal to either of them?
+					(pointToCheck.x >= pointABorderLineList.corner_UpperSW.cornerPoint.x	&& pointToCheck.x <= pointABorderLineList.corner_UpperSE.cornerPoint.x)			// is x between the UpperSW and UpperSE corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_upperSouth, in_originPoint, pointToCheck);	// get the shifting key
@@ -818,7 +909,7 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					&&
 					(pointToCheck.z == pointABorderLineList.corner_UpperNW.cornerPoint.z)
 					&&
-					(pointToCheck.x > pointABorderLineList.corner_UpperNW.cornerPoint.x	&& pointToCheck.x < pointABorderLineList.corner_UpperNE.cornerPoint.x)			// is x between the UpperNW and UpperNE corners, but not equal to either of them?
+					(pointToCheck.x >= pointABorderLineList.corner_UpperNW.cornerPoint.x	&& pointToCheck.x <= pointABorderLineList.corner_UpperNE.cornerPoint.x)			// is x between the UpperNW and UpperNE corners, but not equal to either of them?
 					)
 				{
 					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_upperNorth, in_originPoint, pointToCheck);	// get the shifting key
