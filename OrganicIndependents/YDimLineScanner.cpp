@@ -144,7 +144,7 @@ XZDim YDimLineScanner::determineStartingXZDimForSlice(FTrianglePoint in_pointA, 
 	// Below: FTDEBUG (uncomment when needed)
 	/*
 	// Print the points.
-	std::cout << "Points used for determineXZDimForSlice: " << std::endl;
+	std::cout << "(YDimLineScanner) Points used for determineXZDimForSlice: " << std::endl;
 	in_pointA.printPointData();
 	std::cout << std::endl;
 	in_pointB.printPointData();
@@ -261,8 +261,11 @@ void YDimLineScanner::produceYSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		// do line logic here, using currentPointA, currentPointB, and other required data...
 		// ..
 
-		std::cout << "XZDim used for next line (currentLine) will be: Y -> " << currentLineXZDim.x << " | Z -> " << currentLineXZDim.z << std::endl;
+		std::cout << "XZDim used for next line (currentLine) will be: X -> " << currentLineXZDim.x << " | Z -> " << currentLineXZDim.z << std::endl;
 		*/
+		
+		currentLineXZDim = determineStartingXZDimForSlice(FTrianglePoint(currentPointA.point, FTrianglePointType::NOVAL), 
+														  FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
 
 		YSliceLine currentLine(currentLineXZDim,
 								currentPointA.point,
@@ -282,7 +285,7 @@ void YDimLineScanner::produceYSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		}
 
 		// remember, we must increment the value of currentLineXZDim by the move vals.
-		currentLineXZDim += currentLine.fetchYLineMoveVal();
+		//currentLineXZDim += currentLine.fetchYLineMoveVal();
 
 
 		// when we are done producing the line and extracting/handling its output,

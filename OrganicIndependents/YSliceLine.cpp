@@ -110,13 +110,13 @@ void YSliceLine::determineYLineOutputs()
 		targetKeys.insert(backwardYKeyXNegative);
 		targetKeys.insert(forwardYKeyXNegative);
 
-		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::ZSLICE_SCANNED),
+		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::YSLICE_SCANNED),
 			targetKeys);
 
 		lineTargets = determinedTargets;
 
-		int alignedToYWait = 3;
-		std::cin >> alignedToYWait;
+		//int alignedToYWait = 3;
+		//std::cin >> alignedToYWait;
 	}
 	else if (perfectlyAlignedToZGridLine)
 	{
@@ -134,12 +134,12 @@ void YSliceLine::determineYLineOutputs()
 		targetKeys.insert(backwardYKeyZNegative);
 		targetKeys.insert(forwardYKeyZNegative);
 
-		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::ZSLICE_SCANNED),
+		FTriangleLineTargets determinedTargets(FTriangleLine(linePointA, linePointB, FTriangleLineType::YSLICE_SCANNED),
 			targetKeys);
 
 		lineTargets = determinedTargets;
 
-		int alignedToYWait = 3;
-		std::cin >> alignedToYWait;
+		//int alignedToYWait = 3;
+		//std::cin >> alignedToYWait;
 	}
 }

@@ -258,6 +258,9 @@
     <ClInclude Include="FRayCasterTypeEnum.h" />
     <ClInclude Include="FRayIntersectionMachine.h" />
     <ClInclude Include="FRayIntersectionRoundingMode.h" />
+    <ClInclude Include="FTLResolutionStatus.h" />
+    <ClInclude Include="FTLResolverClampedCorner.h" />
+    <ClInclude Include="FTLResolverDualStickSaw.h" />
     <ClInclude Include="FTLResolverScannedStickSaw.h" />
     <ClInclude Include="FTLResolverExteriorStickSaw.h" />
     <ClInclude Include="FTraceBorderLineList.h" />
@@ -429,6 +432,8 @@
     <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
+    <ClCompile Include="FTLResolverClampedCorner.cpp" />
+    <ClCompile Include="FTLResolverDualStickSaw.cpp" />
     <ClCompile Include="FTLResolverScannedStickSaw.cpp" />
     <ClCompile Include="FTLResolverExteriorStickSaw.cpp" />
     <ClCompile Include="FTriangle.cpp" />

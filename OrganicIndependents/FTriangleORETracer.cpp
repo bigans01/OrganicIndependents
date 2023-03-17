@@ -38,14 +38,16 @@ void FTriangleORETracer::runLineTracing()
 {
 	for (int x = 0; x < 3; x++)
 	{
+		std::cout << "(FTriangleORETracer): running line tracing, for line at index " << x << std::endl;
+
 		int beginPointIndex = 0;
 		int endPointIndex = 0;
 
 		switch (x)
 		{
-		case 0: { beginPointIndex = 0; endPointIndex = 1; break;}
-		case 1: { beginPointIndex = 1; endPointIndex = 2; break;}
-		case 2: { beginPointIndex = 2; endPointIndex = 0; break;}
+			case 0: { beginPointIndex = 0; endPointIndex = 1; break;}
+			case 1: { beginPointIndex = 1; endPointIndex = 2; break;}
+			case 2: { beginPointIndex = 2; endPointIndex = 0; break;}
 		}
 
 		// Before the LineLocalizer is initialized, check to see if we need to re-orient (swap the points/keys) of the line we're looking at.
@@ -163,10 +165,16 @@ void FTriangleORETracer::runLineTracing()
 				currentCandidateAffectedKeys.insert(negativeZKey);
 			}
 
-			// put the candidate data, into a new TracerLineRecord, and push that record back.
-			TracerLineRecord newRecord(newTriangleLine, currentCandidateAffectedKeys);
-			lineCandidates.push_back(newRecord);
 
+			// put the candidate data, into a new TracerLineRecord, and push that record back, but only if the points don't match
+			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
+			if (newTriangleLine.pointA != newTriangleLine.pointB)
+			{
+				std::cout << "(FTriangleORETracer) -> inserting exterior line, with points: ";
+				newTriangleLine.printLine();
+				TracerLineRecord newRecord(newTriangleLine, currentCandidateAffectedKeys);
+				lineCandidates.push_back(newRecord);
+			}
 
 			currentTracer.traverseLineOnce();
 		}

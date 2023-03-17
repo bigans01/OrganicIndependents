@@ -169,10 +169,13 @@ void FTriangleBlueprintTracer::runLineTracing()
 				currentCandidateAffectedKeys.insert(negativeZKey);
 			}
 
-			// put the candidate data, into a new TracerLineRecord, and push that record back.
-			TracerLineRecord newRecord(newTriangleLine, currentCandidateAffectedKeys);
-			lineCandidates.push_back(newRecord);
-
+			// put the candidate data, into a new TracerLineRecord, and push that record back, but only if the points don't match
+			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
+			if (newTriangleLine.pointA != newTriangleLine.pointB)
+			{
+				TracerLineRecord newRecord(newTriangleLine, currentCandidateAffectedKeys);
+				lineCandidates.push_back(newRecord);
+			}
 
 			currentTracer.traverseLineOnce();
 		}

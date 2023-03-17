@@ -3,6 +3,7 @@
 
 bool FTLResolverScannedStickSaw::runAttemptedResolution()
 {
+	std::cout << "(FTLResolverScannedStickSaw) --> attempting resolution...." << std::endl;
 	bool resolutionFound = false;
 
 	// the number of passes is equal to the number of non EXTERIR lines.
@@ -32,6 +33,8 @@ bool FTLResolverScannedStickSaw::runAttemptedResolution()
 		if (isValid)
 		{
 			resolutionFound = true;
+			determinedResolutionStatus = FTLResolutionStatus::FTLR_VALID;
+
 			std::cout << "(FTLResolverScannedStickSaw): !!! Resolution was found: Ordered lines are: " << std::endl;
 
 			// if the return value  of checkLineValidity is true, it means the solutionLines is populated.

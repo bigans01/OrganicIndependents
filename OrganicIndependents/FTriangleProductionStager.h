@@ -5,6 +5,7 @@
 
 #include "FTriangleLine.h"
 #include "FTriangleLineResolutionMachine.h"
+#include "FTLResolutionStatus.h"
 
 /*
 
@@ -25,7 +26,7 @@ class FTriangleProductionStager
 		void insertLine(FTriangleLine in_lineToInsert);
 		void translateLines(EnclaveKeyDef::EnclaveKey in_translationKey, float in_fixedDimensionInterval);
 		void printLines();
-		bool analyzeAndReorganize();
+		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey);
 		std::vector<FTriangleLine> fetchStagerLines();
 	private:
 		std::vector<FTriangleLine> stagerLines;

@@ -12,7 +12,7 @@ void BlueprintFracturingMachine::runFracturing()
 		std::cout << std::endl;
 	}
 	*/
-
+	
 	// set the ray cast interval to 4.0f
 	rayCastDimInterval = 4.0f;
 
@@ -28,18 +28,17 @@ void BlueprintFracturingMachine::runFracturing()
 
 	runBlueprintTracing();				// Step 4: runBlueprintTracing(), to create exterior FTriangleLines.
 
-	//std::cout << "!!! BlueprintFracturingMachine: completed runBlueprintTracing." << std::endl;
+	//std::cout << "(BlueprintFracturingMachine): completed runBlueprintTracing." << std::endl;
 
 	
 	buildAndRunFRayCasters(); // Step 5: buildAndRunBlueprintFRayCasters() -- determine the ray casters we have to use for the FTriangle, and run them.
 
-	runRaycastCollisionResolver(); // Step 6: (NEW step) check for any situations where a External-InteriorRayCast occurs, and mitigate it.
+	runRaycastCollisionResolver(); // Step 6: (NEW step) check for any situations where a External-InteriorRayCast collision occurs, and mitigate it.
 
 	buildAndRunFLineScanners();	// Step 7: buildAndRunFLineScanners figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 								//		   and then run them.
 
 	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
-
 
 
 	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
@@ -49,7 +48,6 @@ void BlueprintFracturingMachine::runFracturing()
 	buildBlueprintMachineTriangleContainers();	// Step 10: Produce the outputs (the type of the 
 
 	// Step 9: build the FTriangleOutputs, and remove the ones that are not correctly boundary oriented.
-
 }
 
 void BlueprintFracturingMachine::determineUncalibratedOREKeys()

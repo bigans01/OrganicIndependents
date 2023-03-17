@@ -40,7 +40,7 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 	for (auto& currentStager : stagerMap)
 	{
 		// Below: FTDEBUG (uncomment when done)
-		/*
+		/*				
 		std::cout << "Analyzing stager at key: ";
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 		currentStagerKey.printKey();
@@ -48,19 +48,30 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 		*/
 
 		// check if the stager has met the conditions for being valid (i.e., at least 3 lines)
+
+		/*
 		bool isStagerValid = currentStager.second.analyzeAndReorganize();
 		if (!isStagerValid)
 		{
-			/*
-			std::cout << "NOTICE: Detected stager as invalid, at key "; 
-			EnclaveKeyDef::EnclaveKey currentKey = currentStager.first;
-			currentKey.printKey();
-			std::cout << " will remove. " << std::endl;
+			
+			//std::cout << "NOTICE: Detected stager as invalid, at key "; 
+			//EnclaveKeyDef::EnclaveKey currentKey = currentStager.first;
+			//currentKey.printKey();
+			//std::cout << " will remove. " << std::endl;
 
-			int invalidRemoval = 3;
-			std::cin >> invalidRemoval;
-			*/
+			//int invalidRemoval = 3;
+			//std::cin >> invalidRemoval;
+			
+			invalidStagerKeys.insert(currentStager.first);
+		}
+		*/
 
+		FTLResolutionStatus resolutionStatus = currentStager.second.analyzeAndReorganize(currentStager.first);
+		if
+		(
+			resolutionStatus == FTLResolutionStatus::FTLR_PURGABLE
+		)
+		{
 			invalidStagerKeys.insert(currentStager.first);
 		}
 	}

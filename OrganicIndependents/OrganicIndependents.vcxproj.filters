@@ -894,6 +894,15 @@
     <ClInclude Include="FTLResolverExteriorStickSaw.h">
       <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClInclude>
+    <ClInclude Include="FTLResolutionStatus.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="FTLResolverClampedCorner.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClInclude>
+    <ClInclude Include="FTLResolverDualStickSaw.h">
+      <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1167,6 +1176,12 @@
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClCompile>
     <ClCompile Include="FTLResolverExteriorStickSaw.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="FTLResolverClampedCorner.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="FTLResolverDualStickSaw.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClCompile>
   </ItemGroup>

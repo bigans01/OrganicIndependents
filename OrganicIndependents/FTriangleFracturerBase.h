@@ -20,6 +20,7 @@
 #include "FTriangleReverseTranslationMode.h"
 #include "FTriangleKeySetCalibrator.h"
 #include "FExteriorRaycastCollisionResolver.h"
+#include "FTLResolutionStatus.h"
 
 class FTriangleFracturerBase
 {

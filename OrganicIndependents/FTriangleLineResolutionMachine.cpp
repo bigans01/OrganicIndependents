@@ -11,6 +11,8 @@ void FTriangleLineResolutionMachine::setupResolvers()
 {
 	resolverMap[0] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverExteriorStickSaw());
 	resolverMap[1] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverScannedStickSaw());
+	resolverMap[2] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverClampedCorner());
+	resolverMap[3] = std::unique_ptr<FTriangleLineResolverBase>(new FTLResolverDualStickSaw());
 }
 
 void FTriangleLineResolutionMachine::runResolutionSequence()
@@ -29,6 +31,7 @@ void FTriangleLineResolutionMachine::runResolutionSequence()
 		{
 			solutionLines = currentResolver.second->solutionLines;
 			resolutionFound = true;
+			resolvedStatus = currentResolver.second->determinedResolutionStatus;
 			break;	// we're done, no need to continue.
 		}
 	}

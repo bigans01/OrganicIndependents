@@ -16,6 +16,22 @@ void OREFracturingMachine::runFracturing()
 
 	runORETracing();
 
+	buildAndRunFRayCasters();
+
+	runRaycastCollisionResolver(); // Step 6: (NEW step) check for any situations where a External-InteriorRayCast collision occurs, and mitigate it.
+
+	buildAndRunFLineScanners();	// Step 7: buildAndRunFLineScanners figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
+								//		   and then run them.
+
+	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
+
+
+	std::cout << "---------------------------------------OREFracturingMachine, starting cleanup...." << std::endl;
+	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
+	std::cout << "---------------------------------------OREFracturingMachine, ending cleanup...." << std::endl;
+
+	reverseTranslateOREStagerLines();
+
 	std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
 	fracturerPoints.printAllPoints();
 }
@@ -99,6 +115,51 @@ void OREFracturingMachine::runORETracing()
 	FTriangleORETracer oreTracer;
 	oreTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, localizedFTrianglePoints);
 	oreTracer.runLineTracing();
+}
+
+void OREFracturingMachine::reverseTranslateOREStagerLines()
+{
+	// Remember: unlike a WorldFracturingMachine (but LIKE a BlueprintFracturingMachine), a OREFracturingMachine's reverse translate mode always
+	// operates as FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE, so there is no need to use a switch statement.
+	for (auto& currentStager : stagerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentMapKeyCopy = currentStager.first;
+		EnclaveKeyDef::EnclaveKey currentTranslationKey = currentMapKeyCopy.getInvertedKey();
+		currentStager.second.translateLines(currentTranslationKey, rayCastDimInterval);
+	}
+}
+
+void OREFracturingMachine::buildOREMachineTriangleContainers()
+{
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> containerRemovalSet;
+	for (auto& currentStager : stagerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
+
+		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+		// Remember: the BlueprintFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::ORE.
+		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLOCK,
+			originFTriangleEmptynormal,
+			originBoundaryOrientation,
+			currentStagerKey,
+			originMaterial);
+
+		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
+		// which is determined by the call to runBoundaryTests below.
+		bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE, currentStagerKey, originFTriangleEmptynormal);
+		if (shouldContainerBeDeleted)
+		{
+			containerRemovalSet.insert(currentStagerKey);
+		}
+
+	}
+
+	// Erase any keyed, empty containers that were in the containerRemovalSet.
+	for (auto& currentContainerToRemove : containerRemovalSet)
+	{
+		(*ftfOutputRef).erase(currentContainerToRemove);
+	}
 }
 
 EnclaveKeyDef::EnclaveKey OREFracturingMachine::getUncalibratedBlockKeyForPoint(DoublePoint in_point)

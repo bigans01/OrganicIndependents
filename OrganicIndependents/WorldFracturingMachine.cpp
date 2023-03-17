@@ -3,6 +3,7 @@
 
 void WorldFracturingMachine::runFracturing()
 {
+	/*
 	std::cout << "(WorldFracturingMachine) !!! Start of runFracturing(). " << std::endl;
 	std::cout << "Points are: " << std::endl;
 	for (int x = 0; x < 3; x++)
@@ -10,7 +11,7 @@ void WorldFracturingMachine::runFracturing()
 		originFTrianglePoints[x].printPointCoords();
 		std::cout << std::endl;
 	}
-
+	*/
 
 	// set the ray cast interval to 32.0f
 	rayCastDimInterval = 32.0f;
@@ -37,6 +38,8 @@ void WorldFracturingMachine::runFracturing()
 	buildWorldMachineTriangleContainers();	// Step 11: build the FTriangleContainers, according to what this class specifies.
 
 	// when everything is done, we need to translate back.
+
+	//std::cout << "(WorldFracturingMachine) !!! End of runFracturing(). " << std::endl;
 }
 
 void WorldFracturingMachine::determineUncalibratedBlueprintKeys()

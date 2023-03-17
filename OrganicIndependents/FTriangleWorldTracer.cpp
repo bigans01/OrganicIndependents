@@ -232,10 +232,13 @@ void FTriangleWorldTracer::runLineTracing()
 				currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(negativeZKey));
 			}
 			
-			// put the candidate data, into a new TracerLineRecord, and push that record back.
-			TracerLineRecord newRecord(newRevertedLine, currentCandidateAffectedKeys);
-			lineCandidates.push_back(newRecord);
-
+			// put the candidate data, into a new TracerLineRecord, and push that record back, but only if the points don't match
+			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
+			if (newRevertedLine.pointA != newRevertedLine.pointB)
+			{
+				TracerLineRecord newRecord(newRevertedLine, currentCandidateAffectedKeys);
+				lineCandidates.push_back(newRecord);
+			}
 
 			currentTracer.traverseLineOnce();
 		}

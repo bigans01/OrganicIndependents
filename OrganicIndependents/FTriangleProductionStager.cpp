@@ -9,7 +9,16 @@ void FTriangleProductionStager::insertLine(FTriangleLine in_lineToInsert)
 	{
 		if (lineToScan == in_lineToInsert)
 		{
-			//std::cout << "NOTICE: duplicate line found, will not insert line. " << std::endl;
+			/*
+			std::cout << "NOTICE: duplicate line found, will not insert line; line values are: " << std::endl;
+
+			std::cout << "!!!!!!!! Old line values: " << std::endl;
+			lineToScan.printLine();
+
+			std::cout << "!!! New line values: " << std::endl;
+			in_lineToInsert.printLine();
+			*/
+
 			lineExists = true;
 			duplicatesFound = true;
 			break;
@@ -65,10 +74,13 @@ std::vector<FTriangleLine> FTriangleProductionStager::fetchStagerLines()
 	return stagerLines;
 }
 
-bool FTriangleProductionStager::analyzeAndReorganize()
+FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey)
 {
 	// assume it's valid.
-	bool isStagerValid = true;
+	//bool isStagerValid = true;
+
+	// assume it's valid.
+	FTLResolutionStatus isStagerValid = FTLResolutionStatus::FTLR_VALID;
 
 	//std::cout << "(FTriangleProductionStager::analyzeAndReorganize(): cleaning up..." << std::endl;
 	std::string dupesFound = "";
@@ -85,7 +97,8 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 	// if the number of lines is just 1, it's definitely bad.
 	if (int(stagerLines.size()) == 1)
 	{
-		isStagerValid = false;
+		//isStagerValid = false;
+		isStagerValid = FTLResolutionStatus::FTLR_PURGABLE;
 	}
 
 	// but if there are multiple lines, do the analysis.
@@ -203,7 +216,9 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			(newLineVector.size() < 3)
 		)
 		{
-			std::cout << "!! -> Bad line sequence detected!" << std::endl;
+			std::cout << "!! -> Bad line sequence detected! Stager Key: ";
+			in_stagerKey.printKey();
+			std::cout << std::endl;
 			std::cout << "!! -> Original lines were: " << std::endl;
 			for (auto& currentDebugLine : debugCopy)
 			{
@@ -232,9 +247,14 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 			//std::cin >> badSequenceWait;
 			std::cout << "!! -> Done printing bad line metadata. " << std::endl;
 			
-			isStagerValid = false;	// we will set this to false,
+			//isStagerValid = false;	// we will set this to false,
 									// but if the FTriangleLineResolutionMachine figures out a solution,
 									// it will get set back to true.
+
+			// At this point,
+			// we will assume INACLCULABLE, until a fix below is attemtped through the
+			// FTriangleLineResolutionMachine
+			isStagerValid = FTLResolutionStatus::FTLR_INCALCULABLE;	
 
 			//FTLResolverExteriorStickSaw sawResolver;
 			//sawResolver.initLineResolver(debugCopy);
@@ -251,7 +271,8 @@ bool FTriangleProductionStager::analyzeAndReorganize()
 				//int solutionFound = 3;
 				//std::cin >> solutionFound;
 				stagerLines = solver.solutionLines;
-				isStagerValid = true;
+				//isStagerValid = true;
+				isStagerValid = solver.resolvedStatus;
 			}
 			else if (!solver.resolutionFound)
 			{

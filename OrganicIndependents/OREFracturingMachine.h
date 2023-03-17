@@ -17,6 +17,10 @@ class OREFracturingMachine : public FTriangleFracturerBase
 
 		void runORETracing();
 
+		void reverseTranslateOREStagerLines();
+
+		void buildOREMachineTriangleContainers();
+
 		EnclaveKeyDef::EnclaveKey getUncalibratedBlockKeyForPoint(DoublePoint in_point);
 };
 

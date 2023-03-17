@@ -6,6 +6,9 @@
 #include "FTriangleLineResolverBase.h"
 #include "FTLResolverExteriorStickSaw.h"
 #include "FTLResolverScannedStickSaw.h"
+#include "FTLResolutionStatus.h"
+#include "FTLResolverClampedCorner.h"
+#include "FTLResolverDualStickSaw.h"
 
 /*
 
@@ -33,6 +36,8 @@ class FTriangleLineResolutionMachine
 										// until a solution is found (which causes a break/stop), or until all algorithms have been exhausted.
 
 		bool resolutionFound = false;	// set to true whenever we find a resolutioon.
+		FTLResolutionStatus resolvedStatus = FTLResolutionStatus::FTLR_NOVAL;	// no val by default, must be correctly set by an underlying instance of 
+																				// FTriangleLineResolverBase.
 		std::vector<FTriangleLine> solutionLines;	// this will store the solution, if one is found.
 	private:
 		std::vector<FTriangleLine> originalMachineLines;	// must be initialized by constructor.

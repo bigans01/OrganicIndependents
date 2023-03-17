@@ -257,6 +257,9 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		std::cout << "XYDim used for next line (currentLine) will be: X -> " << currentLineXYDim.x << " | Y -> " << currentLineXYDim.y << std::endl;
 		*/
 
+		currentLineXYDim = determineStartingXYDimForSlice(FTrianglePoint(currentPointA.point, FTrianglePointType::NOVAL),
+														  FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
+
 		ZSliceLine currentLine(currentLineXYDim,
 								currentPointA.point,
 								currentPointB.point,
@@ -276,7 +279,7 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		}
 
 		// remember, we must increment the value of currentLineXYDim by the move vals.
-		currentLineXYDim += currentLine.fetchZLineMoveVal();
+		//currentLineXYDim += currentLine.fetchZLineMoveVal();
 
 
 		// when we are done producing the line and extracting/handling its output,

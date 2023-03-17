@@ -259,6 +259,9 @@ void XDimLineScanner::produceXSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		std::cout << "YZDim used for next line (currentLine) will be: Y -> " << currentLineYZDim.y << " | Z -> " << currentLineYZDim.z << std::endl;
 		*/
 
+		currentLineYZDim = determineStartingYZDimForSlice(FTrianglePoint(currentPointA.point, FTrianglePointType::NOVAL),
+														FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
+
 		XSliceLine currentLine(currentLineYZDim,
 								currentPointA.point,
 								currentPointB.point,
@@ -277,7 +280,7 @@ void XDimLineScanner::produceXSliceLines(std::vector<FTrianglePoint>* in_endPoin
 		}
 
 		// remember, we must increment the value of currentLineYZDim by the move vals.
-		currentLineYZDim += currentLine.fetchXLineMoveVal();
+		//currentLineYZDim += currentLine.fetchXLineMoveVal();
 							
 
 		// when we are done producing the line and extracting/handling its output,
