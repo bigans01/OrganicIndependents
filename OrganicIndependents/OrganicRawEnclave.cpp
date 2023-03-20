@@ -713,7 +713,7 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 
 	//std::cout << ":::::::::: Calling spawn enclave triangle containers... " << std::endl;
 
-	// part 1: inflate the triangle containers
+	// PART 1: inflate the triangle containers
 	BorderDataMap borderDataMap; // for getting trace results in enclaves
 	BlockBorderLineList blockBorderLineList;
 
@@ -736,8 +736,11 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 		}
 	}
 
-	// part 2: execute the runs for the triangles; delete/move EnclaveTriangles that are invalid, so that they don't run.
+	// PART 2: execute the runs for each EnclaveTriangle, in each EnclaveTriangleContainer that is fonud in each supergroup; delete/move EnclaveTriangles that are invalid, so that they don't run.
 	// it should be noted, that if not erased, invalid EnclaveTriangles can still produce BBFan data that secondaries can read. It's just that all of them stop upon the first invalid detection.
+
+	// When the runs for the EnclaveTriangle instances are complete, each of those EnclaveTriangle instances have their respective enclaveTriangleTertiary 
+	// members populated (which are of the OrganicTriangleTertiary class). So, each EnclaveTriangleContainer's respective EnclaveTriangles have their OrganicWrappedBBFans populated.
 
 	bool trianglesRemoved = false;
 	auto etcSGMBegin1 = etcSGM.enclaveTriangleSupergroups.begin();
@@ -756,24 +759,17 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
 			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
 			{
-				//if (currentTrianglesBegin->first == 0)
-				//{
+				// Call executeRun, to populate the corresponding OrganicTriangleTertiary member in the same
+				// EnclaveTriangle instance.
 				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey, true);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
 				{
-					//std::cout << "(OrganicRawEnclave): EnclaveTriangle detected as invalid, in call to spawnEnclaveTriangleContainers. Points were:" << std::endl;
-					//currentTrianglesBegin->second.printPoints();
-					//std::cout << "(Notice): size of etcSGM.enclaveTriangleSupergroups is: " << etcSGMSize << std::endl;
 					trianglesRemoved = true;
 					removalSet.insert(currentTrianglesBegin->first);	// insert the int into the removal set
 					removalMap[currentTriangleContainerBegin->first] = currentTrianglesBegin->first;
-					//int removalVal = 3;
-					//std::cin >> removalVal;
-					//break;
 				}
-				//}
 			}
 		}
 
@@ -789,19 +785,30 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 		}
 	}
 
+	// PART 3: At this point, each EnclaveTriangle in each EnclaveTriangleContainer should have its OrganicWrappedBBFans ready, which
+	// are stored in the enclaveTriangleTertiary member of EnclaveTriangle. The enclaveTriangleTertiary member is used in the call
+	// to loadDataFromEnclaveTriangleContainer, to produce an OrganicTriangleSecondary.
+	//
+	// Remember, an OrganicTriangleSecondary contains 1 or more OrganicTriangleTertiaries. An OrganicTriangleTertiary simply contains
+	// all the produced OrganicWrappedBBFans produced by an EnclaveTriangle, after it has called executeRun().
 
 	auto etcSGMBegin2 = etcSGM.enclaveTriangleSupergroups.begin();
 	auto etcSGMEnd2 = etcSGM.enclaveTriangleSupergroups.end();
 	for (etcSGMBegin2; etcSGMBegin2 != etcSGMEnd2; etcSGMBegin2++)
 	{
-
+		// Remember, 1 EnclaveTriangleContainer (a group of EnclaveTriangles), is equal to 1 OrganicTriangleSecondary;
+		// Each OrganicTriangleTertiary in the OrganicTriangleSecondary, must come from each EnclaveTriangle in the EnclaveTriangleContainer.
 		auto currentTriangleContainerBegin = etcSGMBegin2->second.containerMap.begin();
 		auto currentTriangleContainerEnd = etcSGMBegin2->second.containerMap.end();
 		for (; currentTriangleContainerBegin != currentTriangleContainerEnd; currentTriangleContainerBegin++)
 		{
-
+			// Below function call: for each EnclaveTriangleContainer, pass it to loadDataFromEnclaveTriangleContainer,
+			// to extract the OrganicTriangleTertiary from each EnclaveTriangle
 			OrganicTriangleSecondary container;
 			container.loadDataFromEnclaveTriangleContainer(&currentTriangleContainerBegin->second);
+
+			// Finally, insert the finished product into the organicTriangleSecondarySGM, 
+			// so that blocks may be created when needed.
 			insertOrganicTriangleSecondary(etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
 		}
 

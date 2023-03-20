@@ -102,6 +102,12 @@ class FTriangleContainer
 			FTriangleType in_typeForBoundingBasis,
 			EnclaveKeyDef::EnclaveKey in_boundingKey,
 			TriangleMaterial in_outputMaterial);
+
+		bool normalsSwapped = false;	// set to true, if swapForNormalChange() is called even once.
+										// If this gets set to true, the FTriangleOutput instances we produce
+										// will have to be put into the fracturedTriangles in reverse order, to 
+										// comply with the appropriate triangle fan point order.
+										// See the FTriangleContainer::produceFTriangles function for more in-depth explanation
 };
 
 #endif

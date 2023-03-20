@@ -22,6 +22,42 @@
 #include "Operable3DEnclaveKeySet.h"
 #include "BlockCopyQuery.h"
 
+/*
+
+Description:
+
+This single class is meant to store and render EnclaveTriangles, and EnclaveBlocks. Numerous subsystems in an OrganicSystem
+will likely interface with this class. Many of the flags, interfacing, and setup must be done by other subsystems (except for the private 
+members of this class). Information about how this class operates (it's short hand being called ORE) will be updated sporadically, over time,
+either here in the header file or through a separate document (such as a Google doc). See "Notes" below for primers on important
+components of this class
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+NOTE #1	->	How EnclaveBlocks are produced 
+
+	There are several ways to produce EnclaveBlocks, such as in calling spawnRenderableBlocks(), but in all cases, 
+	some data must be already be populated befor this is possible:
+
+	1.	The skeletonSGM instance must be populated with relevant EnclaveTriangleSkeleton supergroups.
+
+	2.  The data from step 1 above is used to inflate EnclaveTriangleContainer instances, which are then used to populate the etcSGM member. This
+		correlates with "PART 1" of spawnEnclaveTriangleContainers.
+
+	3.	After the EnclaveTriangleContainers have been inflated in the etcSGM member, the executeRun() function is called on each EnclaveTriangle in each
+		EnclaveTriangleContainer. This populates the OrganicTriangleTertiary of each EnclaveTriangle, which contains a map of OrganicWrappedBBFans 
+		that were produced by the EnclaveTriangle. Invalid EnclaveTriangles are also purged here.
+		This correlates with "PART 2" of spawnEnclaveTriangleContainers.
+
+	4.	We cycle through etcSGM once again, except this time, we take create an OrganicTriangleSecondary from each EnclaveTriangleContainer in each supergroup
+		of the etcSGM. Each OrganicTriangleSecondary is then inserted into organicTriangleSecondarySGM. This is "PART 3" of spawnEnclaveTriangleContainers.
+
+	Steps 2 through 4 above are handled by the function spawnEnclaveTriangleContainers().
+	Once step 4 is complete, blocks can be spawned, via functions such as createBlocksFromOrganicTriangleSecondaries.
+
+
+
+*/
+
 class OrganicRawEnclave
 {
 public:
@@ -68,10 +104,40 @@ public:
 		return *this;
 	}
 
+	// ||||||||||| EnclaveTriangle and OrganicTriangleSecondary manipulation (only known usage is from EnclaveFractureResultsMap::insertFractureResults in OrganicCoreLib)
 	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
 	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
+
+
+
+
+	// ||||||||||| Block manipulation and fetching
 	void insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton);
-																													// OrganicTriangleSecondaries to be present.			
+	int getNumberOfBlockSkeletons();
+	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)
+	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
+	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);								// prints any existing "secondaries" (triangle fans) in an EnclaveBlock, if that block exists.
+	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);				// checks to see if a block exists as a skeleton, should only ever be used with the function
+																							// ECBMap::getBlockStateFromPopulatedORE.
+	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
+	std::map<int, EnclaveBlock>::iterator getBlockMapBeginIter();		// fetch a begin iterator for the blockMap.
+	std::map<int, EnclaveBlock>::iterator getBlockMapEndIter();			// fetch a end iterator for the blockMap.
+	std::map<int, EnclaveBlock>::iterator getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey);	// attempts to find a specific iterator in blockMap.
+
+	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);	// gets a specific block given a key (NOTE: make sure the block exists via other means, before calling this!)
+
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
+	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// Currently this function is not designed to be used with any ORE that has a currentLodState of FULL. It is not designed to be used on those (yet).
+																				// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists, can be generated, 
+																				// or is even UNEXPOSED; the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
+																				// bool value of false in BlockCopyQuery.wasFound means that a block was not found, while true indicates it was found. 
+																				// In other words, false would only be returned for a non-existent block.
+
+
+
+	
+	// ||||||||||| Miscellaneous print functions
 	void printMapData();
 	void printEnclaveTriangleContainers(bool in_pauseBetweenTrianglesFlag);
 	void printTriangleMetadata();
@@ -82,7 +148,6 @@ public:
 							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out. This case can occur in OrganicCoreLib functions,
 							// OrganicMassDriverElevator::proceedToNextFloorAndUpdateMassDrivers() and OrganicMassDriverElevator::runDriversForStartingFloor(),
 							// which call this function. This function should only be used by the OrganicMassDriverElevator or ECBPolyReformer classes. 
-	int getNumberOfBlockSkeletons();
 	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
 												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 
 												// and clears out the blockSkeletonMap; the skeleton map must be cleared, because it's possible that an OrganicMassDriverElevator can produce
@@ -91,7 +156,6 @@ public:
 												// to update the blockSkeletonMap with new solid blocks, when in an ORELodState::LOD_ENCLAVE_RMATTER.
 
 	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL.
-	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)VicViper304!
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones
@@ -101,18 +165,13 @@ public:
 																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
 	void removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove);
 	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
-	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);												// prints any existing "secondaries" (triangle fans) in an EnclaveBlock, if that block exists.
 	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
 																											// populates the skeletonSGM of this ore, by spawning skeletons from
 																											// the etcSGM. This function should NOT
 
 	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
-	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
-	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);							// checks to see if a block exists as a skeleton, should only ever be used with the function
-																											// ECBMap::getBlockStateFromPopulatedORE.
-	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
 
 	void setPendingRMatterSolids(std::mutex* in_mutexRef,													// sets "pending" solid blocks for each EnclaveKey in the passed-in set as skeletons. This must be called whenever 
 								Operable3DEnclaveKeySet in_skeletonBlockSet,								// the solid blocks of an ORE in a currentLodState of ORELodState::LOD_ENCLAVE_RMATTER needs to be updated, AND
@@ -125,7 +184,6 @@ public:
 
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
-	EnclaveBlock* getBlockRefViaBlockKey(EnclaveKeyDef::EnclaveKey in_key);
 	void instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// this function will remove a block from the skeleton map, and replace
 																											// the corresponding entry in blockMap with an entirely new, fresh, empty EnclaveBlock.
 	void instantiateBlockAndRemoveSkeletonIfNonExistent(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// works the same as instantiateBlockAndRemoveSkeleton, but only if the EnclaveBlock doesn't exist yet. 
@@ -137,7 +195,7 @@ public:
 
 	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
 																											// a different instance of OrganicRawEnclave, using the function appendSpawnedEnclaveTriangleSkeletonContainers; see usage in 
-																											// spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.
+																											// OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.
 	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
 																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
 	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
@@ -149,17 +207,6 @@ public:
 	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
 																											// EnclaveTriangleContainerSupergroup with a given ID.
 
-	std::map<int, EnclaveBlock>::iterator getBlockMapBeginIter();		// fetch a begin iterator for the blockMap.
-	std::map<int, EnclaveBlock>::iterator getBlockMapEndIter();			// fetch a end iterator for the blockMap.
-	std::map<int, EnclaveBlock>::iterator getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey);	// attempts to find a specific iterator in blockMap.
-
-	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchUnexposedBlockKeys();	// loads any associated keys of blocks that are classified as UNEXPOSED into a set, if any exist.
-	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> fetchExposedBlockKeys(); // loads any associated keys of blocks that are classified as EXPOSED into a set, if any exist.
-	BlockCopyQuery queryForBlockCopy(EnclaveKeyDef::EnclaveKey in_blockKey);	// Currently this function is not designed to be used with any ORE that has a currentLodState of FULL. It is not designed to be used on those (yet).
-																				// similiar in structure to fetchExposedBlockKeys(), this function attempts to acquire a copy of an EnclaveBlock, if that block exists, can be generated, 
-																				// or is even UNEXPOSED; the bool value of BlockCopyQuery will determine whether or not it was appropriately set; A 
-																				// bool value of false in BlockCopyQuery.wasFound means that a block was not found, while true indicates it was found. 
-																				// In other words, false would only be returned for a non-existent block.
 
 
 	// **************************** START DEBUG FUNCTIONS *********************************************
@@ -197,10 +244,8 @@ public:
 	//
 	// 2.) When "inflating" of EnclaveTriangles needs to be done, each element in the skeletonSGM is read to produce a corresponding
 	//     enclave triangle container here.
-
-	//std::map<int, EnclaveTriangleContainerSupergroup> etcSGM;	
 	EnclaveTriangleContainerSupergroupManager etcSGM;
-	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;
+	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;	// used to store produced OrganicTriangleSecondary instances, in their appropriate supergrpup.
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 	int eraseCounter = 0;

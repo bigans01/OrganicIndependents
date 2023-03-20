@@ -32,6 +32,8 @@ void OREFracturingMachine::runFracturing()
 
 	reverseTranslateOREStagerLines();
 
+	buildOREMachineTriangleContainers();
+
 	std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
 	fracturerPoints.printAllPoints();
 }

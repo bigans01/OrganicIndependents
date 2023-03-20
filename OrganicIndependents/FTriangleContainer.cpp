@@ -65,6 +65,15 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 		//std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
 		*/
 
+		// Form a new output, but swap the point order if necessary to auto-produce the 
+		// correct normal value. 
+		//
+		// Remember, the normalsSwapped value neeeds to be set to true 
+		// if we do swap points for the normal for any of the FTriangleOutput instances. This is because swapping the points
+		// at triangle point indices 1 and 2 also means that we are reversing the original
+		// intended triangle fan point order -- which was assumed to be set correctly prior to this call. When the points of the triangle fan
+		// are reversed in this way, we will have to insert the FTriangleOutput
+		// instances into the fracturedTriangles member in reverse order. (see the if/else block below)
 		FTriangleOutput newOutput = formOutput(newFrame, 
 											in_parentEmptyNormal, 
 											in_destinedTriangleType, 
@@ -73,6 +82,34 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 		fracturedTriangles[fracturedTriangles.size()] = newOutput;
 
 		leadingLineIter++;
+	}
+
+	// if we ever had to swap the normals at all, we will need to reverse the
+	// fracturedTriangles map (this is so that we appropriately follow a true triangle fan)
+	if (normalsSwapped)
+	{
+		// Below line is for DEBUG only
+		//std::cout << "!!! NOTICE: normals were swapped; doing change. " << std::endl;
+
+		// Copy the produced FTriangleOutput instances into reversedTriangles,
+		// but do it in reverse order.
+		std::map<int, FTriangleOutput> reversedTriangles;
+		auto currentOutputsBegin = fracturedTriangles.rbegin();
+		auto currentOutputsEnd = fracturedTriangles.rend();
+		for (; currentOutputsBegin != currentOutputsEnd; currentOutputsBegin++)
+		{
+			reversedTriangles[reversedTriangles.size()] = currentOutputsBegin->second;
+		}
+
+		/*
+		// Below block is for DEBUG only
+		for (auto& currentReversed : reversedTriangles)
+		{
+			currentReversed.second.printOutputTrianglePoints();
+		}
+		*/
+
+		fracturedTriangles = reversedTriangles;
 	}
 }
 
@@ -148,6 +185,7 @@ FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFr
 	{
 		//std::cout << "!! Had to do point swap for normal change." << std::endl;
 		in_triangleFrame.swapForNormalChange();
+		normalsSwapped = true;
 	}
 
 	
