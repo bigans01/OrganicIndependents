@@ -48,6 +48,8 @@ void BlueprintFracturingMachine::runFracturing()
 	buildBlueprintMachineTriangleContainers();	// Step 10: Produce the outputs (the type of the 
 
 	// Step 9: build the FTriangleOutputs, and remove the ones that are not correctly boundary oriented.
+
+	//std::cout << "(BlueprintFracturingMachine) !!! End of runFracturing(). " << std::endl;
 }
 
 void BlueprintFracturingMachine::determineUncalibratedOREKeys()

@@ -72,7 +72,7 @@ void FTriangleWorldTracer::WorldLineTracer::traverseLineOnce()
 	currentKey += nextKeyAdd;
 	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
 
-	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(currentIterationEndpoint,
+	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(currentIterationEndpoint,
 																			endPoint,
 																			currentKey,
 																			endKey,

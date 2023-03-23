@@ -37,6 +37,8 @@ EnclaveTriangle::EnclaveTriangle(FTriangleOutput in_fTriangleOutput)
 	enclaveTriangleMaterialID = in_fTriangleOutput.outputTriangleMaterial;
 	isEnclaveTrianglePolyPerfectlyClamped = in_fTriangleOutput.fractureRequiredClampValue;
 
+	enclaveTriangleBoundaryPolyIndicator.setBoundaryIndicator(in_fTriangleOutput.fractureRequiredOrientation);
+
 	emptyNormal = in_fTriangleOutput.fractureEmptyNormal;
 }
 

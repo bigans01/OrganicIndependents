@@ -11,6 +11,7 @@
 #include "PolyRunDirection.h"
 #include "SegmentResult.h"
 #include "FatFan.h"
+#include "FTriangleContainer.h"
 
 /*
 
@@ -28,6 +29,12 @@ class IndependentUtils;
 class OrganicWrappedBBFan
 {
 	public:
+		OrganicWrappedBBFan();
+		OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContainerRef,
+			TriangleMaterial in_materialID,
+			ECBPolyPoint in_emptyNormal,
+			BoundaryPolyIndicator in_boundaryPolyIndicator);
+
 		int keyID;
 		PrimarySegmentTracker blockSegmentTracker;
 		PrimarySegmentTracker reverseSegmentTracker;
@@ -39,6 +46,7 @@ class OrganicWrappedBBFan
 											TriangleMaterial in_materialID,
 											 ECBPolyPoint in_emptyNormal,
 											 BoundaryPolyIndicator in_boundaryPolyIndicator);
+
 		int checkIfRunIsValidForTwoSegments(int in_lineID, BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap);
 		bool checkForAndEraseAnomalousTriangles();	// Check for anomalous triangle conditions, such as first/last points matching, or duplicate points in the same TemporalTriangle.
 													// There is also a possibility, for some unknown reason, that the poly member of this class contains no tertiaries. 

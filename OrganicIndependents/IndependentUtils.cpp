@@ -7206,6 +7206,17 @@ EnclaveBlockVertex IndependentUtils::convertPolyPointToBlockVertex(ECBPolyPoint 
 	return returnVertex;
 }
 
+EnclaveBlockVertex IndependentUtils::convertFTriangleDoublePointToBlockVertex(DoublePoint in_fTriangleDoublePoint)
+{
+	// There should no be need for round for points from an FTriangle, as that is handled by the FTriangle itself.
+	// This function also assumes that the values being passed in are from a FTriangleOutput that has a destingedGridType of FTriangleType::BLOCK.
+	EnclaveBlockVertex returnVertex;
+	returnVertex.x = unsigned char(in_fTriangleDoublePoint.x * 100.0f);
+	returnVertex.y = unsigned char(in_fTriangleDoublePoint.y * 100.0f);
+	returnVertex.z = unsigned char(in_fTriangleDoublePoint.z * 100.0f);
+	return returnVertex;
+}
+
 ECBPolyPoint IndependentUtils::findNormalizedPoint(ECBPolyPoint in_pointA)
 {
 	ECBPolyPoint returnPoint;

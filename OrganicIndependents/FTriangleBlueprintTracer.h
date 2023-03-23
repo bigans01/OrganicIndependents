@@ -41,7 +41,7 @@ class FTriangleBlueprintTracer : public FTriangleTracerBase
 				lineBoundingBox = bbToUse;
 
 				// As we are tracing a triangle that exists in BLUEPRINT space into ORE space, we need to ensure that the bounds of each cell are that of an ORE (so 4.0f)
-				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(beginPoint,
+				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(beginPoint,
 					endPoint,
 					beginKey,
 					endKey,

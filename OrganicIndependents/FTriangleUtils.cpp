@@ -253,10 +253,17 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 		distanceValues.y = time_to_complete_y_traversal;
 		distanceValues.z = time_to_complete_z_traversal;
 
-		//std::cout << "Time to complete traversals: " << std::endl;
-		//std::cout << "x: " << time_to_complete_x_traversal << std::endl;
-		//std::cout << "y: " << time_to_complete_y_traversal << std::endl;
-		//std::cout << "z: " << time_to_complete_z_traversal << std::endl;
+		/*
+		std::cout << "!!!! Optional point values here are: " << std::endl;
+		std::cout << "calculatedPoint_for_x: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+		std::cout << "calculatedPoint_for_y: " << calculatedPoint_for_y.x << ", " << calculatedPoint_for_y.y << ", " << calculatedPoint_for_y.z << std::endl;
+		std::cout << "calculatedPoint_for_z: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
+
+		std::cout << "Time to complete traversals: " << std::endl;
+		std::cout << "x: " << time_to_complete_x_traversal << std::endl;
+		std::cout << "y: " << time_to_complete_y_traversal << std::endl;
+		std::cout << "z: " << time_to_complete_z_traversal << std::endl;
+		*/
 		//std::cout << std::fixed << std::setprecision(7);
 		//std::cout << "Raw values: " << std::endl;
 		//std::cout << "Raw x: " << time_to_complete_x_traversal_RAW << std::endl;
@@ -291,6 +298,9 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 		
 
 		//std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+		//std::cout << "!!!!! Intersect incrementing key: ";
+		//intersectMetaReturn.incrementingKey.printKey();
+		//std::cout << std::endl;
 		//std::cout << "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| End of movemeta finding. " << std::endl;
 	}
 
@@ -303,6 +313,616 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 
 	return intersectMetaReturn;
 
+}
+
+FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
+	ECBPolyPoint in_pointB,
+	EnclaveKeyDef::EnclaveKey in_pointAKey,
+	EnclaveKeyDef::EnclaveKey in_pointBKey,
+	TracingLineBoundingBox in_boundingBox,
+	FTraceType in_fTraceType)
+{
+	//std::cout << "!!!! START: FTriangleUtils::findIntersectionDataV2. " << std::endl;
+	FIntersectMeta intersectMetaReturn;
+
+	//std::cout << "findIntersectionDataV2 -> beginPoint is:";
+	//in_pointA.printPointCoords();
+	//std::cout << std::endl;
+
+	// determine the distance between cells, based on the FTraceType.
+	float cellLength = 0.0f;
+	switch (in_fTraceType)
+	{
+		case FTraceType::BLUEPRINT_TRACE: { cellLength = 32.0f; break; }
+		case FTraceType::ORE_TRACE: { cellLength = 4.0f; break; }
+		case FTraceType::BLOCK_TRACE: { cellLength = 1.0f; break; }
+	}
+
+	if (!(in_pointAKey == in_pointBKey))		// do this if the keys are not equal
+	{
+		//std::cout << "!!! CONDITION 1 entry" << std::endl;
+		//std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+		//std::cout << ">>>>>>>>> Keys: " << std::endl;
+		//in_pointAKey.printKey();
+		//in_pointBKey.printKey();
+
+		/*
+		std::cout << "||||||||||||||| >>>>>>>>>>> Points: " << std::endl;
+		std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+		std::cout << "||||||||||||||| >>>>>>>>> Keys: " << std::endl;
+		in_pointAKey.printKey(); std::cout << std::endl;
+		in_pointBKey.printKey(); std::cout << std::endl;
+		*/
+
+		ECBPolyPoint resultantSlope;
+		resultantSlope.x = in_pointB.x - in_pointA.x;
+		resultantSlope.y = in_pointB.y - in_pointA.y;
+		resultantSlope.z = in_pointB.z - in_pointA.z;
+		//std::cout << "Resultant slope values are: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+		// flags for determining what the direction of x/y/z is; if they remain 0, there is no slope (perfectly flat for the line on that axis)
+		int x_dir = 0;
+		int y_dir = 0;
+		int z_dir = 0;
+
+		float x_interceptCoord = 0.0f;
+		float y_interceptCoord = 0.0f;
+		float z_interceptCoord = 0.0f;
+
+		// calculate total line length, which is the square root of the sum of x/y/z squared (pythagorean theorem)
+		float powSlopeX = pow(resultantSlope.x, 2.0f);
+		float powSlopeY = pow(resultantSlope.y, 2.0f);
+		float powSlopeZ = pow(resultantSlope.z, 2.0f);
+		float fullLineLength = sqrt(powSlopeX + powSlopeY + powSlopeZ);
+
+		// create a temporary struct to store tracked data
+		struct travelDistances
+		{
+			float timeToComplete = 0.0f;
+			float length = 0.0f;
+			int direction = 0;
+			ECBPolyPoint point;
+		};
+		travelDistances travelResults[3];	// first index value (0) = x result
+											// second index value (1) = y result
+											// third index value (2) = z result
+
+		// ******for this logic, check lines starting at 1891 in OrganicSystem.cpp
+		// check slope direction, and calculate distance for x ********************************************************************************************************************************************************************
+		float time_to_complete_x_traversal = -1.0f; // initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		float time_to_complete_y_traversal = -1.0f;
+		float time_to_complete_z_traversal = -1.0f;
+
+		float time_to_complete_x_traversal_RAW = 0.0f;
+		float time_to_complete_y_traversal_RAW = 0.0f;
+		float time_to_complete_z_traversal_RAW = 0.0f;
+
+		ECBPolyPoint calculatedPoint_for_x;		// initialize these values for use in new function call, OrganicUtils::findBlueprintBorderMoveMeta
+		ECBPolyPoint calculatedPoint_for_y;
+		ECBPolyPoint calculatedPoint_for_z;
+
+
+		if (resultantSlope.x > 0)
+		{
+			//std::cout << "POS X entry " << std::endl;
+			x_dir = 1;			// going towards positive x 
+			x_interceptCoord = float((in_pointAKey.x * cellLength) + cellLength);								// x_interceptCoord is the precise location of x at the EAST face border
+			float origin_to_border_x_diff = (x_interceptCoord - in_pointA.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
+			//std::cout << "X intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "Origin to border x diff: " << origin_to_border_x_diff << std::endl;
+			time_to_complete_x_traversal = origin_to_border_x_diff / resultantSlope.x;	// get the distance that the ray has to travel to get to this value of x
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+			//std::cout << "X-traversal time: " << time_to_complete_x_traversal << std::endl;
+
+		}
+		else if (resultantSlope.x < 0)
+		{
+			x_dir = -1;			// going towards negative x
+			x_interceptCoord = float(in_pointAKey.x * cellLength);
+			//std::cout << "x-intercept coord: " << x_interceptCoord << std::endl;
+			//std::cout << "point A x: " << in_pointA.x << std::endl;
+			float origin_to_border_x_diff = abs(x_interceptCoord - in_pointA.x);					// make sure to get absolute value for these two lines (WEST border)
+			time_to_complete_x_traversal = abs(origin_to_border_x_diff / resultantSlope.x);	// ""
+			calculatedPoint_for_x.x = x_interceptCoord;
+			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);	// "" 
+			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);	// ""
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[0].timeToComplete = time_to_complete_x_traversal;			// store the distance to get to this point (0 = X direction/slope)
+			travelResults[0].point = calculatedPoint_for_x;								// store the actual point for later
+			travelResults[0].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[0].direction = x_dir;
+		}
+		//std::cout << "X-traversal value: " << travelResults[0].timeToComplete << std::endl;
+
+		//... for y												********************************************************************************************************************************************************************
+		if (resultantSlope.y > 0)
+		{
+			//std::cout << "POS Y entry " << std::endl;
+			y_dir = 1;		// going towards positive y
+			y_interceptCoord = float((in_pointAKey.y * cellLength) + cellLength);								// y_interceptCoord is the precise location of y at the TOP face border
+			float origin_to_border_y_diff = y_interceptCoord - in_pointA.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
+			time_to_complete_y_traversal = origin_to_border_y_diff / resultantSlope.y;	// get the distance this ray has to travel to get to this value of y
+			//std::cout << "correct value of origin_to_border: " << origin_to_border_y_diff << std::endl;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+
+		}
+		else if (resultantSlope.y < 0)
+		{
+			//std::cout << "NEG Y entry " << std::endl;
+			y_dir = -1;
+
+			//std::cout << "BP key A: " << in_pointAKey.x << ", " << in_pointAKey.y << ", " << in_pointAKey.z << std::endl;
+			//std::cout << "BP key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
+
+			y_interceptCoord = float(in_pointAKey.y * cellLength);
+			float origin_to_border_y_diff = abs(y_interceptCoord - in_pointA.y);
+			time_to_complete_y_traversal = abs(origin_to_border_y_diff / resultantSlope.y);
+			//time_to_complete_y_traversal = roundToThousandths(abs(origin_to_border_y_diff / resultantSlope.y));
+			//time_to_complete_y_traversal_RAW = abs(origin_to_border_y_diff / resultantSlope.y);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.y = y_interceptCoord;
+			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[1].timeToComplete = time_to_complete_y_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[1].point = calculatedPoint_for_y;								// store the actual point for later
+			travelResults[1].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[1].direction = y_dir;
+		}
+		//std::cout << "Y-traversal value: " << travelResults[1].timeToComplete << std::endl;
+
+		//... for z
+		if (resultantSlope.z > 0)
+		{
+			//std::cout << ">> POS Z entry " << std::endl;
+			z_dir = 1;
+			z_interceptCoord = float((in_pointAKey.z * cellLength) + cellLength);
+			float origin_to_border_z_diff = z_interceptCoord - in_pointA.z;
+			time_to_complete_z_traversal = origin_to_border_z_diff / resultantSlope.z;
+			//time_to_complete_z_traversal = roundToThousandths(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal_RAW = origin_to_border_z_diff / resultantSlope.z;
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		else if (resultantSlope.z < 0)
+		{
+			//std::cout << "NEG Z entry " << std::endl;
+			z_dir = -1;
+			z_interceptCoord = float(in_pointAKey.z * cellLength);
+			float origin_to_border_z_diff = abs(z_interceptCoord - in_pointA.z);
+			time_to_complete_z_traversal = abs(origin_to_border_z_diff / resultantSlope.z);
+			//time_to_complete_z_traversal = roundToThousandths(abs(origin_to_border_z_diff / resultantSlope.z));
+			//time_to_complete_z_traversal_RAW = abs(origin_to_border_z_diff / resultantSlope.z);
+			//ECBPolyPoint calculatedPoint;
+			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.z = z_interceptCoord;
+
+			ECBPolyPoint distanceToCalculatedPoint;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+			travelResults[2].timeToComplete = time_to_complete_z_traversal;			// store the distance to get to this point (1 = Y direction/slope)
+			travelResults[2].point = calculatedPoint_for_z;								// store the actual point for later
+			travelResults[2].length = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+			travelResults[2].direction = z_dir;
+		}
+		//std::cout << "Z-traversal value: " << travelResults[2].timeToComplete << std::endl;
+		//std::cout << "||||| distance values set " << std::endl;
+
+		// find true key shift value (in case the point is exactly on a border line or border corner of this ECB's x/y/z limits)
+		ECBPolyPointTri triPointParam;
+		triPointParam.triPoints[0] = calculatedPoint_for_x;
+		triPointParam.triPoints[1] = calculatedPoint_for_y;
+		triPointParam.triPoints[2] = calculatedPoint_for_z;
+		ECBPolyPoint distanceValues;
+		distanceValues.x = time_to_complete_x_traversal;
+		distanceValues.y = time_to_complete_y_traversal;
+		distanceValues.z = time_to_complete_z_traversal;
+
+		/*
+		std::cout << "~~~~~~~~~~~ !!!! Optional point values here are: " << std::endl;
+		std::cout << "calculatedPoint_for_x: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+		std::cout << "calculatedPoint_for_y: " << calculatedPoint_for_y.x << ", " << calculatedPoint_for_y.y << ", " << calculatedPoint_for_y.z << std::endl;
+		std::cout << "calculatedPoint_for_z: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
+
+		std::cout << "Time to complete traversals: " << std::endl;
+		std::cout << "x: " << time_to_complete_x_traversal << std::endl;
+		std::cout << "y: " << time_to_complete_y_traversal << std::endl;
+		std::cout << "z: " << time_to_complete_z_traversal << std::endl;
+		*/
+		
+
+		//std::cout << std::fixed << std::setprecision(7);
+		//std::cout << "Raw values: " << std::endl;
+		//std::cout << "Raw x: " << time_to_complete_x_traversal_RAW << std::endl;
+		//std::cout << "Raw y: " << time_to_complete_y_traversal_RAW << std::endl;
+		//std::cout << "Raw z: " << time_to_complete_z_traversal_RAW << std::endl;
+		//std::cout << "Comparing and calibrate..." << std::endl;
+		//std::cout << "!!### Resultant slope used will be: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
+
+
+		// Do the following if the FTracetype is BLUEPRINT_TRACE
+
+		ECBCalibratedPointPair newTri = compareAndCalibrateDistances(&triPointParam, distanceValues, resultantSlope, in_pointAKey);
+		//std::cout << "Comparing and calibrate complete..." << std::endl;
+		ECBPolyPoint slopeDirection;
+		slopeDirection.x = float(x_dir);
+		slopeDirection.y = float(y_dir);
+		slopeDirection.z = float(z_dir);
+
+		triPointParam = newTri.calibratedPointTri;
+		distanceValues = newTri.calibratedDistance;
+
+		//std::cout << "Calling BP movemeta..." << std::endl;
+
+		// ||||||||||||||||||||||||||| NEW CODE GOES HERE
+		
+		// Step 1: Round all 3 points, then convert them into FTrianglePoints, put them into a UniquePointContainer (for code reuse).
+		auto roundedX = roundPointToHundredth(calculatedPoint_for_x);
+		auto roundedY = roundPointToHundredth(calculatedPoint_for_y);
+		auto roundedZ = roundPointToHundredth(calculatedPoint_for_z);
+		FTrianglePoint convertedX(roundedX, FTrianglePointType::NOVAL);
+		FTrianglePoint convertedY(roundedY, FTrianglePointType::NOVAL);
+		FTrianglePoint convertedZ(roundedZ, FTrianglePointType::NOVAL);
+		UniquePointContainer uniqueIntercepts;
+		
+		if (time_to_complete_x_traversal > -1.0f)
+		{
+			uniqueIntercepts.insertFTrianglePoint(convertedX);
+		}
+
+		if (time_to_complete_y_traversal > -1.0f)
+		{
+			uniqueIntercepts.insertFTrianglePoint(convertedY);
+		}
+
+		if (time_to_complete_z_traversal > -1.0f)
+		{
+			uniqueIntercepts.insertFTrianglePoint(convertedZ);
+		}
+
+		// Step 2: Put all of the unique points into a map of DistancePoint structs.
+		struct PointDistance
+		{
+			PointDistance() {};
+			PointDistance(ECBPolyPoint in_destinationPoint, ECBPolyPoint in_originPoint)
+			{
+				ECBPolyPoint distanceToCalculatedPoint;
+				distanceToCalculatedPoint.x = in_destinationPoint.x - in_originPoint.x;
+				distanceToCalculatedPoint.y = in_destinationPoint.y - in_originPoint.y;
+				distanceToCalculatedPoint.z = in_destinationPoint.z - in_originPoint.z;
+				float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
+				float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
+				float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
+
+				distance = sqrt(squared_distance_to_x + squared_distance_to_y + squared_distance_to_z);
+				destinationPoint = in_destinationPoint;
+			};
+
+			void printStats()
+			{
+				std::cout << "Distance: [" << distance << "] | Point: ";
+				destinationPoint.printPointCoords();
+				std::cout << std::endl;
+			};
+
+			ECBPolyPoint destinationPoint;
+			float distance = 0.0f;
+		};
+
+		std::map<int, PointDistance> pointDistanceMap;
+		for (auto& currentUniquePoint : uniqueIntercepts.points)
+		{
+			ECBPolyPoint currentConvertedUnique = ECBPolyPoint(currentUniquePoint.point);
+
+			//std::cout << "!!! Found point to insert: ";
+			//currentConvertedUnique.printPointCoords();
+			//std::cout << std::endl;
+
+			PointDistance currentPointDistance(currentConvertedUnique, in_pointA);
+			pointDistanceMap[pointDistanceMap.size()] = currentPointDistance;
+
+			
+		}
+		int savedSize = pointDistanceMap.size();
+		//std::cout << "!!!! CURRENT number of candidates is now: " << pointDistanceMap.size(); std::cout << std::endl;
+
+		// Step 3: Select the point with the shortest distance.
+		float closestDistance = 5000.0f;
+		int closestIndex = 0;
+		for (auto& distanceMap : pointDistanceMap)
+		{
+			if 
+			(
+				(distanceMap.second.distance < closestDistance)
+				&&
+				(distanceMap.second.distance != 0.0f)	// the distance can't be 0, as that means it's invalid.
+			)
+			{
+				closestDistance = distanceMap.second.distance;
+				//std::cout << "!!! Inserting. Distance was: " << closestDistance; std::cout << "Point was: ";
+				//distanceMap.second.destinationPoint.printPointCoords(); std::cout << std::endl;
+
+				closestIndex = distanceMap.first;
+			}
+		}
+		//std::cout << "#### value of closest index: " << closestIndex << std::endl;
+		//std::cout << "#### value of point at said index: "; pointDistanceMap[closestIndex].printStats(); std::cout << std::endl;
+
+		// Step 4: do another pass where we bring the "fringes" of the point to within the bounds.
+		PointDistance selectedPointDistance = pointDistanceMap[closestIndex];
+		//std::cout << "#### Value of selectedPointDistance, immediately after: "; selectedPointDistance.printStats(); std::cout << std::endl;
+
+		FTraceBorderValues borderLimits = getCurrentTracingLimits(in_pointAKey, in_fTraceType);
+
+		/*
+		std::cout << "Border limits are: ";
+		std::cout << "negX: " << borderLimits.negXlimit; std::cout << std::endl;
+		std::cout << "posX: " << borderLimits.posXlimit;std::cout << std::endl;
+		std::cout << "negY: " << borderLimits.negYlimit;std::cout << std::endl;
+		std::cout << "posY: " << borderLimits.posYlimit;std::cout << std::endl;
+		std::cout << "negZ: " << borderLimits.negZlimit;std::cout << std::endl;
+		std::cout << "posZ: " << borderLimits.posZlimit;std::cout << std::endl;
+		*/
+
+		// calibrate X
+		if (selectedPointDistance.destinationPoint.x < borderLimits.negXlimit)	// check if x is less than the negative x limit
+		{
+			selectedPointDistance.destinationPoint.x = borderLimits.negXlimit;
+		}
+		else if (selectedPointDistance.destinationPoint.x > borderLimits.posXlimit)	// check if x is greater than the positive x limit
+		{
+			selectedPointDistance.destinationPoint.x = borderLimits.posXlimit;
+		}
+
+		// calibrate Y
+		if (selectedPointDistance.destinationPoint.y < borderLimits.negYlimit)
+		{
+			selectedPointDistance.destinationPoint.y = borderLimits.negYlimit;
+		}
+		else if (selectedPointDistance.destinationPoint.y > borderLimits.posYlimit)
+		{
+			selectedPointDistance.destinationPoint.y = borderLimits.posYlimit;
+		}
+
+		// calibrate Z
+		if (selectedPointDistance.destinationPoint.z < borderLimits.negZlimit)
+		{
+			selectedPointDistance.destinationPoint.z = borderLimits.negZlimit;
+		}
+		else if (selectedPointDistance.destinationPoint.z > borderLimits.posZlimit)
+		{
+			selectedPointDistance.destinationPoint.z = borderLimits.posZlimit;
+		}
+
+		// Step 5: Determine the masking key
+		EnclaveKeyDef::EnclaveKey maskingKey;
+
+		//std::cout << "! Selected destination point is: "; selectedPointDistance.destinationPoint.printPointCoords(); std::cout << std::endl;
+
+
+		// mask for X
+		if (selectedPointDistance.destinationPoint.x == borderLimits.posXlimit)
+		{
+			maskingKey.x = 1;
+		}
+		else if (selectedPointDistance.destinationPoint.x == borderLimits.negXlimit)
+		{
+			maskingKey.x = -1;
+		}
+
+		// mask for Y
+		if (selectedPointDistance.destinationPoint.y == borderLimits.posYlimit)
+		{
+			maskingKey.y = 1;
+		}
+		else if (selectedPointDistance.destinationPoint.y == borderLimits.negYlimit)
+		{
+			maskingKey.y = -1;
+		}
+
+		// mask for Z
+		if (selectedPointDistance.destinationPoint.z == borderLimits.posZlimit)
+		{
+			maskingKey.z = 1;
+		}
+		else if (selectedPointDistance.destinationPoint.z == borderLimits.negZlimit)
+		{
+			maskingKey.z = -1;
+		}
+
+		// Step 6: Determine the normalized slope between the destinationPoint, and the originPoint.
+		ECBPolyPoint normalizedDir = findNormalizedSlope(in_pointA, selectedPointDistance.destinationPoint);
+
+		// Step 7: Compare the masking key against the normalized slope, to determine the final movement key.
+		EnclaveKeyDef::EnclaveKey finalMovementkey;
+
+		if
+		(
+			(maskingKey.x != 0.0f)
+			&&
+			(normalizedDir.x != 0.0f)
+		)
+		{
+			finalMovementkey.x = maskingKey.x;
+		}
+
+		if
+		(
+			(maskingKey.y != 0.0f)
+			&&
+			(normalizedDir.y != 0.0f)
+		)
+		{
+			finalMovementkey.y = maskingKey.y;
+		}
+
+		if
+		(
+			(maskingKey.z != 0.0f)
+			&&
+			(normalizedDir.z != 0.0f)
+		)
+		{
+			finalMovementkey.z = maskingKey.z;
+		}
+
+		intersectMetaReturn.originPoint = in_pointA;
+		intersectMetaReturn.intersectedPoint = selectedPointDistance.destinationPoint;
+		intersectMetaReturn.incrementingKey = finalMovementkey;
+
+		// Once the newKey value has been determined, it must go through the TracingLineBoundingBox instance to check
+		// for any corrections.
+		intersectMetaReturn.incrementingKey = in_boundingBox.applyBoundingCorrectionToKeys(in_pointAKey, finalMovementkey);
+
+		/*
+		intersectMetaReturn = calculateIntersection(in_pointAKey,
+			in_pointA,
+			distanceValues,
+			slopeDirection,
+			triPointParam,
+			in_boundingBox,
+			in_fTraceType);
+		*/
+
+		/*
+		std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+		std::cout << "!!!!! Intersect incrementing key: ";
+		intersectMetaReturn.incrementingKey.printKey(); 
+		std::cout << std::endl;
+		std::cout << "!!! DEBUG: enter number to continue. " << std::endl;
+		*/
+
+		//int contVal = 3;
+		//std::cin >> contVal;
+		//intersectMetaReturn.incrementingKey.printKey();
+		//std::cout << std::endl;
+		//std::cout << "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| End of movemeta finding. " << std::endl;
+
+		if (intersectMetaReturn.incrementingKey.equals(0, 0, 0))
+		{
+			std::cout << "!!! WARNING FTriangleUtils::findIntersectionDataV2 didn't find a solution! " << std::endl;
+
+			std::cout << "!!! Unique points were: " << std::endl;
+			for (auto& currentUniquePoint : uniqueIntercepts.points)
+			{
+				currentUniquePoint.printPointData(); std::cout << std::endl;
+			}
+
+			std::cout << "!!!!! Original intercept points were: " << std::endl;
+			std::cout << "calculatedPoint_for_x: " << calculatedPoint_for_x.x << ", " << calculatedPoint_for_x.y << ", " << calculatedPoint_for_x.z << std::endl;
+			std::cout << "calculatedPoint_for_y: " << calculatedPoint_for_y.x << ", " << calculatedPoint_for_y.y << ", " << calculatedPoint_for_y.z << std::endl;
+			std::cout << "calculatedPoint_for_z: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
+
+			std::cout << ">>>>>>>>>>> Points: " << std::endl;
+			std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+			std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+
+			std::cout << ">>>>>>>>> Keys: " << std::endl;
+			in_pointAKey.printKey(); std::cout << std::endl;
+			in_pointBKey.printKey(); std::cout << std::endl;
+
+			std::cout << "findIntersectionDataV2 -> beginPoint is:";
+			in_pointA.printPointCoords();
+			std::cout << std::endl;
+
+
+			std::cout << "selected candidate: " << closestIndex << std::endl;
+			std::cout << "number of candidates: " << savedSize << std::endl;
+			std::cout << "maskingkey: "; maskingKey.printKey(); std::cout << std::endl;
+			std::cout << "normalizedDir: "; normalizedDir.printPointCoords(); std::cout << std::endl;
+			for (auto& currentCandidate : pointDistanceMap)
+			{
+				std::cout << "[" << currentCandidate.first << "] ";
+				currentCandidate.second.printStats();
+			}
+		
+			std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+
+			int badKey = 3;
+			std::cin >> badKey;
+		}
+
+		/*
+		std::cout << "!!!! ~~~~~~~SUCCESS: " << std::endl;
+		std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+		std::cout << "!!!!! Intersect incrementing key: ";
+		intersectMetaReturn.incrementingKey.printKey();
+		std::cout << std::endl;
+		*/
+	}
+
+	else if (in_pointAKey == in_pointBKey)
+	{
+		intersectMetaReturn.originPoint = in_pointA;
+		intersectMetaReturn.intersectedPoint = in_pointB;
+		//std::cout << "finish entry" << std::endl;
+	}
+
+	return intersectMetaReturn;
 }
 
 EnclaveKeyDef::EnclaveKey FTriangleUtils::getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB)
@@ -360,6 +980,86 @@ EnclaveKeyDef::EnclaveKey FTriangleUtils::getBorderShiftResult(ECBBorder in_Bord
 	//std::cout << "Shift key y is: " << shiftKey.y << std::endl;
 	//std::cout << "Shift key z is: " << shiftKey.z << std::endl;
 
+	return shiftKey;
+}
+
+EnclaveKeyDef::EnclaveKey FTriangleUtils::getBorderShiftResultV2(ECBBorder in_Border,
+	ECBPolyPoint in_originPoint,
+	ECBPolyPoint in_selectedPoint,
+	ECBPolyPoint in_cornerPointA,
+	ECBPolyPoint in_cornerPointB)
+{
+	EnclaveKeyDef::EnclaveKey shiftKey;
+	if (in_selectedPoint == in_cornerPointA)
+	{
+		ECBPolyPoint normalizedSlope = findNormalizedSlope(in_originPoint, in_selectedPoint);
+		EnclaveKeyDef::EnclaveKey actualMovementKey(int(normalizedSlope.x), int(normalizedSlope.y), int(normalizedSlope.z));
+		shiftKey = actualMovementKey;
+	}
+	else if (in_selectedPoint == in_cornerPointB)
+	{
+		ECBPolyPoint normalizedSlope = findNormalizedSlope(in_originPoint, in_selectedPoint);
+		EnclaveKeyDef::EnclaveKey actualMovementKey(int(normalizedSlope.x), int(normalizedSlope.y), int(normalizedSlope.z));
+		shiftKey = actualMovementKey;
+	}
+
+	else
+	{
+
+
+
+		//std::cout << "BorderShift point A: " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << std::endl;
+		//std::cout << "BorderShift point B: " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << std::endl;
+
+		//std::cout << "Border shift data: " << in_Border.move_x << ", " << in_Border.move_y << ", " << in_Border.move_z << std::endl;
+
+		float x_diff = in_selectedPoint.x - in_originPoint.x;
+		float y_diff = in_selectedPoint.y - in_originPoint.y;
+		float z_diff = in_selectedPoint.z - in_originPoint.z;
+
+		// check for if x_diff, y_diff, z_diff is zero (would indicate zero slope)
+		float normalized_x_diff = 0.0f;
+		if (x_diff != 0.0f)
+		{
+			normalized_x_diff = float(x_diff / abs(x_diff));
+		}
+
+		float normalized_y_diff = 0.0f;
+		if (y_diff != 0.0f)
+		{
+			normalized_y_diff = float(y_diff / abs(y_diff));
+		}
+
+		float normalized_z_diff = 0.0f;
+		if (z_diff != 0.0f)
+		{
+			normalized_z_diff = float(z_diff / abs(z_diff));
+		}
+		//std::cout << "normal x: " << normalized_x_diff << std::endl;
+		//std::cout << "normal y: " << normalized_y_diff << std::endl;
+		//std::cout << "normal z: " << normalized_z_diff << std::endl;
+
+		//std::cout << in_Border.move_x << std::endl;
+		if (normalized_x_diff == in_Border.move_x)
+		{
+			shiftKey.x += int(in_Border.move_x);
+			//std::cout << "shiftKey: move_X" << std::endl;
+		}
+		if (normalized_y_diff == in_Border.move_y)
+		{
+			shiftKey.y += int(in_Border.move_y);
+			//std::cout << "shiftKey: move_Y" << std::endl;
+		}
+		if (normalized_z_diff == in_Border.move_z)
+		{
+			shiftKey.z += int(in_Border.move_z);
+			//std::cout << "shiftKey: move_Z" << std::endl;
+		}
+
+		//std::cout << "Shift key x is: " << shiftKey.x << std::endl;
+		//std::cout << "Shift key y is: " << shiftKey.y << std::endl;
+		//std::cout << "Shift key z is: " << shiftKey.z << std::endl;
+	}
 	return shiftKey;
 }
 
@@ -700,7 +1400,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.z >= pointABorderLineList.corner_LowerNW.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_LowerSW.cornerPoint.z)			// is z between the LowerNW and LowerSW corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_lowerWest, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Zaxis_lowerWest, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerNW.cornerPoint,
+													pointABorderLineList.corner_LowerSW.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at lower west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 
@@ -712,7 +1416,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.z >= pointABorderLineList.corner_UpperNW.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_UpperSW.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_upperWest, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Zaxis_upperWest, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_UpperNW.cornerPoint,
+													pointABorderLineList.corner_UpperSW.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at upper west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 
@@ -724,7 +1432,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.z >= pointABorderLineList.corner_UpperNE.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_UpperSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_upperEast, in_originPoint, pointToCheck);	// get the shifting key				
+					newKey = getBorderShiftResultV2(pointABorderLineList.Zaxis_upperEast, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_UpperNE.cornerPoint,
+													pointABorderLineList.corner_UpperSE.cornerPoint);	// get the shifting key				
 					//std::cout << "Point is at upper east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 				// Lower East line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -735,7 +1447,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.z >= pointABorderLineList.corner_LowerNE.cornerPoint.z	&& pointToCheck.z <= pointABorderLineList.corner_LowerSE.cornerPoint.z)			// is z between the UpperNW and UpperSW corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Zaxis_lowerEast, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Zaxis_lowerEast, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerNE.cornerPoint,
+													pointABorderLineList.corner_LowerSE.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at lower east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 
@@ -794,7 +1510,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.y >= pointABorderLineList.corner_LowerNE.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperNE.cornerPoint.y)
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_northEast, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Yaxis_northEast, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerNE.cornerPoint,
+													pointABorderLineList.corner_UpperNE.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at north east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 
@@ -806,7 +1526,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.y >= pointABorderLineList.corner_LowerSE.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperSE.cornerPoint.y)
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_southEast, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Yaxis_southEast, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerSE.cornerPoint,
+													pointABorderLineList.corner_UpperSE.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at south east line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 				// South West line
@@ -817,7 +1541,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.y >= pointABorderLineList.corner_LowerSW.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperSW.cornerPoint.y)
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_southWest, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Yaxis_southWest, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerSW.cornerPoint,
+													pointABorderLineList.corner_UpperSW.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at south west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 				}
 				// North West line
@@ -828,7 +1556,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.y >= pointABorderLineList.corner_LowerNW.cornerPoint.y	&& pointToCheck.y <= pointABorderLineList.corner_UpperNW.cornerPoint.y)
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Yaxis_northWest, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Yaxis_northWest, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerNW.cornerPoint,
+													pointABorderLineList.corner_UpperNW.cornerPoint);	// get the shifting key
 					//std::cout << "Point is at north west line ...shift key is: " << newKey.x << ", " << newKey.y << ", " << newKey.z << std::endl;
 
 				}
@@ -879,7 +1611,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.x >= pointABorderLineList.corner_LowerNW.cornerPoint.x	&&	pointToCheck.x <= pointABorderLineList.corner_LowerNE.cornerPoint.x)	// is x between the LowerNW and LowerNE corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_lowerNorth, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Xaxis_lowerNorth, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerNW.cornerPoint,
+													pointABorderLineList.corner_LowerNE.cornerPoint);	// get the shifting key
 					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
 				}
 				// Lower South  line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -890,7 +1626,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.x >= pointABorderLineList.corner_LowerSW.cornerPoint.x	&&	pointToCheck.x <= pointABorderLineList.corner_LowerSE.cornerPoint.x)		// is x between the LowerSW and LowerSE corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_lowerSouth, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Xaxis_lowerSouth, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_LowerSW.cornerPoint,
+													pointABorderLineList.corner_LowerSE.cornerPoint);	// get the shifting key
 					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
 				}
 				// Upper South line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -901,7 +1641,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.x >= pointABorderLineList.corner_UpperSW.cornerPoint.x	&& pointToCheck.x <= pointABorderLineList.corner_UpperSE.cornerPoint.x)			// is x between the UpperSW and UpperSE corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_upperSouth, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Xaxis_upperSouth, 
+													in_originPoint, 
+													pointToCheck, 
+													pointABorderLineList.corner_UpperSW.cornerPoint,
+													pointABorderLineList.corner_UpperSE.cornerPoint);	// get the shifting key
 					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
 				}
 				// Upper North line check-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -912,7 +1656,11 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 					(pointToCheck.x >= pointABorderLineList.corner_UpperNW.cornerPoint.x	&& pointToCheck.x <= pointABorderLineList.corner_UpperNE.cornerPoint.x)			// is x between the UpperNW and UpperNE corners, but not equal to either of them?
 					)
 				{
-					newKey = getBorderShiftResult(pointABorderLineList.Xaxis_upperNorth, in_originPoint, pointToCheck);	// get the shifting key
+					newKey = getBorderShiftResultV2(pointABorderLineList.Xaxis_upperNorth, 
+													in_originPoint, 
+													pointToCheck,
+													pointABorderLineList.corner_UpperNW.cornerPoint,
+													pointABorderLineList.corner_UpperNE.cornerPoint);	// get the shifting key
 					//*in_KeyPtr = OrganicUtils::addEnclaveKeys(*in_KeyPtr, newKey);
 				}
 			}

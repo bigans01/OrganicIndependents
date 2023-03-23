@@ -95,7 +95,7 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 				lineBoundingBox = bbToUse;
 
 
-				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(beginPoint,
+				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(beginPoint,
 																				endPoint,
 																				beginKey,
 																				endKey,

@@ -20,7 +20,7 @@ void FTriangleORETracer::ORELineTracer::traverseLineOnce()
 	currentKey += nextKeyAdd;
 	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
 
-	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(currentIterationEndpoint,
+	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(currentIterationEndpoint,
 		endPoint,
 		currentKey,
 		endKey,
@@ -56,6 +56,12 @@ void FTriangleORETracer::runLineTracing()
 		EnclaveKeyDef::EnclaveKey tracingKeyB = tracingLineKeypairs[x].keyB;
 		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
 		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
+
+		std::cout << "!! Initial tracingKeyA: "; tracingKeyA.printKey(); std::cout << std::endl;
+		std::cout << "!! Initial tracingKeyB: "; tracingKeyB.printKey(); std::cout << std::endl;
+
+		std::cout << "!! Initial tracingPointA: " ; tracingPointA.printPointCoords(); std::cout << std::endl;
+		std::cout << "!! Initial tracingPointB: " ; tracingPointB.printPointCoords(); std::cout << std::endl;
 
 		// Remember, to guarantee 100% similiar tracing, we need to make sure that the two points 
 		// consisting of a line either run as AB or BA (never both); which one to use is dependent on whichever
@@ -170,8 +176,8 @@ void FTriangleORETracer::runLineTracing()
 			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
 			if (newTriangleLine.pointA != newTriangleLine.pointB)
 			{
-				std::cout << "(FTriangleORETracer) -> inserting exterior line, with points: ";
-				newTriangleLine.printLine();
+				//std::cout << "(FTriangleORETracer) -> inserting exterior line, with points: ";
+				//newTriangleLine.printLine();
 				TracerLineRecord newRecord(newTriangleLine, currentCandidateAffectedKeys);
 				lineCandidates.push_back(newRecord);
 			}

@@ -19,7 +19,7 @@ void FTriangleBlueprintTracer::BlueprintLineTracer::traverseLineOnce()
 	currentKey += nextKeyAdd;
 	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
 
-	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionData(currentIterationEndpoint,
+	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(currentIterationEndpoint,
 		endPoint,
 		currentKey,
 		endKey,
@@ -44,6 +44,8 @@ void FTriangleBlueprintTracer::runLineTracing()
 {
 	for (int x = 0; x < 3; x++)
 	{
+		//std::cout << "(FTriangleBlueprintTracer): starting runLineTracing() for line at index: " << x << std::endl;
+
 		int beginPointIndex = 0;
 		int endPointIndex = 0;
 

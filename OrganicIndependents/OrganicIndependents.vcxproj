@@ -460,6 +460,7 @@
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp" />
+    <ClCompile Include="OrganicTriangleTertiary.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
     <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />

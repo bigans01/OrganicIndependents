@@ -14,7 +14,9 @@ void OREFracturingMachine::runFracturing()
 	// Because of this, we can just use the values that are already in originFTrianglePoints and originFTriangleKeys.
 	loadLocalizedOREPoints();
 
+	std::cout << "----------> start of runORETRacing. " << std::endl;
 	runORETracing();
+	std::cout << "----------> end of runORETRacing. " << std::endl;
 
 	buildAndRunFRayCasters();
 
@@ -26,16 +28,16 @@ void OREFracturingMachine::runFracturing()
 	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
 
 
-	std::cout << "---------------------------------------OREFracturingMachine, starting cleanup...." << std::endl;
+	//std::cout << "---------------------------------------OREFracturingMachine, starting cleanup...." << std::endl;
 	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
-	std::cout << "---------------------------------------OREFracturingMachine, ending cleanup...." << std::endl;
+	//std::cout << "---------------------------------------OREFracturingMachine, ending cleanup...." << std::endl;
 
 	reverseTranslateOREStagerLines();
 
 	buildOREMachineTriangleContainers();
 
-	std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
-	fracturerPoints.printAllPoints();
+	//std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
+	//fracturerPoints.printAllPoints();
 }
 
 void OREFracturingMachine::determineUncalibratedBlockKeys()

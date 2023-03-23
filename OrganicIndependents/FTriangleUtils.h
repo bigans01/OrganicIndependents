@@ -21,6 +21,13 @@ class FTriangleUtils
 									TracingLineBoundingBox in_boundingBox,
 									FTraceType in_fTraceType);
 
+		static FIntersectMeta findIntersectionDataV2(ECBPolyPoint in_pointA,
+									ECBPolyPoint in_pointB,
+									EnclaveKeyDef::EnclaveKey in_pointAKey,
+									EnclaveKeyDef::EnclaveKey in_pointBKey,
+									TracingLineBoundingBox in_boundingBox,
+									FTraceType in_fTraceType);
+
 		static FIntersectMeta calculateIntersection(EnclaveKeyDef::EnclaveKey in_Key1,
 									ECBPolyPoint in_originPoint,
 									ECBPolyPoint in_distanceValues,
@@ -53,6 +60,11 @@ class FTriangleUtils
 		static ECBPolyPoint roundPointToHundredth(ECBPolyPoint in_polyPoint);
 		static float roundToHundredthSpecial(float in_float, float in_lowerLimit, float in_upperLimit);
 		static EnclaveKeyDef::EnclaveKey getBorderShiftResult(ECBBorder in_Border, ECBPolyPoint in_pointA, ECBPolyPoint in_pointB);
+		static EnclaveKeyDef::EnclaveKey getBorderShiftResultV2(ECBBorder in_Border, 
+																ECBPolyPoint in_originPoint, 
+																ECBPolyPoint in_selectedPoint,
+																ECBPolyPoint in_cornerPointA,
+																ECBPolyPoint in_cornerPointB);
 		static FTraceOrientationResults getFTracePointOrientation(ECBPolyPoint in_pointToCheck, FTraceBorderLineList* in_borderLineList);
 		static EnclaveKeyDef::EnclaveKey getFTraceCalibratedKey(ECBPolyPoint in_originPoint,
 			ECBPolyPoint in_interceptPoint,

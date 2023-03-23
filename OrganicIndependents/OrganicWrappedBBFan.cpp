@@ -1,6 +1,76 @@
 #include "stdafx.h"
 #include "OrganicWrappedBBFan.h"
 
+OrganicWrappedBBFan::OrganicWrappedBBFan()
+{
+
+}
+
+OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContainerRef,
+								TriangleMaterial in_materialID,
+								ECBPolyPoint in_emptyNormal,
+								BoundaryPolyIndicator in_boundaryPolyIndicator)
+{
+	// This function should set things up in a way similiar to the buildBBFanWithBoundaryIndicator function of this class.
+	int totalTriangles = in_fTriangleContainerRef->fracturedTriangles.size();
+	
+	// Cycle through all triangles. The very first triangle should insert all 3 of its points; the remaining triangles 
+	// should just insert the point at index 2.
+
+
+	// Part 1: point insertion.
+	auto anchorIter = in_fTriangleContainerRef->fracturedTriangles.begin();	// this iter will never change; it's used to determine if we're looking at the first triangle.
+	auto currentIter = anchorIter;
+	auto endIter = in_fTriangleContainerRef->fracturedTriangles.end();
+
+	// Current point index for loading all points.
+	int masterPointindex = 0;
+
+	for (; currentIter != endIter; currentIter++)
+	{
+
+		// If we're looking at the very first triangle, insert all 3 points.
+		if (currentIter == anchorIter)
+		{
+			for (int x = 0; x < 3; x++)
+			{
+				poly.fillPointIndex(masterPointindex, masterPointindex);
+
+				/*
+				std::cout << "!! Inserting point "; 
+				currentIter->second.fracturePoints[x].printPointCoords();
+				std::cout << " at index " << masterPointindex << std::endl;
+				*/
+
+				vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[x]);
+				masterPointindex++;
+			}
+		}
+
+		// Otherwise, insert the last point (at index 2) of all other triangles.
+		else
+		{
+			poly.fillPointIndex(masterPointindex, masterPointindex);
+
+			/*
+			std::cout << "!! Inserting point ";
+			currentIter->second.fracturePoints[2].printPointCoords();
+			std::cout << " at index " << masterPointindex << std::endl;
+			*/
+
+			vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[2]);
+			masterPointindex++;
+		}
+	}
+
+	// Part 2: metadata updates.
+	poly.numberOfTertiaries = totalTriangles;
+	poly.materialID = in_materialID;
+	poly.emptyNormal = in_emptyNormal;
+	poly.faceAlignment = in_boundaryPolyIndicator;
+}
+
+
 void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleMaterial in_materialID, ECBPolyPoint in_emptyNormal)
 {
 	// Step 1: load the points.
@@ -44,6 +114,7 @@ void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_block
 	poly.emptyNormal = in_emptyNormal;
 	poly.faceAlignment = in_boundaryPolyIndicator;
 }
+
 
 void OrganicWrappedBBFan::runBoundaryChecks()
 {
