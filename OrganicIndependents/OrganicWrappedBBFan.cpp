@@ -37,10 +37,11 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 				poly.fillPointIndex(masterPointindex, masterPointindex);
 
 				/*
-				std::cout << "!! Inserting point "; 
+				std::cout << "!! Inserting point (first triangle)"; 
 				currentIter->second.fracturePoints[x].printPointCoords();
 				std::cout << " at index " << masterPointindex << std::endl;
 				*/
+				
 
 				vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[x]);
 				masterPointindex++;
@@ -53,7 +54,13 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 			poly.fillPointIndex(masterPointindex, masterPointindex);
 
 			/*
-			std::cout << "!! Inserting point ";
+			std::cout << "!! NEXT triangle, points are: "; std::cout << std::endl;
+			for (int x = 0; x < 3; x++)
+			{
+				currentIter->second.fracturePoints[x].printPointCoords();
+			}
+			
+			std::cout << "!! Inserting point (remaining triangles)";
 			currentIter->second.fracturePoints[2].printPointCoords();
 			std::cout << " at index " << masterPointindex << std::endl;
 			*/
@@ -68,6 +75,8 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 	poly.materialID = in_materialID;
 	poly.emptyNormal = in_emptyNormal;
 	poly.faceAlignment = in_boundaryPolyIndicator;
+
+	
 }
 
 

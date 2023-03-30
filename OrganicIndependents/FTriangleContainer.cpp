@@ -46,6 +46,9 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 	std::cout << std::endl;
 	*/
 
+	//std::cout << "DEBUG: these lines are: " << std::endl;
+	//printConstructionLines();
+
 	// the root point will be point A of the very first line.
 	DoublePoint rootPoint = constructionLines.begin()->pointA;
 
@@ -59,10 +62,10 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 
 		// Below: FTDEBUG (uncomment when needed)
 		/*
-		//std::cout << "Created new frame, with points: " << std::endl;
-		//std::cout << "0: " << rootPoint.x << ", " << rootPoint.y << ", " << rootPoint.z << std::endl;
-		//std::cout << "1: " << leadingLineIter->pointA.x << ", " << leadingLineIter->pointA.y << ", " << leadingLineIter->pointA.z << std::endl;
-		//std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
+		std::cout << "Created new frame, with points: " << std::endl;
+		std::cout << "0: " << rootPoint.x << ", " << rootPoint.y << ", " << rootPoint.z << std::endl;
+		std::cout << "1: " << leadingLineIter->pointA.x << ", " << leadingLineIter->pointA.y << ", " << leadingLineIter->pointA.z << std::endl;
+		std::cout << "2: " << leadingLineIter->pointB.x << ", " << leadingLineIter->pointB.y << ", " << leadingLineIter->pointB.z << std::endl;
 		*/
 
 		// Form a new output, but swap the point order if necessary to auto-produce the 
@@ -89,7 +92,7 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 	if (normalsSwapped)
 	{
 		// Below line is for DEBUG only
-		//std::cout << "!!! NOTICE: normals were swapped; doing change. " << std::endl;
+		std::cout << "!!! NOTICE: normals were swapped; doing change for key at "; in_containerBounds.printKey(); std::cout << std::endl;
 
 		// Copy the produced FTriangleOutput instances into reversedTriangles,
 		// but do it in reverse order.
@@ -181,16 +184,26 @@ FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFr
 	//
 	// Before forming the FTriangleOutput, the frame needs to have its points orientated in such a way that 
 	// the normal produced by the points is directionally aligned to the parent's empty normal.
+
+	// ||||||||||||||||| START OLD METHOD |||||
+	// Not 100& reliable, can cause rare cases where some triangles in the container, but others do not. 
+	// (this is because of the signane matching but would drastically save data space because the normal
+	// could be generated from the points alone.
+	/*
 	if (!areNormalsDirectionallyAligned(in_parentEmptyNormal,in_triangleFrame.getNormal()))
 	{
 		//std::cout << "!! Had to do point swap for normal change." << std::endl;
 		in_triangleFrame.swapForNormalChange();
 		normalsSwapped = true;
 	}
+	*/
+	//auto finalNormal = in_triangleFrame.getNormal();
+	// ||||||||||||||||| END OLD METHOD |||||
 
-	
+	// ||||||||||||||||| NEW METHOD (temp fix), just assign the final normal as the parent FTriangle's empty normal.
+	// This is meant to be temporary, until a smarter fix is developed.
+	auto finalNormal = in_parentEmptyNormal;
 
-	auto finalNormal = in_triangleFrame.getNormal();
 	//std::cout << "Calculated empty normal is: " << finalNormal.x << ", " << finalNormal.y << ", " << finalNormal.z << std::endl;
 
 	// with the normal out of the way, find the other items required for the FOutputTriangle
@@ -355,9 +368,25 @@ ECBPolyPoint FTriangleContainer::OutputTriangleFrame::getNormal()
 
 void FTriangleContainer::OutputTriangleFrame::swapForNormalChange()
 {
+	/*
+	std::cout << "!! Pre-swap values: " << std::endl;
+	for (int x = 0; x < 3; x++)
+	{
+		framePoints[x].printPointCoords();
+		std::cout << std::endl;
+	}
+	*/
 	DoublePoint point1Copy = framePoints[1];
 	framePoints[1] = framePoints[2];
 	framePoints[2] = point1Copy;
+	/*
+	std::cout << "!! Post-swap values: " << std::endl;
+	for (int x = 0; x < 3; x++)
+	{
+		framePoints[x].printPointCoords();
+		std::cout << std::endl;
+	}
+	*/
 }
 
 FTriangleContainer::FTriangleContainerBounds::FTriangleContainerBounds()

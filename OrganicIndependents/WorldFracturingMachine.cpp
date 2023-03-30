@@ -30,7 +30,7 @@ void WorldFracturingMachine::runFracturing()
 	buildAndRunFLineScanners();				// Step 8: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 											// and then run them.
 
-	analyzeAndCleanupStagers();				// Step 9 (from base class): run analysis on the stagers.
+	analyzeAndCleanupStagers(FTriangleType::WORLD);				// Step 9 (from base class): run analysis on the stagers.
 
 	reverseTranslateWorldStagerLines();			// Step 10: reverse translate the stager line points; the choice made is dependent on the reverse
 											// transation mode.

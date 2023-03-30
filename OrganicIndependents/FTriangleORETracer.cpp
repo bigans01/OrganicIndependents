@@ -38,7 +38,7 @@ void FTriangleORETracer::runLineTracing()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		std::cout << "(FTriangleORETracer): running line tracing, for line at index " << x << std::endl;
+		//std::cout << "(FTriangleORETracer): running line tracing, for line at index " << x << std::endl;
 
 		int beginPointIndex = 0;
 		int endPointIndex = 0;
@@ -57,11 +57,11 @@ void FTriangleORETracer::runLineTracing()
 		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
 		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
 
-		std::cout << "!! Initial tracingKeyA: "; tracingKeyA.printKey(); std::cout << std::endl;
-		std::cout << "!! Initial tracingKeyB: "; tracingKeyB.printKey(); std::cout << std::endl;
+		//std::cout << "!! Initial tracingKeyA: "; tracingKeyA.printKey(); std::cout << std::endl;
+		//std::cout << "!! Initial tracingKeyB: "; tracingKeyB.printKey(); std::cout << std::endl;
 
-		std::cout << "!! Initial tracingPointA: " ; tracingPointA.printPointCoords(); std::cout << std::endl;
-		std::cout << "!! Initial tracingPointB: " ; tracingPointB.printPointCoords(); std::cout << std::endl;
+		//std::cout << "!! Initial tracingPointA: " ; tracingPointA.printPointCoords(); std::cout << std::endl;
+		//std::cout << "!! Initial tracingPointB: " ; tracingPointB.printPointCoords(); std::cout << std::endl;
 
 		// Remember, to guarantee 100% similiar tracing, we need to make sure that the two points 
 		// consisting of a line either run as AB or BA (never both); which one to use is dependent on whichever
@@ -113,6 +113,10 @@ void FTriangleORETracer::runLineTracing()
 			// logic that follows is done.
 			currentCandidateAffectedKeys.insert(currentTracerKey);
 
+			//FTraceBorderValues FTriangleUtils::getCurrentTracingLimits(EnclaveKeyDef::EnclaveKey in_currentTracingKey, FTraceType in_fTraceType)
+
+			FTraceBorderValues currentBlockValues = FTriangleUtils::getCurrentTracingLimits(EnclaveKeyDef::EnclaveKey(0, 0, 0), FTraceType::BLOCK_TRACE);
+
 
 			// FTriangleLine instances which are perfectly aligned to a grid line, must be inserted into both sections that the line borders on those dimension(s).
 			// I.e, a line with points 4,1.5,0 and 4,2.5,4 is perfectly aligned to X, and in a BlueprintLineTracer this would need to exist at 
@@ -133,6 +137,8 @@ void FTriangleORETracer::runLineTracing()
 				(moduloXpointB == 0.0f)
 				&&
 				(currentBeginPoint.x == currentEndPoint.x)
+				&&
+				(currentBeginPoint.x != currentBlockValues.posXlimit)	// don't bother shifting negative, if the perfect alignment is on the positive X border
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
@@ -149,8 +155,17 @@ void FTriangleORETracer::runLineTracing()
 				(moduloYpointB == 0.0f)
 				&&
 				(currentBeginPoint.y == currentEndPoint.y)
+				&&
+				(currentBeginPoint.y != currentBlockValues.posYlimit)	// don't bother shifting negative, if the perfect alignment is on the positive Y border
 			)
 			{
+				//std::cout << "(FTriangleORETracer): negative Y shift requested..." << std::endl;
+				//std::cout << "(FTriangleORETracer): current tracer key to negatively shift from: "; currentTracerKey.printKey(); std::cout << std::endl;
+				//std::cout << "(FTriangleORETracer): points are: " << std::endl;
+				//currentBeginPoint.printPointCoords();
+				//currentEndPoint.printPointCoords();
+				//std::cout << std::endl;
+
 				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
 				currentCandidateAffectedKeys.insert(negativeYKey);
 			}
@@ -165,6 +180,8 @@ void FTriangleORETracer::runLineTracing()
 				(moduloZpointB == 0.0f)
 				&&
 				(currentBeginPoint.z == currentEndPoint.z)
+				&&
+				(currentBeginPoint.z != currentBlockValues.posZlimit)	// don't bother shifting negative, if the perfect alignment is on the positive Z border
 			)
 			{
 				EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);

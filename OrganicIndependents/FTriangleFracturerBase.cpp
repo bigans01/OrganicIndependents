@@ -28,7 +28,7 @@ void FTriangleFracturerBase::printFracturerPoints()
 	fracturerPoints.printAllPoints();
 }
 
-void FTriangleFracturerBase::analyzeAndCleanupStagers()
+void FTriangleFracturerBase::analyzeAndCleanupStagers(FTriangleType in_fTriangleTypeForDebug)
 {
 	// the set that will contain invalid stagers to erase.
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> invalidStagerKeys;
@@ -66,7 +66,9 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers()
 		}
 		*/
 
-		FTLResolutionStatus resolutionStatus = currentStager.second.analyzeAndReorganize(currentStager.first);
+		FTLResolutionStatus resolutionStatus = currentStager.second.analyzeAndReorganize(currentStager.first,
+																						in_fTriangleTypeForDebug,
+																						localizedFTrianglePoints);
 		if
 		(
 			resolutionStatus == FTLResolutionStatus::FTLR_PURGABLE

@@ -97,6 +97,18 @@ class FTriangleContainer
 		// The function also ensures the frame has it's appropriate normal set, as this must be done before th FTriangleOutput is formed.
 		// The values of the orientation and clamp value are instantiated to NONE, as that is all handled by the call to the function
 		// FTriangleContainer::runBoundaryTests.
+		//
+		// NOTE (3/29/2023): for the time being, the "old method" of organizing the points to produce the empty normal has been deprecated,
+		// as it would on rare occasions, run into an issue where some outputs of the container get swapped, 
+		// but others don't  (which leads to rendering anomalies). For this reason the FTriangleOutputs returned by this function will not be swapped,
+		// and will intead have their normal value set to in_parentEmptyNormal. This is a temporary fix until a "smarter" fix is developed for the old method.
+		// 
+		// This anomaly case can be recreated by analyzing the crossProducts of these points. Notice how the signage doesn't match (it is off slightly).
+		// The fact that one triangle gets swapped, but the other would not, is the problem.
+		//	glm::vec3 pA(0, 0.55, 0.04);
+		//	glm::vec3 pB(0.48, 0.74, 1);
+		//	glm::vec3 pC(0.23, 0.84, 1);
+		//	glm::vec3 pD(0, 0.56, 0.08);
 		FTriangleOutput formOutput(OutputTriangleFrame in_triangleFrame,
 			ECBPolyPoint in_parentEmptyNormal,
 			FTriangleType in_typeForBoundingBasis,

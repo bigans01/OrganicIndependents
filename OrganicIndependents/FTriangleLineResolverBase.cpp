@@ -10,6 +10,8 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 {
 	bool areLinesValid = true;
 
+	std::cout << "(FTriangleLineResolverBase::checkLineValidity): entered checkLineValidity, size of lines to check is: " << in_linesToCheck.size(); std::cout << std::endl;
+
 	// Check 1: If the number of lines is 1, it's definitely not valid.
 	if (int(in_linesToCheck.size()) == 1)
 	{
@@ -35,6 +37,7 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 
 		// we must loop a number of times, where the number to loop is equal to the number of remaining lines in stagerLines (we already removed one already).
 		int initialRemaining = remainingLineMap.size();
+		std::cout << "(FTriangleLineResolverBase::checkLineValidity): value of initialRemaining: " << initialRemaining << std::endl;
 		for (int x = 0; x < initialRemaining; x++)
 		{
 			bool nextLineFound = false;

@@ -40,7 +40,10 @@ OrganicTriangleTertiary::OrganicTriangleTertiary(ECBPolyPoint in_etPoint0,
 		std::cout << "!!! Attemptoing build of OrganicWrappedBBFan, for the FTriangleOutput existing at key ";
 		currentContainerKey.printKey();
 		std::cout << std::endl;
+		std::cout << "!!! Triangles of the container are: "; std::cout << std::endl;
+		currentBlockContainer.second.printProducedFTriangles();
 		*/
+		
 
 		int convertedEnclaveKey = PolyUtils::convertBlockCoordsToSingle(currentContainerKey);
 
@@ -51,6 +54,10 @@ OrganicTriangleTertiary::OrganicTriangleTertiary(ECBPolyPoint in_etPoint0,
 										in_etTriangleMaterial,
 										in_etEmptyNormal,
 										newIndicator);
+
+		// Test what happens when we create a FanManager, and insert this fan:
+		//FanManager testManager;
+		
 
 		// Finally, insert the BB fan into the necessary map element.
 		triangleMap[convertedEnclaveKey] = assembledFan;

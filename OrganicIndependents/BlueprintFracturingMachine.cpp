@@ -41,7 +41,7 @@ void BlueprintFracturingMachine::runFracturing()
 	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
 
 
-	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
+	analyzeAndCleanupStagers(FTriangleType::BLUEPRINT); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc;
 
 	reverseTranslateBlueprintStagerLines(); // Step 9: Reverse translate the stager lines, in a FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE fashion.
 

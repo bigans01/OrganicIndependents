@@ -26,7 +26,14 @@ class FTriangleProductionStager
 		void insertLine(FTriangleLine in_lineToInsert);
 		void translateLines(EnclaveKeyDef::EnclaveKey in_translationKey, float in_fixedDimensionInterval);
 		void printLines();
-		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey);
+
+		// Below: the analyzeAndReorganize function takes in 3 parameters, in the event that it needs to print debug output:
+		// -the key that the stager is working for
+		// -the FTriangleType of the parent FTriangle (so we can identify the machine that the bug/issue occured in)
+		// -the localized points of the FTriangle, so that we can reconstruct it directly if needed
+		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey, 
+												FTriangleType in_fTriangleTypeForDebug,
+												ECBPolyPoint in_localizedFTrianglePointsArrayRef[3]);
 		std::vector<FTriangleLine> fetchStagerLines();
 	private:
 		std::vector<FTriangleLine> stagerLines;

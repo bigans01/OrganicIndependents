@@ -3,6 +3,16 @@
 
 void OREFracturingMachine::runFracturing()
 {
+	/*
+	std::cout << "(OREFracturingMachine) !!! Start of runFracturing(). " << std::endl;
+	std::cout << "Points are: " << std::endl;
+	for (int x = 0; x < 3; x++)
+	{
+		originFTrianglePoints[x].printPointCoords();
+		std::cout << std::endl;
+	}
+	*/
+
 	// set the ray cast interval to 1.0f, as the output of this machine will be within block boundaries.
 	rayCastDimInterval = 1.0f;
 
@@ -14,9 +24,9 @@ void OREFracturingMachine::runFracturing()
 	// Because of this, we can just use the values that are already in originFTrianglePoints and originFTriangleKeys.
 	loadLocalizedOREPoints();
 
-	std::cout << "----------> start of runORETRacing. " << std::endl;
+	//std::cout << "----------> start of runORETRacing. " << std::endl;
 	runORETracing();
-	std::cout << "----------> end of runORETRacing. " << std::endl;
+	//std::cout << "----------> end of runORETRacing. " << std::endl;
 
 	buildAndRunFRayCasters();
 
@@ -27,14 +37,45 @@ void OREFracturingMachine::runFracturing()
 
 	//std::cout << "!!! Finished running FLineScanners for BlueprintFracturingMachine." << std::endl;
 
+	//std::cout << "!!! Points, before cleanup: " << std::endl;
+	//fracturerPoints.printAllPoints();
+	
+	/*
+	EnclaveKeyDef::EnclaveKey manualDebug(2, 1, 0);
+	auto doesKeyExist = stagerMap.find(manualDebug);
+	if (doesKeyExist != stagerMap.end())
+	{
+		std::cout << "!!!! Begin, manual line analysis. (Pre-alteration)" << std::endl;
+		stagerMap[manualDebug].printLines();
+		std::cout << "!!!! End, manual line analysis. (Pre-alteration)" << std::endl;
+	}
+	*/
 
 	//std::cout << "---------------------------------------OREFracturingMachine, starting cleanup...." << std::endl;
-	analyzeAndCleanupStagers(); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
+	analyzeAndCleanupStagers(FTriangleType::ORE); // Step 8: analyze the lines we will be using in each FTriangleProductionStager of our map; remove invalid lines, etc
 	//std::cout << "---------------------------------------OREFracturingMachine, ending cleanup...." << std::endl;
+
+	/*
+	if (doesKeyExist != stagerMap.end())
+	{
+		std::cout << "!!!! Begin, manual line analysis. (Post-alteration)" << std::endl;
+		stagerMap[manualDebug].printLines();
+		std::cout << "!!!! End, manual line analysis. (Post-alteration)" << std::endl;
+	}
+	*/
 
 	reverseTranslateOREStagerLines();
 
 	buildOREMachineTriangleContainers();
+
+	/*
+	if (doesKeyExist != stagerMap.end())
+	{
+		std::cout << "!!!! Begin, manual line analysis. (Post-alteration 2)" << std::endl;
+		stagerMap[manualDebug].printLines();
+		std::cout << "!!!! End, manual line analysis. (Post-alteration 2)" << std::endl;
+	}
+	*/
 
 	//std::cout << "(OREFracturingMachine): done with runORETracing(), points are: " << std::endl;
 	//fracturerPoints.printAllPoints();
@@ -69,7 +110,6 @@ void OREFracturingMachine::calibrateFTriangleLineAndScannerBlockKeys()
 	pairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
 	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
-
 	FTriangleKeySetCalibrator pairC(FTriangleType::ORE);
 	pairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
 	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
@@ -141,6 +181,12 @@ void OREFracturingMachine::buildOREMachineTriangleContainers()
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 
 		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+		/*
+		std::cout << "(OREFracturingMachine::buildOREMachineTriangleContainers()): producing FTriangle containers, for key: ";
+		currentStagerKey.printKey();
+		std::cout << std::endl;
+		*/
 
 		// Remember: the BlueprintFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::ORE.
 		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLOCK,

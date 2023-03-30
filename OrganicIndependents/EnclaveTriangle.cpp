@@ -47,6 +47,7 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 								EnclaveKeyDef::EnclaveKey in_key, 
 								bool in_badRunFlag)
 {
+	// |||||||||||||||||||||| START OLD METHOD
 	resetRunMetaData(); // reset run values; should be called before anything else.
 
 	// prepare poly data
@@ -102,8 +103,21 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	//performCentroidBlockCheck(forwardPrimaryLineArray.linkArray[0].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[1].beginPointRealXYZ, forwardPrimaryLineArray.linkArray[2].beginPointRealXYZ);
 	purgeBadFans();
 	runBoundaryOrientationPass();	// ensure that triangles that are on block borders have their BoundaryPolyIndicators set appropriately.
-
 	//std::cout << "############## Done executing EnclaveTriangle run. " << std::endl;
+	// |||||||||||||||||||||| END OLD METHOD
+
+
+
+	// NEW method for producing fan data starts here (from 3/29/2023)
+	OrganicTriangleTertiary tertiaryProducer(lineArray[0].pointA,
+		lineArray[1].pointB,
+		lineArray[2].pointC,
+		emptyNormal,
+		enclaveTriangleBoundaryPolyIndicator.getBoundaryIndicatorValue(),
+		isEnclaveTrianglePolyPerfectlyClamped,
+		enclaveTriangleMaterialID);
+
+	enclaveTriangleTertiary = tertiaryProducer;
 }
 
 void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineList, 
@@ -165,6 +179,9 @@ void EnclaveTriangle::executeRunDebug(BlockBorderLineList* in_blockBorderLineLis
 
 	purgeBadFans();
 	runBoundaryOrientationPass();	// ensure that triangles that are on block borders have their BoundaryPolyIndicators set appropriately.
+
+	
+
 }
 
 void EnclaveTriangle::purgeBadFans()

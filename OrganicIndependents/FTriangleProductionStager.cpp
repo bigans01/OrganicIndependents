@@ -74,8 +74,13 @@ std::vector<FTriangleLine> FTriangleProductionStager::fetchStagerLines()
 	return stagerLines;
 }
 
-FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey)
+FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey,
+																	FTriangleType in_fTriangleTypeForDebug,
+																	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3])
 {
+	//	FTriangleType in_fTriangleTypeForDebug,
+	//	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3]
+
 	// assume it's valid.
 	//bool isStagerValid = true;
 
@@ -276,7 +281,32 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 			}
 			else if (!solver.resolutionFound)
 			{
-				std::cout << "!!! WARNING: solution was not found in the FTriangleLineResolutionMachine! Input number to continue." << std::endl;
+				std::cout << "!!! WARNING: solution was not found in the FTriangleLineResolutionMachine! Input number to continue. Some stats were:" << std::endl;
+
+				std::string machineType = "";
+				switch (in_fTriangleTypeForDebug)
+				{
+					case FTriangleType::WORLD: { machineType = "WorldFracturingMachine"; break; }
+					case FTriangleType::BLUEPRINT: { machineType = "BlueprintFracturingMachine"; break; }
+					case FTriangleType::ORE: { machineType = "OREFracturingMachine"; break; }
+				}
+
+				std::cout << "Machine where solution was attempted:  " + machineType << std::endl;
+				std::cout << "Key where attempt was made: "; in_stagerKey.printKey(); std::cout << std::endl;
+				std::cout << "Localized points: ";
+				for (int x = 0; x < 3; x++)
+				{
+					std::cout << "[" << x << "]: ";
+					in_localizedFTrianglePointsArrayRef[x].printPointCoords();
+					std::cout << std::endl;
+				}
+
+				std::cout << "!! -> Original lines were: " << std::endl;
+				for (auto& currentDebugLine : debugCopy)
+				{
+					currentDebugLine.printLine();
+				}
+
 				int notFound = 3;
 				std::cin >> notFound;
 			}

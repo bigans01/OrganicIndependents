@@ -114,7 +114,7 @@ class FTriangleFracturerBase
 																					// before this function is called.
 		void setOutputRef(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* in_outputRef);	// set a reference
 																																		// to the map that we will output fracture results to.
-		void analyzeAndCleanupStagers(); // check the stagerMap for any bad instances (bad number of lines, etc);
+		void analyzeAndCleanupStagers(FTriangleType in_fTriangleTypeForDebug); // check the stagerMap for any bad instances (bad number of lines, etc);
 										 // for valid stagers, the lines of said stagers are put into the proper sequential order.
 
 		void buildAndRunFRayCasters();

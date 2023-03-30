@@ -7,7 +7,12 @@ bool FTLResolverClampedCorner::runAttemptedResolution()
 	bool resolutionFound = false;
 
 	// This resolver can only operate under the condition that there are two lines. So check the original lines.
-	if (originalLines.size() == 2)
+	if 
+	(
+		(originalLines.size() >= 2)
+		&&
+		(originalLines.size() <= 3)
+	)
 	{
 		// Create 3 sets of floats: one for each dimension.
 		std::set<float> xFloats;

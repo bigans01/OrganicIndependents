@@ -40,7 +40,7 @@ class FTriangleORETracer : public FTriangleTracerBase
 				lineBoundingBox = bbToUse;
 
 				// As we are tracing a triangle that exists in ORE space into BLOCK space, we need to ensure that the bounds of each cell are that of a BLOCK (so 1.0f)
-				std::cout << "(ORELineTracer): begin point is: " << beginPoint.x << ", " << beginPoint.y << ", " << beginPoint.z << std::endl;
+				//std::cout << "(ORELineTracer): begin point is: " << beginPoint.x << ", " << beginPoint.y << ", " << beginPoint.z << std::endl;
 				FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(beginPoint,
 					endPoint,
 					beginKey,

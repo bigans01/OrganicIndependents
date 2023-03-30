@@ -347,6 +347,7 @@ void FanManager::listSecondaries()
 			auto targetFanPtr = &triangleArray[x];
 			std::cout << "Orientation: " << targetFanPtr->faceAlignment.getPrintableIndicatorValue() << std::endl;
 			auto currentFanData = targetFanPtr->getFanData();
+			std::cout << "Normal: " << targetFanPtr->emptyNormal.x << ", " << targetFanPtr->emptyNormal.y << ", " << targetFanPtr->emptyNormal.z << std::endl;
 			int totalPointsToPrint = currentFanData.numberOfTertiaries + 2;
 			for (int y = 0; y < totalPointsToPrint; y++)
 			{

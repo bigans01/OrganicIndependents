@@ -91,8 +91,21 @@ FRayIntersectionMachine::FRayIntersectionResult FRayIntersectionMachine::runInte
 	bool withinS = true;
 	bool withinSandT = true;
 
+	// A Note on S and T values below (from 3/30/2023):
+	// 
+	// the < values and > values are very sensitive. Increasing/decreasing
+	// the values of s and t will have various effects; some triangles that were previously working,
+	// may suddenly have issues with the calls to FTriangleProductionStager::analyzeAndReorganize, where
+	// raycasted intercepts that this class did are no longer intercepting, because the threshold was changed.
+	//
+	// Whether or not an FTriangle can have its raycasting re-attempted with different values below (when there is a failure),
+	// is not decided yet. It may just be better to "bite-the-bullet" and handle these extreme edge cases.
+
+
 	s = (uv * wv - vv * wu) / D;
-	if (s < -0.0f || s > 1.00f)         // I is outside S
+	//if (s < -0.0f || s > 1.00f)         // I is outside S	-> "too tight"
+	if (s < -0.0005f || s > 1.0005f)         // I is outside S	-> "Goldilocks zone"
+	//if (s < -0.001f || s > 1.001f)         // I is outside S	-> "too loose"
 	{
 		withinS = false;
 		return FRayIntersectionResult(rayToCast.vecA,
@@ -102,7 +115,9 @@ FRayIntersectionMachine::FRayIntersectionResult FRayIntersectionMachine::runInte
 	}
 
 	t = (uv * wu - uu * wv) / D;
-	if (t < -0.0f || (s + t) > 1.00f)  // I is outside T
+	//if (t < -0.0f || (s + t) > 1.00f)  // I is outside T
+	if (t < -0.0005f || (s + t) > 1.0005f)  // I is outside T	-> "Goldilocks zone"
+	//if (t < -0.001f || (s + t) > 1.001f)  // I is outside T
 	{
 		withinSandT = false;
 		return FRayIntersectionResult(rayToCast.vecA,

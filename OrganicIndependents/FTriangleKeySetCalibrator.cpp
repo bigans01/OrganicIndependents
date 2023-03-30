@@ -7,7 +7,7 @@ FTriangleKeySetCalibrator::FTriangleKeySetCalibrator(FTriangleType in_fTriangleO
 	{
 		case FTriangleType::WORLD: { fixedDimInterval = 32.0f; break;}
 		case FTriangleType::BLUEPRINT: { fixedDimInterval = 4.0f; break;}
-		case FTriangleType::BLOCK: { fixedDimInterval = 1.0f; break;}
+		case FTriangleType::ORE: { fixedDimInterval = 1.0f; break;}
 	}
 }
 
