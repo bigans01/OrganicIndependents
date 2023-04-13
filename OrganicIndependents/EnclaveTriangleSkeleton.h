@@ -33,9 +33,13 @@ public:
 		line3.pointA = roundedPoint3;
 		line3.pointB = roundedPoint1;
 
-		returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);
-		returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
-		returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
+		//returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);
+		//returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
+		//returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
+
+		returnTriangle.points[0] = roundedPoint1;
+		returnTriangle.points[1] = roundedPoint2;
+		returnTriangle.points[2] = roundedPoint3;
 
 		returnTriangle.enclaveTriangleMaterialID = materialID;
 		returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = isPolyPerfectlyClamped;

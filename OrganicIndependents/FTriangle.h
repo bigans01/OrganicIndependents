@@ -101,6 +101,7 @@ class FTriangle
 										// or there will be undefined behavior. 
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* fetchOutputContainerRef();
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> getUnresolvedOutputs();
 	private:
 		DoublePoint fracturePoints[3];		// the original points of the FTriangle, before anything is done; these values 
 											// may or may not get translated.
@@ -116,6 +117,12 @@ class FTriangle
 
 		std::shared_ptr<FTriangleFracturerBase> fracturerMachine;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher> outputContainers;
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> unresolvedOutputs;	// this map stores the EnclaveKeyDef values that correlate
+																									// with FTriangleProductionStagers that couldn't produce a valid solution,
+																									// when the FTriangleProductionStager::analyzeAndReorganize function got called.
+																									// This class does not directly modify this member; instead, the underlying FTriangleFracturerBase-derived
+																									// class that is used must produce it, which instances of this class will then store in this member.
+
 		bool hasFracturingCompleted = false;
 
 		void determineOutputLevel();	// sets the value of the triangleOutputGrid, based on what the value of the triangleOriginGrid is.

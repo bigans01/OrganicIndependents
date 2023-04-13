@@ -115,7 +115,9 @@ void FTriangleORETracer::runLineTracing()
 
 			//FTraceBorderValues FTriangleUtils::getCurrentTracingLimits(EnclaveKeyDef::EnclaveKey in_currentTracingKey, FTraceType in_fTraceType)
 
-			FTraceBorderValues currentBlockValues = FTriangleUtils::getCurrentTracingLimits(EnclaveKeyDef::EnclaveKey(0, 0, 0), FTraceType::BLOCK_TRACE);
+			// Remember, this class is traces from the ORE grid (OREFracturingMachine) into a block grid, so use BLOCK_TRACE
+			// The limits should be equal to -> 1.0 * the EnclaveKey (curentTracerKey)
+			FTraceBorderValues currentBlockTracingLimits = FTriangleUtils::getCurrentTracingLimits(currentTracerKey, FTraceType::BLOCK_TRACE);
 
 
 			// FTriangleLine instances which are perfectly aligned to a grid line, must be inserted into both sections that the line borders on those dimension(s).
@@ -127,7 +129,7 @@ void FTriangleORETracer::runLineTracing()
 			// FTriangleKeySetCalibrator, constructed with an FTriangleType::BLUEPRINT value, and using FKeyCalibrationMode::FTRIANGLE_LINE when calling
 			// calibrate(). The values will be stored in the FTriangleFracturerBase::scannerKeys[] array.
 
-			// For X
+			// Check for grid-line alignment for X
 			float moduloXpointA = fmod(currentBeginPoint.x, 1.0f);
 			float moduloXpointB = fmod(currentEndPoint.x, 1.0f);
 			if
@@ -137,15 +139,24 @@ void FTriangleORETracer::runLineTracing()
 				(moduloXpointB == 0.0f)
 				&&
 				(currentBeginPoint.x == currentEndPoint.x)
-				&&
-				(currentBeginPoint.x != currentBlockValues.posXlimit)	// don't bother shifting negative, if the perfect alignment is on the positive X border
 			)
 			{
-				EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
-				currentCandidateAffectedKeys.insert(negativeXKey);
+				// If the alignment is at the positive X limit, insert a key at x + 1.
+				if (currentBeginPoint.x == currentBlockTracingLimits.posXlimit)
+				{
+					EnclaveKeyDef::EnclaveKey positiveXKey(currentTracerKey.x + 1, currentTracerKey.y, currentTracerKey.z);
+					currentCandidateAffectedKeys.insert(positiveXKey);
+				}
+
+				// If the alignment is at the negative X limit, insert a key at x - 1.
+				else if (currentBeginPoint.x == currentBlockTracingLimits.negXlimit)
+				{
+					EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
+					currentCandidateAffectedKeys.insert(negativeXKey);
+				}
 			}
 
-			// For Y
+			// Check for grid-line alignment for Y
 			float moduloYpointA = fmod(currentBeginPoint.y, 1.0f);
 			float moduloYpointB = fmod(currentEndPoint.y, 1.0f);
 			if
@@ -155,22 +166,24 @@ void FTriangleORETracer::runLineTracing()
 				(moduloYpointB == 0.0f)
 				&&
 				(currentBeginPoint.y == currentEndPoint.y)
-				&&
-				(currentBeginPoint.y != currentBlockValues.posYlimit)	// don't bother shifting negative, if the perfect alignment is on the positive Y border
 			)
 			{
-				//std::cout << "(FTriangleORETracer): negative Y shift requested..." << std::endl;
-				//std::cout << "(FTriangleORETracer): current tracer key to negatively shift from: "; currentTracerKey.printKey(); std::cout << std::endl;
-				//std::cout << "(FTriangleORETracer): points are: " << std::endl;
-				//currentBeginPoint.printPointCoords();
-				//currentEndPoint.printPointCoords();
-				//std::cout << std::endl;
+				// If the alignment is at the positive Y limit, insert a key at y + 1.
+				if (currentBeginPoint.y == currentBlockTracingLimits.posYlimit)
+				{
+					EnclaveKeyDef::EnclaveKey positiveYKey(currentTracerKey.x, currentTracerKey.y + 1, currentTracerKey.z);
+					currentCandidateAffectedKeys.insert(positiveYKey);
+				}
 
-				EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
-				currentCandidateAffectedKeys.insert(negativeYKey);
+				// If the alignment is at the negative Y limit, insert a key at y - 1.
+				else if (currentBeginPoint.y == currentBlockTracingLimits.negYlimit)
+				{
+					EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
+					currentCandidateAffectedKeys.insert(negativeYKey);
+				}
 			}
 
-			// For Z
+			// Check for grid-line alignment for Z
 			float moduloZpointA = fmod(currentBeginPoint.z, 1.0f);
 			float moduloZpointB = fmod(currentEndPoint.z, 1.0f);
 			if
@@ -180,12 +193,21 @@ void FTriangleORETracer::runLineTracing()
 				(moduloZpointB == 0.0f)
 				&&
 				(currentBeginPoint.z == currentEndPoint.z)
-				&&
-				(currentBeginPoint.z != currentBlockValues.posZlimit)	// don't bother shifting negative, if the perfect alignment is on the positive Z border
 			)
 			{
-				EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
-				currentCandidateAffectedKeys.insert(negativeZKey);
+				// If the alignment is at the positive Z limit, insert a key at z + 1.
+				if (currentBeginPoint.z == currentBlockTracingLimits.posZlimit)
+				{
+					EnclaveKeyDef::EnclaveKey positiveZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z + 1);
+					currentCandidateAffectedKeys.insert(positiveZKey);
+				}
+
+				// If the alignment is at the negative Z limit, insert a key at z - 1.
+				else if (currentBeginPoint.z == currentBlockTracingLimits.negZlimit)
+				{
+					EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
+					currentCandidateAffectedKeys.insert(negativeZKey);
+				}
 			}
 
 

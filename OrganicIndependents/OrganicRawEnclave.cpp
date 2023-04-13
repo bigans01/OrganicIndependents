@@ -933,7 +933,6 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 	{
 		// if there are blocks already populated, check those; we won't need -- and don't want to --
 		// call produceBlockCopies() as that is an expensive operation.
-		//std::cout << "(OrganicRawEnclave::queryForBlockCopy): entered RMATTER/SMATTER branch. " << std::endl;
 		bool exposedDiscovered = false;
 		if (blockMap.size() != 0)
 		{
@@ -1172,7 +1171,11 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 			auto existingBlockFinder = blockMap.find(targetInt);
 			if (existingBlockFinder != blockMap.end())
 			{
-				returnBlockState = EnclaveBlockState::EXPOSED;
+				//Under normal operations, it's simply exposed...
+				if (existingBlockFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+				{
+					returnBlockState = EnclaveBlockState::EXPOSED;
+				}
 			}
 		}
 
@@ -1187,10 +1190,11 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 			auto exposedBlocksFinder = exposedBlocks.find(targetInt);
 			if (exposedBlocksFinder != exposedBlocks.end())
 			{
-				returnBlockState = EnclaveBlockState::EXPOSED;
-				//std::cout << "(OrganicRawEnclave): found EXPOSED block for key: ";
-				//in_blockKey.printKey();
-				//std::cout << std::endl;
+				// Under normal operations, it's simply exposed...
+				if (exposedBlocksFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+				{
+					returnBlockState = EnclaveBlockState::EXPOSED;
+				}
 			}
 		}
 		// check if it's an unexposed block; if it is, return BlockManifestState::UNEXPOSED
@@ -1227,7 +1231,11 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 		auto targetFinder = blockMap.find(targetInt);
 		if (targetFinder != blockMap.end())
 		{
-			returnBlockState = EnclaveBlockState::EXPOSED;
+			// Under normal operations, it's simply exposed...
+			if (targetFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+			{
+				returnBlockState = EnclaveBlockState::EXPOSED;
+			}
 		}
 
 		// check if it's an unexposed block; if it is, return BlockManifestState::UNEXPOSED

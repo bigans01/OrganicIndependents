@@ -10411,9 +10411,13 @@ ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enc
 	ECBPoly returnPoly;
 
 	ECBPolyPoint translatedPoint0, translatedPoint1, translatedPoint2;
-	translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[0].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
-	translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[1].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
-	translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[2].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[0].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[1].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[2].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+
+	translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[0], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[1], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[2], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
 
 	ECBPolyLine polyLine0, polyLine1, polyLine2;
 

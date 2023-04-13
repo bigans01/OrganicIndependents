@@ -69,12 +69,22 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers(FTriangleType in_fTriangle
 		FTLResolutionStatus resolutionStatus = currentStager.second.analyzeAndReorganize(currentStager.first,
 																						in_fTriangleTypeForDebug,
 																						localizedFTrianglePoints);
+		// If it's ok to purge it, just do that here (we won't record it)...
 		if
 		(
 			resolutionStatus == FTLResolutionStatus::FTLR_PURGABLE
 		)
 		{
 			invalidStagerKeys.insert(currentStager.first);
+		}
+
+		// ...but if we could not find a solution at all (incalculable), we must record that.
+		else if
+		(
+				resolutionStatus == FTLResolutionStatus::FTLR_INCALCULABLE
+		)
+		{
+			incalculableKeys.insert(currentStager.first);
 		}
 	}
 

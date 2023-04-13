@@ -40,6 +40,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureMaterial);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
+			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
 			hasFracturingCompleted = true;
 			break;
@@ -60,6 +61,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureMaterial);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
+			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
 			hasFracturingCompleted = true;
 			break;
@@ -79,6 +81,7 @@ void FTriangle::setupAndRunFracturerMachine()
 				fractureMaterial);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
+			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
 			hasFracturingCompleted = true;
 			break;
@@ -86,6 +89,11 @@ void FTriangle::setupAndRunFracturerMachine()
 
 
 	}
+}
+
+std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> FTriangle::getUnresolvedOutputs()
+{
+	return unresolvedOutputs;
 }
 
 void FTriangle::printProducedPoints()

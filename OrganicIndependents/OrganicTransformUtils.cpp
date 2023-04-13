@@ -6,7 +6,8 @@ EnclaveTriangleSkeleton OrganicTransformUtils::deflateEnclaveTriangle(EnclaveTri
 	EnclaveTriangleSkeleton returnSkeleton;
 	for (int x = 0; x < 3; x++)
 	{
-		returnSkeleton.points[x] = in_enclaveTriangle.lineArray[x].pointA;
+		//returnSkeleton.points[x] = in_enclaveTriangle.lineArray[x].pointA;
+		returnSkeleton.points[x] = in_enclaveTriangle.points[x];
 	}
 	returnSkeleton.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnSkeleton.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
@@ -63,9 +64,18 @@ EnclaveTriangle OrganicTransformUtils::inflateEnclaveTriangle(EnclaveTriangleSke
 	bool isValid2 = PolyUtils::determineLineInterceptSlopesDebugForEnclaveTriangle(&line2, roundedPoint1, point0, point1, point2);
 	bool isValid3 = PolyUtils::determineLineInterceptSlopesDebugForEnclaveTriangle(&line3, roundedPoint2, point0, point1, point2);
 
-	returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);
-	returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
-	returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
+	//returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, roundedPoint3);
+	//returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, roundedPoint1);
+	//returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, roundedPoint2);
+
+	//returnTriangle.lineArray[0] = PolyUtils::convertToECBPolyLine(line1, point2);
+	//returnTriangle.lineArray[1] = PolyUtils::convertToECBPolyLine(line2, point0);
+	//returnTriangle.lineArray[2] = PolyUtils::convertToECBPolyLine(line3, point1);
+
+	returnTriangle.points[0] = in_enclaveTriangleSkeleton.points[0];
+	returnTriangle.points[1] = in_enclaveTriangleSkeleton.points[1];
+	returnTriangle.points[2] = in_enclaveTriangleSkeleton.points[2];
+
 	returnTriangle.enclaveTriangleMaterialID = in_enclaveTriangleSkeleton.materialID;
 	returnTriangle.isEnclaveTrianglePolyPerfectlyClamped = in_enclaveTriangleSkeleton.isPolyPerfectlyClamped;
 	returnTriangle.emptyNormal = in_enclaveTriangleSkeleton.emptyNormal;

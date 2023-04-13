@@ -107,6 +107,18 @@ int EnclaveBlock::getNumberOFLineBitsSet()
 	return numberOfLineBitsFlagged;
 }
 
+
+void EnclaveBlock::setBlockMode(BlockSubType in_modeToSet)
+{
+	blockMode = in_modeToSet;
+}
+
+BlockSubType EnclaveBlock::getBlockMode()
+{
+	return blockMode;
+}
+
+
 BlockSearchMeta EnclaveBlock::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point, EnclaveKeyDef::EnclaveKey in_key, int in_debugFlag)
 {
 	// EBC, NEW

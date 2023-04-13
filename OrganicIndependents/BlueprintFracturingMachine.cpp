@@ -176,23 +176,42 @@ void BlueprintFracturingMachine::buildBlueprintMachineTriangleContainers()
 	{
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 
-		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
-
-		// Remember: the BlueprintFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::ORE.
-		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::ORE,
-			originFTriangleEmptynormal,
-			originBoundaryOrientation,
-			currentStagerKey,
-			originMaterial);
-
-		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
-		// which is determined by the call to runBoundaryTests below.
-		bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE, currentStagerKey, originFTriangleEmptynormal);
-		if (shouldContainerBeDeleted)
+		// Check if the currentStagerKey is incalculable.
+		bool incalculableFound = false;
+		auto incalculableFinder = incalculableKeys.find(currentStagerKey);
+		if (incalculableFinder != incalculableKeys.end())	// it was found
 		{
-			containerRemovalSet.insert(currentStagerKey);
+			incalculableFound = true;
 		}
 
+		if (incalculableFound == false)
+		{
+			(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+			// Remember: the BlueprintFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::ORE.
+			(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::ORE,
+				originFTriangleEmptynormal,
+				originBoundaryOrientation,
+				currentStagerKey,
+				originMaterial);
+
+			// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
+			// which is determined by the call to runBoundaryTests below.
+			bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE, currentStagerKey, originFTriangleEmptynormal);
+			if (shouldContainerBeDeleted)
+			{
+				containerRemovalSet.insert(currentStagerKey);
+			}
+		}
+
+		// Remember: incalculable means that a FTriangleProductionStager 
+		// was unable to produce any triangles, when that instance called the
+		// analyzeAndReorganize() function, so we must record this. 
+		else if (incalculableFound == true)
+		{
+			std::cout << "(BlueprintFracturingMachine): incalculable key detected, at: "; currentStagerKey.printKey(); std::cout << std::endl;
+			incalculableKeys.insert(currentStagerKey);
+		}
 	}
 
 	// Erase any keyed, empty containers that were in the containerRemovalSet.

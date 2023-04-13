@@ -307,8 +307,8 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 					currentDebugLine.printLine();
 				}
 
-				int notFound = 3;
-				std::cin >> notFound;
+				//int notFound = 3;
+				//std::cin >> notFound;
 			}
 		}
 

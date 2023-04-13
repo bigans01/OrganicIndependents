@@ -16,16 +16,28 @@ void OrganicTriangleSecondarySupergroupManager::generateBlockTrianglesFromSecond
 		{
 			for (auto& tertiariesBegin : subgroupsBegin.second.enclaveTriangleTertiaryContainer)		// for each subgroup, iterate through each tertiary.
 			{
-				for (auto& wrappedBBFanBegin : tertiariesBegin.second.triangleMap)
+				for (auto& currentGroup : tertiariesBegin.second.triangleMap)
 				{
-					EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(wrappedBBFanBegin.first);
-					auto blockFinder = (*in_skeletonMapRef).find(wrappedBBFanBegin.first);
+					EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
+					auto blockFinder = (*in_skeletonMapRef).find(currentGroup.first);
 					if (blockFinder == (*in_skeletonMapRef).end())		// if it isn't in the skeleton map, we'll display it.
 					{
 						int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 						EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
-						blockRef->insertBBFanFromRawEnclave(wrappedBBFanBegin.second);
-						*in_totalTrianglesRef += wrappedBBFanBegin.second.poly.numberOfTertiaries;	// increment the number of total_triangles, for when we eventually load into an Enclave itself.
+
+						// Set the current blockRef to be the BlockSubMode from the group.
+						blockRef->setBlockMode(currentGroup.second.groupSubType);
+
+						// Cycle through each fan in the group.
+						for (auto& currentFanInGroup : currentGroup.second.fans)
+						{
+
+							//blockRef->insertBBFanFromRawEnclave(currentGroup.second);
+							//*in_totalTrianglesRef += currentGroup.second.poly.numberOfTertiaries;	// increment the number of total_triangles, for when we eventually load into an Enclave itself.
+
+							blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
+							*in_totalTrianglesRef += currentFanInGroup.poly.numberOfTertiaries;
+						}
 					}
 				}
 			}
@@ -41,13 +53,22 @@ void OrganicTriangleSecondarySupergroupManager::simulateExposedBlockGeneration(s
 		{
 			for (auto& tertiariesBegin : subgroupsBegin.second.enclaveTriangleTertiaryContainer)		// for each subgroup, iterate through each tertiary.
 			{
-				for (auto& wrappedBBFanBegin : tertiariesBegin.second.triangleMap)
+				for (auto& currentGroup : tertiariesBegin.second.triangleMap)
 				{
-					EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(wrappedBBFanBegin.first);
+					EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
 					int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 					EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
-					blockRef->insertBBFanFromRawEnclave(wrappedBBFanBegin.second);
 
+					// Set the current blockRef to be the BlockSubMode from the group.
+					blockRef->setBlockMode(currentGroup.second.groupSubType);
+
+					// Cycle through each fan in the group.
+					for (auto& currentFanInGroup : currentGroup.second.fans)
+					{
+						//blockRef->insertBBFanFromRawEnclave(currentGroup.second);
+
+						blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
+					}
 				}
 			}
 		}

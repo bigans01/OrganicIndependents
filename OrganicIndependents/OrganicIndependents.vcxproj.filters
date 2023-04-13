@@ -175,6 +175,12 @@
     <Filter Include="Source Files\FracturableTriangle\FracturingMachines\ORE">
       <UniqueIdentifier>{a637ba17-b49b-4e54-9e34-830b014d59e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Archived">
+      <UniqueIdentifier>{52237e80-cea0-4b29-8d08-c354d885982d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Archived">
+      <UniqueIdentifier>{63e61514-dc4e-4b23-a84b-1707d6f272a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -903,6 +909,15 @@
     <ClInclude Include="FTLResolverDualStickSaw.h">
       <Filter>Header Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveTriangleOld.h">
+      <Filter>Header Files\Archived</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicFanGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSubType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1185,6 +1200,12 @@
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine\FTriangleLineResolvers</Filter>
     </ClCompile>
     <ClCompile Include="OrganicTriangleTertiary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangleOld.cpp">
+      <Filter>Source Files\Archived</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicFanGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

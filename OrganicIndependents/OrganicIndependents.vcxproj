@@ -172,6 +172,7 @@
     <ClInclude Include="BlockFlagStates.h" />
     <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlockSearchMeta.h" />
+    <ClInclude Include="BlockSubType.h" />
     <ClInclude Include="BlueprintFracturingMachine.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="BlueprintTransformRefs.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CalibratableBlueprintKeyPair.h" />
     <ClInclude Include="CalibrateableOREKeyPair.h" />
+    <ClInclude Include="EnclaveTriangleOld.h" />
     <ClInclude Include="FExteriorRaycastCollisionResolver.h" />
     <ClInclude Include="FKeyCalibrationMode.h" />
     <ClInclude Include="CircuitSegmentType.h" />
@@ -314,6 +316,7 @@
     <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OREDependencyState.h" />
     <ClInclude Include="OREFracturingMachine.h" />
+    <ClInclude Include="OrganicFanGroup.h" />
     <ClInclude Include="OrganicLineBase.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
     <ClInclude Include="ORELodState.h" />
@@ -426,6 +429,7 @@
     <ClCompile Include="EnclaveTriangle.cpp" />
     <ClCompile Include="EnclaveTriangleContainer.cpp" />
     <ClCompile Include="EnclaveTriangleInteriorRunner.cpp" />
+    <ClCompile Include="EnclaveTriangleOld.cpp" />
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
@@ -456,6 +460,7 @@
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
     <ClCompile Include="NeighboringORELocationSet.cpp" />
     <ClCompile Include="OREFracturingMachine.cpp" />
+    <ClCompile Include="OrganicFanGroup.cpp" />
     <ClCompile Include="OrganicRawEnclave.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />

@@ -7,6 +7,7 @@
 #include "OrganicWrappedBBFan.h"
 #include "FTriangle.h"
 #include "PolyUtils.h"
+#include "OrganicFanGroup.h"
 
 /*
 
@@ -34,8 +35,11 @@ class OrganicTriangleTertiary
 								TriangleMaterial in_etTriangleMaterial);
 		
 
-		std::map<int, OrganicWrappedBBFan> triangleMap;	// contains all relevant OrganicWrappedBBFan instances; the int value is an EnclaveKeyDef value
+		//std::map<int, OrganicWrappedBBFan> triangleMap;	// contains all relevant OrganicWrappedBBFan instances; the int value is an EnclaveKeyDef value
 														// that has been converted to an int.
+
+		std::map<int, OrganicFanGroup> triangleMap;		// under certain conditions, blocks produced by this instance can contain multiple OrganicWrappedBBFans;
+														// hence, we need to use OrganicFanGroup in case that happens.
 };
 
 #endif

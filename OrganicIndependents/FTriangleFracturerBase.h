@@ -80,6 +80,9 @@ class FTriangleFracturerBase
 		std::map<FRayCasterTypeEnum, std::shared_ptr<FRayCasterQuadBase>> selectedRayCasters;	// a map of selected ray casters, that must be executed.
 																								// Must be called by derived class that is based off this one.
 
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> incalculableKeys; // this is a set of keys that correlate to FTriangleProductionStager instances 
+																								  // in which a set of triangles destined for output were not produced. 
+
 		struct LineScanLists
 		{
 			LineScanLists() {};

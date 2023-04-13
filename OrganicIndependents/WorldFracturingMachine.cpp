@@ -273,6 +273,15 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 	for (auto& currentStager: stagerMap)
 	{
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
+
+		// Check if the currentStagerKey is incalculable.
+		bool incalculableFound = false;
+		auto incalculableFinder = incalculableKeys.find(currentStagerKey);
+		if (incalculableFinder != incalculableKeys.end())	// it was found
+		{
+			incalculableFound = true;
+		}
+
 		currentStagerKey += translationKey.getInvertedKey();	// apply the inverse of the translationKey.
 
 		// Below: FTDEBUG (uncomment when needed)
@@ -282,23 +291,39 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 		std::cout << std::endl;
 		*/
 
-		(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
-
-
-		// Remember: the WorldFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::BLUEPRINT.
-		(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLUEPRINT, 
-															originFTriangleEmptynormal, 
-															originBoundaryOrientation,
-															currentStagerKey,
-															originMaterial);
-
-		// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
-		// which is determined by the call to runBoundaryTests below.
-		bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(translationMode, currentStagerKey, originFTriangleEmptynormal);
-		if (shouldContainerBeDeleted)
+		// Assuming that the stager is calculable (99% of cases), proceed.
+		if (incalculableFound == false)
 		{
-			containerRemovalSet.insert(currentStagerKey);
+			(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
+
+
+			// Remember: the WorldFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::BLUEPRINT.
+			(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLUEPRINT,
+				originFTriangleEmptynormal,
+				originBoundaryOrientation,
+				currentStagerKey,
+				originMaterial);
+
+			// Do the boundary tests; remove any containers that have no FOutputTriangles in them,
+			// which is determined by the call to runBoundaryTests below.
+			bool shouldContainerBeDeleted = (*ftfOutputRef)[currentStagerKey].runBoundaryTests(translationMode, currentStagerKey, originFTriangleEmptynormal);
+			if (shouldContainerBeDeleted)
+			{
+				containerRemovalSet.insert(currentStagerKey);
+			}
 		}
+
+		// Remember: incalculable means that a FTriangleProductionStager 
+		// was unable to produce any triangles, when that instance called the
+		// analyzeAndReorganize() function, so we must record this. 
+		else if (incalculableFound == true)
+		{
+			// Replace the incalculable key with it's offset value. But erase the old one first.
+			EnclaveKeyDef::EnclaveKey originalKeyToErase = currentStager.first;
+			incalculableKeys.erase(originalKeyToErase);
+			incalculableKeys.insert(currentStagerKey);
+		}
+
 
 		// Below: FTDEBUG (uncomment when needed)
 		/*
