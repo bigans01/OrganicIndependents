@@ -20,6 +20,7 @@
 //#include "PrimaryLineT1Array.h"
 #include "FTriangleOutput.h"
 #include "PolyUtils.h"
+#include "Operable3DEnclaveKeySet.h"
 
 /*
 
@@ -50,13 +51,12 @@ public:
 	OrganicTriangleTertiary enclaveTriangleTertiary;	// stores the actual bb fans that this EnclaveTriangle produced in each block that it touched.
 	BoundaryPolyIndicator enclaveTriangleBoundaryPolyIndicator;	// stores the BoundaryPolyIndicator value for the enclave triangle.
 
-	void executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
-	//void executeRunDebug(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key);
-	//void reform(ECBPolyPoint in_polyPoint0, ECBPolyPoint in_polyPoint1, ECBPolyPoint in_polyPoint2);	// reform the triangle, for adhesion; 
-																										// used by AdhesiveRunner in OrganicServerLib.
+	// The below function takes the data of this EnclaveTriangle, and puts in into an FTriangle to break it down.
+	// The return value of this function indicates which correlating blocks the FTriangle failed to produce data for.
+	Operable3DEnclaveKeySet executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
+
 
 	// utility functions, for debugging and std::cout output
-	//void printExteriorBlocks();			// prints the block keys for each block that was spawned when the EnclaveTriangle's lines were traced through the Enclave's blocks.
 	void printPoints();
 	void printBlockKeys();				// prints the EnclaveKey block values of all blocks in the OrganicTriangleTertiary
 	bool doBlocksExistAtY(int in_y);	// checks if any blocks exist in the enclaveTriangleTeritary, at a specific layer of Y

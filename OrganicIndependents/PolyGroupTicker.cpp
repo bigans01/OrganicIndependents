@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "PolyGroupTicker.h"
 
+void PolyGroupTicker::resetTicker()
+{
+	totalPolys = 0;
+	currentPolys = 0;
+}
+
 void PolyGroupTicker::incrementCurrentPolys()
 {
 	currentPolys++;

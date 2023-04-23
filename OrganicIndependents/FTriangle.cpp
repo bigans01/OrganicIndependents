@@ -37,7 +37,8 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureEmptyNormal,
 														fractureRequiredOrientation,
 														fractureRequiredClampValue,
-														fractureMaterial);
+														fractureMaterial,
+														runDebugMode);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
@@ -58,7 +59,8 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureEmptyNormal,
 														fractureRequiredOrientation,
 														fractureRequiredClampValue,
-														fractureMaterial);
+														fractureMaterial,
+														runDebugMode);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
@@ -73,12 +75,13 @@ void FTriangle::setupAndRunFracturerMachine()
 			std::shared_ptr<FTriangleFracturerBase> oreFracturer(new (OREFracturingMachine));
 			fracturerMachine = oreFracturer;
 			fracturerMachine->transferFTriangleMetadata(fracturePoints[0],
-				fracturePoints[1],
-				fracturePoints[2],
-				fractureEmptyNormal,
-				fractureRequiredOrientation,
-				fractureRequiredClampValue,
-				fractureMaterial);
+														fracturePoints[1],
+														fracturePoints[2],
+														fractureEmptyNormal,
+														fractureRequiredOrientation,
+														fractureRequiredClampValue,
+														fractureMaterial,
+														runDebugMode);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;

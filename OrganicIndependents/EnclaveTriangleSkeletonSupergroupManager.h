@@ -13,6 +13,12 @@ public:
 	{
 		triangleSkeletonSupergroups[in_supergroupID].insertSkeletonContainer(in_skeletonContainerID, in_skeletonContainer);
 	}
+
+	// Append some skeleton containers from another manager; the IDs of the supergroups from the other manager
+	// must be used here. If not done correctly, then the ECBPolyReformer class processing functions,
+	// processContouredPolysAgainstPersistentMass and processPersistentPolysAgainstContouredMass will not function correctly,
+	// when they call retriveAllEnclaveTrianglesForSupergroup. If those functions can't find a correclating supergroup ID in this manager,
+	// it leads to ECBPolys not being inserted, which leads to unwanted rendering strangeness.
 	OperableIntSet appendSkeletonContainers(EnclaveTriangleSkeletonSupergroupManager* in_groupManagerB)
 	{
 		OperableIntSet appendedSet;
@@ -20,9 +26,8 @@ public:
 		auto groupManagerBSupergroupsEnd = in_groupManagerB->triangleSkeletonSupergroups.end();
 		for (; groupManagerBSupergroupsBegin != groupManagerBSupergroupsEnd; groupManagerBSupergroupsBegin++)
 		{
-			triangleSkeletonSupergroups[currentGroupCounter] = groupManagerBSupergroupsBegin->second;
-			appendedSet += currentGroupCounter;
-			currentGroupCounter++;
+			triangleSkeletonSupergroups[groupManagerBSupergroupsBegin->first] = groupManagerBSupergroupsBegin->second;
+			appendedSet += groupManagerBSupergroupsBegin->first;
 		}
 		return appendedSet;
 	}
@@ -46,7 +51,6 @@ public:
 	void resetSupergroups()
 	{
 		triangleSkeletonSupergroups.clear();
-		currentGroupCounter = 0;
 	}
 
 	void eraseSupergroup(int in_supergroupID)
@@ -63,8 +67,6 @@ public:
 			std::cout << "[Poly ID -> " << groupManagerBSupergroupsBegin->first << "],[Number of EnclaveTriangleSkeletonContainers -> " << groupManagerBSupergroupsBegin->second.skeletonMap.size() << std::endl;
 		}
 	}
-private:
-	int currentGroupCounter = 0;
 };
 
 #endif

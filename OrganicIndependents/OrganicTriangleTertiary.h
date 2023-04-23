@@ -8,6 +8,7 @@
 #include "FTriangle.h"
 #include "PolyUtils.h"
 #include "OrganicFanGroup.h"
+#include "Operable3DEnclaveKeySet.h"
 
 /*
 
@@ -40,6 +41,11 @@ class OrganicTriangleTertiary
 
 		std::map<int, OrganicFanGroup> triangleMap;		// under certain conditions, blocks produced by this instance can contain multiple OrganicWrappedBBFans;
 														// hence, we need to use OrganicFanGroup in case that happens.
+
+		Operable3DEnclaveKeySet incalculableAttempts;	// stores the correleating EnclaveKeyDef values of any blocks that couldn't be produced.
+	private:
+		OrganicFanGroup buildFilledBlockFanGroup();		// builds an OrganicFanGroup that has exactly 6 
+														// OrganicWrappedBBFan instances, one for each face of the block.
 };
 
 #endif

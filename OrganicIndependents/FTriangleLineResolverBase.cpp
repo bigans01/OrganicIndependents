@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "FTriangleLineResolverBase.h"
 
-void FTriangleLineResolverBase::initLineResolver(std::vector<FTriangleLine> in_originalLines)
+void FTriangleLineResolverBase::initLineResolver(std::vector<FTriangleLine> in_originalLines, bool in_resolverDebug)
 {
 	originalLines = in_originalLines;
+	resolverDebug = in_resolverDebug;
 }
 
 bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_linesToCheck)
 {
 	bool areLinesValid = true;
 
-	std::cout << "(FTriangleLineResolverBase::checkLineValidity): entered checkLineValidity, size of lines to check is: " << in_linesToCheck.size(); std::cout << std::endl;
+	if (resolverDebug)
+	{
+		std::cout << "(FTriangleLineResolverBase::checkLineValidity): entered checkLineValidity, size of lines to check is: " << in_linesToCheck.size(); std::cout << std::endl;
+	}
 
 	// Check 1: If the number of lines is 1, it's definitely not valid.
 	if (int(in_linesToCheck.size()) == 1)
@@ -37,7 +41,13 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 
 		// we must loop a number of times, where the number to loop is equal to the number of remaining lines in stagerLines (we already removed one already).
 		int initialRemaining = remainingLineMap.size();
-		std::cout << "(FTriangleLineResolverBase::checkLineValidity): value of initialRemaining: " << initialRemaining << std::endl;
+
+		if (resolverDebug)
+		{
+			std::cout << "(FTriangleLineResolverBase::checkLineValidity): value of initialRemaining: " << initialRemaining << std::endl;
+		}
+
+
 		for (int x = 0; x < initialRemaining; x++)
 		{
 			bool nextLineFound = false;
@@ -102,30 +112,36 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 			(newLineVector.size() < 3)
 		)
 		{
-			std::cout << "(FTriangleLineResolverBase) !! Bad line sequence detected!" << std::endl;
-			std::cout << "(FTriangleLineResolverBase) !! Original lines were: " << std::endl;
-			for (auto& currentDebugLine : debugCopy)
+			// //|||||||||||||||||||||||||| START: DEBUG block
+			if (resolverDebug)
 			{
-				currentDebugLine.printLine();
-			}
+				std::cout << "(FTriangleLineResolverBase) !! Bad line sequence detected!" << std::endl;
+				std::cout << "(FTriangleLineResolverBase) !! Original lines were: " << std::endl;
+				for (auto& currentDebugLine : debugCopy)
+				{
+					currentDebugLine.printLine();
+				}
 
-			std::cout << "!! Reasons: ";
+				std::cout << "!! Reasons: ";
 
-			if (remainingLineMap.size() != 0)
-			{
-				std::cout << " :: lineMapSize not 0 :: | ";
-			}
+				if (remainingLineMap.size() != 0)
+				{
+					std::cout << " :: lineMapSize not 0 :: | ";
+				}
 
-			if (newLineVector.rbegin()->pointB != newLineVector.begin()->pointA)
-			{
-				std::cout << " :: begin and end points don't match :: | ";
-			}
+				if (newLineVector.rbegin()->pointB != newLineVector.begin()->pointA)
+				{
+					std::cout << " :: begin and end points don't match :: | ";
+				}
 
-			if (newLineVector.size() < 3)
-			{
-				std::cout << " :: number of lines is less than 3 :: | ";
+				if (newLineVector.size() < 3)
+				{
+					std::cout << " :: number of lines is less than 3 :: | ";
+				}
+				std::cout << std::endl;
 			}
-			std::cout << std::endl;
+			//|||||||||||||||||||||||||| END: DEBUG block
+
 			areLinesValid = false;
 		}
 		else

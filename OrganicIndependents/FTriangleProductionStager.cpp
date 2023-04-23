@@ -76,7 +76,8 @@ std::vector<FTriangleLine> FTriangleProductionStager::fetchStagerLines()
 
 FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey,
 																	FTriangleType in_fTriangleTypeForDebug,
-																	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3])
+																	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3],
+																	bool in_useAnalysisDebugOutput)
 {
 	//	FTriangleType in_fTriangleTypeForDebug,
 	//	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3]
@@ -221,36 +222,41 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 			(newLineVector.size() < 3)
 		)
 		{
-			std::cout << "!! -> Bad line sequence detected! Stager Key: ";
-			in_stagerKey.printKey();
-			std::cout << std::endl;
-			std::cout << "!! -> Original lines were: " << std::endl;
-			for (auto& currentDebugLine : debugCopy)
+			// |||||||||||||||||||||||| START DEBUG BLOCK
+			if (in_useAnalysisDebugOutput)
 			{
-				currentDebugLine.printLine();
-			}
-			
-			std::cout << "!! Reasons: ";
+				std::cout << "(FTriangleProductionStager::analyzeAndReorganize) !! -> Bad line sequence detected! Stager Key: ";
+				in_stagerKey.printKey();
+				std::cout << std::endl;
+				std::cout << "(FTriangleProductionStager::analyzeAndReorganize) !! -> Original lines were: " << std::endl;
+				for (auto& currentDebugLine : debugCopy)
+				{
+					currentDebugLine.printLine();
+				}
 
-			if (remainingLineMap.size() != 0)
-			{
-				std::cout << " :: lineMapSize not 0 :: | ";
-			}
+				std::cout << "!! Reasons: ";
 
-			if (stagerLines.rbegin()->pointB != stagerLines.begin()->pointA)
-			{
-				std::cout << " :: begin and end points don't match :: | ";
-			}
+				if (remainingLineMap.size() != 0)
+				{
+					std::cout << " :: lineMapSize not 0 :: | ";
+				}
 
-			if (newLineVector.size() < 3)
-			{
-				std::cout << " :: number of lines is less than 3 :: | ";
-			}
-			std::cout << std::endl;
+				if (stagerLines.rbegin()->pointB != stagerLines.begin()->pointA)
+				{
+					std::cout << " :: begin and end points don't match :: | ";
+				}
 
-			//int badSequenceWait = 3;
-			//std::cin >> badSequenceWait;
-			std::cout << "!! -> Done printing bad line metadata. " << std::endl;
+				if (newLineVector.size() < 3)
+				{
+					std::cout << " :: number of lines is less than 3 :: | ";
+				}
+				std::cout << std::endl;
+
+				//int badSequenceWait = 3;
+				//std::cin >> badSequenceWait;
+				std::cout << "!! -> Done printing bad line metadata. " << std::endl;
+			}
+			// |||||||||||||||||||||||| END DEBUG BLOCK
 			
 			//isStagerValid = false;	// we will set this to false,
 									// but if the FTriangleLineResolutionMachine figures out a solution,
@@ -268,7 +274,7 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 			// Because this stager instance couldn't find a solution in the lines,
 			// we must delegate that responsibility to an instance of
 			// FTriangleLineResolutionMachine.
-			FTriangleLineResolutionMachine solver(debugCopy);
+			FTriangleLineResolutionMachine solver(debugCopy, in_useAnalysisDebugOutput);
 			solver.runResolutionSequence();
 			if (solver.resolutionFound)
 			{

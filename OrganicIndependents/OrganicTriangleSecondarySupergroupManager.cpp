@@ -25,18 +25,34 @@ void OrganicTriangleSecondarySupergroupManager::generateBlockTrianglesFromSecond
 						int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 						EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
 
-						// Set the current blockRef to be the BlockSubMode from the group.
-						blockRef->setBlockMode(currentGroup.second.groupSubType);
-
-						// Cycle through each fan in the group.
-						for (auto& currentFanInGroup : currentGroup.second.fans)
+						// If the block is in a BLOCK_NORMAL_FILLED state, we should no longer append triangles to it, as these would be unnecessary,
+						// since BLOCK_NORMAL_FILLED means all 6 sides of the block have been filled (usually to account for incalculable blocks)
+						auto filledBlockCheck = blockRef->getBlockMode();
+						if (filledBlockCheck != BlockSubType::BLOCK_NORMAL_FILLED)
 						{
+							// As long as the subtype of the block isn't BlockSubType::BLOCK_NORMAL_FILLED, 
+							// we should be ok to add data. However, it's entirely possible in the next call to 
+							// setBlockMode below, that this will become BlockSubType::BLOCK_NORMAL_FILLED;
+							// At the same time, if this condition is met, it also means that the block will be entirely 
+							// filled on all 6 sides in block of code.
 
-							//blockRef->insertBBFanFromRawEnclave(currentGroup.second);
-							//*in_totalTrianglesRef += currentGroup.second.poly.numberOfTertiaries;	// increment the number of total_triangles, for when we eventually load into an Enclave itself.
+							// Set the current blockRef to be the BlockSubMode from the group.
+							blockRef->setBlockMode(currentGroup.second.groupSubType);
 
-							blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
-							*in_totalTrianglesRef += currentFanInGroup.poly.numberOfTertiaries;
+							// Remember, if the currentGroup was filled because incalculable (aka BlockSubType::BLOCK_NORMAL_FILLED), 
+							// the block must first be reset before anything else.
+							if (currentGroup.second.getFilledBecauseIncalculableValue() == true)
+							{
+								*in_totalTrianglesRef -= blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
+							}
+
+							// Cycle through each fan in the group.
+							for (auto& currentFanInGroup : currentGroup.second.fans)
+							{
+
+								blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
+								*in_totalTrianglesRef += currentFanInGroup.poly.numberOfTertiaries;
+							}
 						}
 					}
 				}
@@ -61,6 +77,12 @@ void OrganicTriangleSecondarySupergroupManager::simulateExposedBlockGeneration(s
 
 					// Set the current blockRef to be the BlockSubMode from the group.
 					blockRef->setBlockMode(currentGroup.second.groupSubType);
+
+					// Remember, if the currentGroup was filled because incalculable, the block must first be reset before anything else.
+					if (currentGroup.second.getFilledBecauseIncalculableValue() == true)
+					{
+						blockRef->resetBlock();	// reset the block, before inserting.
+					}
 
 					// Cycle through each fan in the group.
 					for (auto& currentFanInGroup : currentGroup.second.fans)

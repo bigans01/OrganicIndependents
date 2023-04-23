@@ -15,3 +15,8 @@ void BlockFlags::setTriangleDataLocationFlag(short in_bitValue)
 {
 	IndependentUtils::setUnsignedCharBit(&flags, 1, in_bitValue);
 }
+
+void BlockFlags::resetFlags()
+{
+	flags = 0;
+}

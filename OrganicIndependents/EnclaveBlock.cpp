@@ -6,6 +6,22 @@ int EnclaveBlock::getNumberOfBBFans()
 	return manager.getNumberOfTotalFans();
 }
 
+int EnclaveBlock::resetBlock()
+{
+	int previousNumberOfTriangles = getNumberOfTotalTriangles();
+	groupTicker.resetTicker();
+	BBFanMetaByte = 0;
+	blockflags.resetFlags();
+	blockid = 0;
+	usedPoints = 0;
+	t1_flags = 0;
+
+	FanManager emptyManager;
+	manager = emptyManager;
+
+	return previousNumberOfTriangles;
+}
+
 int EnclaveBlock::getNumberOfTotalTriangles()
 {
 	return manager.getNumberOfTotalTriangles();

@@ -16,6 +16,7 @@ public:
 	int fetchIndexOfLastOfCurrentGroup();
 	void copyCurrentIntoLast();
 	PolyGroupTickerState getTickerState();
+	void resetTicker();
 };
 
 #endif

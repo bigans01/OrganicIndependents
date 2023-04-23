@@ -35,6 +35,15 @@ class OrganicWrappedBBFan
 			ECBPolyPoint in_emptyNormal,
 			BoundaryPolyIndicator in_boundaryPolyIndicator);
 
+		// The below function is primarily used to take in 4 points to 
+		// produce two triangles for the face of a block. See it's usage in 
+		// the function OrganicTriangleTertiary::buildFilledBlockFanGroup(). 
+		// This function may be replaced at a later point with a templated function. (noted on (4/21/2023)
+		OrganicWrappedBBFan(ECBPolyPoint in_pointsArray[4],
+							TriangleMaterial in_materialID,
+							ECBPolyPoint in_emptyNormal,
+							BoundaryPolyIndicator in_boundaryPolyIndicator);
+
 		int keyID;
 		PrimarySegmentTracker blockSegmentTracker;
 		PrimarySegmentTracker reverseSegmentTracker;

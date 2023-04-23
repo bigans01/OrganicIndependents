@@ -28,7 +28,11 @@ class EnclaveBlock
 		unsigned char usedPoints = 0;				// the number of used points (up to 16)
 		unsigned char t1_flags = 0;					// flags for t1 type objects
 		FanManager manager;							// stores EnclaveBlockVertexes and FanBases; automatically expands to allocate storage based on needs of the EnclaveBlock.
-		PrimarySegmentTracker blockSegmentTracker;  // keeps track of line segments that have entered this block.
+		PrimarySegmentTracker blockSegmentTracker;  // keeps track of line segments that have entered this block (currently unused)
+
+		int resetBlock();	// resets all underlying components of the EnclaveBlock, and returns the amount of previous triangles that existed.
+							// This is needed when needing to deduct the amount of triangles to render in an ORE, after changes have been made.
+							// See it's usage in the functions of the OrganicTriangleSecondarySupergroupManager class.
 
 		// functions for interfacing with the underlying FanManager.
 		void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);	// adds a new EnclaveBlockTriangle to the block; this will eventually need the mutex, EnclaveCollectionMap::enclaveCollectionMapMutex passed to it, so that it may then pass it to the call to checkForOutsourcingLimits (heap allocation safety on the maps)

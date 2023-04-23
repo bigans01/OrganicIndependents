@@ -41,7 +41,8 @@ class FTriangle
 				  ECBPolyPoint in_fractureEmptyNormal,
 				  BoundaryOrientation in_requiredOrientation,
 				  PerfectClampEnum in_perfectClampValue,
-				  TriangleMaterial in_fractureMaterial)
+				  TriangleMaterial in_fractureMaterial,
+				  bool in_debugMode = false)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
@@ -54,6 +55,8 @@ class FTriangle
 			fractureRequiredClampValue = in_perfectClampValue;
 
 			fractureMaterial = in_fractureMaterial;
+
+			runDebugMode = in_debugMode;
 		}
 
 		// constructor for big points (double); does the same stuff as above; 
@@ -65,7 +68,8 @@ class FTriangle
 				ECBPolyPoint in_fractureEmptyNormal,
 				BoundaryOrientation in_requiredOrientation,
 				PerfectClampEnum in_perfectClampValue,
-				TriangleMaterial in_fractureMaterial)
+				TriangleMaterial in_fractureMaterial,
+			    bool in_debugMode = false)
 		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
@@ -77,6 +81,8 @@ class FTriangle
 			fractureRequiredClampValue = in_perfectClampValue;
 
 			fractureMaterial = in_fractureMaterial;
+
+			runDebugMode = in_debugMode;
 		}
 
 		// constructor for creating an FTriangle from an FTriangleOutput
@@ -128,6 +134,9 @@ class FTriangle
 		void determineOutputLevel();	// sets the value of the triangleOutputGrid, based on what the value of the triangleOriginGrid is.
 										// The value of triangleOutputGrid is used to determine the value of the FTriangleFracturerBase-derived instance.
 		void setupAndRunFracturerMachine();		// instantiates the appropriate class for the fracturerMachine, based on the value of triangleOutputGrid.
+
+		bool runDebugMode = false;	// used to determine what the FTriangle will do with the debug output;
+									// This should always be set to off/false by default.
 
 
 };

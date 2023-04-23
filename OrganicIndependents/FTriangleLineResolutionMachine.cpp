@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "FTriangleLineResolutionMachine.h"
 
-FTriangleLineResolutionMachine::FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines)
+FTriangleLineResolutionMachine::FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines, bool in_runResolversInDebugMode)
 {
 	originalMachineLines = in_originalMachineLines;
+	runResolversInDebugMode = in_runResolversInDebugMode;
 	setupResolvers();
 }
 
@@ -20,7 +21,7 @@ void FTriangleLineResolutionMachine::runResolutionSequence()
 	// Step 1: setup all resolvers
 	for (auto& currentResolver : resolverMap)
 	{
-		currentResolver.second->initLineResolver(originalMachineLines);
+		currentResolver.second->initLineResolver(originalMachineLines, runResolversInDebugMode);
 	}
 
 	// Step 2: attempt resolution through all resolvers. If we find a resolution, our output machine lines become the solution.

@@ -3,7 +3,10 @@
 
 bool FTLResolverClampedCorner::runAttemptedResolution()
 {
-	std::cout << "(FTLResolverClampedCorner) --> attempting resolution.... " << std::endl;
+	if (resolverDebug)
+	{
+		std::cout << "(FTLResolverClampedCorner) --> attempting resolution.... " << std::endl;
+	}
 	bool resolutionFound = false;
 
 	// This resolver can only operate under the condition that there are two lines. So check the original lines.
@@ -36,21 +39,30 @@ bool FTLResolverClampedCorner::runAttemptedResolution()
 		// Now, check which dimension is clamped. There should only be 1.
 		if (xFloats.size() == 1)
 		{
-			std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an X value of: " << *xFloats.begin() << std::endl;
+			if (resolverDebug)
+			{
+				std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an X value of: " << *xFloats.begin() << std::endl;
+			}
 			resolutionFound = true;
 			determinedResolutionStatus = FTLResolutionStatus::FTLR_PURGABLE;
 		}
 
 		else if (yFloats.size() == 1)
 		{
-			std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an Y value of: " << *yFloats.begin() << std::endl;
+			if (resolverDebug)
+			{
+				std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an Y value of: " << *yFloats.begin() << std::endl;
+			}
 			resolutionFound = true;
 			determinedResolutionStatus = FTLResolutionStatus::FTLR_PURGABLE;
 		}
 
 		else if (zFloats.size() == 1)
 		{
-			std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an Z value of: " << *zFloats.begin() << std::endl;
+			if (resolverDebug)
+			{
+				std::cout << "(FTLResolverClampedCorner): found resolution; all points were clamped to an Z value of: " << *zFloats.begin() << std::endl;
+			}
 			resolutionFound = true;
 			determinedResolutionStatus = FTLResolutionStatus::FTLR_PURGABLE;
 		}

@@ -79,6 +79,23 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 	
 }
 
+OrganicWrappedBBFan::OrganicWrappedBBFan(ECBPolyPoint in_pointsArray[4],
+	TriangleMaterial in_materialID,
+	ECBPolyPoint in_emptyNormal,
+	BoundaryPolyIndicator in_boundaryPolyIndicator)
+{
+	for (int x = 0; x < 4; x++)
+	{
+		poly.fillPointIndex(x, x);
+		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[x]);
+	}
+
+	poly.numberOfTertiaries = 2;
+	poly.materialID = in_materialID;
+	poly.emptyNormal = in_emptyNormal;
+	poly.faceAlignment = in_boundaryPolyIndicator;
+}
+
 
 void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleMaterial in_materialID, ECBPolyPoint in_emptyNormal)
 {

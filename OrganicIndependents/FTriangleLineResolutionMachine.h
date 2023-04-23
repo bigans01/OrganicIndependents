@@ -25,7 +25,7 @@ of true also indicats that the lines have been solved, the values of which shoul
 class FTriangleLineResolutionMachine
 {
 	public:
-		FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines);	// the sole constructor for this class; 
+		FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines, bool in_runResolversInDebugMode);	// the sole constructor for this class; 
 																							// sets the value of originalMachineLines, and
 																							// also calls setupResolvers().
 	
@@ -36,6 +36,9 @@ class FTriangleLineResolutionMachine
 										// until a solution is found (which causes a break/stop), or until all algorithms have been exhausted.
 
 		bool resolutionFound = false;	// set to true whenever we find a resolutioon.
+
+		bool runResolversInDebugMode = false;	// passed to all instances of FTriangleLineResolverBase, to tell them where to direct output to.
+
 		FTLResolutionStatus resolvedStatus = FTLResolutionStatus::FTLR_NOVAL;	// no val by default, must be correctly set by an underlying instance of 
 																				// FTriangleLineResolverBase.
 		std::vector<FTriangleLine> solutionLines;	// this will store the solution, if one is found.

@@ -46,12 +46,12 @@ EnclaveTriangle::EnclaveTriangle(FTriangleOutput in_fTriangleOutput)
 	emptyNormal = in_fTriangleOutput.fractureEmptyNormal;
 }
 
-void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, 
+Operable3DEnclaveKeySet EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, 
 								BorderDataMap* in_borderDataMap, 
 								EnclaveKeyDef::EnclaveKey in_key, 
 								bool in_badRunFlag)
 {
-
+	Operable3DEnclaveKeySet badKeySet;
 	// NEW method for producing fan data starts here (from 3/29/2023)
 	/*
 	OrganicTriangleTertiary tertiaryProducer(lineArray[0].pointA,
@@ -110,7 +110,8 @@ void EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList,
 	
 
 	enclaveTriangleTertiary = tertiaryProducer;
-	
+	badKeySet = tertiaryProducer.incalculableAttempts;
+	return badKeySet;
 }
 
 /*

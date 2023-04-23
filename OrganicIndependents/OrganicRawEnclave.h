@@ -21,6 +21,7 @@
 #include "OREDependencyState.h"
 #include "Operable3DEnclaveKeySet.h"
 #include "BlockCopyQuery.h"
+#include "Operable3DEnclaveKeySet.h"
 
 /*
 
@@ -119,7 +120,9 @@ public:
 	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);								// prints any existing "secondaries" (triangle fans) in an EnclaveBlock, if that block exists.
 	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);				// checks to see if a block exists as a skeleton, should only ever be used with the function
 																							// ECBMap::getBlockStateFromPopulatedORE.
-	void spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE
+	Operable3DEnclaveKeySet spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// -->	signals the ORE to produce the renderable blocks; used by OrganicSystem::jobProduceBlocksInORE.
+																																// The return value of this function should indicate any blocks that the EnclaveTriangles attempted to produce, but couldn't.
+																																// This functioanality is needed to keep track of individual EnclaveBlock instances that need to be mitigated/logged.
 	std::map<int, EnclaveBlock>::iterator getBlockMapBeginIter();		// fetch a begin iterator for the blockMap.
 	std::map<int, EnclaveBlock>::iterator getBlockMapEndIter();			// fetch a end iterator for the blockMap.
 	std::map<int, EnclaveBlock>::iterator getSpecificBlockIter(EnclaveKeyDef::EnclaveKey in_blockKey);	// attempts to find a specific iterator in blockMap.
@@ -258,7 +261,10 @@ private:
 
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void resetBlockDataAndTriangleCount();																							// clears the blockMap, and resets triangle count
-	void spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers
+	Operable3DEnclaveKeySet spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers;
+																																		// The return value contains the keys of any blocks that wwre deemed incalculable
+																																		// as a result of a call to EnclaveTriangle::executeRun().
+
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
 	void produceAllUnexposedBlocks(std::mutex* in_mutexRef);		// should be used when going from currentLodState of FULL to BLOCK; this will 

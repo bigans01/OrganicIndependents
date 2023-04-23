@@ -181,6 +181,12 @@
     <Filter Include="Source Files\Archived">
       <UniqueIdentifier>{63e61514-dc4e-4b23-a84b-1707d6f272a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logging">
+      <UniqueIdentifier>{b248473b-6428-4d21-8897-ab367f40f93f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logging">
+      <UniqueIdentifier>{cc4f02b4-e346-4210-8dc8-fb4c3d577e78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -205,9 +211,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PolyDebugLevel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PolyLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugOptionSet.h">
@@ -918,15 +921,15 @@
     <ClInclude Include="BlockSubType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PolyLogger.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BlueprintScanningCuboid.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PolyLogger.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="StringToMessageBuilder.cpp">
@@ -1207,6 +1210,9 @@
     </ClCompile>
     <ClCompile Include="OrganicFanGroup.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyLogger.cpp">
+      <Filter>Source Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

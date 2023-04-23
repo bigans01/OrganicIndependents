@@ -296,14 +296,17 @@ void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::Encla
 	eraseCounter++;
 }
 
-void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
+Operable3DEnclaveKeySet OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
+	// The return value of this function will be a set of EnclaveKey instances
+	// that represent blocks that couldn't be produced.
+	Operable3DEnclaveKeySet uncalculatedBlocks;
 	switch (currentLodState)
 	{
 		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			uncalculatedBlocks += spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
 			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
 			break;
 		};
@@ -311,7 +314,7 @@ void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKe
 		case ORELodState::LOD_ENCLAVE_RMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
+			uncalculatedBlocks += spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
 			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
 			break;
 		};
@@ -327,6 +330,7 @@ void OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKe
 			break;
 		}
 	}
+	return uncalculatedBlocks;
 }
 
 int OrganicRawEnclave::getNumberOfTrianglesByLOD()
@@ -476,6 +480,7 @@ std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSup
 	auto idFinder = tempManager.enclaveTriangleSupergroups.find(in_superGroupID);
 	if (idFinder != tempManager.enclaveTriangleSupergroups.end())
 	{
+		//std::cout << "!!! Found matching supergroup ID of " << in_superGroupID << std::endl;
 		auto supergroupContainersBegin = idFinder->second.containerMap.begin();
 		auto supergroupContainersEnd = idFinder->second.containerMap.end();
 		for (; supergroupContainersBegin != supergroupContainersEnd; supergroupContainersBegin++)
@@ -488,6 +493,17 @@ std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSup
 			}
 		}
 	}
+	else if (idFinder == tempManager.enclaveTriangleSupergroups.end())
+	{
+		std::cout << "!!! NOTICE, could not find any triangles, or supergroup ID of: " << in_superGroupID << std::endl;
+		std::cout << "Printing unique supergroup IDs..." << std::endl;
+		for (auto& currentID : skeletonSGM.triangleSkeletonSupergroups)
+		{
+			std::cout << currentID.first << std::endl;
+		}
+
+	}
+
 	return triangleVector;
 }
 
@@ -707,9 +723,10 @@ void OrganicRawEnclave::removeSkeletonSupergroup(std::mutex* in_mutexRef, int in
 	skeletonSGM.eraseSupergroup(in_supergroupIDToRemove);
 }
 
-void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)	// change the enclave key logic later...
+Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)	// change the enclave key logic later...
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+	Operable3DEnclaveKeySet incalculableBlocks;	// stores blocks that a call to EnclaveTriangle::executeRun() failed to produce.
 
 	//std::cout << ":::::::::: Calling spawn enclave triangle containers... " << std::endl;
 
@@ -760,8 +777,8 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
 			{
 				// Call executeRun, to populate the corresponding OrganicTriangleTertiary member in the same
-				// EnclaveTriangle instance.
-				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey, true);
+				// EnclaveTriangle instance; if there are bad blocks from the run, store them in the incalculableBlocks return value.
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey, true);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
@@ -814,6 +831,8 @@ void OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, 
 
 	}
 
+	// the return value of this function will be any malformed/bad blocks.
+	return incalculableBlocks;
 }
 
 void OrganicRawEnclave::printBlockCategorizations()
@@ -1039,7 +1058,7 @@ void OrganicRawEnclave::simulateBlockProduction()
 {
 	BorderDataMap borderDataMap; // for getting trace results in enclaves
 	BlockBorderLineList blockBorderLineList;
-
+	Operable3DEnclaveKeySet incalculableBlocks;
 
 	// part 1: inflate the triangle containers, into the temporary etcSGM.
 	EnclaveTriangleContainerSupergroupManager temporaryETCSgm;
@@ -1091,7 +1110,7 @@ void OrganicRawEnclave::simulateBlockProduction()
 
 				//if (currentTrianglesBegin->first == 0)
 				//{
-				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0), false);
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0), false);
 				
 
 				// is this triangle INVALID?
@@ -1146,6 +1165,13 @@ void OrganicRawEnclave::simulateBlockProduction()
 		}
 
 	}
+
+	if (incalculableBlocks.size() != 0)
+	{
+		std::cout << "!!! NOTICE:  OrganicRawEnclave::simulateBlockProduction() produced some incalculable blocks..." << std::endl;
+		int incalcsCaught = 3;
+		std::cin >> incalcsCaught;
+	}
 }
 
 EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey)
@@ -1162,6 +1188,17 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 	{
 		//std::cout << "(OrganicRawEnclave): getBlockStatus -> entered RMATTER/SMATTER branch. " << std::endl;
 
+		// An important note: the reason for using the OR statement when checking the getBlockMode()
+		// below, is due to the fact that both BlockSubType::BLOCK_NORMAL and BlockSubType::BLOCK_NORMAL_FILLED
+		// are an indicator that the block is "EXPOSED"; in the future, sometime after 4/20/2023, this logic
+		// might be changed, as blocks having a mode of BlockSubType::BLOCK_INDEPENDENT need to have a 
+		// different return code -- or one that is already used -- to indicate that they shouldn't be used, since
+		// BLOCK_INDEPENDENT indicates that it can't reliably be used in something like an sPolyShellProducer.
+		// An example of this need would be in the function RJPhasedDeleteBlock::runPhasedPrechecks() in OrganicCoreLib, 
+		// where it calls OrganicJobProxy::callGetBlockStateFromEFRM to check the block state. We don't want to 
+		// return "EXPOSED" or "UNEXPOSED" as this would be misleading. We may need a new value for the 
+		// RJPhasedDeleteBlock::runPhasedPrechecks() function to interpret.
+
 		// if there are blocks already populated, check those; we won't need -- and don't want to --
 		// call produceBlockCopies() as that is an expensive operation.
 		int targetInt = PolyUtils::convertBlockCoordsToSingle(in_blockKey);
@@ -1171,8 +1208,14 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 			auto existingBlockFinder = blockMap.find(targetInt);
 			if (existingBlockFinder != blockMap.end())
 			{
-				//Under normal operations, it's simply exposed...
-				if (existingBlockFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+				//Under normal operations (BlockSubType::BLOCK_NORMAL or BlockSubType::BLOCK_NORMAL_FILLED), it's simply exposed...
+				// But if it's BlockSubType::BLOCK_INDEPENDENT, we will need logic to tell this block to be "ignored"
+				if 
+				(
+					(existingBlockFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+					||
+					(existingBlockFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL_FILLED)
+				)
 				{
 					returnBlockState = EnclaveBlockState::EXPOSED;
 				}
@@ -1190,8 +1233,14 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 			auto exposedBlocksFinder = exposedBlocks.find(targetInt);
 			if (exposedBlocksFinder != exposedBlocks.end())
 			{
-				// Under normal operations, it's simply exposed...
-				if (exposedBlocksFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+				// Under normal operations (BlockSubType::BLOCK_NORMAL or BlockSubType::BLOCK_NORMAL_FILLED), it's simply exposed...
+				// But if it's BlockSubType::BLOCK_INDEPENDENT, we will need logic to tell this block to be "ignored"
+				if 
+				(
+					(exposedBlocksFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+					||
+					(exposedBlocksFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL_FILLED)
+				)
 				{
 					returnBlockState = EnclaveBlockState::EXPOSED;
 				}
@@ -1232,7 +1281,12 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 		if (targetFinder != blockMap.end())
 		{
 			// Under normal operations, it's simply exposed...
-			if (targetFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+			if 
+			(
+				(targetFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL)
+				||
+				(targetFinder->second.getBlockMode() == BlockSubType::BLOCK_NORMAL_FILLED)
+			)
 			{
 				returnBlockState = EnclaveBlockState::EXPOSED;
 			}
@@ -1275,6 +1329,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 	EnclaveTriangleContainerSupergroupManager tempEtcSGM;
 	BorderDataMap borderDataMap; // for getting trace results in enclaves
 	BlockBorderLineList blockBorderLineList;
+	Operable3DEnclaveKeySet incalculableBlocks;
 
 	// part 1: inflate the triangle containers, into the tempEtcSGM.
 	auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
@@ -1310,7 +1365,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
 			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
 			{
-				currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0), false);
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0), false);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
@@ -1351,6 +1406,13 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 			insertOrganicTriangleSecondaryIntoRefedManager(&tempOtsSGM, etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
 		}
 
+	}
+
+	if (incalculableBlocks.size() != 0)
+	{
+		std::cout << "!!! NOTICE:  OrganicRawEnclave::produceBlockCopies() produced some incalculable blocks..." << std::endl;
+		int incalcsCaught = 3;
+		std::cin >> incalcsCaught;
 	}
 
 	// part 4: generate the block triangles, and put them into the tempBlockMap before the function returns; these are the "exposed" blocks.

@@ -4,9 +4,13 @@
 bool FTLResolverDualStickSaw::runAttemptedResolution()
 {
 	bool resolutionFound = false;
+	
+	if (resolverDebug)
+	{
+		std::cout << "(FTLResolverDualStickSaw) --> attempting resolution; size of originalLines is: "; std::cout << originalLines.size(); std::cout << std::endl;
+	}
 
 
-	std::cout << "(FTLResolverDualStickSaw) --> attempting resolution; size of originalLines is: "; std::cout << originalLines.size(); std::cout << std::endl;
 	if (originalLines.size() == 0)
 	{
 		int anomalousHalt = 3;
@@ -57,13 +61,16 @@ bool FTLResolverDualStickSaw::runAttemptedResolution()
 					// For every iteration, we need a copy of the map.
 					auto currentIterMap = currentLineMap;
 
-					std::cout << "||||||| Erasing -> currentLineIndex: " << currentLineIndex << " | currentOtherIndex: " << currentOtherIndex << std::endl;
+					if (resolverDebug)
+					{
+						std::cout << "||||||| Erasing -> currentLineIndex: " << currentLineIndex << " | currentOtherIndex: " << currentOtherIndex << std::endl;
+					}
 
 					// Now, subtract two indices: the one at the currentLineIndex, and the other at the currentOtherIndex.
 					currentIterMap.erase(currentLineIndex);
 					currentIterMap.erase(currentOtherIndex);
 
-					std::cout << "!! Done erasing..." << std::endl;
+					//std::cout << "!! Done erasing..." << std::endl;
 
 					// Now create a vector from these, and compare it to see if it's valid.
 					std::vector<FTriangleLine> remainingLines;
@@ -72,12 +79,12 @@ bool FTLResolverDualStickSaw::runAttemptedResolution()
 						// push back the remaining line at the specifieed index.
 						remainingLines.push_back(currentIterMap[currentRemainingLine.first]);
 					}
-					std::cout << "!! Done with pushbacks..." << std::endl;
+					//std::cout << "!! Done with pushbacks..." << std::endl;
 
 					// Finally, compare all the remaining lines to see if it did the job.
 
 					bool isValid = checkLineValidity(remainingLines);
-					std::cout << "!! Done with validity check..." << std::endl;
+					//std::cout << "!! Done with validity check..." << std::endl;
 					if (isValid)
 					{
 						std::cout << "(FTLResolverDualStickSaw) Found resolution!" << std::endl;

@@ -33,7 +33,8 @@ class FTriangleProductionStager
 		// -the localized points of the FTriangle, so that we can reconstruct it directly if needed
 		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey, 
 												FTriangleType in_fTriangleTypeForDebug,
-												ECBPolyPoint in_localizedFTrianglePointsArrayRef[3]);
+												ECBPolyPoint in_localizedFTrianglePointsArrayRef[3],
+												bool in_useAnalysisDebugOutput);
 		std::vector<FTriangleLine> fetchStagerLines();
 	private:
 		std::vector<FTriangleLine> stagerLines;
