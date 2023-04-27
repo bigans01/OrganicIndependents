@@ -328,6 +328,8 @@
     <ClInclude Include="OrganicTriangleTertiary.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
     <ClInclude Include="OSTerrainFormation.h" />
+    <ClInclude Include="OutputDirector.h" />
+    <ClInclude Include="OutputDirectorMode.h" />
     <ClInclude Include="PAtom2DXY.h" />
     <ClInclude Include="PAtomBase.h" />
     <ClInclude Include="PAtomDimType.h" />
@@ -445,6 +447,7 @@
     <ClCompile Include="FTriangleContainer.cpp" />
     <ClCompile Include="FTriangleFracturerBase.cpp" />
     <ClCompile Include="FTriangleKeySetCalibrator.cpp" />
+    <ClCompile Include="FTriangleLine.cpp" />
     <ClCompile Include="FTriangleLineResolutionMachine.cpp" />
     <ClCompile Include="FTriangleLineResolverBase.cpp" />
     <ClCompile Include="FTriangleORETracer.cpp" />
@@ -467,6 +470,7 @@
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp" />
     <ClCompile Include="OrganicTriangleTertiary.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
+    <ClCompile Include="OutputDirector.cpp" />
     <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />

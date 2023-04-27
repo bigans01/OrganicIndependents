@@ -21,6 +21,7 @@
 #include "FTriangleKeySetCalibrator.h"
 #include "FExteriorRaycastCollisionResolver.h"
 #include "FTLResolutionStatus.h"
+#include "OutputDirector.h"
 
 class FTriangleFracturerBase
 {
@@ -33,7 +34,7 @@ class FTriangleFracturerBase
 			BoundaryOrientation in_originBoundaryOrientation,
 			PerfectClampEnum in_originPerfectClampValue,
 			TriangleMaterial in_originMaterial,
-			bool in_debugMode);
+			OutputDirector* in_fracturerBaseWriterRef);
 		void printFracturerPoints();
 
 		// required virtual functions
@@ -41,11 +42,12 @@ class FTriangleFracturerBase
 	protected:
 		friend class FTriangle;
 
-		// debug mode setting. Can be used anywhere we please in this class and in the derived classes of this base class. Items of interest where this is used
+		// Below: the pointer to the OutputDirector that resides in the parent FTriangle that owns an instance of 
+		// this derived-class. Can be used anywhere we please in this class and in the derived classes of this base class. Items of interest where this is used
 		// include:
 		//	-the function FTriangleProductionStager::analyzeAndReorganize
 		//	-any instantiation of FTriangleLineResolutionMachine, so that it may pass this value onto the underlying FTriangleLineResolverBase instances that get run
-		bool runMachineInDebugMode = false;
+		OutputDirector* fracturerBaseWriterRef = nullptr;
 
 		// metadata from the FTriangle that we will use as a basis for fracturing
 		DoublePoint originFTrianglePoints[3];

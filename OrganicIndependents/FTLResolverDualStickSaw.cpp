@@ -5,11 +5,8 @@ bool FTLResolverDualStickSaw::runAttemptedResolution()
 {
 	bool resolutionFound = false;
 	
-	if (resolverDebug)
-	{
-		std::cout << "(FTLResolverDualStickSaw) --> attempting resolution; size of originalLines is: "; std::cout << originalLines.size(); std::cout << std::endl;
-	}
 
+	resolverWriterRef->logLine("(FTLResolverDualStickSaw) --> attempting resolution; size of originalLines is: ", int(originalLines.size()));
 
 	if (originalLines.size() == 0)
 	{
@@ -61,10 +58,8 @@ bool FTLResolverDualStickSaw::runAttemptedResolution()
 					// For every iteration, we need a copy of the map.
 					auto currentIterMap = currentLineMap;
 
-					if (resolverDebug)
-					{
-						std::cout << "||||||| Erasing -> currentLineIndex: " << currentLineIndex << " | currentOtherIndex: " << currentOtherIndex << std::endl;
-					}
+
+					resolverWriterRef->logLine("||||||| Erasing -> currentLineIndex: ", currentLineIndex, " | currentOtherIndex: ", currentOtherIndex);
 
 					// Now, subtract two indices: the one at the currentLineIndex, and the other at the currentOtherIndex.
 					currentIterMap.erase(currentLineIndex);

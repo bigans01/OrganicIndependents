@@ -6,6 +6,7 @@
 #include "FTriangleLine.h"
 #include "FTriangleLineResolutionMachine.h"
 #include "FTLResolutionStatus.h"
+#include "OutputDirector.h"
 
 /*
 
@@ -34,13 +35,15 @@ class FTriangleProductionStager
 		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey, 
 												FTriangleType in_fTriangleTypeForDebug,
 												ECBPolyPoint in_localizedFTrianglePointsArrayRef[3],
-												bool in_useAnalysisDebugOutput);
+												OutputDirector* in_stagerWriterRef);
 		std::vector<FTriangleLine> fetchStagerLines();
 	private:
 		std::vector<FTriangleLine> stagerLines;
 
 		// flags to indicate certain things happened (duplicates, bad triangles, etc)
 		bool duplicatesFound = false;
+		OutputDirector* stagerWriterRef = nullptr;	// a pointer to the OutputDirector member that resides in the parent FTriangle;
+													// it can be used to write output to std::cout or save it for later analysis.
 
 };
 

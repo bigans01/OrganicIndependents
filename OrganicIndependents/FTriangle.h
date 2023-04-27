@@ -9,6 +9,7 @@
 #include "WorldFracturingMachine.h"
 #include "BlueprintFracturingMachine.h"
 #include "OREFracturingMachine.h"
+#include "OutputDirector.h"
 
 /*
 
@@ -42,7 +43,7 @@ class FTriangle
 				  BoundaryOrientation in_requiredOrientation,
 				  PerfectClampEnum in_perfectClampValue,
 				  TriangleMaterial in_fractureMaterial,
-				  bool in_debugMode = false)
+				  OutputDirectorMode in_outputMode = OutputDirectorMode::OUTPUT_NONE)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
@@ -56,7 +57,8 @@ class FTriangle
 
 			fractureMaterial = in_fractureMaterial;
 
-			runDebugMode = in_debugMode;
+			writingMode = in_outputMode;
+			outputWriter.setOutputMode(writingMode);
 		}
 
 		// constructor for big points (double); does the same stuff as above; 
@@ -69,7 +71,7 @@ class FTriangle
 				BoundaryOrientation in_requiredOrientation,
 				PerfectClampEnum in_perfectClampValue,
 				TriangleMaterial in_fractureMaterial,
-			    bool in_debugMode = false)
+				OutputDirectorMode in_outputMode = OutputDirectorMode::OUTPUT_NONE)
 		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
@@ -82,7 +84,8 @@ class FTriangle
 
 			fractureMaterial = in_fractureMaterial;
 
-			runDebugMode = in_debugMode;
+			writingMode = in_outputMode;
+			outputWriter.setOutputMode(writingMode);
 		}
 
 		// constructor for creating an FTriangle from an FTriangleOutput
@@ -108,6 +111,7 @@ class FTriangle
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* fetchOutputContainerRef();
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> getUnresolvedOutputs();
+		OutputDirector outputWriter;	// used to write FTriangle output to std::cout, or save it for later use/analysis.
 	private:
 		DoublePoint fracturePoints[3];		// the original points of the FTriangle, before anything is done; these values 
 											// may or may not get translated.
@@ -135,8 +139,8 @@ class FTriangle
 										// The value of triangleOutputGrid is used to determine the value of the FTriangleFracturerBase-derived instance.
 		void setupAndRunFracturerMachine();		// instantiates the appropriate class for the fracturerMachine, based on the value of triangleOutputGrid.
 
-		bool runDebugMode = false;	// used to determine what the FTriangle will do with the debug output;
-									// This should always be set to off/false by default.
+		OutputDirectorMode writingMode = OutputDirectorMode::OUTPUT_NONE;	// used to determine what the FTriangle will do with the debug output;
+																			// This should always be set to off/false by default.
 
 
 };

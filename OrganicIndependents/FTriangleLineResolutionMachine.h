@@ -9,6 +9,7 @@
 #include "FTLResolutionStatus.h"
 #include "FTLResolverClampedCorner.h"
 #include "FTLResolverDualStickSaw.h"
+#include "OutputDirector.h"
 
 /*
 
@@ -25,7 +26,8 @@ of true also indicats that the lines have been solved, the values of which shoul
 class FTriangleLineResolutionMachine
 {
 	public:
-		FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines, bool in_runResolversInDebugMode);	// the sole constructor for this class; 
+		FTriangleLineResolutionMachine(std::vector<FTriangleLine> in_originalMachineLines, 
+									   OutputDirector* in_machineWriterRef);	// the sole constructor for this class; 
 																							// sets the value of originalMachineLines, and
 																							// also calls setupResolvers().
 	
@@ -37,7 +39,7 @@ class FTriangleLineResolutionMachine
 
 		bool resolutionFound = false;	// set to true whenever we find a resolutioon.
 
-		bool runResolversInDebugMode = false;	// passed to all instances of FTriangleLineResolverBase, to tell them where to direct output to.
+		OutputDirector* machineWriterRef = nullptr;	// passed to all instances of FTriangleLineResolverBase, to tell them where to direct output to.
 
 		FTLResolutionStatus resolvedStatus = FTLResolutionStatus::FTLR_NOVAL;	// no val by default, must be correctly set by an underlying instance of 
 																				// FTriangleLineResolverBase.

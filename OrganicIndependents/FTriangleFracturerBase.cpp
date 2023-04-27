@@ -8,7 +8,7 @@ void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePo
 	BoundaryOrientation in_originBoundaryOrientation,
 	PerfectClampEnum in_originPerfectClampValue,
 	TriangleMaterial in_originMaterial,
-	bool in_debugMode)
+	OutputDirector* in_fracturerBaseWriterRef)
 {
 	originFTrianglePoints[0] = in_fracturePoint0;
 	originFTrianglePoints[1] = in_fracturePoint1;
@@ -17,7 +17,7 @@ void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePo
 	originBoundaryOrientation = in_originBoundaryOrientation;
 	originPerfectClampValue = in_originPerfectClampValue;
 	originMaterial = in_originMaterial;
-	runMachineInDebugMode = in_debugMode;
+	fracturerBaseWriterRef = in_fracturerBaseWriterRef;
 }
 
 void FTriangleFracturerBase::setOutputRef(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleContainer, EnclaveKeyDef::KeyHasher>* in_outputRef)
@@ -71,7 +71,7 @@ void FTriangleFracturerBase::analyzeAndCleanupStagers(FTriangleType in_fTriangle
 		FTLResolutionStatus resolutionStatus = currentStager.second.analyzeAndReorganize(currentStager.first,
 																						in_fTriangleTypeForDebug,
 																						localizedFTrianglePoints,
-																						runMachineInDebugMode);
+																						fracturerBaseWriterRef);
 		// If it's ok to purge it, just do that here (we won't record it)...
 		if
 		(

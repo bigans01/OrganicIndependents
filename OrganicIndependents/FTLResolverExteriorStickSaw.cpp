@@ -3,10 +3,8 @@
 
 bool FTLResolverExteriorStickSaw::runAttemptedResolution()
 {
-	if (resolverDebug)
-	{
-		std::cout << "(FTLResolverExteriorStickSaw) --> attempting resolution...." << std::endl;
-	}
+
+	resolverWriterRef->logLine("(FTLResolverExteriorStickSaw) --> attempting resolution....");
 
 	bool resolutionFound = false;
 
@@ -43,20 +41,14 @@ bool FTLResolverExteriorStickSaw::runAttemptedResolution()
 			determinedResolutionStatus = FTLResolutionStatus::FTLR_VALID;
 
 			// ||||||||||||||||| START DEBUG BLOCK
-			if (resolverDebug)
+
+			resolverWriterRef->logLine("(FTLResolverStickRaw): !!! Resolution was found. Ordered lines are:");
+			for (auto& currentLine : solutionLines)
 			{
-				std::cout << "(FTLResolverStickRaw): !!! Resolution was found. Ordered lines are:" << std::endl;
-
-
-				// if the return value  of checkLineValidity is true, it means the solutionLines is populated.
-				for (auto& currentLine : solutionLines)
-				{
-					currentLine.printLine();
-				}
-
-
-				std::cout << "(FTLResolverStickRaw): Done printing resolution lines." << std::endl;
+				// need to write line to std::string (again)
+				resolverWriterRef->logLine(currentLine.printLineToString());
 			}
+			resolverWriterRef->logLine("(FTLResolverStickRaw): Done printing resolution lines.");
 			// ||||||||||||||||| END DEBUG BLOCK
 
 			//std::cout << "(FTLResolverStickRaw): Done printing resolution lines. Enter a number to continue." << std::endl;

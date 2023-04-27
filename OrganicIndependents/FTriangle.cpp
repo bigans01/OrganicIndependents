@@ -38,7 +38,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureRequiredOrientation,
 														fractureRequiredClampValue,
 														fractureMaterial,
-														runDebugMode);
+														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
@@ -60,7 +60,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureRequiredOrientation,
 														fractureRequiredClampValue,
 														fractureMaterial,
-														runDebugMode);
+														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
@@ -81,7 +81,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureRequiredOrientation,
 														fractureRequiredClampValue,
 														fractureMaterial,
-														runDebugMode);
+														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
@@ -90,7 +90,7 @@ void FTriangle::setupAndRunFracturerMachine()
 			break;
 		}
 
-
+		
 	}
 }
 

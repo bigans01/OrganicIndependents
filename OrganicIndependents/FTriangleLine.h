@@ -4,6 +4,8 @@
 #define FTRIANGLELINE_H
 
 #include "FTriangleLineType.h"
+#include <iomanip>
+#include <sstream>
 
 /*
 
@@ -47,53 +49,12 @@ class FTriangleLine
 			);
 		}
 
-		FTriangleLineType getType() { return lineType; }
-		void printLine()
-		{
-			std::cout << " pointA -> " << pointA.x << ", " << pointA.y << ", " << pointA.z
-					<< "| pointB -> " << pointB.x << ", " << pointB.y << ", " << pointB.z;
-
-			std::string lineTypeString = "";
-			switch (lineType)
-			{
-				case FTriangleLineType::EXTERIOR: { lineTypeString = "EXTERIOR"; break; };
-				case FTriangleLineType::XSLICE_SCANNED: { lineTypeString = "XSLICE_SCANNED"; break; };
-				case FTriangleLineType::YSLICE_SCANNED: { lineTypeString = "YSLICE_SCANNED"; break; };
-				case FTriangleLineType::ZSLICE_SCANNED: { lineTypeString = "ZSLICE_SCANNED"; break; };
-			}
-			std::cout << " | linetType -> " << lineTypeString << std::endl;
-		}
-
-		void swapPoints()
-		{
-			DoublePoint pointATemp = pointA;
-			pointA = pointB;
-			pointB = pointATemp;
-		}
-
-		bool doesPointExist(glm::vec3 in_point)
-		{
-			bool exists = false;
-
-			if
-			(
-				(pointA == in_point)
-				||
-				(pointB == in_point)
-			)
-			{
-				exists = true;
-			}
-			return exists;
-		}
-
-		void translateLine(DoublePoint in_translationValue)
-		{
-			pointA += in_translationValue;
-			pointB += in_translationValue;
-			pointA.roundHundredth();
-			pointB.roundHundredth();
-		}
+		FTriangleLineType getType();
+		void printLine();
+		std::string printLineToString();
+		void swapPoints();
+		bool doesPointExist(glm::vec3 in_point);
+		void translateLine(DoublePoint in_translationValue);
 
 		DoublePoint pointA;
 		DoublePoint pointB;

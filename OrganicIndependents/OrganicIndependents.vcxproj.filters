@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Messages">
-      <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Messages">
       <UniqueIdentifier>{f37c9a85-18b5-47dc-89be-bad64796766f}</UniqueIdentifier>
     </Filter>
@@ -187,6 +184,12 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{cc4f02b4-e346-4210-8dc8-fb4c3d577e78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Fusion\Messages">
+      <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FTriangleLine">
+      <UniqueIdentifier>{5156b8f4-6cd7-4f6a-8758-6498515f801e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -319,22 +322,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Message.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageBuildResult.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageCable.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageInterpreter.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageLocality.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageType.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="FanBase.h">
       <Filter>Header Files\ORE\EnclaveBlock</Filter>
@@ -595,7 +598,7 @@
       <Filter>Header Files\ORE</Filter>
     </ClInclude>
     <ClInclude Include="MessageContainer.h">
-      <Filter>Header Files\Messages</Filter>
+      <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="FusableArea.h">
       <Filter>Header Files\Fusion</Filter>
@@ -924,6 +927,12 @@
     <ClInclude Include="PolyLogger.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="OutputDirector.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputDirectorMode.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1213,6 +1222,12 @@
     </ClCompile>
     <ClCompile Include="PolyLogger.cpp">
       <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputDirector.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleLine.cpp">
+      <Filter>Source Files\FracturableTriangle\FTriangleLine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
