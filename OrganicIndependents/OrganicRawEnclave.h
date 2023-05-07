@@ -115,7 +115,10 @@ public:
 	// ||||||||||| Block manipulation and fetching
 	void insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton);
 	int getNumberOfBlockSkeletons();
-	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);		// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles)
+	void eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_blockKey);				// erases a block if it exists, and decrements the total_triangle count by that amount (if it had triangles).
+																									// The mutex used should be the mutex of the class/map/container that the ORE belongs in, for multithreading safety.
+
+	void insertBlock(std::mutex* in_mutexRef, int in_blockIndex, EnclaveBlock in_blockToInsert);	// operationally the same as eraseBlock, with the added fact that we insert a whole new EnclaveBlock as well.
 	void clearBlockSkeletons(std::mutex* in_mutexRef);		// clears the blockSkeletonMap
 	int printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey);								// prints any existing "secondaries" (triangle fans) in an EnclaveBlock, if that block exists.
 	bool doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey in_blockKey);				// checks to see if a block exists as a skeleton, should only ever be used with the function
@@ -147,10 +150,26 @@ public:
 	void printMetadata();
 	void printTrianglesPerBlock();
 
+	// ||||||||||| Various getter functions
+	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
+	int getTotalTriangles();				// returns the number of total triangles in the ORE.
+	int getTotalUnexposedBlocks();			// gets the total number of blocks in the blockSkeletonMap.
+	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires
+	std::set<int> getUnexposedBlockList();
+	std::map<int, EnclaveBlockSkeleton> getUnexposedBlocksCopy();
+
+	// ||||||||||| Specialized functions.
+	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
+														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
+														// Currently only used by printBlockCategorizations below, but can be used elsewhere. This will do nothing if 
+														// the ORE's currentLodState is already in LOD_BLOCK, as there will be nothing in etcSGM to read from.
+														// 
+														// The use of this function is mostly private; but some classes such as ORELightweightCollider may use it as well.
+
 	bool checkIfFull();		// analyzes the number of unexposed blocks, to determine if the ORE is FULL. If the number equals 64, the currentLodState is updated to FULL,
-							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out. This case can occur in OrganicCoreLib functions,
+							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out; the total_triangles value also gets reset to 0. This case can occur in OrganicCoreLib functions,
 							// OrganicMassDriverElevator::proceedToNextFloorAndUpdateMassDrivers() and OrganicMassDriverElevator::runDriversForStartingFloor(),
-							// which call this function. This function should only be used by the OrganicMassDriverElevator or ECBPolyReformer classes. 
+							// which call this function. This function should only be used by the OrganicMassDriverElevator class.
 	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
 												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 
 												// and clears out the blockSkeletonMap; the skeleton map must be cleared, because it's possible that an OrganicMassDriverElevator can produce
@@ -161,18 +180,16 @@ public:
 	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL.
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
-	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones
+	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones; also updates the appended state of the ORE.
 	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
 																																									// and wipes out the existing skeletons in skeletonSGM, 
 																																									// before appending an entirely new series of skeleton containers. Needed by 
 																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
 	void removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove);
-	int getTotalTriangles();																				// returns the number of total triangles in the ORE.
 	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
 																											// populates the skeletonSGM of this ore, by spawning skeletons from
 																											// the etcSGM. This function should NOT
 
-	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
 
@@ -185,7 +202,6 @@ public:
 																											
 																																																					
 
-	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires 
 
 	void instantiateBlockAndRemoveSkeleton(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_key);		// this function will remove a block from the skeleton map, and replace
 																											// the corresponding entry in blockMap with an entirely new, fresh, empty EnclaveBlock.
@@ -256,7 +272,7 @@ public:
 private:
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;							// the level-of-detail state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 	OREAppendedState currentAppendedState = OREAppendedState::NONE;							// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
-	OREDependencyState currentDependencyState = OREDependencyState::DEPENDENT_ON_PARENTS;	// this state determines whether or not this ORE should be rendered when trying to render the entire blueprint's contents;
+	OREDependencyState currentDependencyState = OREDependencyState::DEPENDENT_ON_PARENTS;	// this state determines whether or not this ORE should be rendered when trying to render the entire blueprint's contentsmo
 																							// if this state is INDEPENDENT, the ORE will be rendere when trying to render side-by-side with a blueprint's ECBPolys.
 
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
@@ -276,10 +292,6 @@ private:
 														int in_polyID,												// needed by the function, simulateBlockProduction(). 
 														int in_clusterID, 
 														OrganicTriangleSecondary in_enclavePolyFractureResults);
-	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
-														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
-														// Currently only used by printBlockCategorizations below, but can be used elsewhere. This will do nothing if 
-														// the ORE's currentLodState is already in LOD_BLOCK, as there will be nothing in etcSGM to read from.
 
 	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;	// stores the keys of any blocks considered to be "solid" blocks. (aka, skeletons)
 	std::map<int, EnclaveBlockSkeleton> rMassSolidsMap;		// used by OREMatterCollider::extractResultsAndSendtoORE (OrganicCoreLib), to store solid blocks formed during the conversion to ORELodState::LOD_ENCLAVE_RMATTER.

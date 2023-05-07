@@ -173,6 +173,7 @@
     <ClInclude Include="BlockPolyPoint.h" />
     <ClInclude Include="BlockSearchMeta.h" />
     <ClInclude Include="BlockSubType.h" />
+    <ClInclude Include="BlockUtils.h" />
     <ClInclude Include="BlueprintFracturingMachine.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="BlueprintTransformRefs.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="BlockBorderMDLine.cpp" />
     <ClCompile Include="BlockCircuit.cpp" />
     <ClCompile Include="BlockFlags.cpp" />
+    <ClCompile Include="BlockUtils.cpp" />
     <ClCompile Include="BlueprintFracturingMachine.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
     <ClCompile Include="BorderDataMap.cpp" />

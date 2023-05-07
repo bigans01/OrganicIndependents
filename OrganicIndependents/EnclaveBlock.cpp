@@ -49,6 +49,17 @@ void EnclaveBlock::insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan)
 
 }
 
+int EnclaveBlock::insertFanGroup(OrganicFanGroup in_fanGroupToAdd)
+{
+	int totalTrianglesInserted = 0;
+	for (auto& currentFan : in_fanGroupToAdd.fans)
+	{
+		manager.insertBBFanFromRawEnclave(currentFan);
+		totalTrianglesInserted += currentFan.poly.numberOfTertiaries;
+	}
+	return totalTrianglesInserted;
+}
+
 FanBase* EnclaveBlock::retrieveSecondaryFromIndex(int in_index)
 {
 	// EBC,NEW

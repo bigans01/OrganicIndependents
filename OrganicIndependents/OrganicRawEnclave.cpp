@@ -72,6 +72,21 @@ std::set<int> OrganicRawEnclave::getTouchedBlockList()
 	return touchedSet;
 }
 
+std::set<int> OrganicRawEnclave::getUnexposedBlockList()
+{
+	std::set<int> unexposedSet;
+	for (auto& currentSkeletonBlock : blockSkeletonMap)
+	{
+		unexposedSet.insert(currentSkeletonBlock.first);
+	}
+	return unexposedSet;
+}
+
+std::map<int, EnclaveBlockSkeleton> OrganicRawEnclave::getUnexposedBlocksCopy()
+{
+	return blockSkeletonMap;
+}
+
 bool OrganicRawEnclave::checkIfFull()
 {
 	bool returnValue = false;
@@ -79,12 +94,19 @@ bool OrganicRawEnclave::checkIfFull()
 	if (blockSkeletonMap.size() == 64)	// a full ORE has exactly 64 skeletons
 	{
 		returnValue = true;
-		// if the ORE is full, we should empty the skeletonSGM, etcSGM, and organicTriangleSecondarySGM's managed contents;
-		// However, we want the enclave block skeletons to remain.
-
+		// if the ORE is full, we should empty/reset the following:
+		// --skeletonSGM, 
+		// --etcSGM
+		// --organicTriangleSecondarySGM's managed contents;
+		// --the block map, as it shouldn't be populated if the ORE is full.
+		// --the total_triangles need to be reset back to 0.
+		//
+		// ...however, we want the enclave block skeletons to remain.
+		blockMap.clear();
 		skeletonSGM.triangleSkeletonSupergroups.clear();
 		etcSGM.enclaveTriangleSupergroups.clear();
 		organicTriangleSecondarySGM.secondarySupergroups.clear();
+		total_triangles = 0;
 		currentLodState = ORELodState::FULL;
 	}
 	return returnValue;
@@ -155,7 +177,12 @@ int OrganicRawEnclave::getNumberOfBlockSkeletons()
 
 void OrganicRawEnclave::updateOREForRMass()
 {
-	currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
+	//currentLodState = ORELodState::LOD_ENCLAVE_RMATTER;	// switch to RMatter mode
+	//morphLodToBlock();
+
+
+
+
 	currentDependencyState = OREDependencyState::INDEPENDENT;	// all RMatter is INDEPENDENT
 	blockSkeletonMap.clear();
 	blockSkeletonMap = rMassSolidsMap;	// assumes that setBlockSkeletons has been called before this function.
@@ -296,6 +323,24 @@ void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::Encla
 	eraseCounter++;
 }
 
+void OrganicRawEnclave::insertBlock(std::mutex* in_mutexRef, int in_blockIndex, EnclaveBlock in_blockToInsert)
+{
+	std::lock_guard<std::mutex> lock(*in_mutexRef); // lock while performing this operation, obviously.
+
+	// we will need to decrement the total triangles by the amount of the old block, if it exists.
+	auto doesBlockAlreadyExist = blockMap.find(in_blockIndex);
+	if (doesBlockAlreadyExist != blockMap.end())
+	{
+		blockSkeletonMap.erase(in_blockIndex);
+		int erasedTriangles = blockMap[in_blockIndex].getNumberOfTotalTriangles();
+		total_triangles -= erasedTriangles;
+	}
+
+	// now, insert the block into the map, but only after we've gotten the total number of triangles from it.
+	total_triangles += in_blockToInsert.getNumberOfTotalTriangles();
+	blockMap[in_blockIndex] = in_blockToInsert;
+}
+
 Operable3DEnclaveKeySet OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
 	// The return value of this function will be a set of EnclaveKey instances
@@ -406,6 +451,11 @@ int OrganicRawEnclave::getTotalTriangles()
 	return total_triangles;
 }
 
+int OrganicRawEnclave::getTotalUnexposedBlocks()
+{
+	return int(blockSkeletonMap.size());
+}
+
 int OrganicRawEnclave::printBlockData(EnclaveKeyDef::EnclaveKey in_blockKey)
 {
 	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
@@ -439,7 +489,6 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 	//std::cout << "---Set contents, before add: " << std::endl;
 	//preAddSet.printSet();
 	appendSpawnedEnclaveTriangleSkeletonContainers(in_mutexRef, in_otherEnclave->spawnEnclaveTriangleSkeletonContainers());
-	updateCurrentAppendedState();
 	OperableIntSet postAddSet = getExistingEnclaveTriangleSkeletonContainerTracker();
 	//std::cout << "---Set contents, post add: " << std::endl;
 	//postAddSet.printSet();
@@ -707,6 +756,7 @@ void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mute
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
+	updateCurrentAppendedState();
 }
 
 void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
@@ -838,7 +888,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 void OrganicRawEnclave::printBlockCategorizations()
 {
 	// print surrounded/cube (UNEXPOSED) blocks (skeletons)
-	std::cout << "Printing UNEXPOSED blocks (skeletons): " << std::endl;
+	std::cout << "Printing UNEXPOSED blocks (skeletons), total count is:  " << blockSkeletonMap.size() << std::endl;
 	auto blockSkeletonsBegin = blockSkeletonMap.begin();
 	auto blockSkeletonsEnd = blockSkeletonMap.end();
 	for (; blockSkeletonsBegin != blockSkeletonsEnd; blockSkeletonsBegin++)
@@ -848,17 +898,33 @@ void OrganicRawEnclave::printBlockCategorizations()
 		std::cout << std::endl;
 	}
 
-	std::cout << "Printing EXPOSED blocks (non-skeletons): " << std::endl;
-	auto fetchedExposedBlockMap = produceBlockCopies();
+	std::cout << "Printing EXPOSED blocks (non-skeletons), total count is: : " << blockMap.size() << std::endl;
 
-	// iterate through the exposed blocks we just created and print the block's EnclaveKey.
-	auto blocksBegin = fetchedExposedBlockMap.begin();
-	auto blocksEnd = fetchedExposedBlockMap.end();
-	for (; blocksBegin != blocksEnd; blocksBegin++)
+	// If the ORE is in a LOD_BLOcK state, we will need to read from the exposed blocks,
+	// as EnclaveTriangle instances or their related inflate/deflate/skeleton components
+	// shouldn't be populated. 
+	if (currentLodState == ORELodState::LOD_BLOCK)
 	{
-		EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(blocksBegin->first);
-		currentKey.printKey();
-		std::cout << std::endl;
+		for (auto& currentExposedBlock : blockMap)
+		{
+			EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(currentExposedBlock.first);
+			currentKey.printKey();
+			std::cout << std::endl;
+		}
+	}
+
+	// Otherwise, if we are not in an LOD_BLOCK state, we'll need to produce the copies from the skeletons.
+	else
+	{
+		auto fetchedExposedBlockMap = produceBlockCopies();
+
+		// iterate through the exposed blocks we just created and print the block's EnclaveKey.
+		for (auto& currentBlock : fetchedExposedBlockMap)
+		{
+			EnclaveKeyDef::EnclaveKey currentKey = PolyUtils::convertSingleToBlockKey(currentBlock.first);
+			currentKey.printKey();
+			std::cout << std::endl;
+		}
 	}
 }
 

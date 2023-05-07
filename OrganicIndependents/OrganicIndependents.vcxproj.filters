@@ -933,6 +933,9 @@
     <ClInclude Include="OutputDirectorMode.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="BlockUtils.h">
+      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1228,6 +1231,9 @@
     </ClCompile>
     <ClCompile Include="FTriangleLine.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleLine</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockUtils.cpp">
+      <Filter>Source Files\ORE\EnclaveBlock</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

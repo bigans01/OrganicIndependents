@@ -16,6 +16,7 @@
 #include "ThinFan.h"
 #include "FanManager.h"
 #include "BlockSubType.h"
+#include "OrganicFanGroup.h"
 
 class EnclaveBlock
 {
@@ -37,6 +38,7 @@ class EnclaveBlock
 		// functions for interfacing with the underlying FanManager.
 		void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);	// adds a new EnclaveBlockTriangle to the block; this will eventually need the mutex, EnclaveCollectionMap::enclaveCollectionMapMutex passed to it, so that it may then pass it to the call to checkForOutsourcingLimits (heap allocation safety on the maps)
 		void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);
+		int insertFanGroup(OrganicFanGroup in_fanGroupToAdd);
 		PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);						// check if the input parameter exists in the structarray; returns the location of the found point (only really used if it exists)
 		PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);
 		BlockSearchMeta checkForExactPoint(ECBPolyPoint in_point, int in_debugFlag);

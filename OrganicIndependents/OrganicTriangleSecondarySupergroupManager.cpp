@@ -46,13 +46,9 @@ void OrganicTriangleSecondarySupergroupManager::generateBlockTrianglesFromSecond
 								*in_totalTrianglesRef -= blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
 							}
 
-							// Cycle through each fan in the group.
-							for (auto& currentFanInGroup : currentGroup.second.fans)
-							{
+							// Insert the fan group, but remember to fetch the number of triangles.
+							*in_totalTrianglesRef += blockRef->insertFanGroup(currentGroup.second);
 
-								blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
-								*in_totalTrianglesRef += currentFanInGroup.poly.numberOfTertiaries;
-							}
 						}
 					}
 				}
@@ -85,12 +81,8 @@ void OrganicTriangleSecondarySupergroupManager::simulateExposedBlockGeneration(s
 					}
 
 					// Cycle through each fan in the group.
-					for (auto& currentFanInGroup : currentGroup.second.fans)
-					{
-						//blockRef->insertBBFanFromRawEnclave(currentGroup.second);
-
-						blockRef->insertBBFanFromRawEnclave(currentFanInGroup);
-					}
+					// Insert the fan group. We don't care about the number of triangles here, as that data isn't necessary/used.
+					blockRef->insertFanGroup(currentGroup.second);
 				}
 			}
 		}
