@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\glm;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,7 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -126,7 +126,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -146,7 +146,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -159,6 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AtlasMap.h" />
+    <ClInclude Include="AtlasMetaData.h" />
+    <ClInclude Include="AtlasPropertiesGL.h" />
+    <ClInclude Include="AtlasTile.h" />
     <ClInclude Include="AtomicBondingResult.h" />
     <ClInclude Include="BlockBorder.h" />
     <ClInclude Include="BlockBorderCornerPoint.h" />
@@ -183,7 +187,12 @@
     <ClInclude Include="BoundaryPolyIndicator.h" />
     <ClInclude Include="CalibratableBlueprintKeyPair.h" />
     <ClInclude Include="CalibrateableOREKeyPair.h" />
+    <ClInclude Include="ContainerType.h" />
+    <ClInclude Include="CyclingDirection.h" />
+    <ClInclude Include="EnclaveFractureResultsMap.h" />
+    <ClInclude Include="EnclavePoly.h" />
     <ClInclude Include="EnclaveTriangleOld.h" />
+    <ClInclude Include="EPolyMap.h" />
     <ClInclude Include="FExteriorRaycastCollisionResolver.h" />
     <ClInclude Include="FKeyCalibrationMode.h" />
     <ClInclude Include="CircuitSegmentType.h" />
@@ -293,10 +302,13 @@
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GroupSetPair.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="InterceptValidity.h" />
     <ClInclude Include="LinePointSynchronizer.h" />
     <ClInclude Include="LineRunnerState.h" />
+    <ClInclude Include="MassDriverLimit.h" />
+    <ClInclude Include="MassDriverLimitArray.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuildResult.h" />
     <ClInclude Include="MessageCable.h" />
@@ -305,6 +317,7 @@
     <ClInclude Include="MessageLocality.h" />
     <ClInclude Include="MessageType.h" />
     <ClInclude Include="MicroPolyPointContainer.h" />
+    <ClInclude Include="MidwayVectorFinder.h" />
     <ClInclude Include="NeighboringBlockLocation.h" />
     <ClInclude Include="NeighboringBlockLocationSet.h" />
     <ClInclude Include="NeighboringBlockRelativeOrientation.h" />
@@ -319,14 +332,24 @@
     <ClInclude Include="OREFracturingMachine.h" />
     <ClInclude Include="OrganicFanGroup.h" />
     <ClInclude Include="OrganicLineBase.h" />
+    <ClInclude Include="OrganicPolygon.h" />
     <ClInclude Include="OrganicRawEnclave.h" />
     <ClInclude Include="ORELodState.h" />
+    <ClInclude Include="OrganicRawManifest.h" />
     <ClInclude Include="OrganicSystemRunMode.h" />
     <ClInclude Include="OrganicTransformUtils.h" />
+    <ClInclude Include="OrganicTriangle.h" />
     <ClInclude Include="OrganicTriangleSecondary.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroup.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
+    <ClInclude Include="OrganicTriangleState.h" />
     <ClInclude Include="OrganicTriangleTertiary.h" />
+    <ClInclude Include="OrganicVtxColorBlockMeta.h" />
+    <ClInclude Include="OrganicVtxColorDict.h" />
+    <ClInclude Include="OrganicVtxColorFaceMeta.h" />
+    <ClInclude Include="OrganicVtxColorMeta.h" />
+    <ClInclude Include="OrganicVtxColorMetaArray.h" />
+    <ClInclude Include="OrganicVtxColorRGB.h" />
     <ClInclude Include="OrganicWrappedBBFan.h" />
     <ClInclude Include="OSTerrainFormation.h" />
     <ClInclude Include="OutputDirector.h" />
@@ -342,6 +365,7 @@
     <ClInclude Include="PMassState.h" />
     <ClInclude Include="PointResolutionMethod.h" />
     <ClInclude Include="PointSearchData.h" />
+    <ClInclude Include="PointTranslationCheck.h" />
     <ClInclude Include="PolyDebugLevel.h" />
     <ClInclude Include="PolyGroupRange.h" />
     <ClInclude Include="PolyGroupTicker.h" />
@@ -367,6 +391,10 @@
     <ClInclude Include="PRMAtomic2D.h" />
     <ClInclude Include="PRMTypeEnum.h" />
     <ClInclude Include="PRResult.h" />
+    <ClInclude Include="QuatRotationManager.h" />
+    <ClInclude Include="QuatRotationPoints.h" />
+    <ClInclude Include="QuatRotationRecord.h" />
+    <ClInclude Include="QuatRotationType.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />
     <ClInclude Include="RippleImpactRegister.h" />
@@ -376,20 +404,33 @@
     <ClInclude Include="SegmentMeta.h" />
     <ClInclude Include="SegmentResult.h" />
     <ClInclude Include="SmartIntMap.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringToMessageBuilder.h" />
     <ClInclude Include="StringTracer.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerminatingSet.h" />
     <ClInclude Include="TerminatingSetContainer.h" />
+    <ClInclude Include="TerrainTriangle.h" />
+    <ClInclude Include="TerrainTrianglePoint.h" />
     <ClInclude Include="TertiaryTriangleContainer.h" />
     <ClInclude Include="TertiaryTriangleProducer.h" />
+    <ClInclude Include="TexturePoints.h" />
+    <ClInclude Include="TextureUV.h" />
     <ClInclude Include="ThinFan.h" />
+    <ClInclude Include="TileCoordinateProducer.h" />
+    <ClInclude Include="TileDataGLWIN.h" />
+    <ClInclude Include="TileLoadData.h" />
+    <ClInclude Include="TileMeta.h" />
     <ClInclude Include="TracingLineBoundingBox.h" />
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
     <ClInclude Include="TriangleMaterial.h" />
     <ClInclude Include="UniquePointContainer.h" />
+    <ClInclude Include="UVCoordProducer.h" />
+    <ClInclude Include="UVCoordProducerECBPoly.h" />
+    <ClInclude Include="UVCoordProducerEnclaveTriangle.h" />
+    <ClInclude Include="UVTriangleCoords.h" />
     <ClInclude Include="Vec3Pair.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
     <ClInclude Include="XDimLineScanner.h" />
@@ -409,6 +450,7 @@
     <ClInclude Include="ZSliceLine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AtlasMap.cpp" />
     <ClCompile Include="BlockBorderLineList.cpp" />
     <ClCompile Include="BlockBorderMDCorner.cpp" />
     <ClCompile Include="BlockBorderMDLine.cpp" />
@@ -428,12 +470,16 @@
     <ClCompile Include="ECBPoly.cpp" />
     <ClCompile Include="EnclaveBlock.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
+    <ClCompile Include="EnclaveFractureResultsMap.cpp" />
     <ClCompile Include="EnclaveLineRunner.cpp" />
+    <ClCompile Include="EnclavePoly.cpp" />
     <ClCompile Include="EnclavePolyFractureResults.cpp" />
+    <ClCompile Include="EnclavePolyMap.cpp" />
     <ClCompile Include="EnclaveTriangle.cpp" />
     <ClCompile Include="EnclaveTriangleContainer.cpp" />
     <ClCompile Include="EnclaveTriangleInteriorRunner.cpp" />
     <ClCompile Include="EnclaveTriangleOld.cpp" />
+    <ClCompile Include="EPolyMap.cpp" />
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
     <ClCompile Include="FanManager.cpp" />
@@ -459,24 +505,32 @@
     <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
+    <ClCompile Include="MassDriverLimitArray.cpp" />
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="MicroPolyPointContainer.cpp" />
+    <ClCompile Include="MidwayVectorFinder.cpp" />
     <ClCompile Include="NeighboringBlockLocationSet.cpp" />
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
     <ClCompile Include="NeighboringORELocationSet.cpp" />
     <ClCompile Include="OREFracturingMachine.cpp" />
     <ClCompile Include="OrganicFanGroup.cpp" />
+    <ClCompile Include="OrganicPolygon.cpp" />
     <ClCompile Include="OrganicRawEnclave.cpp" />
+    <ClCompile Include="OrganicRawManifest.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
+    <ClCompile Include="OrganicTriangle.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp" />
     <ClCompile Include="OrganicTriangleTertiary.cpp" />
+    <ClCompile Include="OrganicVtxColorDict.cpp" />
+    <ClCompile Include="OrganicVtxColorMeta.cpp" />
     <ClCompile Include="OrganicWrappedBBFan.cpp" />
     <ClCompile Include="OutputDirector.cpp" />
     <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />
+    <ClCompile Include="PointTranslationCheck.cpp" />
     <ClCompile Include="PolyGroupTicker.cpp" />
     <ClCompile Include="PolyLineEndpointMeta.cpp" />
     <ClCompile Include="PolyLogger.cpp" />
@@ -492,6 +546,9 @@
     <ClCompile Include="PRMA2DResolverBase.cpp" />
     <ClCompile Include="PRMA2DResolverXY.cpp" />
     <ClCompile Include="PRMAtomic2D.cpp" />
+    <ClCompile Include="QuatRotationManager.cpp" />
+    <ClCompile Include="QuatRotationPoints.cpp" />
+    <ClCompile Include="QuatRotationRecord.cpp" />
     <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -503,6 +560,10 @@
     <ClCompile Include="TerminatingSetContainer.cpp" />
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
     <ClCompile Include="TertiaryTriangleProducer.cpp" />
+    <ClCompile Include="TileCoordinateProducer.cpp" />
+    <ClCompile Include="UVCoordProducer.cpp" />
+    <ClCompile Include="UVCoordProducerECBPoly.cpp" />
+    <ClCompile Include="UVCoordProducerEnclaveTriangle.cpp" />
     <ClCompile Include="WorldFracturingMachine.cpp" />
     <ClCompile Include="XDimLineScanner.cpp" />
     <ClCompile Include="XFRayCastQuad.cpp" />

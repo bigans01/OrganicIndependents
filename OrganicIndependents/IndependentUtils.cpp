@@ -5261,6 +5261,48 @@ ECBPolyPoint IndependentUtils::determineTriangleCentroid(ECBPolyPoint in_pointA,
 	return returnPoint;
 }
 
+glm::vec3 IndependentUtils::findTriangleCentroid(glm::vec3 in_point0, glm::vec3 in_point1, glm::vec3 in_point2)
+{
+	glm::vec3 foundCentroid;
+	foundCentroid.x = (in_point0.x + in_point1.x + in_point2.x) / 3;
+	foundCentroid.y = (in_point0.y + in_point1.y + in_point2.y) / 3;
+	foundCentroid.z = (in_point0.z + in_point1.z + in_point2.z) / 3;
+	//std::cout << "Centroid X: " << foundCentroid.x << std::endl;
+	//std::cout << "Centroid y: " << foundCentroid.y << std::endl;
+	return foundCentroid;
+}
+
+glm::vec3 IndependentUtils::findTriangleNormal(glm::vec3 in_point0, glm::vec3 in_point1, glm::vec3 in_point2)
+{
+	glm::vec3 returnVec;
+	PointTranslationCheck pointTranslator;
+	QuatRotationPoints quatPoints;
+
+	// copy points 
+	glm::vec3 point0Copy = in_point0;
+	glm::vec3 point1Copy = in_point1;
+	glm::vec3 point2Copy = in_point2;
+
+	quatPoints.insertPointRefs(&point0Copy, &point1Copy, &point2Copy);
+
+	// check for any translation
+	pointTranslator.performCheck(quatPoints.getFirstPoint());
+	if (pointTranslator.requiresTranslation == 1)
+	{
+		quatPoints.applyTranslation(pointTranslator.getTranslationValue());
+		//std::cout << "!!! Points were translated; their values are: " << std::endl;
+		//std::cout << "0: " << point0Copy.x << ", " << point0Copy.y << ", " << point0Copy.z << std::endl;
+		//std::cout << "1: " << point1Copy.x << ", " << point1Copy.y << ", " << point1Copy.z << std::endl;
+		//std::cout << "2: " << point2Copy.x << ", " << point2Copy.y << ", " << point2Copy.z << std::endl;
+	}
+
+	// calculate the normal, after translating point 0 of the triangle to point 0 (so that points 1 and 2 become appropriate values to get the cross product from)
+	returnVec = glm::normalize(glm::cross(point1Copy, point2Copy));
+	//std::cout << "Calculated triangle normal is: " << returnVec.x << ", " << returnVec.y << ", " << returnVec.z << std::endl;
+
+	return returnVec;
+}
+
 ECBPPOrientationResults IndependentUtils::GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList)
 {
 	ECBPPOrientationResults returnResults;

@@ -16,24 +16,6 @@
     <Filter Include="Source Files\Messages">
       <UniqueIdentifier>{f37c9a85-18b5-47dc-89be-bad64796766f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ORE">
-      <UniqueIdentifier>{79fc3a03-8412-4b70-95ad-e33abe8fb730}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ORE">
-      <UniqueIdentifier>{a1386985-0d03-4e80-a7cf-032816cd8523}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ORE\EnclaveBlock">
-      <UniqueIdentifier>{b7dd0cd5-81bc-46cf-8588-0402107d3a47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ORE\EnclaveBlock">
-      <UniqueIdentifier>{6f2c4bc6-1094-46be-b89a-bb2176ee665e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ORE\EnclaveTriangle">
-      <UniqueIdentifier>{2c18ef40-f3e6-45b8-ad08-62dde6e8ec49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ORE\EnclaveTriangle">
-      <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Fusion">
       <UniqueIdentifier>{08745979-707c-4600-ae46-ea5508ce1f62}</UniqueIdentifier>
     </Filter>
@@ -190,6 +172,84 @@
     <Filter Include="Source Files\FracturableTriangle\FTriangleLine">
       <UniqueIdentifier>{5156b8f4-6cd7-4f6a-8758-6498515f801e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Planar">
+      <UniqueIdentifier>{9de702fb-a2a9-4f30-a090-706bd7ea3ecb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Planar">
+      <UniqueIdentifier>{7c3f57cb-42fd-427f-ae40-613f0cd37713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures">
+      <UniqueIdentifier>{31fca2c1-62cc-4192-ba9a-42a4c9ad87d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures">
+      <UniqueIdentifier>{b52bd63d-1e10-4d4f-8435-6c8a0b87f95b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\AtlasMap">
+      <UniqueIdentifier>{217257ba-2655-4395-916c-1dd3b86071a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\AtlasMap">
+      <UniqueIdentifier>{e0aaed51-8047-4c04-8db6-78ea83927e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\Quat">
+      <UniqueIdentifier>{ed9e39c3-508f-4a6a-b30f-967e05e2fc4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\Quat">
+      <UniqueIdentifier>{1c128c90-e883-4e35-8671-8d15acf8c26a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\UV">
+      <UniqueIdentifier>{902e7ea1-c12f-4fd7-982c-69787b6a3ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\Tile">
+      <UniqueIdentifier>{bd6b9ecc-84f5-48d7-9751-dd53e012752e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\Tile">
+      <UniqueIdentifier>{f1cd959d-268f-4f6e-985f-8e14db21e346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\UV">
+      <UniqueIdentifier>{1691fd0f-3382-4978-9159-b639fcdd636a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Organic">
+      <UniqueIdentifier>{614e049c-286b-4362-8414-5c8c5f4b60b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Organic">
+      <UniqueIdentifier>{c32e773d-1af9-4823-b2a8-832c49ca4844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Organic\MassDriving">
+      <UniqueIdentifier>{12974742-3d86-470e-b945-01aac924f4b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Organic\MassDriving">
+      <UniqueIdentifier>{2547ad0f-3ec6-4a7f-89e4-da9418242672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\OrganicVtxColor">
+      <UniqueIdentifier>{9adc7e00-4889-42aa-911b-45d4eea2bf03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\OrganicVtxColor">
+      <UniqueIdentifier>{6a485af0-9530-4856-883d-c675331da56a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Blueprints">
+      <UniqueIdentifier>{4a2699ac-34ef-4098-ae27-9be53fa4129b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints">
+      <UniqueIdentifier>{2d698c50-1e43-4d2a-80e4-a20ccdcfd0d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Blueprints\ORE">
+      <UniqueIdentifier>{79fc3a03-8412-4b70-95ad-e33abe8fb730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Blueprints\ORE\EnclaveBlock">
+      <UniqueIdentifier>{b7dd0cd5-81bc-46cf-8588-0402107d3a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Blueprints\ORE\EnclaveTriangle">
+      <UniqueIdentifier>{2c18ef40-f3e6-45b8-ad08-62dde6e8ec49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ORE">
+      <UniqueIdentifier>{a1386985-0d03-4e80-a7cf-032816cd8523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ORE\EnclaveBlock">
+      <UniqueIdentifier>{6f2c4bc6-1094-46be-b89a-bb2176ee665e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ORE\EnclaveTriangle">
+      <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -340,28 +400,28 @@
       <Filter>Header Files\Fusion\Messages</Filter>
     </ClInclude>
     <ClInclude Include="FanBase.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="FanData.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="ThinFan.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="FatFan.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveBlockVertex.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="TertiaryTriangleContainer.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="SegmentMeta.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PrimarySegmentTracker.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="FaceListMeta.h">
       <Filter>Header Files</Filter>
@@ -370,91 +430,91 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PolyLineEndpointMeta.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PLTracingResult.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="CircuitSegmentType.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PrimarySegmentMeta.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="MicroPolyPointContainer.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="SCircuitSegment.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockCircuit.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="SegmentResult.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="OrganicWrappedBBFan.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PolyRunDirection.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PointSearchData.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockSearchMeta.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="FanManager.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockFlagStates.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockFlags.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PolyGroupTickerState.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="PolyGroupTicker.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveBlock.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="SecondaryLineType.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="CursorPathTraceContainer.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyPointLocation.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="PrimaryLineT1.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBTrianglePoint.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBTrianglePointArray.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyLine.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyLineSlopes.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBPolyLineSlopesArray.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="PrimaryLineT2.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="PrimaryLineT2Array.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="ECBBorderValues.h">
       <Filter>Header Files</Filter>
@@ -517,61 +577,61 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleInteriorRunner.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangle.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleSkeletonSupergroupManager.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleSkeleton.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleSkeletonContainer.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleSkeletonSupergroup.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleContainer.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleContainerSupergroup.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveTriangleContainerSupergroupManager.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="OrganicTriangleSecondary.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="OrganicTriangleSecondarySupergroup.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveBlockSkeleton.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="OrganicTransformUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OrganicRawEnclave.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="EnclavePolyFractureResults.h">
-      <Filter>Header Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClInclude>
     <ClInclude Include="GroupSetPair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ORELodState.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="OREAppendedState.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="OrganicLineBase.h">
       <Filter>Header Files</Filter>
@@ -595,7 +655,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OREDependencyState.h">
-      <Filter>Header Files\ORE</Filter>
+      <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="MessageContainer.h">
       <Filter>Header Files\Fusion\Messages</Filter>
@@ -685,7 +745,7 @@
       <Filter>Header Files\Operable</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveBlockState.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="EnclaveKeyPair.h">
       <Filter>Header Files</Filter>
@@ -703,7 +763,7 @@
       <Filter>Header Files\Neighbors</Filter>
     </ClInclude>
     <ClInclude Include="BlockCopyQuery.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="Cycle.h">
       <Filter>Header Files\Custom_Containers</Filter>
@@ -934,7 +994,130 @@
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="BlockUtils.h">
-      <Filter>Header Files\ORE\EnclaveBlock</Filter>
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="MidwayVectorFinder.h">
+      <Filter>Header Files\Planar</Filter>
+    </ClInclude>
+    <ClInclude Include="AtlasMap.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="AtlasMetaData.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="AtlasPropertiesGL.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="AtlasTile.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturePoints.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureUV.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TileDataGLWIN.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TileLoadData.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMeta.h">
+      <Filter>Header Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainTrianglePoint.h">
+      <Filter>Header Files\OpenGLDataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainTriangle.h">
+      <Filter>Header Files\OpenGLDataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="QuatRotationPoints.h">
+      <Filter>Header Files\OpenGLDataStructures\Quat</Filter>
+    </ClInclude>
+    <ClInclude Include="QuatRotationManager.h">
+      <Filter>Header Files\OpenGLDataStructures\Quat</Filter>
+    </ClInclude>
+    <ClInclude Include="QuatRotationType.h">
+      <Filter>Header Files\OpenGLDataStructures\Quat</Filter>
+    </ClInclude>
+    <ClInclude Include="QuatRotationRecord.h">
+      <Filter>Header Files\OpenGLDataStructures\Quat</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files\OpenGLDataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="CyclingDirection.h">
+      <Filter>Header Files\OpenGLDataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ContainerType.h">
+      <Filter>Header Files\OpenGLDataStructures\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="PointTranslationCheck.h">
+      <Filter>Header Files\OpenGLDataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="TileCoordinateProducer.h">
+      <Filter>Header Files\OpenGLDataStructures\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="UVTriangleCoords.h">
+      <Filter>Header Files\OpenGLDataStructures\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicPolygon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UVCoordProducer.h">
+      <Filter>Header Files\OpenGLDataStructures\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="UVCoordProducerEnclaveTriangle.h">
+      <Filter>Header Files\OpenGLDataStructures\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="UVCoordProducerECBPoly.h">
+      <Filter>Header Files\OpenGLDataStructures\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangle.h">
+      <Filter>Header Files\Organic</Filter>
+    </ClInclude>
+    <ClInclude Include="EPolyMap.h">
+      <Filter>Header Files\Organic</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclavePoly.h">
+      <Filter>Header Files\Organic</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicTriangleState.h">
+      <Filter>Header Files\Organic</Filter>
+    </ClInclude>
+    <ClInclude Include="MassDriverLimit.h">
+      <Filter>Header Files\Organic\MassDriving</Filter>
+    </ClInclude>
+    <ClInclude Include="MassDriverLimitArray.h">
+      <Filter>Header Files\Organic\MassDriving</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorBlockMeta.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorFaceMeta.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorRGB.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorMetaArray.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorMeta.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicVtxColorDict.h">
+      <Filter>Header Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveFractureResultsMap.h">
+      <Filter>Header Files\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicRawManifest.h">
+      <Filter>Header Files\Blueprints</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -984,49 +1167,49 @@
       <Filter>Source Files\Messages</Filter>
     </ClCompile>
     <ClCompile Include="TertiaryTriangleContainer.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="PrimarySegmentTracker.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="PolyLineEndpointMeta.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="PLTracingResult.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="MicroPolyPointContainer.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="SCircuitSegment.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="BlockCircuit.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="OrganicWrappedBBFan.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="FanManager.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="BlockFlags.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="PolyGroupTicker.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="EnclaveBlock.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="PrimaryLineT1.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="PrimaryLineT2.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="PrimaryLineT2Array.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="PrimaryLineT2IsolatedTracer.cpp">
       <Filter>Source Files</Filter>
@@ -1050,25 +1233,25 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnclaveTriangleInteriorRunner.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="EnclaveTriangle.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="EnclaveTriangleContainer.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="OrganicTriangleSecondary.cpp">
-      <Filter>Source Files\ORE</Filter>
+      <Filter>Source Files\Blueprints\ORE</Filter>
     </ClCompile>
     <ClCompile Include="OrganicTransformUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnclavePolyFractureResults.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="OrganicRawEnclave.cpp">
-      <Filter>Source Files\ORE</Filter>
+      <Filter>Source Files\Blueprints\ORE</Filter>
     </ClCompile>
     <ClCompile Include="TertiaryTriangleProducer.cpp">
       <Filter>Source Files</Filter>
@@ -1164,7 +1347,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp">
-      <Filter>Source Files\ORE\EnclaveTriangle</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleUtils.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
@@ -1233,7 +1416,67 @@
       <Filter>Source Files\FracturableTriangle\FTriangleLine</Filter>
     </ClCompile>
     <ClCompile Include="BlockUtils.cpp">
-      <Filter>Source Files\ORE\EnclaveBlock</Filter>
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="MidwayVectorFinder.cpp">
+      <Filter>Source Files\Planar</Filter>
+    </ClCompile>
+    <ClCompile Include="AtlasMap.cpp">
+      <Filter>Source Files\OpenGLDataStructures\AtlasMap</Filter>
+    </ClCompile>
+    <ClCompile Include="QuatRotationPoints.cpp">
+      <Filter>Source Files\OpenGLDataStructures\Quat</Filter>
+    </ClCompile>
+    <ClCompile Include="QuatRotationRecord.cpp">
+      <Filter>Source Files\OpenGLDataStructures\Quat</Filter>
+    </ClCompile>
+    <ClCompile Include="QuatRotationManager.cpp">
+      <Filter>Source Files\OpenGLDataStructures\Quat</Filter>
+    </ClCompile>
+    <ClCompile Include="PointTranslationCheck.cpp">
+      <Filter>Source Files\OpenGLDataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="TileCoordinateProducer.cpp">
+      <Filter>Source Files\OpenGLDataStructures\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicPolygon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UVCoordProducer.cpp">
+      <Filter>Source Files\OpenGLDataStructures\UV</Filter>
+    </ClCompile>
+    <ClCompile Include="UVCoordProducerEnclaveTriangle.cpp">
+      <Filter>Source Files\OpenGLDataStructures\UV</Filter>
+    </ClCompile>
+    <ClCompile Include="UVCoordProducerECBPoly.cpp">
+      <Filter>Source Files\OpenGLDataStructures\UV</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicTriangle.cpp">
+      <Filter>Source Files\Organic</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclavePolyMap.cpp">
+      <Filter>Source Files\Organic</Filter>
+    </ClCompile>
+    <ClCompile Include="EPolyMap.cpp">
+      <Filter>Source Files\Organic</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclavePoly.cpp">
+      <Filter>Source Files\Organic</Filter>
+    </ClCompile>
+    <ClCompile Include="MassDriverLimitArray.cpp">
+      <Filter>Source Files\Organic\MassDriving</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicVtxColorDict.cpp">
+      <Filter>Source Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveFractureResultsMap.cpp">
+      <Filter>Source Files\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicRawManifest.cpp">
+      <Filter>Source Files\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicVtxColorMeta.cpp">
+      <Filter>Source Files\OpenGLDataStructures\OrganicVtxColor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
