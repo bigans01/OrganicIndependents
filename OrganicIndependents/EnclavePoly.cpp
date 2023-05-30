@@ -7,7 +7,7 @@ void EnclavePoly::produceEnclaveTrianglesFromFTriangleContainer(FTriangleContain
 	BlockBorderLineList testList;
 	for (auto& currentTriangleToRun : tempContainer.triangles)
 	{
-		currentTriangleToRun.second.executeRun(&testList, epBorderDataMapRef, in_enclaveKey, false);
+		currentTriangleToRun.second.executeRun(&testList, in_enclaveKey, false);
 	}
 
 	producedResultsContainer = tempContainer;

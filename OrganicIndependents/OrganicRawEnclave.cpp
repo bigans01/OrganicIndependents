@@ -828,7 +828,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 			{
 				// Call executeRun, to populate the corresponding OrganicTriangleTertiary member in the same
 				// EnclaveTriangle instance; if there are bad blocks from the run, store them in the incalculableBlocks return value.
-				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, in_enclaveKey, true);
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, in_enclaveKey, true);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)
@@ -1176,7 +1176,7 @@ void OrganicRawEnclave::simulateBlockProduction()
 
 				//if (currentTrianglesBegin->first == 0)
 				//{
-				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0,0,0), false);
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, EnclaveKeyDef::EnclaveKey(0,0,0), false);
 				
 
 				// is this triangle INVALID?
@@ -1431,7 +1431,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 			std::set<int> removalSet;	// in case we need to remove a triangle for being INVALID
 			for (currentTrianglesBegin; currentTrianglesBegin != currentTrianglesEnd; currentTrianglesBegin++)
 			{
-				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, &borderDataMap, EnclaveKeyDef::EnclaveKey(0, 0, 0), false);
+				incalculableBlocks += currentTrianglesBegin->second.executeRun(&blockBorderLineList, EnclaveKeyDef::EnclaveKey(0, 0, 0), false);
 
 				// is this triangle INVALID?
 				if (currentTrianglesBegin->second.isTriangleValid == false)

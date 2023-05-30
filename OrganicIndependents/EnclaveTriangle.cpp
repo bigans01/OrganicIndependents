@@ -47,7 +47,6 @@ EnclaveTriangle::EnclaveTriangle(FTriangleOutput in_fTriangleOutput)
 }
 
 Operable3DEnclaveKeySet EnclaveTriangle::executeRun(BlockBorderLineList* in_blockBorderLineList, 
-								BorderDataMap* in_borderDataMap, 
 								EnclaveKeyDef::EnclaveKey in_key, 
 								bool in_badRunFlag)
 {

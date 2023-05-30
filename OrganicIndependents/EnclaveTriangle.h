@@ -53,7 +53,7 @@ public:
 
 	// The below function takes the data of this EnclaveTriangle, and puts in into an FTriangle to break it down.
 	// The return value of this function indicates which correlating blocks the FTriangle failed to produce data for.
-	Operable3DEnclaveKeySet executeRun(BlockBorderLineList* in_blockBorderLineList, BorderDataMap* in_borderDataMap, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
+	Operable3DEnclaveKeySet executeRun(BlockBorderLineList* in_blockBorderLineList, EnclaveKeyDef::EnclaveKey in_key, bool in_badRunFlag);
 
 
 	// utility functions, for debugging and std::cout output
