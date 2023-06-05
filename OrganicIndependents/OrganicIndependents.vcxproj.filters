@@ -1119,6 +1119,18 @@
     <ClInclude Include="OrganicRawManifest.h">
       <Filter>Header Files\Blueprints</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicTriangleCatalog.h">
+      <Filter>Header Files\Organic</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveCollectionBlueprint.h">
+      <Filter>Header Files\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintState.h">
+      <Filter>Header Files\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintSyncTracker.h">
+      <Filter>Header Files\Blueprints</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1477,6 +1489,15 @@
     </ClCompile>
     <ClCompile Include="OrganicVtxColorMeta.cpp">
       <Filter>Source Files\OpenGLDataStructures\OrganicVtxColor</Filter>
+    </ClCompile>
+    <ClCompile Include="OrganicTriangleCatalog.cpp">
+      <Filter>Source Files\Organic</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveCollectionBlueprint.cpp">
+      <Filter>Source Files\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="BlueprintSyncTracker.cpp">
+      <Filter>Source Files\Blueprints</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -180,6 +180,8 @@
     <ClInclude Include="BlockUtils.h" />
     <ClInclude Include="BlueprintFracturingMachine.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
+    <ClInclude Include="BlueprintState.h" />
+    <ClInclude Include="BlueprintSyncTracker.h" />
     <ClInclude Include="BlueprintTransformRefs.h" />
     <ClInclude Include="BorderDataMap.h" />
     <ClInclude Include="BorderMDFaceList.h" />
@@ -189,6 +191,7 @@
     <ClInclude Include="CalibrateableOREKeyPair.h" />
     <ClInclude Include="ContainerType.h" />
     <ClInclude Include="CyclingDirection.h" />
+    <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveFractureResultsMap.h" />
     <ClInclude Include="EnclavePoly.h" />
     <ClInclude Include="EnclaveTriangleOld.h" />
@@ -339,6 +342,7 @@
     <ClInclude Include="OrganicSystemRunMode.h" />
     <ClInclude Include="OrganicTransformUtils.h" />
     <ClInclude Include="OrganicTriangle.h" />
+    <ClInclude Include="OrganicTriangleCatalog.h" />
     <ClInclude Include="OrganicTriangleSecondary.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroup.h" />
     <ClInclude Include="OrganicTriangleSecondarySupergroupManager.h" />
@@ -459,6 +463,7 @@
     <ClCompile Include="BlockUtils.cpp" />
     <ClCompile Include="BlueprintFracturingMachine.cpp" />
     <ClCompile Include="BlueprintScanningCuboid.cpp" />
+    <ClCompile Include="BlueprintSyncTracker.cpp" />
     <ClCompile Include="BorderDataMap.cpp" />
     <ClCompile Include="BorderMDFaceList.cpp" />
     <ClCompile Include="CalibratableBlueprintKeyPair.cpp" />
@@ -470,6 +475,7 @@
     <ClCompile Include="ECBPoly.cpp" />
     <ClCompile Include="EnclaveBlock.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />
+    <ClCompile Include="EnclaveCollectionBlueprint.cpp" />
     <ClCompile Include="EnclaveFractureResultsMap.cpp" />
     <ClCompile Include="EnclaveLineRunner.cpp" />
     <ClCompile Include="EnclavePoly.cpp" />
@@ -519,6 +525,7 @@
     <ClCompile Include="OrganicRawManifest.cpp" />
     <ClCompile Include="OrganicTransformUtils.cpp" />
     <ClCompile Include="OrganicTriangle.cpp" />
+    <ClCompile Include="OrganicTriangleCatalog.cpp" />
     <ClCompile Include="OrganicTriangleSecondary.cpp" />
     <ClCompile Include="OrganicTriangleSecondarySupergroupManager.cpp" />
     <ClCompile Include="OrganicTriangleTertiary.cpp" />
