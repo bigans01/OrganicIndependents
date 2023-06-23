@@ -42,6 +42,7 @@ public:
 			otCatalog = blueprint_a.otCatalog;
 		}
 
+		bpTracker = blueprint_a.bpTracker;
 		primaryPolygonMap = blueprint_a.primaryPolygonMap;
 		polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
 		fractureResults = blueprint_a.fractureResults;
@@ -58,6 +59,7 @@ public:
 			otCatalog = blueprint_a.otCatalog;
 		}
 
+		bpTracker = blueprint_a.bpTracker;
 		primaryPolygonMap = blueprint_a.primaryPolygonMap;
 		polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
 		fractureResults = blueprint_a.fractureResults;

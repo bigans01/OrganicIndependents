@@ -11,6 +11,7 @@ EnclaveCollectionBlueprint::EnclaveCollectionBlueprint()
 EnclaveCollectionBlueprint::EnclaveCollectionBlueprint(const EnclaveCollectionBlueprint& blueprint_a)
 {
 	primaryPolygonMap = blueprint_a.primaryPolygonMap;
+	bpTracker = blueprint_a.bpTracker;
 }
 
 OperableIntSet EnclaveCollectionBlueprint::produceECBPolyIDSet()
