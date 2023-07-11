@@ -8,9 +8,9 @@ class EnclaveTriangleSkeletonSupergroup
 {
 public:
 	std::map<int, EnclaveTriangleSkeletonContainer> skeletonMap;
-	void insertSkeletonContainer(int in_skeletonID, EnclaveTriangleSkeletonContainer in_skeletonContainer)
+	void insertSkeletonContainer(int in_skeletonContainerID, EnclaveTriangleSkeletonContainer in_skeletonContainer)
 	{
-		skeletonMap[in_skeletonID] = in_skeletonContainer;
+		skeletonMap[in_skeletonContainerID] = in_skeletonContainer;
 	}
 };
 

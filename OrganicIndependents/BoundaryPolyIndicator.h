@@ -26,6 +26,13 @@ Description: This class is used by multiple classes, such as PTriangle (OrganicG
 class BoundaryPolyIndicator
 {
 	public:
+		BoundaryPolyIndicator() {};		// default constructor; covers most cases
+		BoundaryPolyIndicator(int in_indicatorInt)	// used to allow Messages (such as BDM_ORE_SKELETONSGM) to
+													// instantiate a BoundaryPolyIndicator from Message data
+		{
+			indicatorData = unsigned char(in_indicatorInt);
+		}
+
 		void setBoundaryIndicator(BoundaryOrientation in_faceOrientation)
 		{
 			int bitToSet = 0;

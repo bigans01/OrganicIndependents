@@ -233,6 +233,7 @@ public:
 	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
 	EnclaveBlockState getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey);
 	void printBlockCategorizations();
+	Message fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM);
 
 	// **************************** END DEBUG FUNCTIONS *********************************************
 

@@ -67,6 +67,8 @@ public:
 			std::cout << "[Poly ID -> " << groupManagerBSupergroupsBegin->first << "],[Number of EnclaveTriangleSkeletonContainers -> " << groupManagerBSupergroupsBegin->second.skeletonMap.size() << std::endl;
 		}
 	}
+
+	Message convertSkeletonSGMToBDM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);	// converts the contents of this instance to a Message of the type BDM_ORE_SKELETONSGM.
 };
 
 #endif

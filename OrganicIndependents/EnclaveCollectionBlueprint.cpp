@@ -83,6 +83,78 @@ void EnclaveCollectionBlueprint::deletePolyAndCatalogMapping(int in_keyValue)
 	}
 }
 
+void EnclaveCollectionBlueprint::printBDMForORESkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey)
+{
+	// Safety: only attempt to fetch the message if the ORE actually exists.
+	if (fractureResults.checkIfSpecificOREExists(in_oreKey))
+	{
+		// The below Message that gets returned from the function call comes from the EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM
+		// function. See that function for how a Message of the type BDM_ORE_SKELETONSGM is built (that is the type of Message that is returned here)
+		Message generatedMessage = fractureResults.submitBDMForORESGM(in_blueprintKey, in_oreKey);
+
+		std::cout << ">>>>>>>>>>> Beginning test of read of BDM SGM message. " << std::endl;
+		generatedMessage.open();
+
+		EnclaveKeyDef::EnclaveKey readBPKey = generatedMessage.readEnclaveKey();
+		EnclaveKeyDef::EnclaveKey readOreKey = generatedMessage.readEnclaveKey();
+		int totalSkeletons = generatedMessage.readInt();
+
+		std::cout << "BP key: ";
+		readBPKey.printKey();
+		std::cout << std::endl;
+
+		std::cout << "ORE key: ";
+		readOreKey.printKey();
+		std::cout << std::endl;
+
+		std::cout << "Number of skeletons: " << totalSkeletons << std::endl;
+
+		std::cout << "Printing out skeleton stats: " << std::endl;
+		for (int x = 0; x < totalSkeletons; x++)
+		{
+			// read out the indices. 
+			int supergroupID = generatedMessage.readInt();
+			int containerID = generatedMessage.readInt();
+			int skeletonID = generatedMessage.readInt();
+			std::cout << "[" << supergroupID << "][" << containerID << "][" << skeletonID << "] ||| Points: ";
+
+
+			// next: read 3 points.
+			for (int y = 0; y < 3; y++)
+			{
+				ECBPolyPoint currentPoint = generatedMessage.readPoint();
+				currentPoint.printPointCoords();
+				std::cout << " | ";
+			}
+
+			// next: read the materialID.
+			int currentMaterialID = generatedMessage.readInt();
+			std::cout << "Material ID: " << currentMaterialID << " | ";
+
+			// next: read the perfect clamp enum value.
+			int currentPerfectClampValue = generatedMessage.readInt();
+			std::cout << "Perfect clamp value: " << currentPerfectClampValue << " | ";
+
+			// next: read the empty normal.
+			ECBPolyPoint currentEmptyNormal = generatedMessage.readPoint();
+			std::cout << "Empty normal: ";
+			currentEmptyNormal.printPointCoords();
+			std::cout << " | ";
+
+			// next: read the boundary poly indicator data.
+			int currentIndicatorData = generatedMessage.readInt();
+			BoundaryPolyIndicator tempIndicator(currentIndicatorData);
+			std::cout << "Boundary indicator: " << tempIndicator.getPrintableIndicatorValue() << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "target ORE ";
+		in_oreKey.printKey();
+		std::cout << "to run printBDMForORESkeletonSGM not found. " << std::endl;
+	}
+}
+
 int EnclaveCollectionBlueprint::getPolygonMapSize()
 {
 	return primaryPolygonMap.size();

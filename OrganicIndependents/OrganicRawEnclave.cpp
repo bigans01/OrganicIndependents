@@ -885,6 +885,11 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 	return incalculableBlocks;
 }
 
+Message OrganicRawEnclave::fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM)
+{
+	return skeletonSGM.convertSkeletonSGMToBDM(in_blueprintKeyForBDM, in_oreKeyForBDM);
+}
+
 void OrganicRawEnclave::printBlockCategorizations()
 {
 	// print surrounded/cube (UNEXPOSED) blocks (skeletons)

@@ -89,6 +89,11 @@ public:
 	void insertPolyWithKeyValueAndCatalogMapping(int in_keyValue, ECBPoly in_ecbPoly, EnclaveKeyDef::EnclaveKey in_blueprintKey);
 	void deletePolyAndCatalogMapping(int in_keyValue);
 
+	// debug/diag functions; not critical to application but handy for development/debug.
+	void printBDMForORESkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		// attempts to query an ORE, if it exists, to
+																														// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's skeletonSGM.
+																														// This function just prints out the contents in a readable manner, for testing purposes.
+
 	std::map<int, PolyGroupRange> polyGroupRangeMap;
 	EnclaveFractureResultsMap fractureResults;
 	BlueprintSyncTracker bpTracker;

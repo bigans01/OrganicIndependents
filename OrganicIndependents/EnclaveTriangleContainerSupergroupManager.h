@@ -6,6 +6,7 @@
 #include "EnclaveTriangleContainerSupergroup.h"
 #include "EnclaveTriangle.h"
 #include "EnclaveTriangleSkeletonSupergroupManager.h"
+#include "OrganicTransformUtils.h"
 
 class EnclaveTriangleContainerSupergroupManager
 {

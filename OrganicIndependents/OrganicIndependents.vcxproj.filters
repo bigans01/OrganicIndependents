@@ -166,9 +166,6 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{cc4f02b4-e346-4210-8dc8-fb4c3d577e78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Fusion\Messages">
-      <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\FracturableTriangle\FTriangleLine">
       <UniqueIdentifier>{5156b8f4-6cd7-4f6a-8758-6498515f801e}</UniqueIdentifier>
     </Filter>
@@ -249,6 +246,9 @@
     </Filter>
     <Filter Include="Source Files\Blueprints\ORE\EnclaveTriangle">
       <UniqueIdentifier>{99efc4e2-5d76-42ce-b3c6-0838321c8ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Messages">
+      <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -382,22 +382,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Message.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageBuildResult.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageCable.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageInterpreter.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageLocality.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="MessageType.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="FanBase.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
@@ -658,7 +658,7 @@
       <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="MessageContainer.h">
-      <Filter>Header Files\Fusion\Messages</Filter>
+      <Filter>Header Files\Messages</Filter>
     </ClInclude>
     <ClInclude Include="FusableArea.h">
       <Filter>Header Files\Fusion</Filter>
@@ -1498,6 +1498,12 @@
     </ClCompile>
     <ClCompile Include="BlueprintSyncTracker.cpp">
       <Filter>Source Files\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangleSkeletonSupergroupManager.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveTriangleSkeleton.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

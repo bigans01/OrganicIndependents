@@ -101,8 +101,19 @@ enum class MessageType
 													// 3. an int value representing the OpenGL keystroke enumeration to process (i.e, GLFW_KEY_W)
 													
 	// Multi-purpose codes
-	CLEAVESEQUENCE_CATEGORIZED_LINES				// Can be used in multiple places; this message signifies that the message contains one 
+	CLEAVESEQUENCE_CATEGORIZED_LINES,				// Can be used in multiple places; this message signifies that the message contains one 
 													// or more categorized lines.
+
+	// Blueprint data messages
+	BDM_BLUEPRINT_HEADER,	// Stores metadata about the blueprint, such as the number of ECBPolys, and the total number of OREs in the blueprint.
+	BDM_ORE_HEADER,			// Stores data about an OrganicRawEnclave, such as the number of different types of blocks, any skeletonSGM data (including it's triangles),
+							// it's currentLodState, currentAppendedState, and the currentDependencyState. The first 3 int's of this Message need to form an EnclaveKey
+							// that represents the location of the ORE (i.e, an ORE at key 5,7,2)			
+			
+	BDM_ORE_SKELETONSGM		// Stores data that can be used to populate an empty instance of EnclaveTriangleSkeletonSupergroupManager.
+							// The structure of this constructed Message should be as follows: the blueprint key, the ore key, the number of skeletons, 
+							// followd by skeleton data that is written-in via a loop. 
+							// (see the function EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM for the writing methodology of this Message type)
 
 };
 

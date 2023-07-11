@@ -67,7 +67,7 @@ class Message
 			}
 		}
 
-		// ------------------------------------------------- insertion functions
+		// ------------------------------------------------- insertion functions (inserts at end of vector)
 		void insertEnclaveKey(EnclaveKeyDef::EnclaveKey in_key)
 		{
 			intVector.push_back(in_key.x);
@@ -95,6 +95,39 @@ class Message
 		void insertString(std::string in_string)
 		{
 			stringVector.push_back(in_string);
+		}
+
+		// ------------------------------------------------- front insertion functions (inserts at front of vector)
+		void insertEnclaveKeyFront(EnclaveKeyDef::EnclaveKey in_key)
+		{
+			// Remember, the int key value must be written in reverse order (z,y,x), because we're going the opposite way that the 
+			// vector is used to.
+			intVector.insert(intVector.begin(), in_key.z);
+			intVector.insert(intVector.begin(), in_key.y);
+			intVector.insert(intVector.begin(), in_key.x);
+		}
+
+		void insertPointFront(ECBPolyPoint in_point)
+		{
+			// Same rules from insertEnclaveKeyFront apply here (point is inserted in reverse order)
+			floatVector.insert(floatVector.begin(), in_point.z);
+			floatVector.insert(floatVector.begin(), in_point.y);
+			floatVector.insert(floatVector.begin(), in_point.x);
+		}
+
+		void insertIntFront(int in_int)		// inserts an int into the front, instead of the back
+		{
+			intVector.insert(intVector.begin(), in_int);
+		}
+
+		void insertFloatFront(float in_float) // inserts a float into the front, instead of the back
+		{
+			floatVector.insert(floatVector.begin(), in_float);
+		}
+
+		void insertStringFront(std::string in_string)	// inserts a string into the front, instead of the back
+		{
+			stringVector.insert(stringVector.begin(), in_string);
 		}
 
 		// ------------------------------------------------- removal functions

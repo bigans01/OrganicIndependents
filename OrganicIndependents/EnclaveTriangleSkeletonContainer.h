@@ -9,9 +9,9 @@ class EnclaveTriangleSkeletonContainer
 {
 public:
 	std::map<int, EnclaveTriangleSkeleton> skeletons;
-	void insertSkeleton(int in_skeletonContainerID, EnclaveTriangleSkeleton in_skeleton)
+	void insertSkeleton(int in_skeletonID, EnclaveTriangleSkeleton in_skeleton)
 	{
-		skeletons[in_skeletonContainerID] = in_skeleton;
+		skeletons[in_skeletonID] = in_skeleton;
 	};
 };
 

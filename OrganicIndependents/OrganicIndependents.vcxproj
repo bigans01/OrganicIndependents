@@ -485,6 +485,8 @@
     <ClCompile Include="EnclaveTriangleContainer.cpp" />
     <ClCompile Include="EnclaveTriangleInteriorRunner.cpp" />
     <ClCompile Include="EnclaveTriangleOld.cpp" />
+    <ClCompile Include="EnclaveTriangleSkeleton.cpp" />
+    <ClCompile Include="EnclaveTriangleSkeletonSupergroupManager.cpp" />
     <ClCompile Include="EPolyMap.cpp" />
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
