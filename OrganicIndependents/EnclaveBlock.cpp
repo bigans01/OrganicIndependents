@@ -10,11 +10,7 @@ int EnclaveBlock::resetBlock()
 {
 	int previousNumberOfTriangles = getNumberOfTotalTriangles();
 	groupTicker.resetTicker();
-	BBFanMetaByte = 0;
 	blockflags.resetFlags();
-	blockid = 0;
-	usedPoints = 0;
-	t1_flags = 0;
 
 	FanManager emptyManager;
 	manager = emptyManager;
@@ -124,15 +120,7 @@ EnclaveBlockVertex EnclaveBlock::fetchPoint(int in_pointIndex)
 	return manager.fetchPoint(in_pointIndex);
 }
 
-int EnclaveBlock::getNumberOFLineBitsSet()
-{
-	int numberOfLineBitsFlagged = 0;
-	for (int x = 0; x < 3; x++)
-	{
-		numberOfLineBitsFlagged += IndependentUtils::isUnsignedCharBitSet(BBFanMetaByte, 6 - x);	// check the bits for all three lines (bits 6 through 4)
-	}
-	return numberOfLineBitsFlagged;
-}
+
 
 
 void EnclaveBlock::setBlockMode(BlockSubType in_modeToSet)
