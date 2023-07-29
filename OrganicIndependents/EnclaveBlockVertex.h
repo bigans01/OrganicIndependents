@@ -6,9 +6,8 @@
 class EnclaveBlockVertex
 {
 public:
-	unsigned char x = 0;
-	unsigned char y = 0;
-	unsigned char z = 0;
+	EnclaveBlockVertex() {};
+	EnclaveBlockVertex(unsigned char in_x, unsigned char in_y, unsigned char in_z) : x(in_x), y(in_y), z(in_z) {}
 
 	// operator overloading (required)
 	bool operator==(const EnclaveBlockVertex &other) const
@@ -18,6 +17,19 @@ public:
 			y == other.y
 			&&
 			z == other.z);
+	}
+
+	unsigned char x = 0;
+	unsigned char y = 0;
+	unsigned char z = 0;
+
+	Message convertBlockVertexToMessage()
+	{
+		Message convertedMessage;
+		convertedMessage.insertInt(int(x));
+		convertedMessage.insertInt(int(y));
+		convertedMessage.insertInt(int(z));
+		return convertedMessage;
 	}
 };
 

@@ -1,6 +1,36 @@
 #include "stdafx.h"
 #include "EnclaveBlock.h"
 
+EnclaveBlock::EnclaveBlock()
+{
+
+}
+
+EnclaveBlock::EnclaveBlock(Message in_blockDataMessage)
+{
+	in_blockDataMessage.open();
+
+	// Read the flags, and then purge the value from the Message, so that it can be passed on to the FanManager for processing.
+	blockflags.flags = unsigned char(in_blockDataMessage.readInt());
+
+	in_blockDataMessage.removeIntsFromFrontAndResetIter(1);
+	manager.constructManagerFromMessage(in_blockDataMessage);
+}
+
+Message EnclaveBlock::writeEnclaveBlockToBDMMessage()
+{
+	Message convertedBlockDataMessage(MessageType::BDM_BLOCK_UNTAGGED);
+	// Convert the value of blockflags.flags first, insert that, and then append the Message from a call to 
+	// manager.writeFanManagerToBDMFormat().
+	//
+	// Remember, BDM_BLOCK_UNTAGGED does NOT contain the individual block key.
+	convertedBlockDataMessage.insertInt(int(blockflags.flags));
+	convertedBlockDataMessage.appendOtherMessage(&manager.writeFanManagerToBDMFormat());
+
+	return convertedBlockDataMessage;
+}
+
+
 int EnclaveBlock::getNumberOfBBFans()
 {
 	return manager.getNumberOfTotalFans();
@@ -9,7 +39,6 @@ int EnclaveBlock::getNumberOfBBFans()
 int EnclaveBlock::resetBlock()
 {
 	int previousNumberOfTriangles = getNumberOfTotalTriangles();
-	groupTicker.resetTicker();
 	blockflags.resetFlags();
 
 	FanManager emptyManager;

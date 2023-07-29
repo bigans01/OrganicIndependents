@@ -21,8 +21,12 @@
 class EnclaveBlock
 {
 	public:
+		// constructors
+		EnclaveBlock();			// default constructor.
+		EnclaveBlock(Message in_blockDataMessage);	// for creating a block from a Message that is a BDM_BLOCK_UNTAGGED type.
+
+
 		// meta data member variables.
-		PolyGroupTicker groupTicker;	// potentially unused; needs reviewed.
 		BlockFlags blockflags;						// is block air, is block solid, is block set to render, etc
 		FanManager manager;							// stores EnclaveBlockVertexes and FanBases; automatically expands to allocate storage based on needs of the EnclaveBlock.
 
@@ -34,7 +38,7 @@ class EnclaveBlock
 		void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);	// adds a new EnclaveBlockTriangle to the block; this will eventually need the mutex, EnclaveCollectionMap::enclaveCollectionMapMutex passed to it, so that it may then pass it to the call to checkForOutsourcingLimits (heap allocation safety on the maps)
 		void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);
 		int insertFanGroup(OrganicFanGroup in_fanGroupToAdd);
-		PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);						// check if the input parameter exists in the structarray; returns the location of the found point (only really used if it exists)
+		PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);						// check if the input parameter exists in the localVertexArray; returns the location of the found point (only really used if it exists)
 		PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);
 		BlockSearchMeta checkForExactPoint(ECBPolyPoint in_point, int in_debugFlag);
 		bool checkIfPolysExistOnBoundary(BoundaryOrientation in_boundaryOrientationToCheck);		// checks whether or not any ThinFans or FatFans are marked
@@ -52,10 +56,10 @@ class EnclaveBlock
 		ECBPolyPoint getEmptyNormalFromTriangle(int in_index);
 
 		// utility functions
-		//int getNumberOFLineBitsSet();
 		ECBPolyPoint convertVertexToPolyPoint(EnclaveBlockVertex in_blockVertex);
 		void setBlockMode(BlockSubType in_modeToSet);
 		BlockSubType getBlockMode();
+		Message writeEnclaveBlockToBDMMessage();	// converts the contents of the block to Message of the type BDM_BLOCK_UNTAGGED. 
 
 	private:
 		BlockSubType blockMode = BlockSubType::BLOCK_NORMAL;	// this value is used to determine what should be returned 

@@ -110,10 +110,17 @@ enum class MessageType
 							// it's currentLodState, currentAppendedState, and the currentDependencyState. The first 3 int's of this Message need to form an EnclaveKey
 							// that represents the location of the ORE (i.e, an ORE at key 5,7,2)			
 			
-	BDM_ORE_SKELETONSGM		// Stores data that can be used to populate an empty instance of EnclaveTriangleSkeletonSupergroupManager.
+	BDM_ORE_SKELETONSGM,	// Stores data that can be used to populate an empty instance of EnclaveTriangleSkeletonSupergroupManager.
 							// The structure of this constructed Message should be as follows: the blueprint key, the ore key, the number of skeletons, 
 							// followd by skeleton data that is written-in via a loop. 
 							// (see the function EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM for the writing methodology of this Message type)
+
+	BDM_BLOCK_FANMANAGER,	// This type indicates that the Message includes all necessary metadata for the FanManager to be reconstructed. 
+							// This type should be constructed via the FanManager::writeFanManagerToBDMFormat() function. 
+
+	BDM_BLOCK_UNTAGGED,		// This Message would indicate that it contains all data necessary to construct an EnclaveBlock, but it doesn't contain the Blueprint, ORE, and specific block key.
+	BDM_BLOCK_TAGGED		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific block key at the front of the message, in that order;
+							// Remember, that to put it in that order when the Message already contains data, that you will have to call Message::insertEnclaveKeyFront to insert the block key.
 
 };
 

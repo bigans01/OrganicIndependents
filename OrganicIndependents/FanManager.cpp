@@ -11,19 +11,19 @@ void FanManager::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, 
 	for (int x = 0; x < numberOfPolyMetaDataPoints; x++)	// the number of used points in the input parameter, in_polyMetaData
 	{
 		PointSearchData pointData = checkIfPointExists(in_polyMetaData.triangleVertices[x]);	// does a search
-		short indexOfStructArrayPointToUse = 0;	// the index of the point to use, from the block's struct array
+		short indexOflocalVertexArrayPointToUse = 0;	// the index of the point to use, from the block's struct array
 		if (pointData.isPointFound == 0)	// if it was never found, add a new point
 		{
 			checkForVertexExpansion();		// SAFETY: check if the number of POINTS exceeds threshold 
-			indexOfStructArrayPointToUse = addNewPoint(in_polyMetaData.triangleVertices[x]);
+			indexOflocalVertexArrayPointToUse = addNewPoint(in_polyMetaData.triangleVertices[x]);
 		}
 		else if (pointData.isPointFound == 1)
 		{
-			indexOfStructArrayPointToUse = pointData.foundPointIndex;	// set the 
+			indexOflocalVertexArrayPointToUse = pointData.foundPointIndex;	// set the 
 		}
 
 		// for each point of the input poly, put the found/new index into the appropriate nibble in the EnclaveBlockTriangle
-		currentTriangleRef->fillPointIndex(x, indexOfStructArrayPointToUse);
+		currentTriangleRef->fillPointIndex(x, indexOflocalVertexArrayPointToUse);
 	}
 
 	currentTriangleRef->numberOfTertiaries = numberOfPolyMetaDataPoints - 2;		// set the number of tertiaries
@@ -45,19 +45,19 @@ void FanManager::insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan)
 	for (int x = 0; x < numberOfPolyMetaDataPoints; x++)	// the number of used points in the input parameter, in_polyMetaData
 	{
 		PointSearchData pointData = checkIfPointExists(in_wrappedFan.vertices[x]);	// does a search
-		short indexOfStructArrayPointToUse = 0;	// the index of the point to use, from the block's struct array
+		short indexOflocalVertexArrayPointToUse = 0;	// the index of the point to use, from the block's struct array
 		if (pointData.isPointFound == 0)	// if it was never found, add a new point
 		{
 			checkForVertexExpansion();		// SAFETY: check if the number of POINTS exceeds threshold 
-			indexOfStructArrayPointToUse = addNewPoint(in_wrappedFan.vertices[x]);
+			indexOflocalVertexArrayPointToUse = addNewPoint(in_wrappedFan.vertices[x]);
 		}
 		else if (pointData.isPointFound == 1)
 		{
-			indexOfStructArrayPointToUse = pointData.foundPointIndex;	// set the 
+			indexOflocalVertexArrayPointToUse = pointData.foundPointIndex;	// set the 
 		}
 
 		// for each point of the input poly, put the found/new index into the appropriate nibble in the EnclaveBlockTriangle
-		currentTriangleRef->fillPointIndex(x, indexOfStructArrayPointToUse);
+		currentTriangleRef->fillPointIndex(x, indexOflocalVertexArrayPointToUse);
 	}
 
 	currentTriangleRef->numberOfTertiaries = numberOfPolyMetaDataPoints - 2;		// set the number of tertiaries
@@ -74,8 +74,8 @@ int FanManager::addNewPoint(EnclaveBlockVertex in_blockVertex)
 {
 	int addedDataPointIndex;	// the index of the added point
 	EnclaveBlockVertex* arrayPtr = NULL;
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = structarray; }
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = localVertexArray; }
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
 
 	arrayPtr[totalPoints] = in_blockVertex;
 	addedDataPointIndex = totalPoints;	// return the index we inserted at
@@ -97,8 +97,8 @@ PointSearchData FanManager::checkIfPointExists(EnclaveBlockVertex in_blockVertex
 {
 	PointSearchData searchData;
 	EnclaveBlockVertex* arrayPtr = NULL;
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = structarray; }
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = localVertexArray; }
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
 	for (int x = 0; x < totalPoints; x++)
 	{
 		if (arrayPtr[x] == in_blockVertex)
@@ -114,8 +114,8 @@ PointSearchData FanManager::checkIfNearbyPointExists(EnclaveBlockVertex in_block
 {
 	PointSearchData searchData;
 	EnclaveBlockVertex* arrayPtr = NULL;
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = structarray; }
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = localVertexArray; }
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
 	bool wasFoundExactly = false;
 	for (int x = 0; x < totalPoints; x++)		// usedPoints = total number of used points in the block
 	{
@@ -215,8 +215,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 {
 	BlockSearchMeta currentSearchMeta;
 	EnclaveBlockVertex* arrayPtr = NULL;
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = structarray; }
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = localVertexArray; }
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
 	EnclaveBlockVertex baseVertex = IndependentUtils::convertPolyPointToBlockVertex(in_point);
 	int numberOfIncrementTicks = 1;		// this needs to be fixed.
 	if (in_key.x == 0)
@@ -303,29 +303,29 @@ EnclaveBlockVertex FanManager::fetchPoint(int in_pointIndex)
 {
 	EnclaveBlockVertex returnVertex;
 	EnclaveBlockVertex* arrayPtr = NULL;
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = structarray; }
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS) { arrayPtr = localVertexArray; }
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS) { arrayPtr = expandedVertexArray.get(); }
 	return arrayPtr[in_pointIndex];
 }
 
 int FanManager::getTotalNumberOfTertiariesInBlock()
 {
 	int totalCount = 0;
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
 		for (int x = 0; x < totalFans; x++)
 		{
-			totalCount += triangleArray[x].numberOfTertiaries;
+			totalCount += localFanArray[x].numberOfTertiaries;
 		}
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		for (int x = 0; x < totalFans; x++)
 		{
 			totalCount += expandedThinFanArray[x].numberOfTertiaries;
 		}
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		for (int x = 0; x < totalFans; x++)
 		{
@@ -337,14 +337,14 @@ int FanManager::getTotalNumberOfTertiariesInBlock()
 
 void FanManager::listSecondaries()
 {
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
 		std::cout << ">>> Printing LOCALIZED mode array...; totalFans value is: " << totalFans << std::endl;
 		for (int x = 0; x < totalFans; x++)
 		{
 			std::cout << "Printing points/data for fan at " << x << std::endl;
-			//triangleArray[x].printPoints();
-			auto targetFanPtr = &triangleArray[x];
+			//localFanArray[x].printPoints();
+			auto targetFanPtr = &localFanArray[x];
 			std::cout << "Orientation: " << targetFanPtr->faceAlignment.getPrintableIndicatorValue() << std::endl;
 			auto currentFanData = targetFanPtr->getFanData();
 			std::cout << "Normal: " << targetFanPtr->emptyNormal.x << ", " << targetFanPtr->emptyNormal.y << ", " << targetFanPtr->emptyNormal.z << std::endl;
@@ -360,7 +360,7 @@ void FanManager::listSecondaries()
 
 		}
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		std::cout << ">>> Printing THIN mode array..." << std::endl;
 		for (int x = 0; x < totalFans; x++)
@@ -369,7 +369,7 @@ void FanManager::listSecondaries()
 			expandedThinFanArray[x].printPoints();
 		}
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		std::cout << ">>> Printing FAT mode array..." << std::endl;
 		for (int x = 0; x < totalFans; x++)
@@ -381,14 +381,14 @@ void FanManager::listSecondaries()
 
 void FanManager::listPoints()
 {
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)
 	{
 		for (int x = 0; x < totalPoints; x++)
 		{
-			std::cout << "(LOCAL_POINTS) Point at index: [" << x << "]: " << int(structarray[x].x) << ", " << int(structarray[x].y) << ", " << int(structarray[x].z) << std::endl;
+			std::cout << "(LOCAL_POINTS) Point at index: [" << x << "]: " << int(localVertexArray[x].x) << ", " << int(localVertexArray[x].y) << ", " << int(localVertexArray[x].z) << std::endl;
 		}
 	}
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 	{
 		for (int x = 0; x < totalPoints; x++)
 		{
@@ -407,9 +407,9 @@ int FanManager::getNumberOfTotalTriangles()
 	int total = 0;
 	for (int x = 0; x < totalFans; x++)
 	{
-		switch (currentMode)
+		switch (currentFanStorageMode)
 		{
-			case FanArrayMode::LOCALIZED: { total += triangleArray[x].getNumberOfTrianglesInFan(); break; };
+			case FanArrayMode::LOCALIZED: { total += localFanArray[x].getNumberOfTrianglesInFan(); break; };
 			case FanArrayMode::THIN: { total += expandedThinFanArray[x].getNumberOfTrianglesInFan(); break; };
 			case FanArrayMode::FAT: { total += expandedFatFanArray[x].getNumberOfTrianglesInFan(); break; };
 		};
@@ -421,15 +421,15 @@ FanBase* FanManager::retrieveNextAvailableSecondary()
 {
 	// remember, the current value of totalFans also represents the nextIndex to retrieve from.
 	FanBase* returnPtr = NULL;
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
-		returnPtr = &triangleArray[totalFans];
+		returnPtr = &localFanArray[totalFans];
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		returnPtr = &expandedThinFanArray[totalFans];
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		returnPtr = &expandedFatFanArray[totalFans];
 	}
@@ -439,15 +439,15 @@ FanBase* FanManager::retrieveNextAvailableSecondary()
 FanBase* FanManager::retrieveSecondaryFromIndex(int in_index)
 {
 	FanBase* returnPtr = NULL;
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
-		returnPtr = &triangleArray[in_index];
+		returnPtr = &localFanArray[in_index];
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		returnPtr = &expandedThinFanArray[in_index];
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		returnPtr = &expandedFatFanArray[in_index];
 	}
@@ -457,15 +457,15 @@ FanBase* FanManager::retrieveSecondaryFromIndex(int in_index)
 int FanManager::getNumberOfTertiariesInTriangleAtIndex(int in_index)
 {
 	int numberOfTertiaries = 0;
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
-		numberOfTertiaries += triangleArray[in_index].numberOfTertiaries;
+		numberOfTertiaries += localFanArray[in_index].numberOfTertiaries;
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		numberOfTertiaries += expandedThinFanArray[in_index].numberOfTertiaries;
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		numberOfTertiaries += expandedFatFanArray[in_index].numberOfTertiaries;
 	}
@@ -475,15 +475,15 @@ int FanManager::getNumberOfTertiariesInTriangleAtIndex(int in_index)
 ECBPolyPoint FanManager::getEmptyNormalFromTriangle(int in_index)
 {
 	ECBPolyPoint returnNormal;
-	if (currentMode == FanArrayMode::LOCALIZED)
+	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
-		returnNormal = triangleArray[in_index].emptyNormal;
+		returnNormal = localFanArray[in_index].emptyNormal;
 	}
-	else if (currentMode == FanArrayMode::THIN)
+	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		returnNormal = expandedThinFanArray[in_index].emptyNormal;
 	}
-	else if (currentMode == FanArrayMode::FAT)
+	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
 		returnNormal = expandedFatFanArray[in_index].emptyNormal;
 	}
@@ -500,28 +500,28 @@ void FanManager::checkForTriangleExpansion()
 			(totalFans >= 16)						// always expand if we are above 16.
 			)
 	{
-		currentMode = FanArrayMode::THIN;			// set to THIN mode, since we are no longer localized.
+		currentFanStorageMode = FanArrayMode::THIN;			// set to THIN mode, since we are no longer localized.
 		expandTriangleArray();
 	}
 }
 
 void FanManager::checkForVertexExpansion()
 {
-	if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)
 	{
 		// staying at THIN
 		if (totalPoints == 16)	// if we are already at 16 points, we've reached the max, and we need to expand.
 		{
 			expandedVertexArraySize += 16;	// expand by 16, so we can allocate accordingly.
 			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
-			currentPointMode = PointArrayMode::NONLOCAL_POINTS;
+			currentPointStorageMode = PointArrayMode::NONLOCAL_POINTS;
 			for (int x = 0; x < 16; x++)
 			{
-				expandedVertexArray[x] = structarray[x];
+				expandedVertexArray[x] = localVertexArray[x];
 			}
 		}
 	}
-	else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 	{
 		// as long as we're at < 256, stay at THIN.
 		if (totalPoints < 256)
@@ -547,7 +547,7 @@ void FanManager::checkForVertexExpansion()
 
 void FanManager::expandTriangleArray()
 {
-	if (currentMode == FanArrayMode::THIN)
+	if (currentFanStorageMode == FanArrayMode::THIN)
 	{
 		// if the expandedFanArraySize is 16, we need to move from LOCALIZED (local arrays) to THIN (unique_ptr<ThinFan[]>)
 		if (expandedFanArraySize == 16)
@@ -560,7 +560,7 @@ void FanManager::expandTriangleArray()
 			isExpandedFanArrayActive = true;								// set expanded array flag.
 			for (int x = 0; x < 16; x++)									// we only need to increment 16 times, as local only stores 16.
 			{
-				expandedThinFanArray[x] = triangleArray[x];
+				expandedThinFanArray[x] = localFanArray[x];
 			}
 
 		}
@@ -585,6 +585,219 @@ void FanManager::expandTriangleArray()
 				expandedThinFanArray[x] = tempThinArray[x];
 			}
 
+		}
+	}
+}
+
+Message FanManager::writeFanManagerToBDMFormat()
+{
+	Message fanManagerToMsg(MessageType::BDM_ORE_SKELETONSGM);
+
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// PART 1: Point data
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	//
+	// Step 1.1: Read, translate to int, and store the values of (in this order):
+	//	-currentPointStorageMode
+	//	-expandedVertexArraySize
+	//	-totalPoints 
+	fanManagerToMsg.insertInt(int(currentPointStorageMode));
+	fanManagerToMsg.insertInt(int(expandedVertexArraySize));
+	fanManagerToMsg.insertInt(int(totalPoints));
+
+	// Step 1.2: Based on the value of the currentPointStorageMode enum, determine which point array data to read from
+	// (this will be either localVertexArray or expandedVertexArray.
+	switch (currentPointStorageMode)
+	{
+		// Below: for each scenario, produce appropriate Messages from each EnclaveBlockVertex,
+		// and then append them into the fanManagertoMsg.
+		// 
+		// LOCAL_POINTS means using we are using localVertexArray.
+		case PointArrayMode::LOCAL_POINTS:	
+		{
+			for (int x = 0; x < totalPoints; x++)
+			{
+				// write out the EnclaveBlockVertices from localVertexArray into this
+				fanManagerToMsg.appendOtherMessage(&localVertexArray[x].convertBlockVertexToMessage());
+			}
+			break;
+		}
+
+		case PointArrayMode::NONLOCAL_POINTS:
+		{
+			for (int x = 0; x < totalPoints; x++)
+			{
+				// write out the EnclaveBlockVertices from expandedVertexArray into this
+				fanManagerToMsg.appendOtherMessage(&expandedVertexArray[x].convertBlockVertexToMessage());
+			}
+			break;
+		}
+	}
+
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// PART 2: Fan data
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	//
+	// Step 2.1: Read, translate to int, and store the values of (in this order):
+	//	-currentFanStorageMode
+	//	-expandedFanArraySize
+	//	-totalFans
+	fanManagerToMsg.insertInt(int(currentFanStorageMode));
+	fanManagerToMsg.insertInt(int(expandedFanArraySize));
+	fanManagerToMsg.insertInt(int(totalFans));
+
+	// Step 2.2: Based on the value of currentFanStorageMode, determine where to read the fan array data that we
+	// will be writing for.
+	switch (currentFanStorageMode)
+	{
+		// For each case below, we will fetch fans and have their data written to Message format; 
+		// we do this by reading from the appropriate array.
+		//
+
+		// If LOCALIZED, fetch fans from the localFanArray
+		case FanArrayMode::LOCALIZED:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+				fanManagerToMsg.appendOtherMessage(&localFanArray[x].getFanData().convertFanDataToMessage());
+			}
+			break;
+		}
+
+		// If THIN, fetch fans from expandedThinFanArray.
+		case FanArrayMode::THIN:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+				fanManagerToMsg.appendOtherMessage(&expandedThinFanArray[x].getFanData().convertFanDataToMessage());
+			}
+			break;
+		}
+
+		// <<<<<<<<<<<<< FAT mode needs testing implemenation still >>>>>>>>>>>>>>>
+		case FanArrayMode::FAT:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+
+			}
+			break;
+		}
+	}
+
+	return fanManagerToMsg;
+}
+
+void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
+{
+	// Open the Message (we will assume the appropriate data has been stripped and that we are just dealing
+	// with the necessary data we need to build the FanManager.)
+	in_managerDataMessage.open();
+
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// PART 1: Point data
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	//
+	// Step 1.1: Read and translate the values of (in this order);
+	// the resulting values will be copied directly into the member variables of this class.
+	//
+	//	-currentPointStorageMode (must be casted back to enum)
+	//	-expandedVertexArraySize
+	//	-totalPoints 
+	//
+	currentPointStorageMode = PointArrayMode(in_managerDataMessage.readInt());
+	expandedVertexArraySize = unsigned short(in_managerDataMessage.readInt());
+	totalPoints = unsigned short(in_managerDataMessage.readInt());
+
+	// Step 1.2: Based on the currentPointStorageMode and totalPoints, determine where the points will be stored.
+	switch (currentPointStorageMode)
+	{
+		case PointArrayMode::LOCAL_POINTS:
+		{
+			// Points must be read into the localVertexArray.
+			for (int x = 0; x < totalPoints; x++)
+			{
+				unsigned char current_vertex_x = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_y = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_z = unsigned char(in_managerDataMessage.readInt());
+				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
+				localVertexArray[x] = constructedVertex;
+			}
+			break;
+		}
+
+		case PointArrayMode::NONLOCAL_POINTS:
+		{
+			// Before anything else: reset the expandedVertexArray unique_ptr. The length of the array 
+			// should be equal to the value of expandedVertexArraySize.
+			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
+
+			// Points must be read into the expandedVertexArray.
+			for (int x = 0; x < totalPoints; x++)
+			{
+				unsigned char current_vertex_x = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_y = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_z = unsigned char(in_managerDataMessage.readInt());
+				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
+				expandedVertexArray[x] = constructedVertex;
+			}
+			break;
+		}
+	}
+
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// PART 2: Fan data
+	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	//
+	// Step 2.1: Read and translate the values of (in this order);
+	// the resulting values will be copied directly into the member variables of this class.
+	//
+	//	-currentFanStorageMode
+	//	-expandedFanArraySize
+	//	-totalFans
+	currentFanStorageMode = FanArrayMode(in_managerDataMessage.readInt());
+	expandedFanArraySize = in_managerDataMessage.readInt();
+	totalFans = in_managerDataMessage.readInt();
+
+	// Step 2.2: Based on the value of currentFanStorageMode, determine where to write the fan array data to.
+	switch (currentFanStorageMode)
+	{
+		// If LOCALIZED, construct and write fans to the localFanArray
+		case FanArrayMode::LOCALIZED:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+				//fanManagerToMsg.appendOtherMessage(&localFanArray[x].getFanData().convertFanDataToMessage());
+				FanData streamedFanData(&in_managerDataMessage);
+				ThinFan newFan;
+				newFan.buildFromFanData(streamedFanData);
+				localFanArray[x] = newFan;
+			}
+			break;
+		}
+
+		// If THIN, construct and write fans to the  expandedThinFanArray.
+		case FanArrayMode::THIN:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+				//fanManagerToMsg.appendOtherMessage(&expandedThinFanArray[x].getFanData().convertFanDataToMessage());
+				FanData streamedFanData(&in_managerDataMessage);
+				ThinFan newFan;
+				newFan.buildFromFanData(streamedFanData);
+				expandedThinFanArray[x] = newFan;
+			}
+			break;
+		}
+
+		// <<<<<<<<<<<<< FAT mode needs testing implemenation still >>>>>>>>>>>>>>>
+		case FanArrayMode::FAT:
+		{
+			for (int x = 0; x < totalFans; x++)
+			{
+
+			}
+			break;
 		}
 	}
 }

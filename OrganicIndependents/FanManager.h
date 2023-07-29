@@ -25,14 +25,14 @@ public:
 	FanManager(const FanManager& fanManager_a)
 	{
 		totalFans = fanManager_a.totalFans;
-		currentMode = fanManager_a.currentMode;
+		currentFanStorageMode = fanManager_a.currentFanStorageMode;
 		totalPoints = fanManager_a.totalPoints;
-		currentPointMode = fanManager_a.currentPointMode;
+		currentPointStorageMode = fanManager_a.currentPointStorageMode;
 
 
 		for (int x = 0; x < 16; x++)
 		{
-			triangleArray[x] = fanManager_a.triangleArray[x];
+			localFanArray[x] = fanManager_a.localFanArray[x];
 		}
 
 		// Fan Array checks and copies
@@ -40,7 +40,7 @@ public:
 		expandedFanArraySize = fanManager_a.expandedFanArraySize;
 		if (isExpandedFanArrayActive == true)
 		{
-			if (currentMode == FanArrayMode::THIN)
+			if (currentFanStorageMode == FanArrayMode::THIN)
 			{
 				expandedThinFanArray.reset(new ThinFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -48,7 +48,7 @@ public:
 					expandedThinFanArray[x] = fanManager_a.expandedThinFanArray[x];
 				}
 			}
-			else if (currentMode == FanArrayMode::FAT)
+			else if (currentFanStorageMode == FanArrayMode::FAT)
 			{
 				expandedFatFanArray.reset(new FatFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -60,14 +60,14 @@ public:
 
 		// EnclaveBlockVertex array checks and copies
 		expandedVertexArraySize = fanManager_a.expandedVertexArraySize;
-		if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+		if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)
 		{
 			for (int x = 0; x < totalPoints; x++)		// only need to copy over an amount of points equal to totalPoints
 			{
-				structarray[x] = fanManager_a.structarray[x];
+				localVertexArray[x] = fanManager_a.localVertexArray[x];
 			}
 		}
-		else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+		else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 		{
 			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
 			for (int x = 0; x < totalPoints; x++)
@@ -83,13 +83,13 @@ public:
 	FanManager& operator=(FanManager&& fanManager_a)
 	{
 		totalFans = fanManager_a.totalFans;
-		currentMode = fanManager_a.currentMode;
+		currentFanStorageMode = fanManager_a.currentFanStorageMode;
 		totalPoints = fanManager_a.totalPoints;
-		currentPointMode = fanManager_a.currentPointMode;
+		currentPointStorageMode = fanManager_a.currentPointStorageMode;
 
 		for (int x = 0; x < 16; x++)
 		{
-			triangleArray[x] = fanManager_a.triangleArray[x];
+			localFanArray[x] = fanManager_a.localFanArray[x];
 		}
 
 		// Fan Array checks and copies
@@ -99,7 +99,7 @@ public:
 
 		if (isExpandedFanArrayActive == true)
 		{
-			if (currentMode == FanArrayMode::THIN)
+			if (currentFanStorageMode == FanArrayMode::THIN)
 			{
 				expandedThinFanArray.reset(new ThinFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -107,7 +107,7 @@ public:
 					expandedThinFanArray[x] = fanManager_a.expandedThinFanArray[x];
 				}
 			}
-			else if (currentMode == FanArrayMode::FAT)
+			else if (currentFanStorageMode == FanArrayMode::FAT)
 			{
 				expandedFatFanArray.reset(new FatFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -119,14 +119,14 @@ public:
 
 		// EnclaveBlockVertex array checks and copies
 		expandedVertexArraySize = fanManager_a.expandedVertexArraySize;
-		if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+		if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)
 		{
 			for (int x = 0; x < totalPoints; x++)		// only need to copy over an amount of points equal to totalPoints
 			{
-				structarray[x] = fanManager_a.structarray[x];
+				localVertexArray[x] = fanManager_a.localVertexArray[x];
 			}
 		}
-		else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+		else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 		{
 			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
 			for (int x = 0; x < totalPoints; x++)
@@ -144,14 +144,14 @@ public:
 	FanManager& operator=(const FanManager& fanManager_a)
 	{
 		totalFans = fanManager_a.totalFans;
-		currentMode = fanManager_a.currentMode;
+		currentFanStorageMode = fanManager_a.currentFanStorageMode;
 		totalPoints = fanManager_a.totalPoints;
-		currentPointMode = fanManager_a.currentPointMode;
+		currentPointStorageMode = fanManager_a.currentPointStorageMode;
 
 
 		for (int x = 0; x < 16; x++)
 		{
-			triangleArray[x] = fanManager_a.triangleArray[x];
+			localFanArray[x] = fanManager_a.localFanArray[x];
 		}
 
 		// Fan Array checks and copies
@@ -159,7 +159,7 @@ public:
 		expandedFanArraySize = fanManager_a.expandedFanArraySize;
 		if (isExpandedFanArrayActive == true)
 		{
-			if (currentMode == FanArrayMode::THIN)
+			if (currentFanStorageMode == FanArrayMode::THIN)
 			{
 				expandedThinFanArray.reset(new ThinFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -167,7 +167,7 @@ public:
 					expandedThinFanArray[x] = fanManager_a.expandedThinFanArray[x];
 				}
 			}
-			else if (currentMode == FanArrayMode::FAT)
+			else if (currentFanStorageMode == FanArrayMode::FAT)
 			{
 				expandedFatFanArray.reset(new FatFan[expandedFanArraySize]);
 				for (int x = 0; x < expandedFanArraySize; x++)
@@ -179,14 +179,14 @@ public:
 
 		// EnclaveBlockVertex array checks and copies
 		expandedVertexArraySize = fanManager_a.expandedVertexArraySize;
-		if (currentPointMode == PointArrayMode::LOCAL_POINTS)
+		if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)
 		{
 			for (int x = 0; x < totalPoints; x++)		// only need to copy over an amount of points equal to totalPoints
 			{
-				structarray[x] = fanManager_a.structarray[x];
+				localVertexArray[x] = fanManager_a.localVertexArray[x];
 			}
 		}
-		else if (currentPointMode == PointArrayMode::NONLOCAL_POINTS)
+		else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 		{
 			expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
 			for (int x = 0; x < totalPoints; x++)
@@ -215,45 +215,89 @@ public:
 	int getNumberOfTertiariesInTriangleAtIndex(int in_index);	// used by EnclaveBlock::getNumberOfTertiariesInTriangleAtIndex.
 	ECBPolyPoint getEmptyNormalFromTriangle(int in_index);		// used by EnclaveBlock::getEmptyNormalFromTriangle
 
+	Message writeFanManagerToBDMFormat();	// attempts to store the data of the FanManager that called this function to a Message;
+											// the MessageType of the Message needs to be BDM_BLOCK_FANMANAGER.
+
+	void constructManagerFromMessage(Message in_managerDataMessage);		// attempts to build the FanManager from a Message.
+
 private:
-	enum class FanArrayMode
-	{
-		LOCALIZED,	// still uses the default array, not the smart point, for coherency.
-		THIN,		// uses the expandedFanArray (ThinFan), and up to 256 points in expandedVertexArray; 
-		FAT,		// uses the expandedFanArray, and up to "int" points in expandedVertexArray; 
-	};
+
+	// Structs for fan array and point management.
 	enum class PointArrayMode
 	{
 		LOCAL_POINTS,
 		NONLOCAL_POINTS
 	};
 
-	// for LOCALIZED fan array mode; used by default, unless we need more space.
-	ThinFan triangleArray[16];	// stores up to 16 polygons that can be stored within the block = 128 bytes
-	EnclaveBlockVertex structarray[32];
+	enum class FanArrayMode
+	{
+		LOCALIZED,	// still uses the default array, not the smart point, for coherency.
+		THIN,		// uses the expandedFanArray (ThinFan), and up to 256 points in expandedVertexArray; 
+		FAT,		// uses the expandedFanArray, and up to "int" points in expandedVertexArray; 
+	};
 
-	unsigned short totalFans = 0;								// the total number of triangles the manager has; the equivalent of numBBFanByte in EnclaveBlock.
-
-	std::unique_ptr<ThinFan[]> expandedThinFanArray;			// for THIN array mode
-	std::unique_ptr<FatFan[]> expandedFatFanArray;				// for FAT array mode
-	unsigned short expandedFanArraySize = 16;					// used to represent the size of the arrays for either the ThinFans or FatFans; should start at 16,
-	bool isExpandedFanArrayActive = false;
-	FanArrayMode currentMode = FanArrayMode::LOCALIZED;				// default is always localized; it's unnecessary to use FAT fans unless we're in FAT mode; LOCALIZED/THIN = THIN fans.
-
-	unsigned short expandedVertexArraySize = 16;
-	PointArrayMode currentPointMode = PointArrayMode::LOCAL_POINTS;
+	// |||||||||||||||||||||||||||||||||||||||||||||||| BEGIN: Point management members |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	PointArrayMode currentPointStorageMode = PointArrayMode::LOCAL_POINTS;
+	EnclaveBlockVertex localVertexArray[32];	// where the points are stored when the currentPointStorageMode is PointArrayMode::LOCAL_POINTS.
+	unsigned short totalPoints = 0;					// the total number of points the manager is using.
+	unsigned short expandedVertexArraySize = 16;	// the current size of the point array; this value may get incremented by +16 when calling checkForVertexExpansion().
 	std::unique_ptr<EnclaveBlockVertex[]> expandedVertexArray;	// for when we have > 32 points; this gets expanded by 32 points each.
-	unsigned short totalPoints = 0;									// the total number of points the manager is using.
+	// |||||||||||||||||||||||||||||||||||||||||||||||| END: Point management members |||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+	// |||||||||||||||||||||||||||||||||||||||||||||||| BEGIN: Fan management members |||||||||||||||||||||||||||||||||||||||||||||||||||||
+	// for LOCALIZED fan array mode; used by default, unless we need more space.
+	FanArrayMode currentFanStorageMode = FanArrayMode::LOCALIZED;		// default is always localized; it's unnecessary to use FAT fans unless we're in FAT mode; LOCALIZED/THIN = THIN fans.
+	ThinFan localFanArray[16];	// stores up to 16 ThinFans; this is where ThinFans go initially, 
+								// when the currentFanStorageMode is set to FanArrayMode::LOCALIZED.
+
+	unsigned short totalFans = 0;				// the total number of triangles the manager has; the equivalent of numBBFanByte in EnclaveBlock.
+	unsigned short expandedFanArraySize = 16;	// When the value of currentMode is FanArrayMode::THIN or FanArrayMode::FAT, this value is
+												// used to represent the current size of the expandedThinFanArray or expandedFatFanArray, respectively.
+												// This value gets incremented when the expandTriangleArray() function gets called, to indicate the current size of the triangle array.
+												// When the FanManager writes itself to a Message, this value needs to be preserved somehow.
+
+	std::unique_ptr<ThinFan[]> expandedThinFanArray;	// for THIN array mode
+	std::unique_ptr<FatFan[]> expandedFatFanArray;		// for FAT array mode
+	bool isExpandedFanArrayActive = false;
+	// |||||||||||||||||||||||||||||||||||||||||||||||| END: Fan management members |||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+
+
+
+
+
+
 
 	// |||||||||||||| state checking/manipulation functions.
-
 	FanBase* retrieveNextAvailableSecondary();
 
 	// triangle expansion functions.
 	void checkForTriangleExpansion();
 	void expandTriangleArray();
 
-	void checkForVertexExpansion();
+	void checkForVertexExpansion();		// Determines whether or not the number of vertices stored would need to be increased, before calling the
+										// processTertiaryData function, which attempts to insert new points if it finds them. 
+										//
+										// The order of expansion is as follows:
+										//
+										//	1.	If the value of totalPoints is 16, which is the max limit for PointArrayMode::LOCAL_POINTS,
+										//		then the expandedVertexArray gets reset/instantiated with a value of 32. The vertices from localVertexArray then get loaded into
+										//		the expandedVertexArray. The currentPointMdoe then becomes PointArrayMode::NONLOCALPOINTS, to indicate that the vertices
+										//		are stored in a dynamically allocated array, and NOt the localVertexArray member.
+										//
+										//  2.	else, if the currentPointMode is PointArrayMode::NONLOCAL_POINTS, and the totalPoints value is < 256,
+										//		all current points in the expandVertexArray get copied into a temporary, dynamically allocated array. Then,
+										//		the expandedVertexArray is reset, with its current size +16. At that point, the values in the dynamically allocated array
+										//		go into the newly reset/allocated expandedVertexArray.
+										//
+										//	3.	<<<< solution for when going beyond 256 points still needs to be developed >>>>
+
+							
 	int addNewPoint(EnclaveBlockVertex in_blockVertex);
 
 	ECBPolyPoint convertVertexToPolyPoint(EnclaveBlockVertex in_blockVertex);

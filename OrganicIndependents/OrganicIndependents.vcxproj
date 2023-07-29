@@ -490,7 +490,9 @@
     <ClCompile Include="EPolyMap.cpp" />
     <ClCompile Include="ExceptionRecord.cpp" />
     <ClCompile Include="ExceptionRecorder.cpp" />
+    <ClCompile Include="FanBase.cpp" />
     <ClCompile Include="FanManager.cpp" />
+    <ClCompile Include="FatFan.cpp" />
     <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />
@@ -569,6 +571,7 @@
     <ClCompile Include="TerminatingSetContainer.cpp" />
     <ClCompile Include="TertiaryTriangleContainer.cpp" />
     <ClCompile Include="TertiaryTriangleProducer.cpp" />
+    <ClCompile Include="ThinFan.cpp" />
     <ClCompile Include="TileCoordinateProducer.cpp" />
     <ClCompile Include="UVCoordProducer.cpp" />
     <ClCompile Include="UVCoordProducerECBPoly.cpp" />

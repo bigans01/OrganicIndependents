@@ -250,6 +250,12 @@
     <Filter Include="Header Files\Messages">
       <UniqueIdentifier>{798ffa2f-1335-4be1-91d4-4fae94154323}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Blueprints\ORE\EnclaveBlock\Fan">
+      <UniqueIdentifier>{45e31a81-fa91-48d3-b9c4-3efae4da8c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ORE\EnclaveBlock\Fan">
+      <UniqueIdentifier>{a314b49b-9264-4ea9-a1b9-de830b4f5e3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -399,18 +405,6 @@
     <ClInclude Include="MessageType.h">
       <Filter>Header Files\Messages</Filter>
     </ClInclude>
-    <ClInclude Include="FanBase.h">
-      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
-    <ClInclude Include="FanData.h">
-      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
-    <ClInclude Include="ThinFan.h">
-      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
-    <ClInclude Include="FatFan.h">
-      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
     <ClInclude Include="EnclaveBlockVertex.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
@@ -463,9 +457,6 @@
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockSearchMeta.h">
-      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
-    <ClInclude Include="FanManager.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClInclude>
     <ClInclude Include="BlockFlagStates.h">
@@ -1131,6 +1122,21 @@
     <ClInclude Include="BlueprintSyncTracker.h">
       <Filter>Header Files\Blueprints</Filter>
     </ClInclude>
+    <ClInclude Include="FatFan.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="FanManager.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="FanData.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="FanBase.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="ThinFan.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1200,9 +1206,6 @@
       <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="OrganicWrappedBBFan.cpp">
-      <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClCompile>
-    <ClCompile Include="FanManager.cpp">
       <Filter>Source Files\Blueprints\ORE\EnclaveBlock</Filter>
     </ClCompile>
     <ClCompile Include="BlockFlags.cpp">
@@ -1504,6 +1507,18 @@
     </ClCompile>
     <ClCompile Include="EnclaveTriangleSkeleton.cpp">
       <Filter>Source Files\Blueprints\ORE\EnclaveTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FanManager.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="FanBase.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="ThinFan.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="FatFan.cpp">
+      <Filter>Source Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
