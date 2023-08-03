@@ -22,6 +22,7 @@
 #include "Operable3DEnclaveKeySet.h"
 #include "BlockCopyQuery.h"
 #include "Operable3DEnclaveKeySet.h"
+#include "MessageContainer.h"
 
 /*
 
@@ -74,21 +75,6 @@ public:
 
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
-		appendedUpdateCount = resultsContainer_b.appendedUpdateCount;
-
-		eraseCounter = resultsContainer_b.eraseCounter;
-
-		if (!resultsContainer_b.finalizerBlocks.empty())												// copy finalizer blocks
-		{																								// "" 
-			auto b_containerBegin = resultsContainer_b.finalizerBlocks.begin();							// ""
-			auto b_containerEnd = resultsContainer_b.finalizerBlocks.end();								// ""
-			for (b_containerBegin; b_containerBegin != b_containerEnd; b_containerBegin++)
-			{																							// ""	
-				finalizerBlocks[b_containerBegin->first] = b_containerBegin->second;					// ""
-			}																							// ""
-		}																								// ""
-
-
 		etcSGM = resultsContainer_b.etcSGM;					// copy 
 		organicTriangleSecondarySGM = resultsContainer_b.organicTriangleSecondarySGM;														// copy, copy, MORE COPYYYYY
 		// copy blocks, if the copied OrganicRawEnclave doesn't have its blockMap empty.
@@ -157,6 +143,18 @@ public:
 	std::set<int> getTouchedBlockList();																	// retrieves a list of blocks that were "touched" by the OrganicTriangleSecondaries; requires
 	std::set<int> getUnexposedBlockList();
 	std::map<int, EnclaveBlockSkeleton> getUnexposedBlocksCopy();
+
+	// ||||||||||| BDM conversion functions.
+	MessageContainer convertOREToBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		//	Constructs a series of Messages relevant to an ORE instance,
+																																//	that would allow the ORE to be recreated from these Messages.
+																																//  The container should contain the following Messages:
+																																//
+																																//	1 BDM_ORE_HEADER
+																																//	1 BDM_ORE_SKELETONSGM
+																																//  Up to 64 BDM_BLOCK_TAGGED
+																																//
+																																// The values of the in_blueprintKey and in_oreKey paramaters are used to append tagging data
+																																// to whichever Messages may need them.
 
 	// ||||||||||| Specialized functions.
 	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
@@ -268,13 +266,18 @@ public:
 	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;	// used to store produced OrganicTriangleSecondary instances, in their appropriate supergrpup.
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
-	int eraseCounter = 0;
 
 private:
+
+	// Below: data members critical to the functioning of the ORE; these will need to be transformed into relavant Messages (i.e, BDM_ORE_HEADER)
 	ORELodState currentLodState = ORELodState::LOD_ENCLAVE_SMATTER;							// the level-of-detail state; always assumed to be LOD_ENCLAVE when initialized, but can be overriden with constructor #2 (see above)
 	OREAppendedState currentAppendedState = OREAppendedState::NONE;							// the AppendedState reflects how many different attempts there have been to add EnclaveTriangles to this ORE.
 	OREDependencyState currentDependencyState = OREDependencyState::DEPENDENT_ON_PARENTS;	// this state determines whether or not this ORE should be rendered when trying to render the entire blueprint's contentsmo
-																							// if this state is INDEPENDENT, the ORE will be rendere when trying to render side-by-side with a blueprint's ECBPolys.
+	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;	// stores the keys of any blocks considered to be "solid" blocks. (aka, skeletons)
+	std::map<int, EnclaveBlockSkeleton> rMassSolidsMap;		// used by OREMatterCollider::extractResultsAndSendtoORE (OrganicCoreLib), to store solid blocks formed during the conversion to ORELodState::LOD_ENCLAVE_RMATTER.
+	OperableIntSet existingEnclaveTriangleSkeletonContainerTracker;			// returns a set that represents the unique IDs of EnclaveTriangles; used by OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint,
+																			// in order to distinguish between "old" and "new" sets of an SPolySet.
+	int total_triangles = 0;								// the total number of renderable triangles; incremented/decremented according to the number of triangles per BBFan; determined at run time
 
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void resetBlockDataAndTriangleCount();																							// clears the blockMap, and resets triangle count
@@ -294,13 +297,6 @@ private:
 														int in_clusterID, 
 														OrganicTriangleSecondary in_enclavePolyFractureResults);
 
-	std::map<int, EnclaveBlockSkeleton> blockSkeletonMap;	// stores the keys of any blocks considered to be "solid" blocks. (aka, skeletons)
-	std::map<int, EnclaveBlockSkeleton> rMassSolidsMap;		// used by OREMatterCollider::extractResultsAndSendtoORE (OrganicCoreLib), to store solid blocks formed during the conversion to ORELodState::LOD_ENCLAVE_RMATTER.
-	std::map<int, EnclaveBlock> finalizerBlocks;							// unused for now	
-	OperableIntSet existingEnclaveTriangleSkeletonContainerTracker;			// returns a set that represents the unique IDs of EnclaveTriangles; used by OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint,
-																			// in order to distinguish between "old" and "new" sets of an SPolySet.
-	int total_triangles = 0;								// the total number of renderable triangles; incremented/decremented according to the number of triangles per BBFan; determined at run time
-	int appendedUpdateCount = 0;							// the total number of times the appended state has been updated in the ORE.
 };
 
 #endif

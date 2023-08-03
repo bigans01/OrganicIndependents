@@ -218,7 +218,7 @@ public:
 	Message writeFanManagerToBDMFormat();	// attempts to store the data of the FanManager that called this function to a Message;
 											// the MessageType of the Message needs to be BDM_BLOCK_FANMANAGER.
 
-	void constructManagerFromMessage(Message in_managerDataMessage);		// attempts to build the FanManager from a Message.
+	void constructManagerFromMessage(Message* in_managerDataMessage);		// attempts to build the FanManager from a Message.
 
 private:
 

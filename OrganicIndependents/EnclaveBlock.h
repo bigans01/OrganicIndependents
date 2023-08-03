@@ -23,8 +23,10 @@ class EnclaveBlock
 	public:
 		// constructors
 		EnclaveBlock();			// default constructor.
-		EnclaveBlock(Message in_blockDataMessage);	// for creating a block from a Message that is a BDM_BLOCK_UNTAGGED type.
+		EnclaveBlock(Message* in_blockDataMessageRef);	// for creating a block  from a certain point in an 
+														// already-opened larger Message that contains the block data. 
 
+		EnclaveBlock(Message in_blockDataMessage);		// for creating a block directly from a Message that has a MessageType of BDM_BLOCK_UNTAGGED.
 
 		// meta data member variables.
 		BlockFlags blockflags;						// is block air, is block solid, is block set to render, etc

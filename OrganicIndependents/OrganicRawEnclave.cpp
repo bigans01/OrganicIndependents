@@ -1,6 +1,38 @@
 #include "stdafx.h"
 #include "OrganicRawEnclave.h"
 
+MessageContainer OrganicRawEnclave::convertOREToBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey)
+{
+	MessageContainer oreDataMessage;
+
+	// Step XX: Build ORE header Message (BDM_ORE_HEADER); 
+	// remember to append the in_oreKey and in_blueprintKey values value to the front of it, in that order.
+
+	// Step XX: Build EnclaveTriangleSkeletonSupergroupManager reconstruction Message (BDM_ORE_SKELETONSGM); 
+	// remember to append the in_oreKey and in_blueprintKey values value to the front of it, in that order.
+
+	// Step XX: Create a BDM_BLOCK_TAGGED Message, for each block in the blockMap.
+	//
+	// The block key, ORE key, and blueprint key must be appended to the Message before it goes into the container, in that order.
+	for (auto& currentBlock : blockMap)
+	{
+		// fetch the raw block data (would be BDM_BLOCK_UNTAGGED format)
+		Message currentBlockData = currentBlock.second.writeEnclaveBlockToBDMMessage();
+
+		// append block coordinates to front (remember, reverse order, so: block, ORE, blueprint)
+		EnclaveKeyDef::EnclaveKey currentBlockKey = PolyUtils::convertSingleToBlockKey(currentBlock.first);
+		currentBlockData.insertEnclaveKeyFront(currentBlockKey);
+		currentBlockData.insertEnclaveKeyFront(in_oreKey);
+		currentBlockData.insertEnclaveKeyFront(in_blueprintKey);
+
+		// lastly, change the Message type, and then insert it into the MessageContainer.
+		currentBlockData.messageType = MessageType::BDM_BLOCK_TAGGED;
+		oreDataMessage.insertMessage(currentBlockData);
+	}
+
+	return oreDataMessage;
+}
+
 OrganicRawEnclave::OrganicRawEnclave()
 {
 
@@ -57,7 +89,6 @@ void OrganicRawEnclave::updateCurrentAppendedState()
 			break;
 		}
 	}
-	appendedUpdateCount++;
 }
 
 void OrganicRawEnclave::setOREasIndependent()
@@ -320,7 +351,6 @@ void OrganicRawEnclave::eraseBlock(std::mutex* in_mutexRef, EnclaveKeyDef::Encla
 	blockMap.erase(blockCoordsToSingle);
 	blockSkeletonMap.erase(blockCoordsToSingle);
 	total_triangles -= erasedTriangles;
-	eraseCounter++;
 }
 
 void OrganicRawEnclave::insertBlock(std::mutex* in_mutexRef, int in_blockIndex, EnclaveBlock in_blockToInsert)
@@ -646,7 +676,6 @@ void OrganicRawEnclave::printMetadata()
 		case OREAppendedState::MULTIPLE_APPEND: { appendedState = "MULTIPLE_APPEND"; break; };
 	}
 	std::cout << "value of currentAppendedState: " << appendedState << std::endl;
-	std::cout << "appended update count: " << appendedUpdateCount << std::endl;
 }
 
 void OrganicRawEnclave::printTrianglesPerBlock()

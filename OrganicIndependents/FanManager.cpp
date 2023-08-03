@@ -645,6 +645,7 @@ Message FanManager::writeFanManagerToBDMFormat()
 	fanManagerToMsg.insertInt(int(currentFanStorageMode));
 	fanManagerToMsg.insertInt(int(expandedFanArraySize));
 	fanManagerToMsg.insertInt(int(totalFans));
+	fanManagerToMsg.insertInt(int(isExpandedFanArrayActive));
 
 	// Step 2.2: Based on the value of currentFanStorageMode, determine where to read the fan array data that we
 	// will be writing for.
@@ -688,11 +689,9 @@ Message FanManager::writeFanManagerToBDMFormat()
 	return fanManagerToMsg;
 }
 
-void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
+void FanManager::constructManagerFromMessage(Message* in_managerDataMessage)
 {
-	// Open the Message (we will assume the appropriate data has been stripped and that we are just dealing
-	// with the necessary data we need to build the FanManager.)
-	in_managerDataMessage.open();
+	// Remember, this function assumes that the Message has already been opened. (we will likely be reading from a big Message that contains more data outside of this)
 
 	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// PART 1: Point data
@@ -705,9 +704,9 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 	//	-expandedVertexArraySize
 	//	-totalPoints 
 	//
-	currentPointStorageMode = PointArrayMode(in_managerDataMessage.readInt());
-	expandedVertexArraySize = unsigned short(in_managerDataMessage.readInt());
-	totalPoints = unsigned short(in_managerDataMessage.readInt());
+	currentPointStorageMode = PointArrayMode(in_managerDataMessage->readInt());
+	expandedVertexArraySize = unsigned short(in_managerDataMessage->readInt());
+	totalPoints = unsigned short(in_managerDataMessage->readInt());
 
 	// Step 1.2: Based on the currentPointStorageMode and totalPoints, determine where the points will be stored.
 	switch (currentPointStorageMode)
@@ -717,9 +716,9 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 			// Points must be read into the localVertexArray.
 			for (int x = 0; x < totalPoints; x++)
 			{
-				unsigned char current_vertex_x = unsigned char(in_managerDataMessage.readInt());
-				unsigned char current_vertex_y = unsigned char(in_managerDataMessage.readInt());
-				unsigned char current_vertex_z = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_x = unsigned char(in_managerDataMessage->readInt());
+				unsigned char current_vertex_y = unsigned char(in_managerDataMessage->readInt());
+				unsigned char current_vertex_z = unsigned char(in_managerDataMessage->readInt());
 				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
 				localVertexArray[x] = constructedVertex;
 			}
@@ -735,9 +734,9 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 			// Points must be read into the expandedVertexArray.
 			for (int x = 0; x < totalPoints; x++)
 			{
-				unsigned char current_vertex_x = unsigned char(in_managerDataMessage.readInt());
-				unsigned char current_vertex_y = unsigned char(in_managerDataMessage.readInt());
-				unsigned char current_vertex_z = unsigned char(in_managerDataMessage.readInt());
+				unsigned char current_vertex_x = unsigned char(in_managerDataMessage->readInt());
+				unsigned char current_vertex_y = unsigned char(in_managerDataMessage->readInt());
+				unsigned char current_vertex_z = unsigned char(in_managerDataMessage->readInt());
 				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
 				expandedVertexArray[x] = constructedVertex;
 			}
@@ -755,9 +754,11 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 	//	-currentFanStorageMode
 	//	-expandedFanArraySize
 	//	-totalFans
-	currentFanStorageMode = FanArrayMode(in_managerDataMessage.readInt());
-	expandedFanArraySize = in_managerDataMessage.readInt();
-	totalFans = in_managerDataMessage.readInt();
+	//	-isExpandedFanArrayActive
+	currentFanStorageMode = FanArrayMode(in_managerDataMessage->readInt());
+	expandedFanArraySize = in_managerDataMessage->readInt();
+	totalFans = in_managerDataMessage->readInt();
+	isExpandedFanArrayActive = in_managerDataMessage->readInt();
 
 	// Step 2.2: Based on the value of currentFanStorageMode, determine where to write the fan array data to.
 	switch (currentFanStorageMode)
@@ -768,7 +769,7 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 			for (int x = 0; x < totalFans; x++)
 			{
 				//fanManagerToMsg.appendOtherMessage(&localFanArray[x].getFanData().convertFanDataToMessage());
-				FanData streamedFanData(&in_managerDataMessage);
+				FanData streamedFanData(in_managerDataMessage);
 				ThinFan newFan;
 				newFan.buildFromFanData(streamedFanData);
 				localFanArray[x] = newFan;
@@ -782,7 +783,7 @@ void FanManager::constructManagerFromMessage(Message in_managerDataMessage)
 			for (int x = 0; x < totalFans; x++)
 			{
 				//fanManagerToMsg.appendOtherMessage(&expandedThinFanArray[x].getFanData().convertFanDataToMessage());
-				FanData streamedFanData(&in_managerDataMessage);
+				FanData streamedFanData(in_managerDataMessage);
 				ThinFan newFan;
 				newFan.buildFromFanData(streamedFanData);
 				expandedThinFanArray[x] = newFan;

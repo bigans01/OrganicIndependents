@@ -6,15 +6,24 @@ EnclaveBlock::EnclaveBlock()
 
 }
 
+EnclaveBlock::EnclaveBlock(Message* in_blockDataMessageRef)
+{
+	// REMEMBER: Message must be already opened from OUTSIDE this function, or program will crash.
+	// Read the flags, and then purge the value from the Message, so that it can be passed on to the FanManager for processing.
+	blockflags.flags = unsigned char(in_blockDataMessageRef->readInt());
+
+	in_blockDataMessageRef->removeIntsFromFrontAndResetIter(1);
+	manager.constructManagerFromMessage(in_blockDataMessageRef);
+}
+
 EnclaveBlock::EnclaveBlock(Message in_blockDataMessage)
 {
 	in_blockDataMessage.open();
 
-	// Read the flags, and then purge the value from the Message, so that it can be passed on to the FanManager for processing.
 	blockflags.flags = unsigned char(in_blockDataMessage.readInt());
 
 	in_blockDataMessage.removeIntsFromFrontAndResetIter(1);
-	manager.constructManagerFromMessage(in_blockDataMessage);
+	manager.constructManagerFromMessage(&in_blockDataMessage);
 }
 
 Message EnclaveBlock::writeEnclaveBlockToBDMMessage()

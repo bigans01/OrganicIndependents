@@ -118,8 +118,10 @@ enum class MessageType
 	BDM_BLOCK_FANMANAGER,	// This type indicates that the Message includes all necessary metadata for the FanManager to be reconstructed. 
 							// This type should be constructed via the FanManager::writeFanManagerToBDMFormat() function. 
 
-	BDM_BLOCK_UNTAGGED,		// This Message would indicate that it contains all data necessary to construct an EnclaveBlock, but it doesn't contain the Blueprint, ORE, and specific block key.
-	BDM_BLOCK_TAGGED		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific block key at the front of the message, in that order;
+	BDM_BLOCK_UNTAGGED,		// This Message would indicate that it contains all data necessary to construct an EnclaveBlock, but it doesn't contain the keys (Blueprint, ORE, Block) 
+							// that specify the world position that is relevant to the data
+
+	BDM_BLOCK_TAGGED		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific Blueprint, ORE, and block keys at the front of the message, in that order;
 							// Remember, that to put it in that order when the Message already contains data, that you will have to call Message::insertEnclaveKeyFront to insert the block key.
 
 };
