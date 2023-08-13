@@ -106,7 +106,7 @@ enum class MessageType
 
 	// Blueprint data messages
 	BDM_BLUEPRINT_HEADER,	// Stores metadata about the blueprint, such as the number of ECBPolys, and the total number of OREs in the blueprint.
-	BDM_ORE_HEADER,			// Stores data about an OrganicRawEnclave, such as the number of different types of blocks, any skeletonSGM data (including it's triangles),
+	BDM_ORE_HEADER,			// Stores data about an OrganicRawEnclave, such as the number of different types of blocks,
 							// it's currentLodState, currentAppendedState, and the currentDependencyState. The first 3 int's of this Message need to form an EnclaveKey
 							// that represents the location of the ORE (i.e, an ORE at key 5,7,2)			
 			
@@ -121,8 +121,10 @@ enum class MessageType
 	BDM_BLOCK_UNTAGGED,		// This Message would indicate that it contains all data necessary to construct an EnclaveBlock, but it doesn't contain the keys (Blueprint, ORE, Block) 
 							// that specify the world position that is relevant to the data
 
-	BDM_BLOCK_TAGGED		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific Blueprint, ORE, and block keys at the front of the message, in that order;
+	BDM_BLOCK_TAGGED,		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific Blueprint, ORE, and block keys at the front of the message, in that order;
 							// Remember, that to put it in that order when the Message already contains data, that you will have to call Message::insertEnclaveKeyFront to insert the block key.
+
+	BDM_SKELETONBLOCK_TAGGED	// The Message contains data relative to a skeleton block; it should have the specific Blueprint, ORE and block key that this pertains to as well.
 
 };
 

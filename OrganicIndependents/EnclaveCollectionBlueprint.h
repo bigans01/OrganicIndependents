@@ -94,6 +94,8 @@ public:
 																														// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's skeletonSGM.
 																														// This function just prints out the contents in a readable manner, for testing purposes.
 
+	MessageContainer convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// generate all data necessary to make an instance of this class, in BDM format.
+
 	std::map<int, PolyGroupRange> polyGroupRangeMap;
 	EnclaveFractureResultsMap fractureResults;
 	BlueprintSyncTracker bpTracker;

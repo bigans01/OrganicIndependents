@@ -140,6 +140,16 @@ class Message
 			intVectorIter = intVector.begin();
 		}
 
+		void removeEnclaveKeyFromFrontAndResetIter(int in_numberOfKeysToRemove)
+		{
+			// The number of ints to remove is always equal to the in_numberOfKeysToRemove *3, since an EnclaveKeyDef::EnclaveKey consists of 3 int values.
+			for (int x = 0; x < (in_numberOfKeysToRemove * 3); x++)
+			{
+				intVector.erase(intVector.begin());
+			}
+			intVectorIter = intVector.begin();
+		}
+
 		void removeFloatsFromFrontAndResetIter(int in_numberOfFloatsToRemove)
 		{
 			for (int x = 0; x < in_numberOfFloatsToRemove; x++)

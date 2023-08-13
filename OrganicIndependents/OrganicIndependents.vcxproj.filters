@@ -256,6 +256,12 @@
     <Filter Include="Source Files\Blueprints\ORE\EnclaveBlock\Fan">
       <UniqueIdentifier>{a314b49b-9264-4ea9-a1b9-de830b4f5e3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Blueprints\ReconstitutedBlueprint">
+      <UniqueIdentifier>{daa7c03a-dce8-4e28-bd2e-c5aaaf330ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ReconstitutedBlueprint">
+      <UniqueIdentifier>{9a4ca317-3cb2-4177-9713-421a7070dd7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1137,6 +1143,12 @@
     <ClInclude Include="ThinFan.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
     </ClInclude>
+    <ClInclude Include="ReconstitutedBlueprint.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconstitutionManager.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1519,6 +1531,12 @@
     </ClCompile>
     <ClCompile Include="FatFan.cpp">
       <Filter>Source Files\Blueprints\ORE\EnclaveBlock\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="ReconstitutedBlueprint.cpp">
+      <Filter>Source Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClCompile>
+    <ClCompile Include="ReconstitutionManager.cpp">
+      <Filter>Source Files\Blueprints\ReconstitutedBlueprint</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

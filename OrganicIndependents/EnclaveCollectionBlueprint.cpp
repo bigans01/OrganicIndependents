@@ -14,6 +14,37 @@ EnclaveCollectionBlueprint::EnclaveCollectionBlueprint(const EnclaveCollectionBl
 	bpTracker = blueprint_a.bpTracker;
 }
 
+MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey)
+{
+	MessageContainer blueprintConvertedContainer;
+
+	// The returning MessageContainer should have the following:
+	//
+	// 1 blueprint header message (BDM_BLUEPRINT_HEADER)
+	// 1 message for EACH ECB_POLY.
+	// The appended contents of each MessageContainer that is returned by the call to OrganicRawEnclave::convertOREToBDMFormat for each ORE in fractureResults
+
+	// Step 1: construct and insert the BDM_BLUEPRINT HEADER.
+	//	...code for building this is TBD
+
+	// Step 2: construct and insert Message for each ECB_POLY.
+	//	...code for building this is TBD
+
+	// Step 3: append the contents of each MessageContainer returned by the call to OrganicRawEnclave::convertOREToBDMFormat;
+	//			The returned MessageContainer will contain the following MessageTypes:
+	//			-BDM_ORE_HEADER
+	//			-BDM_ORE_SKELETONSGM
+	//			-BDM_BLOCK_TAGGED
+	//			-BDM_SKELETONBLOCK_TAGGED
+	for (auto& currentOREToConvert : fractureResults.fractureResultsContainerMap)
+	{
+		MessageContainer currentOREData = currentOREToConvert.second.convertOREToBDMFormat(in_blueprintKey, currentOREToConvert.first);
+		blueprintConvertedContainer += currentOREData;
+	}
+
+	return blueprintConvertedContainer;
+}
+
 OperableIntSet EnclaveCollectionBlueprint::produceECBPolyIDSet()
 {
 	OperableIntSet returnSet;

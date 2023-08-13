@@ -399,6 +399,8 @@
     <ClInclude Include="QuatRotationPoints.h" />
     <ClInclude Include="QuatRotationRecord.h" />
     <ClInclude Include="QuatRotationType.h" />
+    <ClInclude Include="ReconstitutedBlueprint.h" />
+    <ClInclude Include="ReconstitutionManager.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />
     <ClInclude Include="RippleImpactRegister.h" />
@@ -560,6 +562,8 @@
     <ClCompile Include="QuatRotationManager.cpp" />
     <ClCompile Include="QuatRotationPoints.cpp" />
     <ClCompile Include="QuatRotationRecord.cpp" />
+    <ClCompile Include="ReconstitutedBlueprint.cpp" />
+    <ClCompile Include="ReconstitutionManager.cpp" />
     <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

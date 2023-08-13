@@ -3,13 +3,31 @@
 
 MessageContainer OrganicRawEnclave::convertOREToBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey)
 {
-	MessageContainer oreDataMessage;
+	MessageContainer oreDataContainer;
 
 	// Step XX: Build ORE header Message (BDM_ORE_HEADER); 
 	// remember to append the in_oreKey and in_blueprintKey values value to the front of it, in that order.
+	Message constructedOREHeader = buildOREHeaderBDMMessage(in_blueprintKey, in_oreKey);
+	oreDataContainer.insertMessage(constructedOREHeader);
 
 	// Step XX: Build EnclaveTriangleSkeletonSupergroupManager reconstruction Message (BDM_ORE_SKELETONSGM); 
 	// remember to append the in_oreKey and in_blueprintKey values value to the front of it, in that order.
+	Message constructedSGMMessage = skeletonSGM.convertSkeletonSGMToBDM(in_blueprintKey, in_oreKey);
+	oreDataContainer.insertMessage(constructedSGMMessage);
+
+	// Step XX: Create a BDM_SKELETONBLOCK_TAGGED, for each skeleton in blockSkeletonMap
+	for (auto& currentSkeleton : blockSkeletonMap)
+	{
+		Message currentSkeletonData(MessageType::BDM_SKELETONBLOCK_TAGGED);
+		
+		// First, enter the the EnclaveKey coordinates (blueprint key, ore key, block key). Then, inseert the int-casted materialID.
+		currentSkeletonData.insertEnclaveKey(in_blueprintKey);
+		currentSkeletonData.insertEnclaveKey(in_oreKey);
+		currentSkeletonData.insertEnclaveKey(PolyUtils::convertSingleToBlockKey(currentSkeleton.first));
+		currentSkeletonData.insertInt(int(currentSkeleton.second.materialID));
+
+		oreDataContainer.insertMessage(currentSkeletonData);
+	}
 
 	// Step XX: Create a BDM_BLOCK_TAGGED Message, for each block in the blockMap.
 	//
@@ -27,10 +45,32 @@ MessageContainer OrganicRawEnclave::convertOREToBDMFormat(EnclaveKeyDef::Enclave
 
 		// lastly, change the Message type, and then insert it into the MessageContainer.
 		currentBlockData.messageType = MessageType::BDM_BLOCK_TAGGED;
-		oreDataMessage.insertMessage(currentBlockData);
+		oreDataContainer.insertMessage(currentBlockData);
 	}
 
-	return oreDataMessage;
+	return oreDataContainer;
+}
+
+Message OrganicRawEnclave::buildOREHeaderBDMMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey)
+{
+	Message oreHeaderMessage(MessageType::BDM_ORE_HEADER);
+
+	// Insert the blueprint key, followed by the ORE key, first.
+	oreHeaderMessage.insertEnclaveKey(in_blueprintKey);
+	oreHeaderMessage.insertEnclaveKey(in_oreKey);
+
+	// First part of Message: store the currentLodState, currentAppendedState, and currentDependencyState, in that order.
+	oreHeaderMessage.insertInt(int(currentLodState));	// when reading a Message of the type BDM_ORE_HEADER, the value used for currentLodState
+														// will need to be used to determine how the ORE should be populated, assuming that it has all the data it needs.
+
+	oreHeaderMessage.insertInt(int(currentAppendedState));
+	oreHeaderMessage.insertInt(int(currentDependencyState));
+
+	// Next, get the total number of real blocks (from the blockMap) and skeleton blocks (from blockSkeletonMap), in that order.
+	oreHeaderMessage.insertInt(int(blockMap.size()));
+	oreHeaderMessage.insertInt(int(blockSkeletonMap.size()));
+
+	return oreHeaderMessage;
 }
 
 OrganicRawEnclave::OrganicRawEnclave()

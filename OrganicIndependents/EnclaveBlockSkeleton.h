@@ -5,7 +5,8 @@
 
 class EnclaveBlockSkeleton
 {
-	TriangleMaterial materialID = TriangleMaterial::NOVAL;		// the materialID
+	public:
+		TriangleMaterial materialID = TriangleMaterial::NOVAL;		// the materialID
 };
 
 #endif
