@@ -81,8 +81,10 @@ public:
 	std::map<int, ECBPoly>::iterator getPolyIterFromMap(int in_keyValue);	// returns an iterator specific keyed ECBPoly.
 	std::map<int, ECBPoly>::iterator getPolygonMapEndIter();				// fetches the end iterator for primaryPolygonMap.
 	void insertPolyWithKeyValue(int in_keyValue, ECBPoly in_ecbPoly);		// inserts an ECBPoly at a specific key.
+
 	bool insertECBPolyLineIntoPoly(int in_keyValue, int in_lineID, ECBPolyLine in_ecbPolyLine);	// inserts an ECBPolyLine having a specific lineID, into the specified keyed ECBPoly;
 																								// the ECBPoly must already exit for this to work.
+
 	int getPolygonMapSize();			// returns the size of primaryPolygonMap.
 	void deletePoly(int in_keyValue);	// deletes an ECBPoly at the specified key, in primaryPolygonMap.
 

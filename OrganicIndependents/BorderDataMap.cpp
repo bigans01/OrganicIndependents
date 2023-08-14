@@ -169,176 +169,176 @@ BorderDataMap::BorderDataMap()
 
 	// ------------------------------------------------------------------------------------------------BEGIN Z AXIS initializations
 	// >>>>>>>>>>>>>>>>>>>> Z AXIS, LOWER WEST
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.x = -1;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.y = -1;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.z = 0;	// z is not applicable
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].diagonalLine = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
-	lineMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.x = -1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.y = -1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].borderLimits.z = 0;	// z is not applicable
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].diagonalLine = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWERWEST].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
 
 	// >>>>>>>>>>>>>>>>>>>> Z AXIS, UPPER WEST
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.x = -1;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.y = 1;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.z = 0;	// z is not applicable
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[0] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[1] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].diagonalLine = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
-	lineMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedFaces[1] = ECBPPOrientations::TOPFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.x = -1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.y = 1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].borderLimits.z = 0;	// z is not applicable
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[0] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[1] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].diagonalLine = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPERWEST].linkedFaces[1] = ECBPPOrientations::TOPFACE;
 
 	// >>>>>>>>>>>>>>>>>>>> Z AXIS, UPPER EAST
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.x = 1;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.y = 1;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.z = 0;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].diagonalLine = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
-	lineMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedFaces[1] = ECBPPOrientations::TOPFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.x = 1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.y = 1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].borderLimits.z = 0;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].diagonalLine = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_UPPEREAST].linkedFaces[1] = ECBPPOrientations::TOPFACE;
 
 	// >>>>>>>>>>>>>>>>>>>> Z AXIS, LOWER EAST
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.x = 1;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.y = -1;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.z = 0;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].diagonalLine = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
-	lineMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.x = 1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.y = -1;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].borderLimits.z = 0;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[0] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[1] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].diagonalLine = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
+	bdLinesMap[ECBPPOrientations::ZAXIS_LOWEREAST].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
 
 	// ------------------------------------------------------------------------------------------------BEGIN Y AXIS initializations
 	// >>>>>>>>>>>>>>>>>>>>> Y AXIS, NORTH WEST
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.x = -1;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.y = 0;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.z = -1;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].diagonalLine = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
-	lineMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedFaces[1] = ECBPPOrientations::NORTHFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.x = -1;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.y = 0;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].borderLimits.z = -1;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].diagonalLine = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHWEST].linkedFaces[1] = ECBPPOrientations::NORTHFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> Y AXIS, SOUTH WEST
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.x = -1;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.y = 0;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.z = 1;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].diagonalLine = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedFaces[1] = ECBPPOrientations::SOUTHFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.x = -1;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.y = 0;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].borderLimits.z = 1;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].diagonalLine = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedFaces[0] = ECBPPOrientations::WESTFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHWEST].linkedFaces[1] = ECBPPOrientations::SOUTHFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> Y AXIS, SOUTH EAST
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.x = 1;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.y = 0;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.z = 1;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].diagonalLine = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
-	lineMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedFaces[1] = ECBPPOrientations::SOUTHFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.x = 1;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.y = 0;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].borderLimits.z = 1;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[0] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[1] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[4] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedLines[5] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].diagonalLine = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_SOUTHEAST].linkedFaces[1] = ECBPPOrientations::SOUTHFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> Y AXIS, NORTH EAST
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.x = 1;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.y = 0;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.z = -1;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[0] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[1] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].diagonalLine = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
-	lineMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedFaces[1] = ECBPPOrientations::NORTHFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.x = 1;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.y = 0;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].borderLimits.z = -1;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[0] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[1] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[2] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[3] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[4] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedLines[5] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].diagonalLine = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedFaces[0] = ECBPPOrientations::EASTFACE;
+	bdLinesMap[ECBPPOrientations::YAXIS_NORTHEAST].linkedFaces[1] = ECBPPOrientations::NORTHFACE;
 
 
 	// ------------------------------------------------------------------------------------------------BEGIN X AXIS initializations
 
 	// >>>>>>>>>>>>>>>>>>>>> X AXIS, LOWER NORTH
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.x = 0; // not applicable here
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.y = -1;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.z = -1;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[3] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[4] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[5] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].diagonalLine = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedFaces[0] = ECBPPOrientations::NORTHFACE;
-	lineMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.x = 0; // not applicable here
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.y = -1;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].borderLimits.z = -1;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[3] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[4] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedLines[5] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].diagonalLine = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedFaces[0] = ECBPPOrientations::NORTHFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERNORTH].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> X AXIS, UPPER NORTH
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.x = 0;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.y = 1;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.z = -1;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[0] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[1] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[3] = ECBPPOrientations::YAXIS_NORTHEAST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[4] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[5] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].diagonalLine = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedFaces[0] = ECBPPOrientations::NORTHFACE;
-	lineMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedFaces[1] = ECBPPOrientations::TOPFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.x = 0;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.y = 1;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].borderLimits.z = -1;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[0] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[1] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[2] = ECBPPOrientations::YAXIS_NORTHWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[3] = ECBPPOrientations::YAXIS_NORTHEAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[4] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedLines[5] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].diagonalLine = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedFaces[0] = ECBPPOrientations::NORTHFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERNORTH].linkedFaces[1] = ECBPPOrientations::TOPFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> X AXIS, UPPER SOUTH
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.x = 0;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.y = 1;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.z = 1;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[2] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[4] = ECBPPOrientations::ZAXIS_UPPERWEST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[5] = ECBPPOrientations::ZAXIS_UPPEREAST;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].diagonalLine = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedFaces[0] = ECBPPOrientations::SOUTHFACE;
-	lineMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedFaces[1] = ECBPPOrientations::TOPFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.x = 0;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.y = 1;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].borderLimits.z = 1;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[2] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[4] = ECBPPOrientations::ZAXIS_UPPERWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedLines[5] = ECBPPOrientations::ZAXIS_UPPEREAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].diagonalLine = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedFaces[0] = ECBPPOrientations::SOUTHFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_UPPERSOUTH].linkedFaces[1] = ECBPPOrientations::TOPFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>> X AXIS, LOWER SOUTH
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.x = 0;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.y = -1;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.z = 1;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERSOUTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[2] = ECBPPOrientations::YAXIS_SOUTHWEST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[4] = ECBPPOrientations::ZAXIS_LOWERWEST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[5] = ECBPPOrientations::ZAXIS_LOWEREAST;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].diagonalLine = ECBPPOrientations::XAXIS_UPPERNORTH;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedFaces[0] = ECBPPOrientations::SOUTHFACE;
-	lineMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.x = 0;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.y = -1;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].borderLimits.z = 1;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[0] = ECBPPOrientations::XAXIS_UPPERSOUTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[1] = ECBPPOrientations::XAXIS_LOWERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[2] = ECBPPOrientations::YAXIS_SOUTHWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[3] = ECBPPOrientations::YAXIS_SOUTHEAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[4] = ECBPPOrientations::ZAXIS_LOWERWEST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedLines[5] = ECBPPOrientations::ZAXIS_LOWEREAST;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].diagonalLine = ECBPPOrientations::XAXIS_UPPERNORTH;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedFaces[0] = ECBPPOrientations::SOUTHFACE;
+	bdLinesMap[ECBPPOrientations::XAXIS_LOWERSOUTH].linkedFaces[1] = ECBPPOrientations::BOTTOMFACE;
 
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FACE MAP SET UP <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

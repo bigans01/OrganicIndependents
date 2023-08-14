@@ -21,7 +21,7 @@ public:
 	};
 
 	std::unordered_map<ECBPPOrientations, BlockBorderMDCorner, OrientationHasher> cornerMap;	// unordered map for storing corner meta data
-	std::unordered_map<ECBPPOrientations, BlockBorderMDLine, OrientationHasher> lineMap;		// " for storing line meta data
+	std::unordered_map<ECBPPOrientations, BlockBorderMDLine, OrientationHasher> bdLinesMap;		// " for storing line meta data
 	std::unordered_map<ECBPPOrientations, BlockBorderMDFace, OrientationHasher> faceMap;
 	std::unordered_map<ECBPPOrientations, ECBPPOrientations, OrientationHasher> faceInterceptMap;
 };

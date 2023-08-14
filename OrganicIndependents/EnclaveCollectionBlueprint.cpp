@@ -30,6 +30,7 @@ MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(Enclave
 	// Step 2: construct and insert Message for each ECB_POLY.
 	//	...code for building this is TBD
 
+
 	// Step 3: append the contents of each MessageContainer returned by the call to OrganicRawEnclave::convertOREToBDMFormat;
 	//			The returned MessageContainer will contain the following MessageTypes:
 	//			-BDM_ORE_HEADER

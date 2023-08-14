@@ -107,8 +107,8 @@ void PrimaryLineT2IsolatedTracer::determineInitialTrace(PerfectClampEnum in_perf
 	}
 	else if (currentBeginOrientation.otype == ECBPPOrientations::LINE)		// ...get the linked faces for the line
 	{
-		tempStorage.tempFaceList.faceList[0] = borderDataMapRef->lineMap[currentBeginOrientation.osubtype].linkedFaces[0];
-		tempStorage.tempFaceList.faceList[1] = borderDataMapRef->lineMap[currentBeginOrientation.osubtype].linkedFaces[1];
+		tempStorage.tempFaceList.faceList[0] = borderDataMapRef->bdLinesMap[currentBeginOrientation.osubtype].linkedFaces[0];
+		tempStorage.tempFaceList.faceList[1] = borderDataMapRef->bdLinesMap[currentBeginOrientation.osubtype].linkedFaces[1];
 		tempStorage.numberOfIntercepts = 2;
 	}
 	else if (currentBeginOrientation.otype == ECBPPOrientations::CORNER)	// ...get the linked faces for the corner
@@ -357,10 +357,10 @@ void PrimaryLineT2IsolatedTracer::determineTrace()
 	else if (currentBeginOrientation.otype == ECBPPOrientations::LINE)		// ...get the linked faces for the line
 	{
 		//std::cout << "|||| acquiring slope from line... " << std::endl;
-		ECBPPOrientations face1 = borderDataMapRef->faceInterceptMap[borderDataMapRef->lineMap[currentBeginOrientation.osubtype].linkedFaces[0]];
+		ECBPPOrientations face1 = borderDataMapRef->faceInterceptMap[borderDataMapRef->bdLinesMap[currentBeginOrientation.osubtype].linkedFaces[0]];
 		ECBPolyPoint intercept1 = getSlopeToUse(face1, current_x_slope, current_y_slope, current_z_slope);
 
-		ECBPPOrientations face2 = borderDataMapRef->faceInterceptMap[borderDataMapRef->lineMap[currentBeginOrientation.osubtype].linkedFaces[1]];
+		ECBPPOrientations face2 = borderDataMapRef->faceInterceptMap[borderDataMapRef->bdLinesMap[currentBeginOrientation.osubtype].linkedFaces[1]];
 		ECBPolyPoint intercept2 = getSlopeToUse(face2, current_x_slope, current_y_slope, current_z_slope);
 		//std::cout << " |||| !!! --Post face calls: " << std::endl;
 		slopeToUse = getInterceptToUseFromLine(intercept1, intercept2);

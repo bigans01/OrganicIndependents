@@ -5924,7 +5924,7 @@ EnclaveKeyDef::EnclaveKey IndependentUtils::retrieveBorderDirection(ECBPPOrienta
 	else if (in_results.otype == ECBPPOrientations::LINE)
 	{
 		//std::cout << "!!! Attempting grab for LINE. " << std::endl;
-		returnPoint = in_dataMapRef->lineMap[in_results.osubtype].borderLimits;
+		returnPoint = in_dataMapRef->bdLinesMap[in_results.osubtype].borderLimits;
 		//std::cout << "(line) Limits are: " << returnPoint.x << ", " << returnPoint.y << ", " << returnPoint.z << " " << std::endl;
 	}
 	else if (in_results.otype == ECBPPOrientations::CORNER)
@@ -5975,8 +5975,8 @@ ECBPolyPoint IndependentUtils::getAppropriateSlopeToUse(BorderDataMap* in_dataMa
 
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::LINE)		// ...get the linked faces for the line
 	{
-		tempStorage.faceList.faceList[0] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[0];
-		tempStorage.faceList.faceList[1] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[1];
+		tempStorage.faceList.faceList[0] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[0];
+		tempStorage.faceList.faceList[1] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[1];
 		tempStorage.numberOfIntercepts = 2;
 	}
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::CORNER)	// ...get the linked faces for the corner
@@ -6103,8 +6103,8 @@ ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheck(Bor
 
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::LINE)		// ...get the linked faces for the line
 	{
-		tempStorage.faceList.faceList[0] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[0];
-		tempStorage.faceList.faceList[1] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[1];
+		tempStorage.faceList.faceList[0] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[0];
+		tempStorage.faceList.faceList[1] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[1];
 		tempStorage.numberOfIntercepts = 2;
 	}
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::CORNER)	// ...get the linked faces for the corner
@@ -6296,8 +6296,8 @@ ECBPolyPoint IndependentUtils::getAppropriateSlopeToUseWithIntendedFaceCheckIgno
 
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::LINE)		// ...get the linked faces for the line
 	{
-		tempStorage.faceList.faceList[0] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[0];
-		tempStorage.faceList.faceList[1] = in_dataMapRef->lineMap[in_beginOrientationResults.osubtype].linkedFaces[1];
+		tempStorage.faceList.faceList[0] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[0];
+		tempStorage.faceList.faceList[1] = in_dataMapRef->bdLinesMap[in_beginOrientationResults.osubtype].linkedFaces[1];
 		tempStorage.numberOfIntercepts = 2;
 	}
 	else if (in_beginOrientationResults.otype == ECBPPOrientations::CORNER)	// ...get the linked faces for the corner
@@ -6985,8 +6985,8 @@ BorderMDFaceList IndependentUtils::getFaceList(ECBPPOrientationResults in_beginO
 	else if (in_beginOrientation.otype == ECBPPOrientations::LINE)
 	{
 		//std::cout << "Retrieving data from LINE " << std::endl;
-		returnFaceList.faceList[0] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[0];
-		returnFaceList.faceList[1] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[1];
+		returnFaceList.faceList[0] = in_borderDataMapRef->bdLinesMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->bdLinesMap[in_beginOrientation.osubtype].linkedFaces[1];
 	}
 
 	// get values from a corner
@@ -7016,8 +7016,8 @@ BorderMDFaceList IndependentUtils::getFaceListDebug(ECBPPOrientationResults in_b
 	else if (in_beginOrientation.otype == ECBPPOrientations::LINE)
 	{
 		std::cout << "Retrieving data from LINE " << std::endl;
-		returnFaceList.faceList[0] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[0];
-		returnFaceList.faceList[1] = in_borderDataMapRef->lineMap[in_beginOrientation.osubtype].linkedFaces[1];
+		returnFaceList.faceList[0] = in_borderDataMapRef->bdLinesMap[in_beginOrientation.osubtype].linkedFaces[0];
+		returnFaceList.faceList[1] = in_borderDataMapRef->bdLinesMap[in_beginOrientation.osubtype].linkedFaces[1];
 	}
 
 	// get values from a corner
