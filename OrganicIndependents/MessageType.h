@@ -106,6 +106,7 @@ enum class MessageType
 
 	// Blueprint data messages
 	BDM_BLUEPRINT_HEADER,	// Stores metadata about the blueprint, such as the number of ECBPolys, and the total number of OREs in the blueprint.
+	BDM_BLUEPRINT_ECBPOLY,	// Stores data required for an ECBPoly to be rebuilt from a Message.
 	BDM_ORE_HEADER,			// Stores data about an OrganicRawEnclave, such as the number of different types of blocks,
 							// it's currentLodState, currentAppendedState, and the currentDependencyState. The first 3 int's of this Message need to form an EnclaveKey
 							// that represents the location of the ORE (i.e, an ORE at key 5,7,2)			

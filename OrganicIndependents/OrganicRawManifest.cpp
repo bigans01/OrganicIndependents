@@ -272,14 +272,15 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 			//if (polysBegin->second.polyType != ECBPolyType::ROGUE)	// don't run rogue polys.
 			//{
 			//std::cout << "!! Raw data for poly: " << polysBegin->first << std::endl;
-			//std::cout << "point 0: " << polysBegin->second.lineMap[0].pointA.x << ", " << polysBegin->second.lineMap[0].pointA.y << ", " << polysBegin->second.lineMap[0].pointA.z << std::endl;
-			//std::cout << "point 1: " << polysBegin->second.lineMap[1].pointA.x << ", " << polysBegin->second.lineMap[1].pointA.y << ", " << polysBegin->second.lineMap[1].pointA.z << std::endl;
-			//std::cout << "point 2: " << polysBegin->second.lineMap[2].pointA.x << ", " << polysBegin->second.lineMap[2].pointA.y << ", " << polysBegin->second.lineMap[2].pointA.z << std::endl;
+			//std::cout << "point 0: " << polysBegin->second.ecbPolyPoints[0].pointA.x << ", " << polysBegin->second.ecbPolyPoints[0].pointA.y << ", " << polysBegin->second.ecbPolyPoints[0].pointA.z << std::endl;
+			//std::cout << "point 1: " << polysBegin->second.ecbPolyPoints[1].pointA.x << ", " << polysBegin->second.ecbPolyPoints[1].pointA.y << ", " << polysBegin->second.ecbPolyPoints[1].pointA.z << std::endl;
+			//std::cout << "point 2: " << polysBegin->second.ecbPolyPoints[2].pointA.x << ", " << polysBegin->second.ecbPolyPoints[2].pointA.y << ", " << polysBegin->second.ecbPolyPoints[2].pointA.z << std::endl;
 
+			// UPDATE 9
 			UVCoordProducerECBPoly ecbPolyCoords(polysBegin->second.materialID,
-				polysBegin->second.lineMap[0].pointA,
-				polysBegin->second.lineMap[1].pointA,
-				polysBegin->second.lineMap[2].pointA,
+				polysBegin->second.ecbPolyPoints[0],
+				polysBegin->second.ecbPolyPoints[1],
+				polysBegin->second.ecbPolyPoints[2],
 				//texturesRef->terrainAtlas.get(),
 				atlasMapRef,
 				0, in_collectionKey);
@@ -298,10 +299,10 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 			int currentUV = 0;		// for testing; will be 0 through 5.
 			for (int b = 0; b < 3; b++)		// cycle through all 3 points; index 0 = point A, 1 = point B, 2 = point C
 			{
-
-				worldPositionGL[currentPointIndex++] = polysBegin->second.lineMap[b].pointA.x;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.lineMap[b].pointA.y;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.lineMap[b].pointA.z;
+				// UPDATE 10
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x;
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y;
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z;
 
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.x;
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.y;

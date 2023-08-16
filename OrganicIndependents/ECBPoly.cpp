@@ -23,9 +23,11 @@ ECBPoly::ECBPoly(FTriangleOutput in_completeTriangleOutput)
 	determineLineInterceptSlopes(&line2, convertPoint0);
 	determineLineInterceptSlopes(&line3, convertPoint1);
 
-	lineMap[0] = convertToECBPolyLine(line1, convertPoint2);		// line consists of points 1 and 2, so third = point 3
-	lineMap[1] = convertToECBPolyLine(line2, convertPoint0);		// line consists of points 2 and 3, so third = point 1
-	lineMap[2] = convertToECBPolyLine(line3, convertPoint1);		// line consists of points 3 and 1, so third = point 2
+	// UPDATE 4
+	ecbPolyPoints[0] = convertPoint0;		
+	ecbPolyPoints[1] = convertPoint1;		
+	ecbPolyPoints[2] = convertPoint2;		
+
 	materialID = in_completeTriangleOutput.outputTriangleMaterial;
 
 	isPolyPerfectlyClamped = in_completeTriangleOutput.fractureRequiredClampValue;
@@ -37,14 +39,32 @@ ECBPoly::ECBPoly(FTriangleOutput in_completeTriangleOutput)
 
 void ECBPoly::printLineData()
 {
-	std::cout << "(ECBPoly): printing ECBPolyLine data..." << std::endl;
+	std::cout << "(ECBPoly): printing point data..." << std::endl;
 	for (int x = 0; x < 3; x++)
 	{
-		std::cout << "Line " << x << ": " << std::endl;
-		std::cout << "pointA: " << lineMap[x].pointA.x << ", " << lineMap[x].pointA.y << ", " << lineMap[x].pointA.z << std::endl;
-		std::cout << "pointB: " << lineMap[x].pointB.x << ", " << lineMap[x].pointB.y << ", " << lineMap[x].pointB.z << std::endl;
-		std::cout << "pointC: " << lineMap[x].pointC.x << ", " << lineMap[x].pointC.y << ", " << lineMap[x].pointC.z << std::endl;
+		// UPDATE 5
+		std::cout << "point " << x << ": ";
+		ecbPolyPoints[x].printPointCoords();
+		std::cout << std::endl;
 	}
+}
+
+Message ECBPoly::produceBDMFormatECBPolyMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey, int in_mappedPolyKey)
+{
+	Message ecbPolyData(MessageType::BDM_BLUEPRINT_ECBPOLY);
+
+	ecbPolyData.insertEnclaveKey(in_blueprintKey);
+	ecbPolyData.insertInt(in_mappedPolyKey);
+	for (int x = 0; x < 3; x++)
+	{
+		ecbPolyData.insertPoint(ecbPolyPoints[x]);
+	}
+	ecbPolyData.insertInt(int(materialID));
+	ecbPolyData.insertInt(int(isPolyPerfectlyClamped));
+	ecbPolyData.insertPoint(emptyNormal);
+	ecbPolyData.insertInt(int(polyBoundaryOrientation));
+
+	return ecbPolyData;
 }
 
 ECBPolyLine ECBPoly::convertToECBPolyLine(TriangleLine in_line, ECBPolyPoint in_thirdPoint)

@@ -10480,9 +10480,11 @@ ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enc
 	PolyUtils::determineLineInterceptSlopes(&polyLine1, translatedPoint0);
 	PolyUtils::determineLineInterceptSlopes(&polyLine2, translatedPoint1);
 
-	returnPoly.lineMap[0] = polyLine0;
-	returnPoly.lineMap[1] = polyLine1;
-	returnPoly.lineMap[2] = polyLine2;
+	// UPDATE 11
+	returnPoly.ecbPolyPoints[0] = translatedPoint0;
+	returnPoly.ecbPolyPoints[1] = translatedPoint1;
+	returnPoly.ecbPolyPoints[2] = translatedPoint2;
+
 	returnPoly.materialID = in_enclaveTriangle.enclaveTriangleMaterialID;
 	returnPoly.isPolyPerfectlyClamped = in_enclaveTriangle.isEnclaveTrianglePolyPerfectlyClamped;
 	returnPoly.emptyNormal = in_enclaveTriangle.emptyNormal;

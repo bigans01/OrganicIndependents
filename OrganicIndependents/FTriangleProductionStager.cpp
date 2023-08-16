@@ -198,7 +198,7 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 			if (nextLineFound)
 			{
 				//std::cout << "!!! Will now erase this line: ";
-				//remainingLineMap[remainingLineIndex].printLine();
+				//remainingecbPolyPoints[remainingLineIndex].printLine();
 				remainingLineMap.erase(remainingLineIndex);
 			}
 		}

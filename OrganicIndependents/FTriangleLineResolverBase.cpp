@@ -90,7 +90,7 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 			if (nextLineFound)
 			{
 				//std::cout << "!!! Will now erase this line: ";
-				//remainingLineMap[remainingLineIndex].printLine();
+				//remainingecbPolyPoints[remainingLineIndex].printLine();
 				remainingLineMap.erase(remainingLineIndex);
 			}
 		}

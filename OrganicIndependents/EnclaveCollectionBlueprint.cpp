@@ -27,9 +27,14 @@ MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(Enclave
 	// Step 1: construct and insert the BDM_BLUEPRINT HEADER.
 	//	...code for building this is TBD
 
-	// Step 2: construct and insert Message for each ECB_POLY.
+	// Step 2: construct and insert Message for each ECB_POLY (BDM_BLUEPRINT_ECBPOLY)
 	//	...code for building this is TBD
-
+	for (auto& currentECBPolyToConvert : primaryPolygonMap)
+	{
+		int currentKeyedPolyID = currentECBPolyToConvert.first;
+		Message currentECBPolyConvertedMessage = currentECBPolyToConvert.second.produceBDMFormatECBPolyMessage(in_blueprintKey, currentKeyedPolyID);
+		blueprintConvertedContainer.insertMessage(currentECBPolyConvertedMessage);
+	}
 
 	// Step 3: append the contents of each MessageContainer returned by the call to OrganicRawEnclave::convertOREToBDMFormat;
 	//			The returned MessageContainer will contain the following MessageTypes:
@@ -86,7 +91,10 @@ bool EnclaveCollectionBlueprint::insertECBPolyLineIntoPoly(int in_keyValue, int 
 	if (doesPolyExist != primaryPolygonMap.end())
 	{
 		wasInserted = true;
-		primaryPolygonMap[in_keyValue].lineMap[in_lineID] = in_ecbPolyLine;
+
+		// UPDATE 6
+		//primaryPolygonMap[in_keyValue].ecbPolyPoints[in_lineID] = in_ecbPolyLine;
+		primaryPolygonMap[in_keyValue].ecbPolyPoints[in_lineID] = in_ecbPolyLine.pointA;
 	}
 	return wasInserted;
 }

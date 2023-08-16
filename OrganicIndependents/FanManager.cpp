@@ -591,7 +591,8 @@ void FanManager::expandTriangleArray()
 
 Message FanManager::writeFanManagerToBDMFormat()
 {
-	Message fanManagerToMsg(MessageType::BDM_ORE_SKELETONSGM);
+	Message fanManagerToMsg;	// this Message gets appended to another one, in the call to EnclaveBlock::writeEnclaveBlockToBDMMessage(), 
+								// so specifying the type is pointless.
 
 	// |||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// PART 1: Point data

@@ -1369,9 +1369,10 @@ ECBPoly PolyUtils::produceECBPolyFromECBPolySkeleton(ECBPolySkeleton in_skeleton
 	PolyUtils::determineLineInterceptSlopes(&line3, in_skeleton.points[1]);	// in_point2
 
 	// add each line to the poly
-	returnPoly.lineMap[0] = PolyUtils::convertToECBPolyLine(line1, in_skeleton.points[2]);		// line consists of points 1 and 2, so third = point 3
-	returnPoly.lineMap[1] = PolyUtils::convertToECBPolyLine(line2, in_skeleton.points[0]);		// line consists of points 2 and 3, so third = point 1
-	returnPoly.lineMap[2] = PolyUtils::convertToECBPolyLine(line3, in_skeleton.points[1]);		// line consists of points 3 and 1, so third = point 2
+	// UPDATE 1
+	returnPoly.ecbPolyPoints[0] = in_skeleton.points[0];		// line consists of points 1 and 2, so third = point 3
+	returnPoly.ecbPolyPoints[1] = in_skeleton.points[1];		// line consists of points 2 and 3, so third = point 1
+	returnPoly.ecbPolyPoints[2] = in_skeleton.points[2];		// line consists of points 3 and 1, so third = point 2
 
 	// construct the poly's lines
 
@@ -1387,9 +1388,10 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 
 	// acquire the old poly's points
 	ECBPolyPoint original0, original1, original2;
-	original0 = in_originalPoly.lineMap[0].pointA;
-	original1 = in_originalPoly.lineMap[1].pointA;
-	original2 = in_originalPoly.lineMap[2].pointA;
+	// UPDATE 2
+	original0 = in_originalPoly.ecbPolyPoints[0];
+	original1 = in_originalPoly.ecbPolyPoints[1];
+	original2 = in_originalPoly.ecbPolyPoints[2];
 
 	// created translated points
 	ECBPolyPoint translated0, translated1, translated2;
@@ -1440,9 +1442,10 @@ ECBPoly PolyUtils::produceTranslatedECBPoly(ECBPoly in_originalPoly, EnclaveKeyD
 	PolyUtils::determineLineInterceptSlopes(&line3, translated1);	// in_point2
 
 	// add each line to the poly
-	returnPoly.lineMap[0] = PolyUtils::convertToECBPolyLine(line1, translated2);
-	returnPoly.lineMap[1] = PolyUtils::convertToECBPolyLine(line2, translated0);
-	returnPoly.lineMap[2] = PolyUtils::convertToECBPolyLine(line3, translated1);
+	// UPDATE 3
+	returnPoly.ecbPolyPoints[0] = translated0;
+	returnPoly.ecbPolyPoints[1] = translated1;
+	returnPoly.ecbPolyPoints[2] = translated2;
 
 	// construct the poly's metadata
 	returnPoly.materialID = in_originalPoly.materialID;

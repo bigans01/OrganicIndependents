@@ -22,14 +22,16 @@ void OrganicTriangle::produceEnclaveTriangles()
 
 	// ecbPolyRef->materialID, ecbPolyRef->isPolyPerfectlyClamped, ecbPolyRef->emptyNormal
 
-	originalPoints[0] = ecbPolyRef->lineMap[0].pointA;
-	originalPoints[1] = ecbPolyRef->lineMap[1].pointA;
-	originalPoints[2] = ecbPolyRef->lineMap[2].pointA;
+	// UPDATE 7
+	originalPoints[0] = ecbPolyRef->ecbPolyPoints[0];
+	originalPoints[1] = ecbPolyRef->ecbPolyPoints[1];
+	originalPoints[2] = ecbPolyRef->ecbPolyPoints[2];
 
 	//std::cout << "Start: FTriangle processing. " << std::endl;
-	FTriangle fPoly(ecbPolyRef->lineMap[0].pointA,
-		ecbPolyRef->lineMap[1].pointA,
-		ecbPolyRef->lineMap[2].pointA,
+	// UPDATE 8
+	FTriangle fPoly(ecbPolyRef->ecbPolyPoints[0],
+		ecbPolyRef->ecbPolyPoints[1],
+		ecbPolyRef->ecbPolyPoints[2],
 		FTriangleType::BLUEPRINT,
 		ecbPolyRef->emptyNormal,
 		ecbPolyRef->polyBoundaryOrientation,

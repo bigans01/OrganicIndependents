@@ -12,6 +12,16 @@ void ReconstitutedBlueprint::handleBDMMessage(Message in_bdmMessage)
 			break;
 		}	
 
+		case MessageType::BDM_BLUEPRINT_ECBPOLY:
+		{
+			// read in the ECBPoly key, which should be immediately after the blueprint key that was read in, and then strip it out.
+			int reconstitutedECBPolyID = in_bdmMessage.readInt();
+			in_bdmMessage.removeIntsFromFrontAndResetIter(1);
+			reconstitutedECBPolyMap[reconstitutedECBPolyID] = in_bdmMessage;
+
+			break;
+		}
+
 		case MessageType::BDM_ORE_HEADER:
 		{
 			// read the ORE key to determine the appropriate key value to use in the reconstitutedOREMap, delete it, and then send the Message to the appropriate
