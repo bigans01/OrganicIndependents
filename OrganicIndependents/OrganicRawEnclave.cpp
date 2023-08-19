@@ -81,6 +81,29 @@ OrganicRawEnclave::OrganicRawEnclave()
 OrganicRawEnclave::OrganicRawEnclave(ORELodState in_ORELodState)
 {
 	currentLodState = in_ORELodState;
+
+	// In most, if not all cases, this constructor function will pass 
+	// in a value of ORELodState::FULL (see the usage of this constructor in
+	// the function, OrganicMassDriverElevator::applyMass in OrganicCoreLib)
+	//
+	// The idea being that when the state is FULL, all blocks need to be skeletons.
+	if (currentLodState == ORELodState::FULL)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			for (int y = 0; y < 4; y++)
+			{
+				for (int z = 0; z < 4; z++)
+				{
+					// NOTE: the default material for a skeleton is 0; we will need to add functionality/options
+					// to set this later; perhaps a variable defined in the ORE that will auto-set this
+					EnclaveBlockSkeleton newSkeleton;
+					int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(x, y, z);
+					blockSkeletonMap[blockCoordsToSingle] = newSkeleton;
+				}
+			}
+		}
+	}
 }
 void OrganicRawEnclave::insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
 {
@@ -642,6 +665,8 @@ void OrganicRawEnclave::printMapData()
 		std::cout << "++State: FULL " << std::endl;
 	}
 	std::cout << "Skeleton container map size: " << skeletonSGM.triangleSkeletonSupergroups.size() << std::endl;
+	std::cout << "Number of blocks: " << blockMap.size() << std::endl;
+	std::cout << "Number of skeletons: " << blockSkeletonMap.size() << std::endl;
 	//ECBPolyPoint dumbPoint;
 	//dumbPoint.isAllZero();
 }

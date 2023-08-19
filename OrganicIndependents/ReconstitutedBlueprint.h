@@ -23,6 +23,9 @@ class ReconstitutedBlueprint
 		ReconstitutedBlueprint() {};
 		void handleBDMMessage(Message in_bdmMessage);	// read a Message, to determine where it goes; remember, the blueprint key at the front of the BDM Message 
 														// must already be stripped off.
+		void printReconstitutedMetadata();	// print out metadata about this instance of ReconstitutedBlueprint, such as the number of ECBPolys,
+							// the number of OREs, etc; it will also call ReconstitutableORE::printReconstitutedOREStats() for all associated OREs
+							// in reconstitutedOREMap.
 	private:
 
 		struct ReconstitutedMessageHeader
@@ -33,6 +36,7 @@ class ReconstitutedBlueprint
 			void setReconstitutionMessage(Message in_reconstitutionDataMessage)
 			{
 				reconstitutionMessage = in_reconstitutionDataMessage;
+				reconstituted = true;
 			};
 		};
 
@@ -90,6 +94,48 @@ class ReconstitutedBlueprint
 						reconstitutedSkeletonMessages[targetBlocKey] = in_message;
 						break;
 					}
+				}
+			}
+
+			void printReconstitutedOREStats()
+			{
+				if (reconstitutedOREHeader.reconstituted)
+				{
+					Message tempMessage = reconstitutedOREHeader.reconstitutionMessage;
+					tempMessage.open();
+					int currentORELodState = tempMessage.readInt();
+					ORELodState tempState = ORELodState(currentORELodState);
+					if (tempState == ORELodState::LOD_BLOCK)
+					{
+						std::cout << "Lod: LOD_BLOCK           | ";
+					}
+					else if (tempState == ORELodState::LOD_ENCLAVE_SMATTER)
+					{
+						std::cout << "Lod: LOD_ENCLAVE_SMATTER | ";
+					}
+					else if (tempState == ORELodState::FULL)
+					{
+						std::cout << "Lod: FULL                | ";
+					}
+					else
+					{
+						std::cout << "Lod: <UNKNOWN>           | ";
+					}
+				}
+
+				std::cout << " Blocks: " << reconstitutedBlockMessages.size() << " | Skeletons: " << reconstitutedSkeletonMessages.size();
+
+				if (reconstitutedSkeletonSGMHeader.reconstituted)
+				{
+					Message tempMessage = reconstitutedSkeletonSGMHeader.reconstitutionMessage;
+					tempMessage.open();
+					int totalSkeletons = tempMessage.readInt();
+
+					std::cout << " | SGM entires: " << totalSkeletons << std::endl;
+				}
+				else
+				{
+					std::cout << " | **No Sgm entries found.** " << std::endl;
 				}
 			}
 		};

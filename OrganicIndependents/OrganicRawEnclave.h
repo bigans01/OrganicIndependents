@@ -65,7 +65,9 @@ class OrganicRawEnclave
 public:
 
 	OrganicRawEnclave();
-	OrganicRawEnclave(ORELodState in_ORELodState);
+	OrganicRawEnclave(ORELodState in_ORELodState);	// For the time being (circa ~8/17/2023), this is pretty much exclusively used by the function OrganicMassDriverElevator::applyMass in OrganicCoreLib;
+													// that function uses a value of ORELodState::FULL. When the input parameter is detected as ORELodState::FULL, all 64 entries
+													// of the ORE become skeletons. In the future, this logic should be improved so that different types of block skeletons can be inserted.
 
 	OrganicRawEnclave& operator=(const OrganicRawEnclave& resultsContainer_b)
 	{

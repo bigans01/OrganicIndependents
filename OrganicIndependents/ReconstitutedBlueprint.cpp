@@ -64,3 +64,16 @@ void ReconstitutedBlueprint::handleBDMMessage(Message in_bdmMessage)
 		}
 	}
 }
+
+void ReconstitutedBlueprint::printReconstitutedMetadata()
+{
+	std::cout << "Number of Reconstituted ECBPolys: " << reconstitutedECBPolyMap.size() << std::endl;
+	std::cout << "Number of Reconstituted OREs: " << reconstitutedOREMap.size() << std::endl;
+	std::cout << "ORE stats: " << std::endl;
+	for (auto& currentReconstitutedORE : reconstitutedOREMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentOREKey = currentReconstitutedORE.first;
+		currentOREKey.printKey();
+		currentReconstitutedORE.second.printReconstitutedOREStats();
+	}
+}

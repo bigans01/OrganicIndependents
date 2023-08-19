@@ -27,6 +27,7 @@ class ReconstitutionManager
 		void executeContainerProcessing();	// attempt to process any MessageContainer instances in the processableContainers member; MessageContainer instances
 											// are discarded after they are read, via queue pop. All Message instances to process must have a blueprint key that can be 
 											// read and then stripped, to determine where each Message in the containers will go.
+		void printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch);	// prints out metadata about a ReconstitutedBlueprint in the reconstitutionDock.
 	private:
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, ReconstitutedBlueprint, EnclaveKeyDef::KeyHasher> reconstitutionDock;
 		std::queue<MessageContainer> processableContainers;

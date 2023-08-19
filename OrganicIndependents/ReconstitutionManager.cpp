@@ -39,3 +39,16 @@ void ReconstitutionManager::executeContainerProcessing()
 		processableContainers.pop();
 	}
 }
+
+void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch)
+{
+	auto existingBlueprintFinder = reconstitutionDock.find(in_blueprintStatsToFetch);
+	if (existingBlueprintFinder != reconstitutionDock.end())
+	{
+		std::cout << "(ReconstitutionManager):: found stats to print, for blueprint having key: "; 
+		in_blueprintStatsToFetch.printKey();
+		std::cout << std::endl;
+
+		reconstitutionDock[in_blueprintStatsToFetch].printReconstitutedMetadata();
+	}
+}
