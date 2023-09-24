@@ -20,8 +20,15 @@ void ReconstitutionManager::processMessageContainer(MessageContainer* in_message
 		currentMessageCopy.removeEnclaveKeyFromFrontAndResetIter(1);
 
 		// send to the appropriate instance of ReconstitutedBlueprint.
-		reconstitutionDock[targetBlueprintKey].handleBDMMessage(currentMessageCopy);
+		//reconstitutionDock[targetBlueprintKey].handleBDMMessage(currentMessageCopy);
+		handlebDMMessageForDockEntry(targetBlueprintKey, currentMessageCopy);
 	}
+}
+
+void ReconstitutionManager::handlebDMMessageForDockEntry(EnclaveKeyDef::EnclaveKey in_targetBlueprintToLoad, Message in_messageDataCopy)
+{
+	std::lock_guard<std::mutex> existLock(dockMutex);
+	reconstitutionDock[in_targetBlueprintToLoad].handleBDMMessage(in_messageDataCopy);
 }
 
 void ReconstitutionManager::insertMessageContainerForProcessing(MessageContainer in_containerForProcessing)
@@ -42,8 +49,9 @@ void ReconstitutionManager::executeContainerProcessing()
 
 void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch)
 {
-	auto existingBlueprintFinder = reconstitutionDock.find(in_blueprintStatsToFetch);
-	if (existingBlueprintFinder != reconstitutionDock.end())
+	//auto existingBlueprintFinder = reconstitutionDock.find(in_blueprintStatsToFetch);
+	//if (existingBlueprintFinder != reconstitutionDock.end())
+	if (doesBlueprintExistInDock(in_blueprintStatsToFetch));
 	{
 		std::cout << "(ReconstitutionManager):: found stats to print, for blueprint having key: "; 
 		in_blueprintStatsToFetch.printKey();
@@ -51,4 +59,61 @@ void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::Encl
 
 		reconstitutionDock[in_blueprintStatsToFetch].printReconstitutedMetadata();
 	}
+}
+
+void ReconstitutionManager::runOREReconstitutionSpecific(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey, EnclaveKeyDef::EnclaveKey in_containingOREKey)
+{
+	//auto existingBlueprintFinder = reconstitutionDock.find(in_containingBlueprint);
+	//if (existingBlueprintFinder != reconstitutionDock.end())
+	if (doesBlueprintExistInDock(in_containingBlueprintKey))
+	{
+		std::cout << "Found existing blueprint to run ORE reconstitution..." << std::endl;
+		//auto existingOREFinder = reconstitutionDock[in_containingBlueprint].reconstitutedOREMap.find(in_containingORE);
+		//if (existingOREFinder != reconstitutionDock[in_containingBlueprint].reconstitutedOREMap.end())
+		if (doesOREExistInDock(in_containingBlueprintKey, in_containingOREKey))
+		{
+			std::cout << "Found existing ORE for reconstitution..." << std::endl;
+
+			// Remember: the call to runConstitution READS from its Messsage data, to generate an ORE, then WRITES out the ORE to the referenced generatedBlueprints
+			// map member of this class.
+			reconstitutionDock[in_containingBlueprintKey].reconstitutedOREMap[in_containingOREKey].runReconstitution(in_containingBlueprintKey,
+																													 in_containingOREKey,
+																													&generatedBlueprintsMutex, 
+																													&generatedBlueprints);
+		}
+	}
+}
+
+OrganicRawEnclave ReconstitutionManager::fetchReconstitutedORE(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey, EnclaveKeyDef::EnclaveKey in_containingOREKey)
+{
+	return generatedBlueprints[in_containingBlueprintKey].fractureResults.fractureResultsContainerMap[in_containingOREKey];
+}
+
+bool ReconstitutionManager::doesBlueprintExistInDock(EnclaveKeyDef::EnclaveKey in_blueprintToCheck)
+{
+	std::lock_guard<std::mutex> existLock(dockMutex);
+	bool blueprintExists = false;
+	auto existingBlueprintFinder = reconstitutionDock.find(in_blueprintToCheck);
+	if (existingBlueprintFinder != reconstitutionDock.end())
+	{
+		blueprintExists = true;
+	}
+	return blueprintExists;
+}
+
+bool ReconstitutionManager::doesOREExistInDock(EnclaveKeyDef::EnclaveKey in_blueprintToCheck, EnclaveKeyDef::EnclaveKey in_OREToCheck)
+{
+	std::lock_guard<std::mutex> existLock(dockMutex);
+	bool oreExists = false;
+	auto existingBlueprintFinder = reconstitutionDock.find(in_blueprintToCheck);
+	if (existingBlueprintFinder != reconstitutionDock.end())
+	{
+		auto existingOREFinder = reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap.find(in_OREToCheck);
+		if (existingOREFinder != reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap.end())
+		{
+			//reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap[in_OREToCheck].runReconstitution();
+			oreExists = true;
+		}
+	}
+	return oreExists;
 }

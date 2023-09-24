@@ -51,6 +51,140 @@ MessageContainer OrganicRawEnclave::convertOREToBDMFormat(EnclaveKeyDef::Enclave
 	return oreDataContainer;
 }
 
+void OrganicRawEnclave::reconstituteAsLodBlock(Message in_bdmMetadataMessage, 
+											   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef,
+											   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef)
+{
+	std::cout << "(OrganicRawEnclave::reconstituteAsLodBlock) -> reconstituting ORE as LOD_BLOCK. " << std::endl;
+
+	reconstituteOREStatesFromMessage(in_bdmMetadataMessage);
+
+	reconstituteBlocksFromBDMMap(in_blockMessageMapRef);
+	reconstituteSkeletonsFromBDMMap(in_skeletonMessageMapRef);
+
+	printOREStates();
+
+	// reset total triangles, but not the block map
+	total_triangles = 0;
+
+	// cycle through each block, and update the value of total_triangles
+	for (auto& currentBlock : blockMap)
+	{
+		total_triangles += currentBlock.second.getNumberOfTotalTriangles();
+	}
+	std::cout << "(OrganicRawEnclave::reconstituteAsLodBlock) -> reconstitution as LOD_BLOCK complete; number of total triangles is: " << total_triangles << std::endl;
+}
+
+void OrganicRawEnclave::reconstituteAsSMatter(Message in_bdmMetadataMessage,
+											  std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef,
+											  Message in_skeletonSGMBuildingMessage)
+{
+	//currentLodState = ORELodState::LOD_BLOCK;					// switch to block mode
+	//currentAppendedState = OREAppendedState::NONE;				// appended state isn't applicable when in block mode
+	//currentDependencyState = OREDependencyState::INDEPENDENT;	// block mode is always independent
+
+	reconstituteOREStatesFromMessage(in_bdmMetadataMessage);
+	reconstituteSkeletonsFromBDMMap(in_skeletonMessageMapRef);
+
+	EnclaveTriangleSkeletonSupergroupManager rebuiltManager(in_skeletonSGMBuildingMessage);
+	skeletonSGM = rebuiltManager;
+}
+
+void OrganicRawEnclave::reconstituteAsFull(Message in_bdmMetadataMessage,
+										   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef)
+{
+	std::cout << "(OrganicRawEnclave::reconstituteAsFull) -> reconstituting ORE as FULL. " << std::endl;
+	total_triangles = 0;
+
+	reconstituteOREStatesFromMessage(in_bdmMetadataMessage);
+	reconstituteSkeletonsFromBDMMap(in_skeletonMessageMapRef);
+
+	std::cout << "(OrganicRawEnclave::reconstituteAsFull) -> reconstitution to FULL complete; number of skeletons is: " << blockSkeletonMap.size() << std::endl;
+}
+
+void OrganicRawEnclave::reconstituteOREStatesFromMessage(Message in_oreHeaderMessage)
+{
+	in_oreHeaderMessage.open();
+	currentLodState = ORELodState(in_oreHeaderMessage.readInt());
+	currentAppendedState = OREAppendedState(in_oreHeaderMessage.readInt());
+	currentDependencyState = OREDependencyState(in_oreHeaderMessage.readInt());
+}
+
+void OrganicRawEnclave::reconstituteBlocksFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef)
+{
+	int exposedBlockCounter = 0;
+	std::mutex dummyTestMutex;
+	for (auto currentBlockMessageIter : *in_blockMessageMapRef)
+	{
+		EnclaveKeyDef::EnclaveKey currentBlockKey = currentBlockMessageIter.first;
+
+		std::cout << "(OrganicRawEnclave::reconstituteBlocksFroBDMMap) -> constructed data for block at key: ";
+		currentBlockKey.printKey();
+		std::cout << std::endl;
+
+		Message copiedMessage = currentBlockMessageIter.second;
+		copiedMessage.open();
+
+		EnclaveBlock rebuiltBlock(&copiedMessage);
+
+		insertBlock(&dummyTestMutex, PolyUtils::convertBlockCoordsToSingle(currentBlockKey), rebuiltBlock);
+		exposedBlockCounter++;
+	}
+	std::cout << "OrganicRawEnclave::reconstituteBlocksFroBDMMap) Total exposed blocks reconstituted: " << exposedBlockCounter << std::endl;
+}
+
+void OrganicRawEnclave::reconstituteSkeletonsFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef)
+{
+	int skeletonCounter = 0;
+	for (auto currentSkeletonIter : *in_skeletonMessageMapRef)
+	{
+		EnclaveKeyDef::EnclaveKey currentBlockKey = currentSkeletonIter.first;
+
+		Message copiedMessage = currentSkeletonIter.second;
+		copiedMessage.open();
+
+		int materialValue = copiedMessage.readInt();
+		EnclaveBlockSkeleton newSkeleton;
+		newSkeleton.materialID = TriangleMaterial(materialValue);
+
+		insertBlockSkeleton(currentBlockKey, newSkeleton);
+
+		skeletonCounter++;
+	}
+	std::cout << "(OrganicRawEnclave::reconstituteSkeletonsFroBDMMap) Total skeletons reconstituted: " << skeletonCounter << std::endl;
+}
+
+void OrganicRawEnclave::printOREStates()
+{
+	std::string lodStatePrefix = "currentLodState: ";
+	switch (currentLodState)
+	{
+		case ORELodState::FULL: { lodStatePrefix += "FULL"; break; }
+		case ORELodState::LOD_BLOCK: { lodStatePrefix += "LOD_BLOCK"; break; }
+		case ORELodState::LOD_ENCLAVE_SMATTER: { lodStatePrefix += "LOD_ENCLAVE_SMATTER"; break; }
+		case ORELodState::LOD_ENCLAVE_RMATTER: { lodStatePrefix += "LOD_ENCLAVE_RMATTER"; break; }
+	}
+	std::cout << "Value of currentLodState: " << lodStatePrefix << std::endl;
+
+	std::string dependencyStatePrefix = "currentDependencyState: ";
+	switch (currentDependencyState)
+	{
+		case OREDependencyState::NOVAL: { dependencyStatePrefix += "NOVAL"; break; }
+		case OREDependencyState::DEPENDENT_ON_PARENTS: { dependencyStatePrefix += "DEPENDENT_ON_PARENTS"; break; }
+		case OREDependencyState::INDEPENDENT: { dependencyStatePrefix += "INDEPENDENT"; break; }
+	}
+	std::cout << "Value of currentDependencyState: " << dependencyStatePrefix << std::endl;
+
+	std::string appendedStatePrefix = "currentAppendedState: ";
+	switch (currentAppendedState)
+	{
+		case  OREAppendedState::NONE: { appendedStatePrefix += "NONE"; break; }
+		case  OREAppendedState::SINGLE_APPEND: { appendedStatePrefix += "SINGLE_APPEND"; break; }
+		case  OREAppendedState::MULTIPLE_APPEND: { appendedStatePrefix += "MULTIPLE_APPEND"; break; }
+	}
+	std::cout << "Value of appendedState: " << appendedStatePrefix << std::endl;
+}
+
 Message OrganicRawEnclave::buildOREHeaderBDMMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey)
 {
 	Message oreHeaderMessage(MessageType::BDM_ORE_HEADER);
@@ -669,6 +803,16 @@ void OrganicRawEnclave::printMapData()
 	std::cout << "Number of skeletons: " << blockSkeletonMap.size() << std::endl;
 	//ECBPolyPoint dumbPoint;
 	//dumbPoint.isAllZero();
+}
+
+void OrganicRawEnclave::printContainerStats()
+{
+	std::cout << "Number of entries in skeletonSGM: " << skeletonSGM.getTotalEntries() << std::endl;
+	std::cout << "Number of entires in etcSGM: " << etcSGM.enclaveTriangleSupergroups.size() << std::endl;
+	std::cout << "Number of entries in organicTriangleSecondarySGM: " << organicTriangleSecondarySGM.secondarySupergroups.size() << std::endl;
+	std::cout << "Total blocks: " << blockMap.size() << std::endl;
+	std::cout << "Total triangles: " << total_triangles << std::endl;
+	std::cout << "Total skeletons: " << blockSkeletonMap.size() << std::endl;
 }
 
 void OrganicRawEnclave::printEnclaveTriangleContainers(bool in_pauseBetweenTrianglesFlag)

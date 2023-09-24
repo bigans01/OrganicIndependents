@@ -72,3 +72,24 @@ Message EnclaveTriangleSkeleton::convertETSkeletonToMessage()
 
 	return convertedMessage;
 }
+
+EnclaveTriangleSkeleton::EnclaveTriangleSkeleton(Message* in_openMessageToBuildFrom)
+{
+	// first: read the 3 points, and add them.
+	for (int x = 0; x < 3; x++)
+	{
+		points[x] = in_openMessageToBuildFrom->readPoint();
+	}
+
+	// next: set the material ID.
+	materialID = TriangleMaterial(in_openMessageToBuildFrom->readInt());
+
+	// next: set the perfect clamp enum value.
+	isPolyPerfectlyClamped = PerfectClampEnum(in_openMessageToBuildFrom->readInt());
+
+	// next: set the empty normal.
+	emptyNormal = in_openMessageToBuildFrom->readPoint();
+
+	// next: set the indicator data.
+	skeletonBoundaryIndicatorValue.setIndicatorData(unsigned char(in_openMessageToBuildFrom->readInt()));
+}

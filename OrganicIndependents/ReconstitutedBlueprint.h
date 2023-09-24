@@ -5,6 +5,7 @@
 
 #include "EnclaveCollectionBlueprint.h"
 #include "OrganicRawEnclave.h"
+#include "PolyUtils.h"
 
 /*
 
@@ -13,7 +14,10 @@ Description:
 This class is designed to store BDM Message types pertaining to a specific blueprint, that can later be used to rebuild
 the entire blueprint, when the correct conditions are met.
 
-All messages that are sent to handleBDMMessage MUST already have their blueprint key that sits of the BDM Message already stripped off.
+All messages that are sent to handleBDMMessage MUST already have their blueprint key that sits of the BDM Message already stripped off
+(this should be done by the parent ReconstitutionManager instance).
+
+
 
 */
 
@@ -22,12 +26,13 @@ class ReconstitutedBlueprint
 	public:
 		ReconstitutedBlueprint() {};
 		void handleBDMMessage(Message in_bdmMessage);	// read a Message, to determine where it goes; remember, the blueprint key at the front of the BDM Message 
-														// must already be stripped off.
+														// must already be stripped off, by the parent ReconstitutionManager instance.
 		void printReconstitutedMetadata();	// print out metadata about this instance of ReconstitutedBlueprint, such as the number of ECBPolys,
 							// the number of OREs, etc; it will also call ReconstitutableORE::printReconstitutedOREStats() for all associated OREs
 							// in reconstitutedOREMap.
+																																			
 	private:
-
+		friend class ReconstitutionManager;
 		struct ReconstitutedMessageHeader
 		{
 			bool reconstituted = false;
@@ -56,88 +61,19 @@ class ReconstitutedBlueprint
 			OrganicRawEnclave reconstitutedORE;	// the ORE that will eventually be produced by this class, which will then be put into the EnclaveCollectionBlueprint of this class.
 
 			// Below: this attempts to take a Message and put it in the appropriate place. 
-			// The Messages analyzed in this function should have the ORE key that sits at the front of the Message already stripped before being 
-			// passed as the argument to this function.
-			void checkReconstitutedOREData(Message in_message)	
-			{
-				in_message.open();
-				switch (in_message.messageType)
-				{
-					case MessageType::BDM_ORE_HEADER:
-					{
-						// send the Message to the reconstitutedOREHeader
-						reconstitutedOREHeader.setReconstitutionMessage(in_message);
-						break;
-					}
+			// The Messages analyzed in this function should have the ORE key that sits at the front of the Message already stripped (which is done in the call to handleBDMMessage) 
+			// before being passed as the argument to this function.
+			void checkReconstitutedOREData(Message in_message);
 
-					case MessageType::BDM_ORE_SKELETONSGM:
-					{
-						// send the Message to the reconstitutedSkeletonSGMHeader
-						reconstitutedSkeletonSGMHeader.setReconstitutionMessage(in_message);
-						break;
-					}
+			void printReconstitutedOREStats();
 
-					case MessageType::BDM_BLOCK_TAGGED:
-					{
-						// read the block key, then use that as the key to store the rest of the Message in the reconstitutedBlockMessages.
-						auto targetBlocKey = in_message.readEnclaveKey();
-						in_message.removeEnclaveKeyFromFrontAndResetIter(1);
-						reconstitutedBlockMessages[targetBlocKey] = in_message;
-						break;
-					}
+			// Below: this function attempts to reconstitute an ORE, thusly creating a new ORE that has all the necessary data it needs to operate correctly.
+			// The resulting ORE is then inserted into the appropriate EnclaveCollectionBlueprint in the referenced map.
+			void runReconstitution(EnclaveKeyDef::EnclaveKey in_targetBlueprintKey,
+									EnclaveKeyDef::EnclaveKey in_targetOREKey, 
+									std::mutex* in_generatedBlueprintMapMutex,
+									std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_generatedBlueprintMapRef);
 
-					case MessageType::BDM_SKELETONBLOCK_TAGGED:
-					{
-						// read the block key, then use that as the key to store the rest of the Message in the reconstitutedSkeletonMessages.
-						auto targetBlocKey = in_message.readEnclaveKey();
-						in_message.removeEnclaveKeyFromFrontAndResetIter(1);
-						reconstitutedSkeletonMessages[targetBlocKey] = in_message;
-						break;
-					}
-				}
-			}
-
-			void printReconstitutedOREStats()
-			{
-				if (reconstitutedOREHeader.reconstituted)
-				{
-					Message tempMessage = reconstitutedOREHeader.reconstitutionMessage;
-					tempMessage.open();
-					int currentORELodState = tempMessage.readInt();
-					ORELodState tempState = ORELodState(currentORELodState);
-					if (tempState == ORELodState::LOD_BLOCK)
-					{
-						std::cout << "Lod: LOD_BLOCK           | ";
-					}
-					else if (tempState == ORELodState::LOD_ENCLAVE_SMATTER)
-					{
-						std::cout << "Lod: LOD_ENCLAVE_SMATTER | ";
-					}
-					else if (tempState == ORELodState::FULL)
-					{
-						std::cout << "Lod: FULL                | ";
-					}
-					else
-					{
-						std::cout << "Lod: <UNKNOWN>           | ";
-					}
-				}
-
-				std::cout << " Blocks: " << reconstitutedBlockMessages.size() << " | Skeletons: " << reconstitutedSkeletonMessages.size();
-
-				if (reconstitutedSkeletonSGMHeader.reconstituted)
-				{
-					Message tempMessage = reconstitutedSkeletonSGMHeader.reconstitutionMessage;
-					tempMessage.open();
-					int totalSkeletons = tempMessage.readInt();
-
-					std::cout << " | SGM entires: " << totalSkeletons << std::endl;
-				}
-				else
-				{
-					std::cout << " | **No Sgm entries found.** " << std::endl;
-				}
-			}
 		};
 
 		ReconstitutedMessageHeader reconBlueprintHeader;	// reserved for messages of the type BDM_BLUEPRINT_HEADER.

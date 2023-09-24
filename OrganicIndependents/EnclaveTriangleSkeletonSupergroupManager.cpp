@@ -54,3 +54,27 @@ Message EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM(Enclav
 
 	return etcSGMToMsg;
 }
+
+EnclaveTriangleSkeletonSupergroupManager::EnclaveTriangleSkeletonSupergroupManager(Message in_buildingMessage)
+{
+	// Step 1: Open the message.
+	in_buildingMessage.open();
+
+	// Step 2: read the total number of skeletons to produce.
+	int totalNumberOfSkeletonsToBuild = in_buildingMessage.readInt();
+	std::cout << "(EnclaveTriangleSkeletonSupergroupManager::EnclaveTriangleSkeletonSupergroupManager) -> total number of skeletons to build is: " << totalNumberOfSkeletonsToBuild << std::endl;
+	
+	for (int x = 0; x < totalNumberOfSkeletonsToBuild; x++)
+	{
+		int currentSupergroupID = in_buildingMessage.readInt();
+		int currentSkeletonContainerID = in_buildingMessage.readInt();
+		int currentSkeletonID = in_buildingMessage.readInt();
+
+		// rebuild the skeleton using the special constructor for it
+		EnclaveTriangleSkeleton rebuiltSkeleton(&in_buildingMessage);
+
+		std::cout << "Inserting skeleton at supergroup ID: " << currentSupergroupID << " | skeleton container ID: " << currentSkeletonContainerID << " | skeleton ID: " << currentSkeletonID << std::endl;
+
+		triangleSkeletonSupergroups[currentSupergroupID].skeletonMap[currentSkeletonContainerID].skeletons[currentSkeletonID] = rebuiltSkeleton;
+	}
+}

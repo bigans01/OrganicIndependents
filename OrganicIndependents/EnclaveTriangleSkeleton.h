@@ -10,6 +10,10 @@ class IndependentUtils;
 class EnclaveTriangleSkeleton
 {
 public:
+	EnclaveTriangleSkeleton() {};
+	EnclaveTriangleSkeleton(Message* in_openMessageToBuildFrom);	// utilized by the function EnclaveTriangleSkeletonSupergroupManager::EnclaveTriangleSkeletonSupergroupManager;
+																	// Message type should be an already-opened MessageType::BDM_ORE_SKELETONSGM.
+
 	ECBPolyPoint points[3];
 	TriangleMaterial materialID = TriangleMaterial::NOVAL;			// is the triangle dirt, stone, snow, wood, etc
 	PerfectClampEnum isPolyPerfectlyClamped = PerfectClampEnum::NONE;					// determines if the entire polygon is perfectly clamped to x, y, or z axis

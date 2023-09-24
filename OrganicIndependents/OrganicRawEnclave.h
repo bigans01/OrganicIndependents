@@ -93,6 +93,23 @@ public:
 		return *this;
 	}
 
+	// ||||||||||| Reconstitution functions, for various ORE states. Used by the class function ReconstitutedBlueprint::ReconstitutableORE::runReconstitution,
+	// when using Message objects to rebuild an ORE based on the state that the ORE was in when the Messages were produced.
+
+	// Reconstitute as LOD_BLOCK; sets the states from the ORE header data, populates blocks, skeletons, and sets the value of the total_triangles value. 
+	void reconstituteAsLodBlock(Message in_bdmMetadataMessage, 
+							    std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef,
+								std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef);
+
+	// Reconstitute as FULL; sets the states from the ORE header data, and populates all 64 skeleton blocks.
+	void reconstituteAsFull(Message in_bdmMetadataMessage,
+							std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef);		// This function is used by ReconstitutedBlueprint::ReconstitutableORE::runReconstitution, when attempting to reconstitute an ORE that has a state of FULL.
+
+	// Reconstitute as LOD_ENCLAVE_SMATTER; sets the states from the ORE header data, populates any skeletons that may exist, and builds the skeletonSGM.
+	void reconstituteAsSMatter(Message in_bdmMetadataMessage,
+							   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef,
+		                       Message in_skeletonSGMBuildingMessage);
+
 	// ||||||||||| EnclaveTriangle and OrganicTriangleSecondary manipulation (only known usage is from EnclaveFractureResultsMap::insertFractureResults in OrganicCoreLib)
 	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
 	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
@@ -137,6 +154,8 @@ public:
 	void printTriangleMetadata();
 	void printMetadata();
 	void printTrianglesPerBlock();
+	void printContainerStats();
+	void printOREStates();	// prints out the values of the currentLodState, currentAppendedState, and currentDependencyState enum values.
 
 	// ||||||||||| Various getter functions
 	int getNumberOfTrianglesByLOD();		// calculates the total number of triangles that would be returned by this ORE, if it was used to render GL data based on its LOD.															
@@ -302,7 +321,16 @@ private:
 	Message buildOREHeaderBDMMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		// builds a BDM_ORE_HEADER Message, that contains metadata about the ORE that is required for it's reconstruction;
 																															// the EnclaveKeyDef parameters passed in are required for Message construction 
 																															// (the blueprint and blueprint-specific ORE key need to be at the front of the Message)
+	// Reconstitution utility functions
+	// Below: takes in a map of Messages of the type MessageType::BDM_BLOCK_TAGGED, and assumes that all of the block, ORE, and blueprint keys have been stripped for each Message in the map.
+	// it then cycles through each element in the map to create an EnclaveBlock at the specified block coordinate.
+	void reconstituteBlocksFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef);		
 
+	// Below: takes in a map of Messages of the type MessageType::BDM_SKELETONBLOCK_TAGGED, and assumes that all of the block, ORE, and blueprint keys have been stripped for each Message in the map.
+	// it then cycles through each element in the map to create an EnclaveBlockSkeleton at the specified block coordinate.
+	void reconstituteSkeletonsFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef);
+
+	void reconstituteOREStatesFromMessage(Message in_oreHeaderMessage);	// takes in a MessageType::BDM_ORE_HEADER Message, to populate the currentLodState, currentAppendedState, and currentDependencyState, in that order.
 };
 
 #endif

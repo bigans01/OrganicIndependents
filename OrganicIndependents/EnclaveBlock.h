@@ -25,6 +25,7 @@ class EnclaveBlock
 		EnclaveBlock();			// default constructor.
 		EnclaveBlock(Message* in_blockDataMessageRef);	// for creating a block  from a certain point in an 
 														// already-opened larger Message that contains the block data. 
+														// See example usages in OrganicServerRunnable and
 
 		EnclaveBlock(Message in_blockDataMessage);		// for creating a block directly from a Message that has a MessageType of BDM_BLOCK_UNTAGGED.
 
