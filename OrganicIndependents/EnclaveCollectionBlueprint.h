@@ -121,6 +121,14 @@ private:
 	bool doesBlueprintRequireMMProcessing();
 	int createPolyGroupRangeAndIncrement(PolyGroupRange in_polyGroupRange);		// create the poly group, return its group ID.
 
+	Message createBDMBlueprintHeaderMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// creates a Message of the type MessageType::BDM_BLUEPRINT_HEADER,
+																						// that contains necessary metadata of the EnclaveCollectionBlueprint, that 
+																						// can be checked against when reconstituting a blueprint to make sure it is rebuilt correctly.
+																						// Currently, a Message of this type includes:
+																						//	-the key of the blueprint that this Message will be created for
+																						//	-the number of ECBPolys in the primaryPolygonMap
+																						//	-the total number of OREs in the blueprint
+
 };
 
 #endif

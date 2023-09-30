@@ -79,6 +79,10 @@ class ReconstitutedBlueprint
 		ReconstitutedMessageHeader reconBlueprintHeader;	// reserved for messages of the type BDM_BLUEPRINT_HEADER.
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, ReconstitutableORE, EnclaveKeyDef::KeyHasher> reconstitutedOREMap;	// stores the individual reconstituted OREs.
 		std::map<int, Message> reconstitutedECBPolyMap;		// stores Messages that would be used to reconstitute an ECBPoly.
+
+		// Below: read from all the ECBPoly BDM Messages in the reconstitutedECBPolyMap, to rebuild each ECBPoly and place it into the referenced map.
+		void runReconstitutionOnAllBDMPolyData(EnclaveKeyDef::EnclaveKey in_targetBlueprintKey, 
+											   std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_blueprintMapRef);
 };
 
 #endif

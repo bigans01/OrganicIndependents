@@ -11,6 +11,8 @@ EnclaveCollectionBlueprint::EnclaveCollectionBlueprint()
 EnclaveCollectionBlueprint::EnclaveCollectionBlueprint(const EnclaveCollectionBlueprint& blueprint_a)
 {
 	primaryPolygonMap = blueprint_a.primaryPolygonMap;
+	polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
+	fractureResults = blueprint_a.fractureResults;
 	bpTracker = blueprint_a.bpTracker;
 }
 
@@ -23,6 +25,7 @@ MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(Enclave
 	// 1 blueprint header message (BDM_BLUEPRINT_HEADER)
 	// 1 message for EACH ECB_POLY.
 	// The appended contents of each MessageContainer that is returned by the call to OrganicRawEnclave::convertOREToBDMFormat for each ORE in fractureResults
+	blueprintConvertedContainer.insertMessage(createBDMBlueprintHeaderMessage(in_blueprintKey));
 
 	// Step 1: construct and insert the BDM_BLUEPRINT HEADER.
 	//	...code for building this is TBD
@@ -49,6 +52,22 @@ MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(Enclave
 	}
 
 	return blueprintConvertedContainer;
+}
+
+Message EnclaveCollectionBlueprint::createBDMBlueprintHeaderMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey)
+{
+	Message blueprintHeaderMessage(MessageType::BDM_BLUEPRINT_HEADER);
+
+	// first value: Key value that represents the blueprint.
+	blueprintHeaderMessage.insertEnclaveKey(in_blueprintKey);
+
+	// second value: number of ECBPolys.
+	blueprintHeaderMessage.insertInt(primaryPolygonMap.size());
+
+	// third value: number of OREs.
+	blueprintHeaderMessage.insertInt(fractureResults.fractureResultsContainerMap.size());
+
+	return blueprintHeaderMessage;
 }
 
 OperableIntSet EnclaveCollectionBlueprint::produceECBPolyIDSet()

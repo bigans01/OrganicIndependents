@@ -9,6 +9,11 @@ void ReconstitutedBlueprint::handleBDMMessage(Message in_bdmMessage)
 		case MessageType::BDM_BLUEPRINT_HEADER:
 		{
 			reconBlueprintHeader.setReconstitutionMessage(in_bdmMessage);
+
+			std::cout << "(ReconstitutedBlueprint:: handleBDMMessage): found blueprint header message (MessageType::BDM_BLUEPRINT_HEADER); will send to appropriate dock. " << std::endl;
+			int sendWait = 3;
+			std::cin >> sendWait;
+
 			break;
 		}	
 
@@ -67,15 +72,15 @@ void ReconstitutedBlueprint::handleBDMMessage(Message in_bdmMessage)
 
 void ReconstitutedBlueprint::printReconstitutedMetadata()
 {
-	std::cout << "Number of Reconstituted ECBPolys: " << reconstitutedECBPolyMap.size() << std::endl;
-	std::cout << "Number of Reconstituted OREs: " << reconstitutedOREMap.size() << std::endl;
-	std::cout << "ORE stats: " << std::endl;
 	for (auto& currentReconstitutedORE : reconstitutedOREMap)
 	{
 		EnclaveKeyDef::EnclaveKey currentOREKey = currentReconstitutedORE.first;
 		currentOREKey.printKey();
 		currentReconstitutedORE.second.printReconstitutedOREStats();
 	}
+	std::cout << "Number of Reconstituted ECBPolys: " << reconstitutedECBPolyMap.size() << std::endl;
+	std::cout << "Number of Reconstituted OREs: " << reconstitutedOREMap.size() << std::endl;
+	std::cout << "ORE stats: " << std::endl;
 }
 void ReconstitutedBlueprint::ReconstitutableORE::checkReconstitutedOREData(Message in_message)
 {
@@ -224,4 +229,31 @@ void ReconstitutedBlueprint::ReconstitutableORE::runReconstitution(EnclaveKeyDef
 			}
 		}
 	}
+}
+
+void ReconstitutedBlueprint::runReconstitutionOnAllBDMPolyData(EnclaveKeyDef::EnclaveKey in_targetBlueprintKey, 
+															   std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_blueprintMapRef)
+{
+	int insertionCounter = 0;
+	for (auto& currentBDMPolyMessage : reconstitutedECBPolyMap)
+	{
+		// Fetch the ECBPoly ID, which is stored as the key value in the map.
+		int currentPolyID = currentBDMPolyMessage.first;
+
+		// Use the actual Message (of the type, MessageType::BDM_BLUEPRINT_ECBPOLY) to initialize the ECBPoly.
+		ECBPoly reconstrutedECBPoly(currentBDMPolyMessage.second);
+
+		// Insert the results into the referenced map.
+		//std::cout << "---> inserting ECBPoly, with ID: " << currentPolyID << std::endl;
+		(*in_blueprintMapRef)[in_targetBlueprintKey].insertPolyWithKeyValue(currentPolyID, reconstrutedECBPoly);
+
+		insertionCounter++;
+	}
+
+	/*
+	std::cout << "insertionCounter value: " << insertionCounter << std::endl;
+	std::cout << "(ReconstitutedBlueprint::runReconstitutionOnAllBDMPolyData) -> total number of ECBPolys reconstituted into referenced map: " << (*in_blueprintMapRef)[in_targetBlueprintKey].getPolygonMapSize() << std::endl;
+	int totalProcessed = 3;
+	std::cin >> totalProcessed;
+	*/
 }

@@ -22,6 +22,9 @@ public:
 
 	EnclaveFractureResultsMap& operator=(EnclaveFractureResultsMap&& resultsMap_b)
 	{
+		// clear out this instance's fractureResultsContainerMap.
+		fractureResultsContainerMap.clear();
+
 		// must manually cycle through each element in the to-be copied container.
 		if (!resultsMap_b.fractureResultsContainerMap.empty())
 		{
@@ -40,6 +43,8 @@ public:
 	EnclaveFractureResultsMap& operator=(const EnclaveFractureResultsMap& resultsMap_b)
 	{
 		//fractureResultsContainerMap = resultsMap_b.fractureResultsContainerMap;		// cannot be used, will cause error. 
+		// clear out this instance's fractureResultsContainerMap.
+		fractureResultsContainerMap.clear();
 
 		// must manually cycle through each element in the to-be copied container.
 		if (!resultsMap_b.fractureResultsContainerMap.empty())

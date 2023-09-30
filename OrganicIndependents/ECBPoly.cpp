@@ -67,6 +67,20 @@ Message ECBPoly::produceBDMFormatECBPolyMessage(EnclaveKeyDef::EnclaveKey in_blu
 	return ecbPolyData;
 }
 
+ECBPoly::ECBPoly(Message in_reconstitutingBDMMessage)
+{
+	// Remember: the Message should NOT have the blueprint key and ECBPoly ID -- they need to be stripped before this.
+	in_reconstitutingBDMMessage.open();
+	for (int x = 0; x < 3; x++)
+	{
+		ecbPolyPoints[x] = in_reconstitutingBDMMessage.readPoint();
+	}
+	materialID = TriangleMaterial(in_reconstitutingBDMMessage.readInt());
+	isPolyPerfectlyClamped = PerfectClampEnum(in_reconstitutingBDMMessage.readInt());
+	emptyNormal = in_reconstitutingBDMMessage.readPoint();
+	polyBoundaryOrientation = BoundaryOrientation(in_reconstitutingBDMMessage.readInt());
+}
+
 ECBPolyLine ECBPoly::convertToECBPolyLine(TriangleLine in_line, ECBPolyPoint in_thirdPoint)
 {
 	//std::cout << "!!!! Calling convert " << std::endl;

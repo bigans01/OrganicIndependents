@@ -33,18 +33,36 @@ void ReconstitutionManager::handlebDMMessageForDockEntry(EnclaveKeyDef::EnclaveK
 
 void ReconstitutionManager::insertMessageContainerForProcessing(MessageContainer in_containerForProcessing)
 {
+	// The lock guard below is used to ensure that the dedicated network thread will only be inserting into the 
+	// processableContainers member, in a safe manner. In reality, this function should only be called on a thread that is completely separate
+	// and independent of the dedicated blueprint thread.
+	std::lock_guard<std::mutex> insertGuard(processingContainerMutex);
 	processableContainers.push(in_containerForProcessing);
 }
 
 void ReconstitutionManager::executeContainerProcessing()
 {
-	// attempts to process any members in the processableContainers, as long as there are things to containers to process.
+	// attempts to process any members in the processableContainers, as long as there are things to containers to process OR until the MessageContainer 
+	// processing limit is reached (this limit is not yet implemented, as of 9/30/2023). Should only be run by
+	// the dedicated blueprint thread.
+	std::lock_guard<std::mutex> insertGuard(processingContainerMutex);
 	while (!processableContainers.empty())
 	{
 		auto currentQueueFront = processableContainers.front();
 		processMessageContainer(&currentQueueFront);
 		processableContainers.pop();
 	}
+}
+
+void ReconstitutionManager::checkForReconstitutableBlueprints()
+{
+	// Cycle through the dock, check for any blueprints that are ready for processing, and if they are, process them (i.e, build OREs, ECBPolys, etc)
+}
+
+void ReconstitutionManager::processMessageContainersAndCheckForReconstitutables()
+{
+	executeContainerProcessing();	// use a lock guard to block the networking thread while processing the Messages;
+	checkForReconstitutableBlueprints();	// after the BDM Message instances have been processed into the dock, check the dock for reconstitutable blueprints. 
 }
 
 void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch)
@@ -84,9 +102,56 @@ void ReconstitutionManager::runOREReconstitutionSpecific(EnclaveKeyDef::EnclaveK
 	}
 }
 
+void ReconstitutionManager::attemptFullReconstitution(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey)
+{
+	if (reconstitutionDock[in_containingBlueprintKey].reconBlueprintHeader.reconstituted)
+	{
+		std::cout << "Found reconsituted blueprint header for blueprint having key: ";
+		in_containingBlueprintKey.printKey();
+		std::cout << std::endl;
+
+		Message storedMessage = reconstitutionDock[in_containingBlueprintKey].reconBlueprintHeader.reconstitutionMessage;
+		storedMessage.open();
+
+		// Step 1: Read the total number of ECBPolys, and OREs; we must make sure the reconstituted number of each of these
+		// matches what is in the MessageType::BDM_BLUEPRINT_HEADER Message. The value for total ECBPolys is read first, then the total OREs.
+		int targetNumberOfPolys = storedMessage.readInt();
+		int targetNumberOfORES = storedMessage.readInt();
+
+		// Step 2: Reconstitute ECBPoly instances, and export them to the associated EnclaveCollectionBlueprint. 
+		reconstitutionDock[in_containingBlueprintKey].runReconstitutionOnAllBDMPolyData(in_containingBlueprintKey, &generatedBlueprints);
+
+		// Step 3: Reconstitute the OREs, and export them to the associated EnclaveCollectionBlueprint.
+		for (auto& currentOREToProcess : reconstitutionDock[in_containingBlueprintKey].reconstitutedOREMap)
+		{
+			EnclaveKeyDef::EnclaveKey currentOREToProcessKey = currentOREToProcess.first;
+			currentOREToProcess.second.runReconstitution(in_containingBlueprintKey,
+				currentOREToProcessKey,
+				&generatedBlueprintsMutex,
+				&generatedBlueprints);
+		}
+
+		// Step 4: Check the number of generated ECBPoly and ORE instances.
+		if
+		(
+			(generatedBlueprints[in_containingBlueprintKey].getPolygonMapSize() == targetNumberOfPolys)
+			&&
+			(generatedBlueprints[in_containingBlueprintKey].fractureResults.fractureResultsContainerMap.size() == targetNumberOfORES)
+		)
+		{
+			std::cout << "Number of generated ECBPolys and OREs matched blueprint header! " << std::endl;
+		}
+	}
+}
+
 OrganicRawEnclave ReconstitutionManager::fetchReconstitutedORE(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey, EnclaveKeyDef::EnclaveKey in_containingOREKey)
 {
 	return generatedBlueprints[in_containingBlueprintKey].fractureResults.fractureResultsContainerMap[in_containingOREKey];
+}
+
+EnclaveCollectionBlueprint ReconstitutionManager::fetchReconstitutedBlueprint(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey)
+{
+	return generatedBlueprints[in_containingBlueprintKey];
 }
 
 bool ReconstitutionManager::doesBlueprintExistInDock(EnclaveKeyDef::EnclaveKey in_blueprintToCheck)
