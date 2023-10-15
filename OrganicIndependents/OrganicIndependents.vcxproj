@@ -399,7 +399,10 @@
     <ClInclude Include="QuatRotationPoints.h" />
     <ClInclude Include="QuatRotationRecord.h" />
     <ClInclude Include="QuatRotationType.h" />
+    <ClInclude Include="ReconBlueprintRunmode.h" />
+    <ClInclude Include="ReconBlueprintRunmodeRequest.h" />
     <ClInclude Include="ReconstitutedBlueprint.h" />
+    <ClInclude Include="ReconstitutedBlueprintRunState.h" />
     <ClInclude Include="ReconstitutionManager.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />

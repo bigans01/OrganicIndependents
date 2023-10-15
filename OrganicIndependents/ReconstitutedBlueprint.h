@@ -4,6 +4,7 @@
 #define RECONSTITUTEDBLUEPRINT_H
 
 #include "EnclaveCollectionBlueprint.h"
+#include "ReconstitutedBlueprintRunState.h"
 #include "OrganicRawEnclave.h"
 #include "PolyUtils.h"
 
@@ -30,6 +31,16 @@ class ReconstitutedBlueprint
 		void printReconstitutedMetadata();	// print out metadata about this instance of ReconstitutedBlueprint, such as the number of ECBPolys,
 							// the number of OREs, etc; it will also call ReconstitutableORE::printReconstitutedOREStats() for all associated OREs
 							// in reconstitutedOREMap.
+
+		ReconstitutedBlueprintRunState getReconstitutedState();
+		void setStateAsWaitingToRun();	// should be called when we wish to enable a reconstitution attempt on an
+										// instance of this class
+
+		void setStateAsFailedRun();		// should be called whenever it is determined that a reconstitution attempt on this class
+										// resulted in a failure. See it's usage in the function ReconstitutionManager::attemptFullReconstitution.
+
+		void setStateAsSuccessfulRun();	// should be called whenever it is determine that a reconstitution attempt on this class
+										// resulted in a success. See it's usage in the function ReconstitutionManager::attemptFullReconstitution.
 																																			
 	private:
 		friend class ReconstitutionManager;
@@ -75,6 +86,9 @@ class ReconstitutedBlueprint
 									std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_generatedBlueprintMapRef);
 
 		};
+
+		ReconstitutedBlueprintRunState reconBlueprintState = ReconstitutedBlueprintRunState::WAITING_FOR_RUN;	// indicator that is used to determine if a reconstitution attempt was successful;
+																												// default value should be WAITING_TO_RUN, so that an initial attempt is always made.																											
 
 		ReconstitutedMessageHeader reconBlueprintHeader;	// reserved for messages of the type BDM_BLUEPRINT_HEADER.
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, ReconstitutableORE, EnclaveKeyDef::KeyHasher> reconstitutedOREMap;	// stores the individual reconstituted OREs.

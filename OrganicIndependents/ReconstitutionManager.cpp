@@ -57,13 +57,99 @@ void ReconstitutionManager::executeContainerProcessing()
 void ReconstitutionManager::checkForReconstitutableBlueprints()
 {
 	// Cycle through the dock, check for any blueprints that are ready for processing, and if they are, process them (i.e, build OREs, ECBPolys, etc)
+	for (auto& currentDockEntry : reconstitutionDock)
+	{
+		// Only attempt to reconstitute, if it's state is WAITING_TO_RUN; If the state is RECONSTITUTION_SUCCESS,
+		// it's already been run in a previous tick/call. If the state is RECONSTITUTION_FAILURE, we must do a data integrity check, and/or use
+		// other means, such as requesting a new MessageContainer that contains correct BDM-style formatted data for the blueprint.
+		if (currentDockEntry.second.getReconstitutedState() == ReconstitutedBlueprintRunState::WAITING_FOR_RUN)
+		{
+			EnclaveKeyDef::EnclaveKey currentDockKey = currentDockEntry.first;
+			attemptFullReconstitution(currentDockKey);
+		}
+	}
+}
+
+void ReconstitutionManager::runManagerOnThread()
+{
+	setManagerRunState(true);
+
+	// run the manager until the run state gets set back to false (such as when we are shutting down/quitting)
+	while (getManagerRunState())
+	{
+		// Get the current run mode value, to determine what to do in this tick of the while loop; 
+		// Only attempt to process blueprints if the value of currentRunMdoe is ReconBlueprintRunmode::PROCESSING.
+		auto fetchedRunMode = getRunMode();
+		switch (fetchedRunMode)
+		{
+			case ReconBlueprintRunmode::PROCESSING:
+			{
+				processMessageContainersAndCheckForReconstitutables();
+				break;
+			}
+		}
+
+		// Always: at the end of the loop, check for run mode interrupt requests;
+		// This has to be done, since other threads besides the one that this function runs on may request
+		// a change in how this function runs.
+		determineRunMode();
+	}
+}
+
+bool ReconstitutionManager::getManagerRunState()
+{
+	std::lock_guard<std::mutex> lock(managerRuntimeMutex);
+	return continueRunningFlag;
+}
+
+void ReconstitutionManager::setManagerRunState(bool in_value)
+{
+	std::lock_guard<std::mutex> lock(managerRuntimeMutex);
+	continueRunningFlag = in_value;
 }
 
 void ReconstitutionManager::processMessageContainersAndCheckForReconstitutables()
 {
 	executeContainerProcessing();	// use a lock guard to block the networking thread while processing the Messages;
 	checkForReconstitutableBlueprints();	// after the BDM Message instances have been processed into the dock, check the dock for reconstitutable blueprints. 
+											// ReconstitutedBlueprints which are in a RECONSTITUTION _SUCCESS or RECONSTITUTION_FAILURE state will be ignored,
+											// so that they are not repeatedly processed every time this function is called.
 }
+
+void ReconstitutionManager::setRunModeRequest(ReconBlueprintRunmodeRequest in_runmodeRequest)
+{
+	std::lock_guard<std::mutex> lock(managerRunmodeRequestMutex);
+	currentRequest = in_runmodeRequest;
+}
+
+ReconBlueprintRunmodeRequest ReconstitutionManager::getRunModeRequest()
+{
+	std::lock_guard<std::mutex> lock(managerRunmodeRequestMutex);
+	return currentRequest;
+}
+
+void ReconstitutionManager::determineRunMode()
+{
+	auto fetchedRequestMode = getRunModeRequest();	// get the value of currentRequest, to check what it's state is (since an external thread can modify this)
+	switch (fetchedRequestMode)
+	{
+		case ReconBlueprintRunmodeRequest::RUN_IN_PROCESSING_MODE: { setRunMode(ReconBlueprintRunmode::PROCESSING); break; }
+		case ReconBlueprintRunmodeRequest::RUN_IN_RETRIEVAL_MODE: { setRunMode(ReconBlueprintRunmode::RETRIEVAL); break; }
+	};
+}
+
+void ReconstitutionManager::setRunMode(ReconBlueprintRunmode in_currentRunMode)
+{
+	std::lock_guard<std::mutex> lock(managerRunmodeMutex);
+	currentRunMode = in_currentRunMode;
+}
+
+ReconBlueprintRunmode ReconstitutionManager::getRunMode()
+{
+	std::lock_guard<std::mutex> lock(managerRunmodeMutex);
+	return currentRunMode;
+}
+
 
 void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch)
 {
@@ -104,7 +190,10 @@ void ReconstitutionManager::runOREReconstitutionSpecific(EnclaveKeyDef::EnclaveK
 
 void ReconstitutionManager::attemptFullReconstitution(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey)
 {
-	if (reconstitutionDock[in_containingBlueprintKey].reconBlueprintHeader.reconstituted)
+	if 
+	(
+		(reconstitutionDock[in_containingBlueprintKey].reconBlueprintHeader.reconstituted)
+	)
 	{
 		std::cout << "Found reconsituted blueprint header for blueprint having key: ";
 		in_containingBlueprintKey.printKey();
@@ -131,7 +220,9 @@ void ReconstitutionManager::attemptFullReconstitution(EnclaveKeyDef::EnclaveKey 
 				&generatedBlueprints);
 		}
 
-		// Step 4: Check the number of generated ECBPoly and ORE instances.
+		// Step 4: Check the number of generated ECBPoly and ORE instances; if these corresponding numbers match with what
+		// is expected in the reconBlueprintHeader Message, this can be considered successful. Otherwise, it's a failure.
+		// (this success/failure logic may be changed in the future)
 		if
 		(
 			(generatedBlueprints[in_containingBlueprintKey].getPolygonMapSize() == targetNumberOfPolys)
@@ -139,7 +230,12 @@ void ReconstitutionManager::attemptFullReconstitution(EnclaveKeyDef::EnclaveKey 
 			(generatedBlueprints[in_containingBlueprintKey].fractureResults.fractureResultsContainerMap.size() == targetNumberOfORES)
 		)
 		{
+			reconstitutionDock[in_containingBlueprintKey].setStateAsSuccessfulRun();	// Flag that this operation was successful.
 			std::cout << "Number of generated ECBPolys and OREs matched blueprint header! " << std::endl;
+		}
+		else
+		{
+			reconstitutionDock[in_containingBlueprintKey].setStateAsFailedRun();	// Flag that this operation was a failure.
 		}
 	}
 }
@@ -181,4 +277,21 @@ bool ReconstitutionManager::doesOREExistInDock(EnclaveKeyDef::EnclaveKey in_blue
 		}
 	}
 	return oreExists;
+}
+
+bool ReconstitutionManager::isReconstitutedBlueprintReadyForTransfer(EnclaveKeyDef::EnclaveKey in_blueprintToCheck)
+{
+	bool isReady = false;
+
+	// Condition 1: blueprint must exist.
+	if (doesBlueprintExistInDock(in_blueprintToCheck))
+	{
+		// Condition 2: reconBlueprintState of the ReconstitutedBlueprint must be ReconstitutedBlueprintRunState::RECONSTITUTION_SUCCESS
+		if (reconstitutionDock[in_blueprintToCheck].getReconstitutedState() == ReconstitutedBlueprintRunState::RECONSTITUTION_SUCCESS)
+		{
+			isReady = true;
+		}
+	}
+
+	return isReady;
 }

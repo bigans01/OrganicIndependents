@@ -1149,6 +1149,15 @@
     <ClInclude Include="ReconstitutionManager.h">
       <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
     </ClInclude>
+    <ClInclude Include="ReconstitutedBlueprintRunState.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconBlueprintRunmodeRequest.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconBlueprintRunmode.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

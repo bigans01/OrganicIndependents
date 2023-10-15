@@ -82,6 +82,27 @@ void ReconstitutedBlueprint::printReconstitutedMetadata()
 	std::cout << "Number of Reconstituted OREs: " << reconstitutedOREMap.size() << std::endl;
 	std::cout << "ORE stats: " << std::endl;
 }
+
+ReconstitutedBlueprintRunState ReconstitutedBlueprint::getReconstitutedState()
+{
+	return reconBlueprintState;
+}
+
+void ReconstitutedBlueprint::setStateAsWaitingToRun()
+{
+	reconBlueprintState = ReconstitutedBlueprintRunState::WAITING_FOR_RUN;
+}
+
+void ReconstitutedBlueprint::setStateAsFailedRun()
+{
+	reconBlueprintState = ReconstitutedBlueprintRunState::RECONSTITUTION_FAILURE;
+}
+
+void ReconstitutedBlueprint::setStateAsSuccessfulRun()
+{
+	reconBlueprintState = ReconstitutedBlueprintRunState::RECONSTITUTION_SUCCESS;
+}
+
 void ReconstitutedBlueprint::ReconstitutableORE::checkReconstitutedOREData(Message in_message)
 {
 	in_message.open();
