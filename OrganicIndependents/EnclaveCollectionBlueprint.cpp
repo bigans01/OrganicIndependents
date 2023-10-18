@@ -18,7 +18,11 @@ EnclaveCollectionBlueprint::EnclaveCollectionBlueprint(const EnclaveCollectionBl
 
 MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey)
 {
-	MessageContainer blueprintConvertedContainer;
+	// Remember: the returning MessageContainer must be MessageContainerType::MC_BDM, so that
+	// if we are sending it to an OrganicSystem instance, the MessageCable knows what to do with it.
+	// See the ServerMessageInterpreter class in OrganicServerLib, and CoreMessageInterpreter in OrganicCoreLib,
+	// for examples of this usage.
+	MessageContainer blueprintConvertedContainer(MessageContainerType::MC_BDM);
 
 	// The returning MessageContainer should have the following:
 	//

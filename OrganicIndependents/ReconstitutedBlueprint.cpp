@@ -11,8 +11,8 @@ void ReconstitutedBlueprint::handleBDMMessage(Message in_bdmMessage)
 			reconBlueprintHeader.setReconstitutionMessage(in_bdmMessage);
 
 			std::cout << "(ReconstitutedBlueprint:: handleBDMMessage): found blueprint header message (MessageType::BDM_BLUEPRINT_HEADER); will send to appropriate dock. " << std::endl;
-			int sendWait = 3;
-			std::cin >> sendWait;
+			//int sendWait = 3;
+			//std::cin >> sendWait;
 
 			break;
 		}	
@@ -191,6 +191,7 @@ void ReconstitutedBlueprint::ReconstitutableORE::runReconstitution(EnclaveKeyDef
 															       std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_generatedBlueprintMapRef)
 {
 	// the below lock guard is to ensure that produced ORE can safely get loaded into the blueprint map.
+	//std::cout << "reconstituting ORE..." << std::endl;
 	std::lock_guard<std::mutex> loadLock(*in_generatedBlueprintMapMutex);
 
 	if (reconstitutedOREHeader.reconstituted)

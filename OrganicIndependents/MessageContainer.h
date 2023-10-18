@@ -3,18 +3,38 @@
 #ifndef MESSAGECONTAINER_H
 #define MESSAGECONTAINER_H
 
+#include "MessageContainerType.h"
+
+/*
+
+Summary: a MessageContainer is simply a set of one or more Message instances.
+We can also give a type to the MessageContainer to make it easier to determine how to work with it,
+or where it should go.
+
+*/
 
 class MessageContainer
 {
 	public:
+		// Below: this constructor is used when we want to instantiate a MessageContainer with a certain
+		// MessageContainerType, in a clean easy to use way.
+		MessageContainer(MessageContainerType in_containerType) : containerType(in_containerType) {};
+
+		MessageContainer() {};	// default constructor that is now required, since we defined our own non-default one above.
+
 		MessageContainer& operator+=(const MessageContainer& container_b)
 		{
+			// copy messages
 			auto otherContainerBegin = container_b.messages.begin();
 			auto otherContainerEnd = container_b.messages.end();
 			for (; otherContainerBegin != otherContainerEnd; otherContainerBegin++)
 			{
 				messages.push_back(*otherContainerBegin);
 			}
+
+			// copy the type
+			containerType = container_b.containerType;
+
 			return *this;
 		}
 
@@ -54,6 +74,8 @@ class MessageContainer
 				messagesBegin->insertInt(in_int);
 			}
 		}
+
+		MessageContainerType containerType = MessageContainerType::MC_UNDEFINED;
 
 	private:
 		std::vector<Message> messages;

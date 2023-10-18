@@ -75,6 +75,7 @@ void ReconstitutionManager::runManagerOnThread()
 	setManagerRunState(true);
 
 	// run the manager until the run state gets set back to false (such as when we are shutting down/quitting)
+	std::cout << "ReconstitutionManager::runManagerOnThread(): started dedicated thread for ReconstitutionManager. " << std::endl;
 	while (getManagerRunState())
 	{
 		// Get the current run mode value, to determine what to do in this tick of the while loop; 
@@ -196,8 +197,10 @@ void ReconstitutionManager::attemptFullReconstitution(EnclaveKeyDef::EnclaveKey 
 	)
 	{
 		std::cout << "Found reconsituted blueprint header for blueprint having key: ";
-		in_containingBlueprintKey.printKey();
-		std::cout << std::endl;
+		//in_containingBlueprintKey.printKey();
+		//std::cout << "-----" << std::endl;
+
+
 
 		Message storedMessage = reconstitutionDock[in_containingBlueprintKey].reconBlueprintHeader.reconstitutionMessage;
 		storedMessage.open();

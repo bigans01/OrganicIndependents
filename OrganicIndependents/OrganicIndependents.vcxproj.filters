@@ -1158,6 +1158,9 @@
     <ClInclude Include="ReconBlueprintRunmode.h">
       <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
     </ClInclude>
+    <ClInclude Include="MessageContainerType.h">
+      <Filter>Header Files\Messages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
