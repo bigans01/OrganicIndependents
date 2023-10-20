@@ -253,6 +253,46 @@ EnclaveCollectionBlueprint ReconstitutionManager::fetchReconstitutedBlueprint(En
 	return generatedBlueprints[in_containingBlueprintKey];
 }
 
+EnclaveCollectionBlueprint* ReconstitutionManager::fetchReconstitutedBlueprintRef(EnclaveKeyDef::EnclaveKey in_blueprintKeyForFetching)
+{
+	return &generatedBlueprints[in_blueprintKeyForFetching];
+}
+
+EnclaveKeyDef::EnclaveKey ReconstitutionManager::fetchFirstAvailableReconstitutedBlueprintKey()
+{
+	EnclaveKeyDef::EnclaveKey firstAvailableKey;
+	for (auto& currentDockEntry : reconstitutionDock)
+	{
+		if (currentDockEntry.second.getReconstitutedState() == ReconstitutedBlueprintRunState::RECONSTITUTION_SUCCESS)
+		{
+			//entriesExist = true;
+			firstAvailableKey = currentDockEntry.first;
+			break;
+		}
+	}
+	return firstAvailableKey;
+}
+
+void ReconstitutionManager::eraseReconstitutedBlueprint(EnclaveKeyDef::EnclaveKey in_blueprintKeyForErasing)
+{
+	generatedBlueprints.erase(in_blueprintKeyForErasing);
+	reconstitutionDock.erase(in_blueprintKeyForErasing);
+}
+
+bool ReconstitutionManager::doAnySuccessfulReconstitutionsExist()
+{
+	std::lock_guard<std::mutex> existLock(dockMutex);
+	bool entriesExist = false;
+	for (auto& currentDockEntry : reconstitutionDock)
+	{
+		if (currentDockEntry.second.getReconstitutedState() == ReconstitutedBlueprintRunState::RECONSTITUTION_SUCCESS)
+		{
+			entriesExist = true;
+		}
+	}
+	return entriesExist;
+}
+
 bool ReconstitutionManager::doesBlueprintExistInDock(EnclaveKeyDef::EnclaveKey in_blueprintToCheck)
 {
 	std::lock_guard<std::mutex> existLock(dockMutex);

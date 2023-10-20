@@ -81,8 +81,18 @@ class ReconstitutionManager
 
 		// ||||||||||||||||||| START: RETRIEVAL mode functions -- when running this instance on a dedicated thread, these should only be called 
 		// when the value of currentRunMode is set to ReconBlueprintRunmode::PROCESSING.
-		bool isReconstitutedBlueprintReadyForTransfer(EnclaveKeyDef::EnclaveKey);	// checks to see if a blueprint is ready for transfer; returns false if
-																					// the blueprint doesn't exist, or it's not ready.
+		bool isReconstitutedBlueprintReadyForTransfer(EnclaveKeyDef::EnclaveKey in_blueprintToCheck);	// checks to see if a blueprint is ready for transfer; returns false if
+																									    // the blueprint doesn't exist, or it's not ready.
+
+		EnclaveCollectionBlueprint* fetchReconstitutedBlueprintRef(EnclaveKeyDef::EnclaveKey in_blueprintKeyForFetching);	// fetches a reference to an existing EnclaveCollectionBlueprint
+																															// that is sitting in the generatedBlueprintsMap. Used by the function,
+																															// OrganicSystem::checkForReconstitutedBlueprints(), in OrganicCoreLib.
+
+		EnclaveKeyDef::EnclaveKey fetchFirstAvailableReconstitutedBlueprintKey();	// scans the reconstitutionDock for the first available successful key. Should only be used after a call to doAnySuccessfulReconstitutionsExist,
+																					// which signifies that there are valid keys to fetch. Used by the function, OrganicSystem::checkForReconstitutedBlueprints(), in OrganicCoreLib.
+																					
+		void eraseReconstitutedBlueprint(EnclaveKeyDef::EnclaveKey in_blueprintKeyForErasing);	// erases a blueprint from generatedBlueprintMap, and from the dock itself. Should be used after a blueprint has been copied by
+																								// an OrganicSystem instance. Used by the function, OrganicSystem::checkForReconstitutedBlueprints(), in OrganicCoreLib.
 
 		// |||||||||||||||||||  END: RETRIEVAL mode functions
 
@@ -101,7 +111,9 @@ class ReconstitutionManager
 																														// sure it got built correctly, so use with caution.
 		// |||||||||||||||||||| END: Debug functions
 
-
+		bool doAnySuccessfulReconstitutionsExist();	// (thread safe) checks the dock for successful runs, which indicates that a blueprint is ready for extraction. Used by external threads
+													// to check when it is time to change the mode of an instance of this class when it is running on a dedicated thread. Used by the function, 
+													// OrganicSystem::checkForReconstitutedBlueprints(), in OrganicCoreLib.
 
 
 		void runManagerOnThread();	// starts the manager on a dedicated thread; sets the value of continueRunningFlag to True, so that the while loop continues until that value is False.
