@@ -67,6 +67,14 @@ class Message
 			}
 		}
 
+		int getEstimatedByteSizeOfContents()
+		{
+			int totalSizeBytes = 0;
+			totalSizeBytes += (intVector.size() * sizeof(int));
+			totalSizeBytes += (floatVector.size() * sizeof(float));
+			return totalSizeBytes;
+		}
+
 		// ------------------------------------------------- insertion functions (inserts at end of vector)
 		void insertEnclaveKey(EnclaveKeyDef::EnclaveKey in_key)
 		{

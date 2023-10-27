@@ -186,6 +186,9 @@ FTriangleOutput FTriangleContainer::formOutput(OutputTriangleFrame in_triangleFr
 	// the normal produced by the points is directionally aligned to the parent's empty normal.
 
 	// ||||||||||||||||| START OLD METHOD |||||
+	//
+	//	The "old method" is related to F-002 in the task tracker spreadsheet.
+	//
 	// Not 100& reliable, can cause rare cases where some triangles in the container, but others do not. 
 	// (this is because of the signane matching but would drastically save data space because the normal
 	// could be generated from the points alone.

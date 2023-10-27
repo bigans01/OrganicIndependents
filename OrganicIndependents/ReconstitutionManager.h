@@ -46,7 +46,7 @@ class ReconstitutionManager
 		void insertMessageContainerForProcessing(MessageContainer in_containerForProcessing);	// inserts a MessageContainer into the 
 																								// container processing queue (processableContainers); must utilize a 
 																								// lock_guard via processingContainerMutex when writing to processableContainers. 
-																								// Should only be really called by a networking thread, separate from the dedicated blueprint thread,
+																								// Should only be really called by a networking/main thread, separate from the dedicated blueprint thread,
 																								// when implemented in the designed manner.
 
 		// ||||||||||||||||||| START: PROCESSING mode functions -- when running this instance on a dedicated thread, these should only be called 
@@ -129,6 +129,7 @@ class ReconstitutionManager
 											// to check the current run mode of the instance, at the end of each tick in the while loop of the runManagerOnThread() function. 
 											// Not dependent on the value of currentRunMode -- can be called at any time.
 
+		bool getProcessingFlag();	// used by external threads to determine if the dedicated thread that an instance of this class runs on is doing any work.
 
 	private:
 		std::mutex processingContainerMutex;	// safety: used when writing to processableContainers (by the networking thread), and reading from it (for the dedicated blueprint thread)
@@ -172,6 +173,10 @@ class ReconstitutionManager
 																					//
 																					// 4.) When the external thread is done with whatever it's doing, it needs to call setRunModeRequest again, with value of
 																					//	   ReconBlueprintRunmodeRequest::RUN_IN_PROCESSING_MODE, so that the dedicated processing thread can continue its work.
+
+		// processing activity members
+		std::mutex processingMutex;	// thread-safety, for modificaiton of isProcessing.
+		bool isProcessing = false;	// utilied by getProcessingFlag(), so that an external thread can see if the dedicated thread this instance runs on is doing work.
 		
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, ReconstitutedBlueprint, EnclaveKeyDef::KeyHasher> reconstitutionDock;	// an unordered_map map of ReconstitutedBlueprint instances,
@@ -197,6 +202,14 @@ class ReconstitutionManager
 		void determineRunMode();	// analyzes the value of the currentRequest member, to determine the currentRunMode that this instance should run in, during 
 									// the next tick in the while loop of runManagerOnThread(). This is directly affected by a call to setRunModeRequest
 		void setRunMode(ReconBlueprintRunmode in_currentRunMode);
+
+		// thread-safe checks of the message container
+		MessageContainer getProcessableContainerFront();
+		bool isProcessableContainerEmpty();
+		void popProcessableContainer();
+
+		// processsing setting functions
+		void setProcessingFlag(bool in_flagValue);	// thread safe; used in executeContainerProcessing() to indicate when work is actively being done (true), and when it is done (false)
 };
 
 #endif

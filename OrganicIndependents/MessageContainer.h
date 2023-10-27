@@ -38,6 +38,18 @@ class MessageContainer
 			return *this;
 		}
 
+		int estimatedSizeOfAllMessages()
+		{
+			int estimatedTotal = 0;
+			auto messagesBegin = messages.begin();
+			auto messagesEnd = messages.end();
+			for (; messagesBegin != messagesEnd; messagesBegin++)
+			{
+				estimatedTotal += messagesBegin->getEstimatedByteSizeOfContents();
+			}
+			return estimatedTotal;
+		}
+
 
 		std::vector<Message>::iterator begin()
 		{

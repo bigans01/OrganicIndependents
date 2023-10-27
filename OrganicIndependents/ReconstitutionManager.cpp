@@ -36,8 +36,38 @@ void ReconstitutionManager::insertMessageContainerForProcessing(MessageContainer
 	// The lock guard below is used to ensure that the dedicated network thread will only be inserting into the 
 	// processableContainers member, in a safe manner. In reality, this function should only be called on a thread that is completely separate
 	// and independent of the dedicated blueprint thread.
-	std::lock_guard<std::mutex> insertGuard(processingContainerMutex);
-	processableContainers.push(in_containerForProcessing);
+	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
+	processableContainers.push(std::move(in_containerForProcessing));
+}
+
+MessageContainer ReconstitutionManager::getProcessableContainerFront()
+{
+	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
+	return processableContainers.front();
+}
+
+bool ReconstitutionManager::isProcessableContainerEmpty()
+{
+	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
+	return processableContainers.empty();
+}
+
+void ReconstitutionManager::popProcessableContainer()
+{
+	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
+	processableContainers.pop();
+}
+
+void ReconstitutionManager::setProcessingFlag(bool in_flagValue)
+{
+	std::lock_guard<std::mutex> processGuard(processingMutex);
+	isProcessing = in_flagValue;
+}
+
+bool ReconstitutionManager::getProcessingFlag()
+{
+	std::lock_guard<std::mutex> processGuard(processingMutex);
+	return isProcessing;
 }
 
 void ReconstitutionManager::executeContainerProcessing()
@@ -45,12 +75,21 @@ void ReconstitutionManager::executeContainerProcessing()
 	// attempts to process any members in the processableContainers, as long as there are things to containers to process OR until the MessageContainer 
 	// processing limit is reached (this limit is not yet implemented, as of 9/30/2023). Should only be run by
 	// the dedicated blueprint thread.
-	std::lock_guard<std::mutex> insertGuard(processingContainerMutex);
-	while (!processableContainers.empty())
-	{
-		auto currentQueueFront = processableContainers.front();
-		processMessageContainer(&currentQueueFront);
-		processableContainers.pop();
+	//
+	// The calls that check the queue should be thread-safe already.
+
+	if (!isProcessableContainerEmpty())
+	{		
+		setProcessingFlag(true);
+
+		while (!isProcessableContainerEmpty())
+		{
+			auto currentQueueFront = getProcessableContainerFront();
+			processMessageContainer(&currentQueueFront);
+			popProcessableContainer();
+		}
+
+		setProcessingFlag(false);
 	}
 }
 
