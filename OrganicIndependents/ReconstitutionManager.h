@@ -8,6 +8,7 @@
 #include "EnclaveCollectionBlueprint.h"
 #include "ReconBlueprintRunmodeRequest.h"
 #include "ReconBlueprintRunmode.h"
+#include "ThreadSafeQueue.h"
 
 /*
 
@@ -186,8 +187,7 @@ class ReconstitutionManager
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher> generatedBlueprints;	// unordered map for generated blueprints;
 																																	// this is the map where reconstiuted ECBPolys and OREs get appended/written/updated.
 
-		std::queue<MessageContainer> processableContainers;		// a queue of MessageContainers (which contain BDM) that will be processed by the call to executeContainerProcessing().
-
+		ThreadSafeQueue<MessageContainer> processableContainers;	// a thread-safe queue of MessageContainers (which contain BDM) that will be processed by the call to executeContainerProcessing().
 
 		void processMessageContainer(MessageContainer* in_messageContainer);
 
@@ -202,11 +202,6 @@ class ReconstitutionManager
 		void determineRunMode();	// analyzes the value of the currentRequest member, to determine the currentRunMode that this instance should run in, during 
 									// the next tick in the while loop of runManagerOnThread(). This is directly affected by a call to setRunModeRequest
 		void setRunMode(ReconBlueprintRunmode in_currentRunMode);
-
-		// thread-safe checks of the message container
-		MessageContainer getProcessableContainerFront();
-		bool isProcessableContainerEmpty();
-		void popProcessableContainer();
 
 		// processsing setting functions
 		void setProcessingFlag(bool in_flagValue);	// thread safe; used in executeContainerProcessing() to indicate when work is actively being done (true), and when it is done (false)

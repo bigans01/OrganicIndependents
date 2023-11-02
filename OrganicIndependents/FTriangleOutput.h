@@ -95,6 +95,44 @@ class FTriangleOutput
 			}
 			std::cout << std::endl;
 		}
+
+		// normal and point manipulation functions
+		glm::vec3 getCurrentCrossProduct()
+		{
+			DoublePoint doubleU = fracturePoints[1] - fracturePoints[0];
+			DoublePoint doubleV = fracturePoints[2] - fracturePoints[0];
+			glm::vec3 u(doubleU.x, doubleU.y, doubleU.z);
+			glm::vec3 v(doubleV.x, doubleV.y, doubleV.z);
+			glm::vec3 calcedNormal = cross(u, v);	// the normal of the triangle
+			return calcedNormal;
+		}
+
+		glm::vec3 getReversedCrossProduct()	// returns a cross product that is equivalent of the 2nd and 3rd points
+											// being swapped (this does NOT swap them)
+		{
+			DoublePoint doubleU = fracturePoints[2] - fracturePoints[0];
+			DoublePoint doubleV = fracturePoints[1] - fracturePoints[0];
+			glm::vec3 u(doubleU.x, doubleU.y, doubleU.z);
+			glm::vec3 v(doubleV.x, doubleV.y, doubleV.z);
+			glm::vec3 calcedNormal = cross(u, v);	// the normal of the triangle
+			return calcedNormal;
+		}
+
+		void swapPointsForNormalAlignment()	// needed by FTriangleContainer::analyzeForSwapping, in case it ends up 
+											// needing to reverse the points for all produced FTriangleOutput instances in 
+											// the FTriangleContainer::fracturedTriangles member.
+		{
+			DoublePoint point1Copy = fracturePoints[1];
+			fracturePoints[1] = fracturePoints[2];
+			fracturePoints[2] = point1Copy;
+		}
+
+		void setBuiltInEmptyNormal() // set the value of the fractureEmptyNormal to the unit-vectored cross product of the triangle.
+		{
+			glm::vec3 unitVectoredNormal = glm::normalize(getCurrentCrossProduct());
+			fractureEmptyNormal = ECBPolyPoint(unitVectoredNormal);
+		}
+
 };
 
 #endif

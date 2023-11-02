@@ -20,7 +20,6 @@ void ReconstitutionManager::processMessageContainer(MessageContainer* in_message
 		currentMessageCopy.removeEnclaveKeyFromFrontAndResetIter(1);
 
 		// send to the appropriate instance of ReconstitutedBlueprint.
-		//reconstitutionDock[targetBlueprintKey].handleBDMMessage(currentMessageCopy);
 		handlebDMMessageForDockEntry(targetBlueprintKey, currentMessageCopy);
 	}
 }
@@ -36,26 +35,7 @@ void ReconstitutionManager::insertMessageContainerForProcessing(MessageContainer
 	// The lock guard below is used to ensure that the dedicated network thread will only be inserting into the 
 	// processableContainers member, in a safe manner. In reality, this function should only be called on a thread that is completely separate
 	// and independent of the dedicated blueprint thread.
-	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
 	processableContainers.push(std::move(in_containerForProcessing));
-}
-
-MessageContainer ReconstitutionManager::getProcessableContainerFront()
-{
-	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
-	return processableContainers.front();
-}
-
-bool ReconstitutionManager::isProcessableContainerEmpty()
-{
-	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
-	return processableContainers.empty();
-}
-
-void ReconstitutionManager::popProcessableContainer()
-{
-	std::lock_guard<std::mutex> processingGuard(processingContainerMutex);
-	processableContainers.pop();
 }
 
 void ReconstitutionManager::setProcessingFlag(bool in_flagValue)
@@ -78,15 +58,15 @@ void ReconstitutionManager::executeContainerProcessing()
 	//
 	// The calls that check the queue should be thread-safe already.
 
-	if (!isProcessableContainerEmpty())
+	if (!processableContainers.empty())
 	{		
 		setProcessingFlag(true);
 
-		while (!isProcessableContainerEmpty())
+		while (!processableContainers.empty())
 		{
-			auto currentQueueFront = getProcessableContainerFront();
+			auto currentQueueFront = processableContainers.front();
 			processMessageContainer(&currentQueueFront);
-			popProcessableContainer();
+			processableContainers.pop();
 		}
 
 		setProcessingFlag(false);
@@ -354,7 +334,6 @@ bool ReconstitutionManager::doesOREExistInDock(EnclaveKeyDef::EnclaveKey in_blue
 		auto existingOREFinder = reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap.find(in_OREToCheck);
 		if (existingOREFinder != reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap.end())
 		{
-			//reconstitutionDock[in_blueprintToCheck].reconstitutedOREMap[in_OREToCheck].runReconstitution();
 			oreExists = true;
 		}
 	}

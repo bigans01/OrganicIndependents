@@ -120,6 +120,20 @@ class FTriangleContainer
 										// will have to be put into the fracturedTriangles in reverse order, to 
 										// comply with the appropriate triangle fan point order.
 										// See the FTriangleContainer::produceFTriangles function for more in-depth explanation
+
+		void checkForPointReversalAndSetNormals(ECBPolyPoint in_parentEmptyNormal);	// NEW (10/27/2023) -- meant to be the preferred way to align triangles to a parent normal
+																					//
+																					// This function cycles through all produced entries in fracturedTriangles,
+																					// and uses the two possible normal unit-vectors for each triangle, to determine
+																					// which unit vector has the shortest distance to the parent triangle's normal unit vector.
+																					//
+																					// If, for any of the entries, the reversed cross product would actually have the shortest distance
+																					// to the parent normal unit vector, ALL entries will need to have swapPointsForNormalAlignment called on them,
+																					// and the normalsSwapped flag will be set.
+																					//
+																					// Regardless of whether or no tpoints had to be swapped, setBuiltInEmptyNormal will need to be called for all the entries.
+																					// The normalsSwapped flag is then used in the last part of the 
+																					// FTriangleContainer::produceFTriangles, if it evaluates to true.
 };
 
 #endif

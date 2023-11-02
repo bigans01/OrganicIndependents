@@ -1161,6 +1161,9 @@
     <ClInclude Include="MessageContainerType.h">
       <Filter>Header Files\Messages</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadSafeQueue.h">
+      <Filter>Header Files\Custom_Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

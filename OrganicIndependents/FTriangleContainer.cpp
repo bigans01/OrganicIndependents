@@ -87,12 +87,21 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 		leadingLineIter++;
 	}
 
+	// NEW TEST	(uncomment when needed)
+	// 
+	// This function will attempt to set the empty normals for each FTriangleOutput,
+	// by utilizing their cross products (it will also attempt to swap the points if needed).
+	// The goal is to have the unit-vectored cross products of the FOutputTriangle instances
+	// be as close as possible to the unit-vectored empty normal of the parent triangle.
+	checkForPointReversalAndSetNormals(in_parentEmptyNormal);
+
+
 	// if we ever had to swap the normals at all, we will need to reverse the
 	// fracturedTriangles map (this is so that we appropriately follow a true triangle fan)
 	if (normalsSwapped)
 	{
 		// Below line is for DEBUG only
-		std::cout << "!!! NOTICE: normals were swapped; doing change for key at "; in_containerBounds.printKey(); std::cout << std::endl;
+		//std::cout << "!!! NOTICE: normals were swapped; doing change for key at "; in_containerBounds.printKey(); std::cout << std::endl;
 
 		// Copy the produced FTriangleOutput instances into reversedTriangles,
 		// but do it in reverse order.
@@ -113,6 +122,47 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 		*/
 
 		fracturedTriangles = reversedTriangles;
+	}
+}
+
+void FTriangleContainer::checkForPointReversalAndSetNormals(ECBPolyPoint in_parentEmptyNormal)
+{
+	// Step 1: Get the unit vector of the parent empty normal.
+	glm::vec3 parentUnitVector = glm::normalize(glm::vec3(in_parentEmptyNormal.x, in_parentEmptyNormal.y, in_parentEmptyNormal.z));
+
+	// Step 2: Check the cross products of all existing FTriangleOutput instances. If there is one case where the getReversedCrossProduct
+	// is closest to the parentUnitVector, then the normalsSwapped flag needs to get set.
+	bool reverseRequired = false;
+	for (auto& currentFracturedTriangle : fracturedTriangles)
+	{
+		glm::vec3 originalUnitVector = glm::normalize(currentFracturedTriangle.second.getCurrentCrossProduct());
+		glm::vec3 reversedUnitVector = glm::normalize(currentFracturedTriangle.second.getReversedCrossProduct());
+
+		float distToOriginal = glm::distance(parentUnitVector, originalUnitVector);
+		float distToReverse = glm::distance(parentUnitVector, reversedUnitVector);
+
+		// If the reverse distance is closest to the parent unit vectorm, we must swap the points 
+		if (distToReverse < distToOriginal)
+		{
+			reverseRequired = true;
+			normalsSwapped = true;
+			break;
+		}
+	}
+
+	// If a reverse was required, we will need to reverse ALL the triangles
+	if (reverseRequired)
+	{
+		for (auto& currentTriangleToReverse : fracturedTriangles)
+		{
+			currentTriangleToReverse.second.swapPointsForNormalAlignment();
+		}
+	}
+
+	// Regardless of if we had to swap, use the normal contained within each triangle output.
+	for (auto& currentTriangletoSetNormalFor : fracturedTriangles)
+	{
+		currentTriangletoSetNormalFor.second.setBuiltInEmptyNormal();
 	}
 }
 

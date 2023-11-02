@@ -428,6 +428,7 @@
     <ClInclude Include="TexturePoints.h" />
     <ClInclude Include="TextureUV.h" />
     <ClInclude Include="ThinFan.h" />
+    <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="TileCoordinateProducer.h" />
     <ClInclude Include="TileDataGLWIN.h" />
     <ClInclude Include="TileLoadData.h" />
