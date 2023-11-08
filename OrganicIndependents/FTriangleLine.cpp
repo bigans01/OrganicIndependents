@@ -8,8 +8,8 @@ FTriangleLineType FTriangleLine::getType()
 
 void FTriangleLine::printLine()
 {
-	std::cout << " pointA -> " << pointA.x << ", " << pointA.y << ", " << pointA.z
-		<< "| pointB -> " << pointB.x << ", " << pointB.y << ", " << pointB.z;
+	std::cout << " pointA -> " << pointA.point.x << ", " << pointA.point.y << ", " << pointA.point.z
+		<< "| pointB -> " << pointB.point.x << ", " << pointB.point.y << ", " << pointB.point.z;
 
 	std::string lineTypeString = "";
 	switch (lineType)
@@ -27,8 +27,8 @@ std::string FTriangleLine::printLineToString()
 	// Format the floats of the points, to make them more readable.
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(2)
-		<< " pointA -> " << pointA.x << ", " << pointA.y << ", " << pointA.z
-		<< " | pointB -> " << pointB.x << ", " << pointB.y << ", " << pointB.z;
+		<< " pointA -> " << pointA.point.x << ", " << pointA.point.y << ", " << pointA.point.z
+		<< " | pointB -> " << pointB.point.x << ", " << pointB.point.y << ", " << pointB.point.z;
 
 	std::string lineTypeString = "";
 	switch (lineType)
@@ -46,7 +46,8 @@ std::string FTriangleLine::printLineToString()
 
 void FTriangleLine::swapPoints()
 {
-	DoublePoint pointATemp = pointA;
+	//DoublePoint pointATemp = pointA;
+	FTrianglePoint pointATemp = pointA;
 	pointA = pointB;
 	pointB = pointATemp;
 }
@@ -69,8 +70,8 @@ bool FTriangleLine::doesPointExist(glm::vec3 in_point)
 
 void FTriangleLine::translateLine(DoublePoint in_translationValue)
 {
-	pointA += in_translationValue;
-	pointB += in_translationValue;
-	pointA.roundHundredth();
-	pointB.roundHundredth();
+	pointA.point += in_translationValue;
+	pointB.point += in_translationValue;
+	pointA.point.roundHundredth();
+	pointB.point.roundHundredth();
 }

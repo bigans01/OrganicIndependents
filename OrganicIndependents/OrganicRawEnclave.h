@@ -23,6 +23,7 @@
 #include "BlockCopyQuery.h"
 #include "Operable3DEnclaveKeySet.h"
 #include "MessageContainer.h"
+#include "HashUtils.h"
 
 /*
 
@@ -178,6 +179,8 @@ public:
 																																// to whichever Messages may need them.
 
 	// ||||||||||| Specialized functions.
+	std::string getOREHash();	// generates a combined SHA256 hash, based on the values of calls to getBlockHash in all members of the blockMap.
+
 	std::map<int, EnclaveBlock> produceBlockCopies();	// reads data straight from the skeletonSGM, to produce a copy of a map of exposed EnclaveBlocks that 
 														// would be produced by this SGM; the simulated copies are put into the value returned by this function.
 														// Currently only used by printBlockCategorizations below, but can be used elsewhere. This will do nothing if 

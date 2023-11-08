@@ -84,6 +84,8 @@ class IndependentUtils
 		static ECBPPOrientationResults GetBlueprintPointOrientation(ECBPolyPoint in_pointToCheck, ECBBorderLineList* in_borderLineList);
 		static ECBBorderLineList determineBorderLines(EnclaveKeyDef::EnclaveKey in_Key);
 		static ECBPolyPoint roundPolyPointToHundredths(ECBPolyPoint in_pointToCheck);
+		static DoublePoint roundDoublePointToHundredeths(DoublePoint in_pointToRound);
+
 		static glm::vec3 roundVec3ToHundredths(glm::vec3 in_vec3);
 		static BorderMDFaceList getFaceList(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);
 		static BorderMDFaceList getFaceListDebug(ECBPPOrientationResults in_beginOrientation, BorderDataMap* in_borderDataMapRef);

@@ -6,14 +6,15 @@
 #include "XYDimMoveVal.h"
 #include "XYDim.h"
 #include "FTriangleLineTargets.h"
+#include "FTrianglePoint.h"
 
 class ZSliceLine
 {
 	public:
 		ZSliceLine() {};
 		ZSliceLine(XYDim in_currentLineXYDim,
-					glm::vec3 in_linePointA,
-					glm::vec3 in_linePointB,
+					FTrianglePoint in_linePointA,
+					FTrianglePoint in_linePointB,
 					int in_currentBackwardZValue,
 					int in_currentForwardZValue,
 					float in_currentFixedInterval) :
@@ -33,8 +34,8 @@ class ZSliceLine
 	private:
 		int currentLineXDim = 0;
 		int currentLineYDim = 0;
-		glm::vec3 linePointA;
-		glm::vec3 linePointB;
+		FTrianglePoint linePointA;
+		FTrianglePoint linePointB;
 		int currentBackwardZValue = 0;
 		int currentForwardZValue = 0;
 		float currentFixedInterval = 0.0f;

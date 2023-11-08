@@ -85,7 +85,7 @@ void OREFracturingMachine::determineUncalibratedBlockKeys()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		originFTriangleKeys[x] = getUncalibratedBlockKeyForPoint(originFTrianglePoints[x]);
+		originFTriangleKeys[x] = getUncalibratedBlockKeyForPoint(originFTrianglePoints[x].point);
 	}
 }
 
@@ -102,16 +102,30 @@ void OREFracturingMachine::calibrateFTriangleLineAndScannerBlockKeys()
 
 	//std::cout << "!!! Calibrating keys for FTriangleLine tracing..." << std::endl;
 	FTriangleKeySetCalibrator pairA(FTriangleType::ORE);
-	pairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	pairA.initialize(triangleKeysCopy[0], 
+					 triangleKeysCopy[1], 
+					originFTrianglePoints[0].point, 
+					originFTrianglePoints[1].point, 
+					originFTrianglePoints[2].point
+	);
 	pairA.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[0] = pairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairB(FTriangleType::ORE);
-	pairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	pairB.initialize(triangleKeysCopy[1], 
+					triangleKeysCopy[2], 
+					originFTrianglePoints[1].point, 
+					originFTrianglePoints[2].point, 
+					originFTrianglePoints[0].point);
 	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
+
 	FTriangleKeySetCalibrator pairC(FTriangleType::ORE);
-	pairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	pairC.initialize(triangleKeysCopy[2], 
+					triangleKeysCopy[0], 
+					originFTrianglePoints[2].point, 
+					originFTrianglePoints[0].point, 
+					originFTrianglePoints[1].point);
 	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
@@ -124,17 +138,29 @@ void OREFracturingMachine::calibrateFTriangleLineAndScannerBlockKeys()
 	// Once key pairs for the FTriangleLines have been established, do the same for the scanningKeys.
 	//std::cout << "!!! Calibrating keys for scanning..." << std::endl;
 	FTriangleKeySetCalibrator scanPairA(FTriangleType::ORE);
-	scanPairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	scanPairA.initialize(triangleKeysCopy[0], 
+						triangleKeysCopy[1], 
+						originFTrianglePoints[0].point, 
+						originFTrianglePoints[1].point, 
+						originFTrianglePoints[2].point);
 	scanPairA.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[0] = scanPairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairB(FTriangleType::ORE);
-	scanPairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	scanPairB.initialize(triangleKeysCopy[1], 
+						triangleKeysCopy[2], 
+						originFTrianglePoints[1].point, 
+						originFTrianglePoints[2].point, 
+						originFTrianglePoints[0].point);
 	scanPairB.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[1] = scanPairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairC(FTriangleType::ORE);
-	scanPairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	scanPairC.initialize(triangleKeysCopy[2], 
+						triangleKeysCopy[0], 
+						originFTrianglePoints[2].point, 
+						originFTrianglePoints[0].point, 
+						originFTrianglePoints[1].point);
 	scanPairC.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[2] = scanPairC.getBeginAndEndKeys();
 
@@ -148,9 +174,11 @@ void OREFracturingMachine::loadLocalizedOREPoints()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		localizedFTrianglePoints[x].x = float(originFTrianglePoints[x].x);
-		localizedFTrianglePoints[x].y = float(originFTrianglePoints[x].y);
-		localizedFTrianglePoints[x].z = float(originFTrianglePoints[x].z);
+		localizedFTrianglePoints[x].point.x = float(originFTrianglePoints[x].point.x);
+		localizedFTrianglePoints[x].point.y = float(originFTrianglePoints[x].point.y);
+		localizedFTrianglePoints[x].point.z = float(originFTrianglePoints[x].point.z);
+
+		
 	}
 }
 

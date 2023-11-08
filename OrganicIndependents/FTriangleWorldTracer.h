@@ -5,6 +5,7 @@
 
 #include "FTriangleTracerBase.h"
 #include "TracingLineBoundingBox.h"
+#include "FTriangleUtils.h"
 
 /*
 
@@ -48,8 +49,8 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 		{
 			LineLocalizer(EnclaveKeyDef::EnclaveKey in_beginKey,
 						EnclaveKeyDef::EnclaveKey in_endKey,
-						ECBPolyPoint in_beginPoint,
-						ECBPolyPoint in_endPoint) :
+						FTrianglePoint in_beginPoint,
+						FTrianglePoint in_endPoint) :
 					localizedBeginKey(in_beginKey),
 					localizedEndKey(in_endKey),
 					localizedStartPoint(in_beginPoint),
@@ -62,8 +63,8 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 			// once determineValues() has been called.
 			EnclaveKeyDef::EnclaveKey localizedBeginKey;
 			EnclaveKeyDef::EnclaveKey localizedEndKey;
-			ECBPolyPoint localizedStartPoint;
-			ECBPolyPoint localizedEndPoint;
+			FTrianglePoint localizedStartPoint;
+			FTrianglePoint localizedEndPoint;
 
 			// The determined inverting values formed by the call to determineValues().
 			EnclaveKeyDef::EnclaveKey invertingKey;
@@ -80,8 +81,8 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 		{
 			WorldLineTracer(EnclaveKeyDef::EnclaveKey in_beginKey,
 				EnclaveKeyDef::EnclaveKey in_endKey,
-				ECBPolyPoint in_beginPoint,
-				ECBPolyPoint in_endPoint) :
+				FTrianglePoint in_beginPoint,
+				FTrianglePoint in_endPoint) :
 					beginKey(in_beginKey),
 					currentKey(in_beginKey),
 					endKey(in_endKey),
@@ -112,10 +113,10 @@ class FTriangleWorldTracer : public FTriangleTracerBase
 			EnclaveKeyDef::EnclaveKey nextKeyAdd;	// how much will be added to currentKey in the next iteration
 			EnclaveKeyDef::EnclaveKey endKey;		// the ending key = the key that point B lies in (will be done when this happens)
 
-			ECBPolyPoint beginPoint;					// equals point A of line
-			ECBPolyPoint currentIterationBeginPoint;	// equals whatever the begin point of the line is
-			ECBPolyPoint currentIterationEndpoint;		// equals whatever the point is when this line hits an ECB border
-			ECBPolyPoint endPoint;						//	 equals point B of line
+			FTrianglePoint beginPoint;					// equals point A of line
+			FTrianglePoint currentIterationBeginPoint;	// equals whatever the begin point of the line is
+			FTrianglePoint currentIterationEndpoint;		// equals whatever the point is when this line hits an ECB border
+			FTrianglePoint endPoint;						//	 equals point B of line
 
 			TracingLineBoundingBox lineBoundingBox;		// must be set by constructor function
 

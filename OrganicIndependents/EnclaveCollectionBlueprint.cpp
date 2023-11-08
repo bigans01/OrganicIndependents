@@ -16,6 +16,49 @@ EnclaveCollectionBlueprint::EnclaveCollectionBlueprint(const EnclaveCollectionBl
 	bpTracker = blueprint_a.bpTracker;
 }
 
+std::string EnclaveCollectionBlueprint::getBlueprintHash()
+{
+	std::string returnedBlueprintHash = "0";
+
+	// Remember, the OREs of a blueprint are stored in the underyling fractureResults.fractureResultsContainerMap
+	// are stored in an unordered map; because of this random order, the SHA256 hash output will be different every time,
+	// if we access each ORE in a random order. This is because the hash from an ORE is fed into the next ORE that is found,
+	// to produce the hash.
+	//
+	// To alleviate this, we will first translate each EnclaveKey for each ORE in the fractureResults.fractureResultsContainerMap 
+	// into a single value. A reference to that ORE is then stored in an std::map, to guarantee that the single value is ordered appropriately.
+	// This should allow for a consistent hash value returned by this function.
+	// 
+	// Overtime, this function can be enhanced to include hashes for other components besides the OREs, but at this time it just uses OREs.
+	std::map<int, OrganicRawEnclave*> orderedPointerMap;
+
+	// Step 1: Get the EnclaveKeyDef to single value conversions for each ORE, and put them into the std::map (orderedPointerMap)
+	for (auto& currentOREToTranslateKeyFor : fractureResults.fractureResultsContainerMap)
+	{
+		EnclaveKeyDef::EnclaveKey currentKeyToTranslate = currentOREToTranslateKeyFor.first;
+
+		int oreX = currentKeyToTranslate.x * 64;
+		int oreY = currentKeyToTranslate.y * 8;
+		int finalTranslatedKey = oreX + oreY + currentKeyToTranslate.z;
+
+		// place the reference, paired with the translated key.
+		orderedPointerMap[finalTranslatedKey] = &currentOREToTranslateKeyFor.second;
+	}
+
+	// Step 2: Cycle through the orderedPointerMap, which will process the OREs and their hashes in the same consistent order,
+	// to produce a the final result.
+	for (auto& currentORE : orderedPointerMap)
+	{
+		std::string currentOREHash = currentORE.second->getOREHash();
+		returnedBlueprintHash = HashUtils::sha256(returnedBlueprintHash + currentOREHash);
+
+		std::cout << "Hash for ORE at " << currentORE.first;
+		std::cout << " -> " << currentOREHash << std::endl;
+	}
+
+	return returnedBlueprintHash;
+}
+
 MessageContainer EnclaveCollectionBlueprint::convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey)
 {
 	// Remember: the returning MessageContainer must be MessageContainerType::MC_BDM, so that

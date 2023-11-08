@@ -10,6 +10,7 @@
 #include "BlueprintFracturingMachine.h"
 #include "OREFracturingMachine.h"
 #include "OutputDirector.h"
+#include "FTriangleUtils.h"
 
 /*
 
@@ -46,9 +47,9 @@ class FTriangle
 				  OutputDirectorMode in_outputMode = OutputDirectorMode::OUTPUT_NONE)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
-			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
-			fracturePoints[1] = in_fracturePoint1;	// "" 
-			fracturePoints[2] = in_fracturePoint2;	// ""
+			fracturePoints[0].point = DoublePoint(in_fracturePoint0);	// each of these points should already be rounded to the nearest hundredth before this.
+			fracturePoints[1].point = DoublePoint(in_fracturePoint1);	// "" 
+			fracturePoints[2].point = DoublePoint(in_fracturePoint2);	// ""
 			triangleOriginGrid = in_originType;	// the type of the grid that the FTriangle originated in.
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
 															// constant, and passable to the produced FTriangles in the outputContainers member.
@@ -73,9 +74,48 @@ class FTriangle
 				TriangleMaterial in_fractureMaterial,
 				OutputDirectorMode in_outputMode = OutputDirectorMode::OUTPUT_NONE)
 		{
+			fracturePoints[0].point = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
+			fracturePoints[1].point = in_fracturePoint1;	// "" 
+			fracturePoints[2].point = in_fracturePoint2;	// ""
+			triangleOriginGrid = in_originType;	// the type of the grid that the FTriangle originated in.
+			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
+															// constant, and passable to the produced FTriangles in the outputContainers member.
+			fractureRequiredOrientation = in_requiredOrientation;
+			fractureRequiredClampValue = in_perfectClampValue;
+
+			fractureMaterial = in_fractureMaterial;
+
+			writingMode = in_outputMode;
+			outputWriter.setOutputMode(writingMode);
+		}
+
+		// constructor for usage with FTrianglePoints. Should only be used when 
+		// working with derivatives of FTriangleFracturerBase that are designed to used with
+		// new FTrianglePoint instances, or instances of FTrianglePoint that came from a previous 
+		// fracturing operation of an FTriangle.
+		//
+		// All 3 input FTrianglePoints will get their type set to be FTrianglePointType::ORIGINAL,
+		// as this is required for proper fracturing operations.
+		FTriangle(FTrianglePoint in_fracturePoint0,
+			FTrianglePoint in_fracturePoint1,
+			FTrianglePoint in_fracturePoint2,
+			FTriangleType in_originType,
+			ECBPolyPoint in_fractureEmptyNormal,
+			BoundaryOrientation in_requiredOrientation,
+			PerfectClampEnum in_perfectClampValue,
+			TriangleMaterial in_fractureMaterial,
+			OutputDirectorMode in_outputMode = OutputDirectorMode::OUTPUT_NONE)
+		{
 			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
 			fracturePoints[1] = in_fracturePoint1;	// "" 
 			fracturePoints[2] = in_fracturePoint2;	// ""
+
+			// Remember, all input points become ORIGINAL (so that we know what points to do the UV scaling/calculations from)
+			for (int x = 0; x < 3; x++)
+			{
+				fracturePoints[x].pointType = FTrianglePointType::ORIGINAL;
+			}
+
 			triangleOriginGrid = in_originType;	// the type of the grid that the FTriangle originated in.
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
 															// constant, and passable to the produced FTriangles in the outputContainers member.
@@ -113,7 +153,7 @@ class FTriangle
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> getUnresolvedOutputs();
 		OutputDirector outputWriter;	// used to write FTriangle output to std::cout, or save it for later use/analysis.
 	private:
-		DoublePoint fracturePoints[3];		// the original points of the FTriangle, before anything is done; these values 
+		FTrianglePoint fracturePoints[3];		// the original points of the FTriangle, before anything is done; these values 
 											// may or may not get translated.
 											
 		FTriangleType triangleOriginGrid = FTriangleType::NOVAL;	// the original grid type for the FTriangle (the grid type it was built in)

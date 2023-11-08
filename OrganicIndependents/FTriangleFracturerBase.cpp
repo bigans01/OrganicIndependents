@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "FTriangleFracturerBase.h"
 
-void FTriangleFracturerBase::transferFTriangleMetadata(DoublePoint in_fracturePoint0,
-	DoublePoint in_fracturePoint1,
-	DoublePoint in_fracturePoint2,
+void FTriangleFracturerBase::transferFTriangleMetadata(
+	FTrianglePoint in_fracturePoint0,
+	FTrianglePoint in_fracturePoint1,
+	FTrianglePoint in_fracturePoint2,
 	ECBPolyPoint in_fractureEmptyNormal,
 	BoundaryOrientation in_originBoundaryOrientation,
 	PerfectClampEnum in_originPerfectClampValue,

@@ -22,14 +22,16 @@
 #include "FExteriorRaycastCollisionResolver.h"
 #include "FTLResolutionStatus.h"
 #include "OutputDirector.h"
+#include "FTriangleUtils.h"
 
 class FTriangleFracturerBase
 {
 	public:
 		// common public functions
-		void transferFTriangleMetadata(DoublePoint in_fracturePoint0,	// used to set the points + empty normal, which are required for fracturing.
-			DoublePoint in_fracturePoint1,
-			DoublePoint in_fracturePoint2,
+		void transferFTriangleMetadata(
+			FTrianglePoint in_fracturePoint0,
+			FTrianglePoint in_fracturePoint1,
+			FTrianglePoint in_fracturePoint2,
 			ECBPolyPoint in_fractureEmptyNormal,
 			BoundaryOrientation in_originBoundaryOrientation,
 			PerfectClampEnum in_originPerfectClampValue,
@@ -50,8 +52,8 @@ class FTriangleFracturerBase
 		OutputDirector* fracturerBaseWriterRef = nullptr;
 
 		// metadata from the FTriangle that we will use as a basis for fracturing
-		DoublePoint originFTrianglePoints[3];
-		ECBPolyPoint localizedFTrianglePoints[3];	// stores the localized points of an FTriangle (used mainly by WorldFracturingMachine; may be moved later)
+		FTrianglePoint originFTrianglePoints[3];
+		FTrianglePoint localizedFTrianglePoints[3];	// stores the localized points of an FTriangle (used mainly by WorldFracturingMachine; may be moved later)
 
 		ECBPolyPoint originFTriangleEmptynormal;
 		BoundaryOrientation originBoundaryOrientation = BoundaryOrientation::NONE;	// must be set by constructor

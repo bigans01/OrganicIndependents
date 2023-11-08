@@ -10,6 +10,7 @@
 #include "PointSearchData.h"
 #include "OrganicWrappedBBFan.h"
 #include "BlockSearchMeta.h"
+#include "HashUtils.h"
 
 class IndependentUtils;
 class FanManager
@@ -219,6 +220,8 @@ public:
 											// the MessageType of the Message needs to be BDM_BLOCK_FANMANAGER.
 
 	void constructManagerFromMessage(Message* in_managerDataMessage);		// attempts to build the FanManager from a Message.
+
+	std::string generateFanManagerHash();
 
 private:
 

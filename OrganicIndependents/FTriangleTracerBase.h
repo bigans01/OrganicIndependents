@@ -23,7 +23,7 @@ class FTriangleTracerBase
 		void initialize(std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleProductionStager, EnclaveKeyDef::KeyHasher>* in_tracerStagerRef,
 						UniquePointContainer* in_uniquePointsContainerRef,
 						EnclaveKeyPair in_tracingLineKeyPairs[3],
-						ECBPolyPoint in_fTrianglePoints[3])
+						FTrianglePoint in_fTrianglePoints[3])
 		{
 			tracerStagerRef = in_tracerStagerRef;
 			uniquePointsContainerRef = in_uniquePointsContainerRef;
@@ -56,7 +56,7 @@ class FTriangleTracerBase
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, FTriangleProductionStager, EnclaveKeyDef::KeyHasher>* tracerStagerRef = nullptr;
 		UniquePointContainer* uniquePointsContainerRef = nullptr;
 		EnclaveKeyPair tracingLineKeypairs[3];
-		ECBPolyPoint fTrianglePoints[3];
+		FTrianglePoint fTrianglePoints[3];
 		bool reorientRequired = false;		// if true, it means we had to make the line "positive oriented", and we'll have to insert
 											// the lines into the tracerStagerRef in reverse order, when we call runCandidateApplicationLogic.
 
@@ -66,6 +66,10 @@ class FTriangleTracerBase
 						EnclaveKeyDef::EnclaveKey* in_keyB,
 						ECBPolyPoint* in_pointA,
 						ECBPolyPoint* in_pointB);
+		void swapValuesDoublePoint(EnclaveKeyDef::EnclaveKey* in_keyA,
+			EnclaveKeyDef::EnclaveKey* in_keyB,
+			DoublePoint* in_pointA,
+			DoublePoint* in_pointB);
 
 		void runCandidateApplicationLogic();	// run each FTriangleLine that was produced, and put them into the appropriate keyed FTriangleProductionStager (in tracerStagerRef)
 												// (i.e., every time an instance of FTriangleWorldTracer::WorldLineTracer iterated during it's trace)

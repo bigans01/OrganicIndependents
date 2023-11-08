@@ -5845,6 +5845,15 @@ ECBPolyPoint IndependentUtils::roundPolyPointToHundredths(ECBPolyPoint in_polyPo
 	return calibratedPoint;
 }
 
+DoublePoint IndependentUtils::roundDoublePointToHundredeths(DoublePoint in_pointToRound)
+{
+	DoublePoint returnPoint;
+	returnPoint.x = IndependentUtils::roundToHundredth(in_pointToRound.x);
+	returnPoint.y = IndependentUtils::roundToHundredth(in_pointToRound.y);
+	returnPoint.z = IndependentUtils::roundToHundredth(in_pointToRound.z);
+	return returnPoint;
+}
+
 glm::vec3 IndependentUtils::roundVec3ToHundredths(glm::vec3 in_vec3)
 {
 	glm::vec3 calibratedPoint;

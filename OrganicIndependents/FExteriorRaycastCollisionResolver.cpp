@@ -22,23 +22,23 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 
 			if (currentCollisionValue == FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_X_RAY)
 			{
-				PotentialCollisionRecord xRecord(currentPoint.point, currentCollisionValue);
+				PotentialCollisionRecord xRecord(FTriangleUtils::convertDoublePointToVec3(currentPoint.point), currentCollisionValue);
 				collisionRecords.push_back(xRecord);
 			}
 			else if (currentCollisionValue == FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Y_RAY)
 			{
-				PotentialCollisionRecord yRecord(currentPoint.point, currentCollisionValue);
+				PotentialCollisionRecord yRecord(FTriangleUtils::convertDoublePointToVec3(currentPoint.point), currentCollisionValue);
 				collisionRecords.push_back(yRecord);
 			}
 			else if (currentCollisionValue == FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_Z_RAY)
 			{
-				PotentialCollisionRecord zRecord(currentPoint.point, currentCollisionValue);
+				PotentialCollisionRecord zRecord(FTriangleUtils::convertDoublePointToVec3(currentPoint.point), currentCollisionValue);
 				collisionRecords.push_back(zRecord);
 			}
 
 			else if (currentCollisionValue == FPotentialCollisionEnum::POTENTIAL_COLLISION_BY_ALL_RAYS)
 			{
-				PotentialCollisionRecord allRecord(currentPoint.point, currentCollisionValue);
+				PotentialCollisionRecord allRecord(FTriangleUtils::convertDoublePointToVec3(currentPoint.point), currentCollisionValue);
 				collisionRecords.push_back(allRecord);
 			}
 		}
@@ -117,7 +117,7 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 
 							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
-							pointsToRemove.push_back(currentOtherPoints.point);
+							pointsToRemove.push_back(FTriangleUtils::convertDoublePointToVec3(currentOtherPoints.point));
 						}
 						break;
 					}
@@ -132,7 +132,7 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 
 							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
-							pointsToRemove.push_back(currentOtherPoints.point);
+							pointsToRemove.push_back(FTriangleUtils::convertDoublePointToVec3(currentOtherPoints.point));
 						}
 						break;
 					}
@@ -147,7 +147,7 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 
 							//std::cout << "The index of the found point was: " << currentIteratorOffset << std::endl;
 
-							pointsToRemove.push_back(currentOtherPoints.point);
+							pointsToRemove.push_back(FTriangleUtils::convertDoublePointToVec3(currentOtherPoints.point));
 						}
 						break;
 					}
@@ -164,7 +164,7 @@ void FExteriorRaycastCollisionResolver::checkForPotentialCollisions()
 			int removalOffset = 0;
 			for (auto& currentOtherPoints : resolverPointContainerRef->points)
 			{
-				if (currentPointToRemove == currentOtherPoints.point)
+				if (currentPointToRemove == FTriangleUtils::convertDoublePointToVec3(currentOtherPoints.point))
 				{
 					resolverPointContainerRef->points.erase(resolverPointContainerRef->points.begin() + removalOffset);
 					break;

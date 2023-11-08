@@ -6,6 +6,7 @@
 #include "FTriangleLineType.h"
 #include <iomanip>
 #include <sstream>
+#include "FTrianglePoint.h"
 
 /*
 
@@ -24,18 +25,15 @@ class FTriangleLine
 {
 	public:
 		FTriangleLine() {};
-		FTriangleLine(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, FTriangleLineType in_lineType) :
+
+
+		FTriangleLine(FTrianglePoint in_fPointA, FTrianglePoint in_fPointB, FTriangleLineType in_lineType) :
 			lineType(in_lineType)
 		{
-			pointA = IndependentUtils::convertECBPolyPointToVec3(in_pointA);
-			pointB = IndependentUtils::convertECBPolyPointToVec3(in_pointB);
-		};
+			pointA = in_fPointA;
+			pointB = in_fPointB;
+		}
 
-		FTriangleLine(glm::vec3 in_pointA, glm::vec3 in_pointB, FTriangleLineType in_lineType) :
-			pointA(in_pointA),
-			pointB(in_pointB),
-			lineType(in_lineType)
-		{};
 
 		// self-comparison operator; will return true if the points of both lines match.
 		bool operator==(const FTriangleLine& in_otherLine)
@@ -56,8 +54,8 @@ class FTriangleLine
 		bool doesPointExist(glm::vec3 in_point);
 		void translateLine(DoublePoint in_translationValue);
 
-		DoublePoint pointA;
-		DoublePoint pointB;
+		FTrianglePoint pointA;
+		FTrianglePoint pointB;
 	private:
 		FTriangleLineType lineType = FTriangleLineType::NONE;
 };

@@ -20,7 +20,8 @@ void FTriangleORETracer::ORELineTracer::traverseLineOnce()
 	currentKey += nextKeyAdd;
 	//std::cout << "########## Calling blueprint intersection (traverseLineOnce)" << std::endl;
 
-	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(currentIterationEndpoint,
+	FIntersectMeta resultantIntersect = FTriangleUtils::findIntersectionDataV2(
+		currentIterationEndpoint,
 		endPoint,
 		currentKey,
 		endKey,
@@ -54,8 +55,8 @@ void FTriangleORETracer::runLineTracing()
 		// The easiest way to do this, is to get copies of the data we will use, and then swap those.
 		EnclaveKeyDef::EnclaveKey tracingKeyA = tracingLineKeypairs[x].keyA;
 		EnclaveKeyDef::EnclaveKey tracingKeyB = tracingLineKeypairs[x].keyB;
-		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
-		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
+		FTrianglePoint tracingPointA = fTrianglePoints[beginPointIndex];
+		FTrianglePoint tracingPointB = fTrianglePoints[endPointIndex];
 
 		//std::cout << "!! Initial tracingKeyA: "; tracingKeyA.printKey(); std::cout << std::endl;
 		//std::cout << "!! Initial tracingKeyB: "; tracingKeyB.printKey(); std::cout << std::endl;
@@ -71,9 +72,15 @@ void FTriangleORETracer::runLineTracing()
 		// Call the re-orientation check function here; 
 		// Test for required swapping; if the return value is false -- which would indicate that the line isn't positively oriented --
 		// then we need to postively orient the line, which is done by swapping the points and keys.
-		if (!FTriangleUtils::isLinePositivelyOriented(tracingPointA, tracingPointB))
+		//if (!FTriangleUtils::isLinePositivelyOriented(tracingPointA, tracingPointB))
+		if 
+		(
+			!FTriangleUtils::isLinePositivelyOriented(FTriangleUtils::convertDoubleToECBPolyPoint(tracingPointA.point), 
+													  FTriangleUtils::convertDoubleToECBPolyPoint(tracingPointB.point))
+		)
 		{
-			swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
+			//swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
+			swapValuesDoublePoint(&tracingKeyA, &tracingKeyB, &tracingPointA.point, &tracingPointB.point);
 		}
 
 		// Localization shouldn't be needed; the FTriangleBlueprintTracer class assumes that the X/Y/Z values of any point it is operating on
@@ -105,8 +112,8 @@ void FTriangleORETracer::runLineTracing()
 			auto currentBeginPoint = currentTracer.currentIterationBeginPoint;
 			auto currentEndPoint = currentTracer.currentIterationEndpoint;
 
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentBeginPoint, FTrianglePointType::EXTERIOR));
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint, FTrianglePointType::EXTERIOR));
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentBeginPoint.point, FTrianglePointType::EXTERIOR));
+			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(currentEndPoint.point, FTrianglePointType::EXTERIOR));
 			FTriangleLine newTriangleLine(currentBeginPoint, currentEndPoint, FTriangleLineType::EXTERIOR);
 
 			// Remember: we must always insert the exterior line at least once, before the special
@@ -130,26 +137,26 @@ void FTriangleORETracer::runLineTracing()
 			// calibrate(). The values will be stored in the FTriangleFracturerBase::scannerKeys[] array.
 
 			// Check for grid-line alignment for X
-			float moduloXpointA = fmod(currentBeginPoint.x, 1.0f);
-			float moduloXpointB = fmod(currentEndPoint.x, 1.0f);
+			float moduloXpointA = fmod(currentBeginPoint.point.x, 1.0f);
+			float moduloXpointB = fmod(currentEndPoint.point.x, 1.0f);
 			if
 			(
 				(moduloXpointA == 0.0f)
 				&&
 				(moduloXpointB == 0.0f)
 				&&
-				(currentBeginPoint.x == currentEndPoint.x)
+				(currentBeginPoint.point.x == currentEndPoint.point.x)
 			)
 			{
 				// If the alignment is at the positive X limit, insert a key at x + 1.
-				if (currentBeginPoint.x == currentBlockTracingLimits.posXlimit)
+				if (currentBeginPoint.point.x == currentBlockTracingLimits.posXlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveXKey(currentTracerKey.x + 1, currentTracerKey.y, currentTracerKey.z);
 					currentCandidateAffectedKeys.insert(positiveXKey);
 				}
 
 				// If the alignment is at the negative X limit, insert a key at x - 1.
-				else if (currentBeginPoint.x == currentBlockTracingLimits.negXlimit)
+				else if (currentBeginPoint.point.x == currentBlockTracingLimits.negXlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
 					currentCandidateAffectedKeys.insert(negativeXKey);
@@ -157,26 +164,26 @@ void FTriangleORETracer::runLineTracing()
 			}
 
 			// Check for grid-line alignment for Y
-			float moduloYpointA = fmod(currentBeginPoint.y, 1.0f);
-			float moduloYpointB = fmod(currentEndPoint.y, 1.0f);
+			float moduloYpointA = fmod(currentBeginPoint.point.y, 1.0f);
+			float moduloYpointB = fmod(currentEndPoint.point.y, 1.0f);
 			if
 			(
 				(moduloYpointA == 0.0f)
 				&&
 				(moduloYpointB == 0.0f)
 				&&
-				(currentBeginPoint.y == currentEndPoint.y)
+				(currentBeginPoint.point.y == currentEndPoint.point.y)
 			)
 			{
 				// If the alignment is at the positive Y limit, insert a key at y + 1.
-				if (currentBeginPoint.y == currentBlockTracingLimits.posYlimit)
+				if (currentBeginPoint.point.y == currentBlockTracingLimits.posYlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveYKey(currentTracerKey.x, currentTracerKey.y + 1, currentTracerKey.z);
 					currentCandidateAffectedKeys.insert(positiveYKey);
 				}
 
 				// If the alignment is at the negative Y limit, insert a key at y - 1.
-				else if (currentBeginPoint.y == currentBlockTracingLimits.negYlimit)
+				else if (currentBeginPoint.point.y == currentBlockTracingLimits.negYlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
 					currentCandidateAffectedKeys.insert(negativeYKey);
@@ -184,26 +191,26 @@ void FTriangleORETracer::runLineTracing()
 			}
 
 			// Check for grid-line alignment for Z
-			float moduloZpointA = fmod(currentBeginPoint.z, 1.0f);
-			float moduloZpointB = fmod(currentEndPoint.z, 1.0f);
+			float moduloZpointA = fmod(currentBeginPoint.point.z, 1.0f);
+			float moduloZpointB = fmod(currentEndPoint.point.z, 1.0f);
 			if
 			(
 				(moduloZpointA == 0.0f)
 				&&
 				(moduloZpointB == 0.0f)
 				&&
-				(currentBeginPoint.z == currentEndPoint.z)
+				(currentBeginPoint.point.z == currentEndPoint.point.z)
 			)
 			{
 				// If the alignment is at the positive Z limit, insert a key at z + 1.
-				if (currentBeginPoint.z == currentBlockTracingLimits.posZlimit)
+				if (currentBeginPoint.point.z == currentBlockTracingLimits.posZlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z + 1);
 					currentCandidateAffectedKeys.insert(positiveZKey);
 				}
 
 				// If the alignment is at the negative Z limit, insert a key at z - 1.
-				else if (currentBeginPoint.z == currentBlockTracingLimits.negZlimit)
+				else if (currentBeginPoint.point.z == currentBlockTracingLimits.negZlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
 					currentCandidateAffectedKeys.insert(negativeZKey);
@@ -213,7 +220,7 @@ void FTriangleORETracer::runLineTracing()
 
 			// put the candidate data, into a new TracerLineRecord, and push that record back, but only if the points don't match
 			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
-			if (newTriangleLine.pointA != newTriangleLine.pointB)
+			if (newTriangleLine.pointA.point != newTriangleLine.pointB.point)
 			{
 				//std::cout << "(FTriangleORETracer) -> inserting exterior line, with points: ";
 				//newTriangleLine.printLine();

@@ -46,7 +46,7 @@ void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		originFTriangleKeys[x] = IndependentUtils::getUncalibratedBlueprintKeyForPoint(originFTrianglePoints[x]);
+		originFTriangleKeys[x] = IndependentUtils::getUncalibratedBlueprintKeyForPoint(originFTrianglePoints[x].point);
 	}
 }
 
@@ -63,17 +63,29 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 
 
 	FTriangleKeySetCalibrator pairA(FTriangleType::WORLD);
-	pairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	pairA.initialize(triangleKeysCopy[0], 
+					 triangleKeysCopy[1], 
+					 originFTrianglePoints[0].point, 
+					 originFTrianglePoints[1].point, 
+					 originFTrianglePoints[2].point);
 	pairA.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[0] = pairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairB(FTriangleType::WORLD);
-	pairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	pairB.initialize(triangleKeysCopy[1], 
+					triangleKeysCopy[2], 
+					originFTrianglePoints[1].point, 
+					originFTrianglePoints[2].point, 
+					originFTrianglePoints[0].point);
 	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairC(FTriangleType::WORLD);
-	pairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	pairC.initialize(triangleKeysCopy[2], 
+					triangleKeysCopy[0], 
+					originFTrianglePoints[2].point, 
+					originFTrianglePoints[0].point, 
+					originFTrianglePoints[1].point);
 	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
@@ -86,17 +98,29 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 	// Once key pairs for the FTriangleLines have been established, do the same for the scanningKeys.
 
 	FTriangleKeySetCalibrator scanPairA(FTriangleType::WORLD);
-	scanPairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	scanPairA.initialize(triangleKeysCopy[0], 
+						triangleKeysCopy[1], 
+						originFTrianglePoints[0].point, 
+						originFTrianglePoints[1].point, 
+						originFTrianglePoints[2].point);
 	scanPairA.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[0] = scanPairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairB(FTriangleType::WORLD);
-	scanPairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	scanPairB.initialize(triangleKeysCopy[1], 
+						triangleKeysCopy[2], 
+						originFTrianglePoints[1].point, 
+						originFTrianglePoints[2].point, 
+						originFTrianglePoints[0].point);
 	scanPairB.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[1] = scanPairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairC(FTriangleType::WORLD);
-	scanPairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	scanPairC.initialize(triangleKeysCopy[2], 
+						triangleKeysCopy[0], 
+						originFTrianglePoints[2].point, 
+						originFTrianglePoints[0].point, 
+						originFTrianglePoints[1].point);
 	scanPairC.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[2] = scanPairC.getBeginAndEndKeys();
 
@@ -202,8 +226,8 @@ void WorldFracturingMachine::adjustPointsByValue(DoublePoint in_adjustingPoint)
 {
 	for (int x = 0; x < 3; x++)
 	{
-		originFTrianglePoints[x] += in_adjustingPoint;
-		originFTrianglePoints[x].roundHundredth();
+		originFTrianglePoints[x].point += in_adjustingPoint;
+		originFTrianglePoints[x].point.roundHundredth();
 	}
 }
 
@@ -211,9 +235,9 @@ void WorldFracturingMachine::loadLocalizedPoints()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		localizedFTrianglePoints[x].x = float(originFTrianglePoints[x].x);
-		localizedFTrianglePoints[x].y = float(originFTrianglePoints[x].y);
-		localizedFTrianglePoints[x].z = float(originFTrianglePoints[x].z);
+		localizedFTrianglePoints[x].point.x = originFTrianglePoints[x].point.x;
+		localizedFTrianglePoints[x].point.y = originFTrianglePoints[x].point.y;
+		localizedFTrianglePoints[x].point.z = originFTrianglePoints[x].point.z;
 	}
 }
 

@@ -6,14 +6,15 @@
 #include "YZDimMoveVal.h"
 #include "YZDim.h"
 #include "FTriangleLineTargets.h"
+#include "FTrianglePoint.h"
 
 class XSliceLine
 {
 	public:
 		XSliceLine() {};
 		XSliceLine(YZDim in_currentLineYZDim,
-					glm::vec3 in_linePointA,
-					glm::vec3 in_linePointB,
+					FTrianglePoint in_linePointA,
+					FTrianglePoint in_linePointB,
 					int in_currentBackwardXValue,
 					int	in_currentForwardXValue,
 					float in_currentFixedInterval) :
@@ -34,8 +35,8 @@ class XSliceLine
 	private:
 		int currentLineYDim = 0;
 		int currentLineZDim = 0;
-		glm::vec3 linePointA;
-		glm::vec3 linePointB;
+		FTrianglePoint linePointA;
+		FTrianglePoint linePointB;
 		int currentBackwardXValue = 0;
 		int currentForwardXValue = 0;
 		float currentFixedInterval = 0.0f;

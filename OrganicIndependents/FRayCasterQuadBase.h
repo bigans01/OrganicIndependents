@@ -19,7 +19,7 @@ class FRayCasterQuadBase
 {
 	public:
 		void initialize(FRayCasterInitData in_initData,
-						ECBPolyPoint in_targetTrianglePoints[3],
+						FTrianglePoint in_targetTrianglePoints[3],
 						UniquePointContainer* in_quadPointContainerRef)
 		{
 			quadDimOneMin = in_initData.dimOneMin;
@@ -46,7 +46,7 @@ class FRayCasterQuadBase
 		int quadTargetRaycastDimMin = 0;
 		int quadTargetRaycastDimMax = 0;
 		float quadRayCastInterval = 0.0f;
-		ECBPolyPoint targetTrianglePoints[3];
+		FTrianglePoint targetTrianglePoints[3];
 		UniquePointContainer* quadPointContainerRef = nullptr;
 };
 

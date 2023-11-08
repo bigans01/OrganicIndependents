@@ -5,6 +5,7 @@
 
 #include "FTrianglePointType.h"
 #include "FPotentialCollisionEnum.h"
+#include "DoublePoint.h"
 
 class FTrianglePoint
 {
@@ -25,6 +26,12 @@ class FTrianglePoint
 			point.z = in_point.z;
 		};
 
+		FTrianglePoint(DoublePoint in_point,
+			FTrianglePointType in_pointType) :
+			pointType(in_pointType)
+		{
+			point = in_point;
+		};
 
 
 		bool operator==(const ECBPolyPoint& in_otherPoint)
@@ -42,7 +49,10 @@ class FTrianglePoint
 		}
 
 		FTrianglePointType pointType = FTrianglePointType::NOVAL;	// must be set by constructor #2 above
-		glm::vec3 point;
+		DoublePoint point;	// the actual point contained within this class
+		float fTextureU = 0.0f;	// optional: used when using an FTriangle for fracturing a texture; coincides with the usage of 
+								// of FTrianglePointType::ORIGINAL.
+		float fTextureV = 0.0f;	// ""
 
 		// Below: this function, when given an appropriate fixed dim interval value,
 		// will determine if the FTrianglePoint might potentially collide with another point that has been X, Y or Z ray-casted.
@@ -184,6 +194,7 @@ class FTrianglePoint
 			switch (pointType)
 			{
 				case FTrianglePointType::NOVAL: { std::cout << "NOVAL"; break; }
+				case FTrianglePointType::ORIGINAL: { std::cout << "ORIGINAL"; break; }
 				case FTrianglePointType::EXTERIOR: { std::cout << "EXTERIOR"; break; }
 				case FTrianglePointType::INTER_FROM_XRAYCAST: { std::cout << "INTER_FROM_XRAYCAST"; break; }
 				case FTrianglePointType::INTER_FROM_YRAYCAST: { std::cout << "INTER_FROM_YRAYCAST"; break; }

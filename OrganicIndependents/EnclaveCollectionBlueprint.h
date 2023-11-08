@@ -26,6 +26,7 @@ and has the ability to store EnclavePainters, which have the ability to change t
 #include "OperableIntSet.h"
 #include "OrganicTriangleCatalog.h"
 #include "BlueprintSyncTracker.h"
+#include "HashUtils.h"
 
 class EnclaveCollectionBlueprint {
 public:
@@ -97,6 +98,8 @@ public:
 																														// This function just prints out the contents in a readable manner, for testing purposes.
 
 	MessageContainer convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// generate all data necessary to make an instance of this class, in BDM format.
+
+	std::string getBlueprintHash();	// analyzes the contents of the blueprint to produce a SHA256 for integrity/verification purposes.
 
 	std::map<int, PolyGroupRange> polyGroupRangeMap;
 	EnclaveFractureResultsMap fractureResults;

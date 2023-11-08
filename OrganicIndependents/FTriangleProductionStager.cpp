@@ -76,7 +76,7 @@ std::vector<FTriangleLine> FTriangleProductionStager::fetchStagerLines()
 
 FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey,
 																	FTriangleType in_fTriangleTypeForDebug,
-																	ECBPolyPoint in_localizedFTrianglePointsArrayRef[3],
+																	FTrianglePoint in_localizedFTrianglePointsArrayRef[3],
 																	OutputDirector* in_stagerWriterRef)
 {
 	stagerWriterRef = in_stagerWriterRef;
@@ -218,7 +218,7 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 		(
 			(remainingLineMap.size() != 0)
 			||
-			(stagerLines.rbegin()->pointB != stagerLines.begin()->pointA)
+			(stagerLines.rbegin()->pointB.point != stagerLines.begin()->pointA.point)
 			||
 			(newLineVector.size() < 3)
 		)
@@ -239,7 +239,7 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 				stagerWriterRef->log(" :: lineMapSize not 0 :: | ");
 			}
 
-			if (stagerLines.rbegin()->pointB != stagerLines.begin()->pointA)
+			if (stagerLines.rbegin()->pointB.point != stagerLines.begin()->pointA.point)
 			{
 				stagerWriterRef->log(" :: begin and end points don't match :: | ");
 			}
@@ -297,7 +297,7 @@ FTLResolutionStatus FTriangleProductionStager::analyzeAndReorganize(EnclaveKeyDe
 				for (int x = 0; x < 3; x++)
 				{
 					std::cout << "[" << x << "]: ";
-					in_localizedFTrianglePointsArrayRef[x].printPointCoords();
+					in_localizedFTrianglePointsArrayRef[x].point.printPointCoords();
 					std::cout << std::endl;
 				}
 

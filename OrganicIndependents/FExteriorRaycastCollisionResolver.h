@@ -5,6 +5,7 @@
 
 #include "UniquePointContainer.h"
 #include "FPotentialCollisionEnum.h"
+#include "FTriangleUtils.h"
 
 /*
 

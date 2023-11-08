@@ -263,8 +263,8 @@ void XDimLineScanner::produceXSliceLines(std::vector<FTrianglePoint>* in_endPoin
 														FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
 
 		XSliceLine currentLine(currentLineYZDim,
-								currentPointA.point,
-								currentPointB.point,
+								currentPointA,
+								currentPointB,
 								dimensionalScanBackwardKey,
 								dimensionalScanForwardKey,
 								fixedDimensionalInterval);

@@ -21,8 +21,9 @@ class FTriangleUtils
 									TracingLineBoundingBox in_boundingBox,
 									FTraceType in_fTraceType);
 
-		static FIntersectMeta findIntersectionDataV2(ECBPolyPoint in_pointA,
-									ECBPolyPoint in_pointB,
+		static FIntersectMeta findIntersectionDataV2(
+									FTrianglePoint in_pointA,
+									FTrianglePoint in_pointB,
 									EnclaveKeyDef::EnclaveKey in_pointAKey,
 									EnclaveKeyDef::EnclaveKey in_pointBKey,
 									TracingLineBoundingBox in_boundingBox,
@@ -47,6 +48,9 @@ class FTriangleUtils
 
 		static FTraceBorderValues getCurrentTracingLimits(EnclaveKeyDef::EnclaveKey in_currentTracingKey, FTraceType in_fTraceType);
 		static FTraceBorderLineList getCurrentBorderLines(EnclaveKeyDef::EnclaveKey in_currentTracingKey, FTraceType in_fTraceType);
+
+		static glm::vec3 convertDoublePointToVec3(DoublePoint in_doublePoint);
+		static ECBPolyPoint convertDoubleToECBPolyPoint(DoublePoint in_doublePoint);
 
 		static ECBPolyPoint roundToNearestLineOrCorner(int in_xoryorz,
 			ECBPolyPoint in_polyPoint,

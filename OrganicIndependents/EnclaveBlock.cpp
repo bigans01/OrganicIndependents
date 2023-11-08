@@ -39,6 +39,16 @@ Message EnclaveBlock::writeEnclaveBlockToBDMMessage()
 	return convertedBlockDataMessage;
 }
 
+std::string EnclaveBlock::getBlockHash()
+{
+	std::string returnHash = "";
+	
+	// get fanManager hash
+	returnHash = manager.generateFanManagerHash();
+	
+	return returnHash;
+}
+
 
 int EnclaveBlock::getNumberOfBBFans()
 {

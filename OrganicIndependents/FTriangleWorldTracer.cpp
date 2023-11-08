@@ -29,8 +29,11 @@ void FTriangleWorldTracer::LineLocalizer::determineValues()
 	localizedBeginKey += invertingKey;
 	localizedEndKey += invertingKey;
 
-	localizedStartPoint = IndependentUtils::roundPolyPointToHundredths(localizedStartPoint + invertingPointValue);
-	localizedEndPoint = IndependentUtils::roundPolyPointToHundredths(localizedEndPoint + invertingPointValue);
+	//localizedStartPoint = IndependentUtils::roundPolyPointToHundredths(localizedStartPoint + invertingPointValue);
+	//localizedEndPoint = IndependentUtils::roundPolyPointToHundredths(localizedEndPoint + invertingPointValue);
+
+	localizedStartPoint.point = IndependentUtils::roundDoublePointToHundredeths(localizedStartPoint.point + invertingPointValue);
+	localizedEndPoint.point = IndependentUtils::roundDoublePointToHundredeths(localizedEndPoint.point + invertingPointValue);
 
 }
 
@@ -83,6 +86,7 @@ void FTriangleWorldTracer::WorldLineTracer::traverseLineOnce()
 	//std::cout << "--Resultant intersect at traverseLineOnce: " << resultantIntersect.intersectedPoint.x << ", " << resultantIntersect.intersectedPoint.y << ", " << resultantIntersect.intersectedPoint.z << std::endl;
 	nextKeyAdd = resultantIntersect.incrementingKey;
 	currentIterationBeginPoint = currentIterationEndpoint;			// set the begin point to be the previous end point
+	//currentIterationEndpoint = FTriangleUtils::convertDoubleToECBPolyPoint(resultantIntersect.intersectedPoint.point); // set the new end point
 	currentIterationEndpoint = resultantIntersect.intersectedPoint; // set the new end point
 }
 
@@ -111,8 +115,10 @@ void FTriangleWorldTracer::runLineTracing()
 		// The easiest way to do this, is to get copies of the data we will use, and then swap those.
 		EnclaveKeyDef::EnclaveKey tracingKeyA = tracingLineKeypairs[x].keyA;
 		EnclaveKeyDef::EnclaveKey tracingKeyB = tracingLineKeypairs[x].keyB;
-		ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
-		ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
+		//ECBPolyPoint tracingPointA = fTrianglePoints[beginPointIndex];
+		//ECBPolyPoint tracingPointB = fTrianglePoints[endPointIndex];
+		FTrianglePoint tracingPointA = fTrianglePoints[beginPointIndex];
+		FTrianglePoint tracingPointB = fTrianglePoints[endPointIndex];
 
 		// Remember, to guarantee 100% similiar tracing, we need to make sure that the two points 
 		// consisting of a line either run as AB or BA (never both); which one to use is dependent on whichever
@@ -122,9 +128,15 @@ void FTriangleWorldTracer::runLineTracing()
 		// Call the re-orientation check function here; 
 		// Test for required swapping; if the return value is false -- which would indicate that the line isn't positively oriented --
 		// then we need to postively orient the line, which is done by swapping the points and keys.
-		if (!FTriangleUtils::isLinePositivelyOriented(tracingPointA, tracingPointB))
+		if 
+		(
+			!FTriangleUtils::isLinePositivelyOriented(
+				FTriangleUtils::convertDoubleToECBPolyPoint(tracingPointA.point), 
+				FTriangleUtils::convertDoubleToECBPolyPoint(tracingPointB.point))
+		)
 		{
-			swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
+			//swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
+			swapValuesDoublePoint(&tracingKeyA, &tracingKeyB, &tracingPointA.point, &tracingPointB.point);
 		}
 
 		// The values to use for the currentTracer, will have to come from the LineLocalizer.
@@ -136,6 +148,12 @@ void FTriangleWorldTracer::runLineTracing()
 		
 		// The WorldLineTracer needs to be populated with the localized values produced by the LineLocalizer instance
 		// that was created in the previous line.
+
+		//WorldLineTracer currentTracer(newLocalizer.localizedBeginKey,
+		//	newLocalizer.localizedEndKey,
+		//	newLocalizer.localizedStartPoint,
+		//	newLocalizer.localizedEndPoint);
+
 		WorldLineTracer currentTracer(newLocalizer.localizedBeginKey,
 									  newLocalizer.localizedEndKey,
 									  newLocalizer.localizedStartPoint,
@@ -164,11 +182,22 @@ void FTriangleWorldTracer::runLineTracing()
 			auto currentEndPoint = currentTracer.currentIterationEndpoint;
 
 
-			ECBPolyPoint revertedBeginPoint = newLocalizer.getRevertedPoint(currentBeginPoint);
-			ECBPolyPoint revertedEndPoint = newLocalizer.getRevertedPoint(currentEndPoint);
+			//ECBPolyPoint revertedBeginPoint = newLocalizer.getRevertedPoint(currentBeginPoint);
+			//ECBPolyPoint revertedEndPoint = newLocalizer.getRevertedPoint(currentEndPoint);
+			ECBPolyPoint revertedBeginPoint = newLocalizer.getRevertedPoint(FTriangleUtils::convertDoubleToECBPolyPoint(currentBeginPoint.point));
+			ECBPolyPoint revertedEndPoint = newLocalizer.getRevertedPoint(FTriangleUtils::convertDoubleToECBPolyPoint(currentEndPoint.point));
+
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
 			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
-			FTriangleLine newRevertedLine(revertedBeginPoint, revertedEndPoint, FTriangleLineType::EXTERIOR);
+			
+			//FTriangleLine newRevertedLine(revertedBeginPoint, revertedEndPoint, FTriangleLineType::EXTERIOR);
+
+			FTrianglePoint testPoint(revertedBeginPoint, FTrianglePointType::EXTERIOR);
+
+			FTriangleLine newRevertedLine(
+											FTrianglePoint(DoublePoint(revertedBeginPoint), FTrianglePointType::EXTERIOR),
+											FTrianglePoint(DoublePoint(revertedEndPoint), FTrianglePointType::EXTERIOR), 
+											FTriangleLineType::EXTERIOR);
 
 			// The key to insert into currentCandidateAffectedKeys is equal to the reverted key returned by newLocalizer.
 			currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(currentTracerKey));
@@ -187,20 +216,20 @@ void FTriangleWorldTracer::runLineTracing()
 			// calibrate(). The values will be stored in the FTriangleFracturerBase::scannerKeys[] array.
 
 			// Check for grid-line alignment for X
-			float moduloXpointA = fmod(currentBeginPoint.x, 32.0f);
-			float moduloXpointB = fmod(currentEndPoint.x, 32.0f);
+			float moduloXpointA = fmod(currentBeginPoint.point.x, 32.0f);
+			float moduloXpointB = fmod(currentEndPoint.point.x, 32.0f);
 			if
 			(
 				(moduloXpointA == 0.0f)
 				&&
 				(moduloXpointB == 0.0f)
 				&&
-				(currentBeginPoint.x == currentEndPoint.x)
+				(currentBeginPoint.point.x == currentEndPoint.point.x)
 				
 			)
 			{
 				// If the alignment is at the positive X limit, insert a key at x + 1.
-				if (currentBeginPoint.x == currentBlueprintTracingLimits.posXlimit)
+				if (currentBeginPoint.point.x == currentBlueprintTracingLimits.posXlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveXKey(currentTracerKey.x + 1, currentTracerKey.y, currentTracerKey.z);
 					//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeXKey)].insertLine(newRevertedLine);
@@ -208,7 +237,7 @@ void FTriangleWorldTracer::runLineTracing()
 				}
 
 				// If the alignment is at the negative X limit, insert a key at x - 1.
-				else if (currentBeginPoint.x == currentBlueprintTracingLimits.negXlimit)
+				else if (currentBeginPoint.point.x == currentBlueprintTracingLimits.negXlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeXKey(currentTracerKey.x - 1, currentTracerKey.y, currentTracerKey.z);
 					//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeXKey)].insertLine(newRevertedLine);
@@ -217,20 +246,20 @@ void FTriangleWorldTracer::runLineTracing()
 			}
 
 			// Check for grid-line alignment for Y
-			float moduloYpointA = fmod(currentBeginPoint.y, 32.0f);
-			float moduloYpointB = fmod(currentEndPoint.y, 32.0f);
+			float moduloYpointA = fmod(currentBeginPoint.point.y, 32.0f);
+			float moduloYpointB = fmod(currentEndPoint.point.y, 32.0f);
 			if
 			(
 				(moduloYpointA == 0.0f)
 				&&
 				(moduloYpointB == 0.0f)
 				&&
-				(currentBeginPoint.y == currentEndPoint.y)
+				(currentBeginPoint.point.y == currentEndPoint.point.y)
 			)
 			{
 
 				// If the alignment is at the positive Y limit, insert a key at y + 1.
-				if (currentBeginPoint.y == currentBlueprintTracingLimits.posYlimit)
+				if (currentBeginPoint.point.y == currentBlueprintTracingLimits.posYlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveYKey(currentTracerKey.x, currentTracerKey.y + 1, currentTracerKey.z);
 					//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeYKey)].insertLine(newRevertedLine);
@@ -238,7 +267,7 @@ void FTriangleWorldTracer::runLineTracing()
 				}
 
 				// If the alignment is at the negative Y limit, insert a key at y - 1.
-				else if (currentBeginPoint.y == currentBlueprintTracingLimits.negYlimit)
+				else if (currentBeginPoint.point.y == currentBlueprintTracingLimits.negYlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeYKey(currentTracerKey.x, currentTracerKey.y - 1, currentTracerKey.z);
 					//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeYKey)].insertLine(newRevertedLine);
@@ -247,19 +276,19 @@ void FTriangleWorldTracer::runLineTracing()
 			}
 
 			// Check for grid-line alignment for Z
-			float moduloZpointA = fmod(currentBeginPoint.z, 32.0f);
-			float moduloZpointB = fmod(currentEndPoint.z, 32.0f);
+			float moduloZpointA = fmod(currentBeginPoint.point.z, 32.0f);
+			float moduloZpointB = fmod(currentEndPoint.point.z, 32.0f);
 			if
 			(
 				(moduloZpointA == 0.0f)
 				&&
 				(moduloZpointB == 0.0f)
 				&&
-				(currentBeginPoint.z == currentEndPoint.z)
+				(currentBeginPoint.point.z == currentEndPoint.point.z)
 			)
 			{
 				// If the alignment is at the positive Z limit, insert a key at z + 1.
-				if (currentBeginPoint.z == currentBlueprintTracingLimits.posZlimit)
+				if (currentBeginPoint.point.z == currentBlueprintTracingLimits.posZlimit)
 				{
 					EnclaveKeyDef::EnclaveKey positiveZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z + 1);
 					//(*tracerStagerRef)[newLocalizer.getRevertedKey(negativeZKey)].insertLine(newRevertedLine);
@@ -267,7 +296,7 @@ void FTriangleWorldTracer::runLineTracing()
 				}
 
 				// If the alignment is at the negative Z limit, insert a key at z - 1.
-				else if (currentBeginPoint.z == currentBlueprintTracingLimits.negZlimit)
+				else if (currentBeginPoint.point.z == currentBlueprintTracingLimits.negZlimit)
 				{
 					EnclaveKeyDef::EnclaveKey negativeZKey(currentTracerKey.x, currentTracerKey.y, currentTracerKey.z - 1);
 					currentCandidateAffectedKeys.insert(newLocalizer.getRevertedKey(negativeZKey));
@@ -276,7 +305,7 @@ void FTriangleWorldTracer::runLineTracing()
 			
 			// put the candidate data, into a new TracerLineRecord, and push that record back, but only if the points don't match
 			// (yes, this can happen, and this is a lazy fix impelmented around 3/17/2023)
-			if (newRevertedLine.pointA != newRevertedLine.pointB)
+			if (newRevertedLine.pointA.point != newRevertedLine.pointB.point)
 			{
 				TracerLineRecord newRecord(newRevertedLine, currentCandidateAffectedKeys);
 				lineCandidates.push_back(newRecord);

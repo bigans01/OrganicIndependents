@@ -306,8 +306,8 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 
 	else if (in_pointAKey == in_pointBKey)
 	{
-		intersectMetaReturn.originPoint = in_pointA;
-		intersectMetaReturn.intersectedPoint = in_pointB;
+		intersectMetaReturn.originPoint.point = in_pointA;
+		intersectMetaReturn.intersectedPoint.point = in_pointB;
 		//std::cout << "finish entry" << std::endl;
 	}
 
@@ -315,8 +315,9 @@ FIntersectMeta FTriangleUtils::findIntersectionData(ECBPolyPoint in_pointA,
 
 }
 
-FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
-	ECBPolyPoint in_pointB,
+FIntersectMeta FTriangleUtils::findIntersectionDataV2(
+	FTrianglePoint in_pointA,
+	FTrianglePoint in_pointB,
 	EnclaveKeyDef::EnclaveKey in_pointAKey,
 	EnclaveKeyDef::EnclaveKey in_pointBKey,
 	TracingLineBoundingBox in_boundingBox,
@@ -341,7 +342,7 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 	if (!(in_pointAKey == in_pointBKey))		// do this if the keys are not equal
 	{
 		//std::cout << "!!! CONDITION 1 entry" << std::endl;
-		//std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		//std::cout << "FCI: PointA " << in_pointA.point.x << ", " << in_pointA.point.y << ", " << in_pointA.point.z << ", " << std::endl;
 		//std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
 
 		//std::cout << ">>>>>>>>> Keys: " << std::endl;
@@ -350,7 +351,7 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 
 		/*
 		std::cout << "||||||||||||||| >>>>>>>>>>> Points: " << std::endl;
-		std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
+		std::cout << "FCI: PointA " << in_pointA.point.x << ", " << in_pointA.point.y << ", " << in_pointA.point.z << ", " << std::endl;
 		std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
 
 		std::cout << "||||||||||||||| >>>>>>>>> Keys: " << std::endl;
@@ -359,9 +360,9 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 		*/
 
 		ECBPolyPoint resultantSlope;
-		resultantSlope.x = in_pointB.x - in_pointA.x;
-		resultantSlope.y = in_pointB.y - in_pointA.y;
-		resultantSlope.z = in_pointB.z - in_pointA.z;
+		resultantSlope.x = in_pointB.point.x - in_pointA.point.x;
+		resultantSlope.y = in_pointB.point.y - in_pointA.point.y;
+		resultantSlope.z = in_pointB.point.z - in_pointA.point.z;
 		//std::cout << "Resultant slope values are: " << resultantSlope.x << ", " << resultantSlope.y << ", " << resultantSlope.z << std::endl;
 		// flags for determining what the direction of x/y/z is; if they remain 0, there is no slope (perfectly flat for the line on that axis)
 		int x_dir = 0;
@@ -410,18 +411,18 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			//std::cout << "POS X entry " << std::endl;
 			x_dir = 1;			// going towards positive x 
 			x_interceptCoord = float((in_pointAKey.x * cellLength) + cellLength);								// x_interceptCoord is the precise location of x at the EAST face border
-			float origin_to_border_x_diff = (x_interceptCoord - in_pointA.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
+			float origin_to_border_x_diff = (x_interceptCoord - in_pointA.point.x);					// this value represents what we need to multiply y and z by in order to get the distance to the border (pythagorean theorem again)
 			//std::cout << "X intercept coord: " << x_interceptCoord << std::endl;
 			//std::cout << "Origin to border x diff: " << origin_to_border_x_diff << std::endl;
 			time_to_complete_x_traversal = origin_to_border_x_diff / resultantSlope.x;	// get the distance that the ray has to travel to get to this value of x
 			calculatedPoint_for_x.x = x_interceptCoord;
-			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);
-			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);
+			calculatedPoint_for_x.y = in_pointA.point.y + (resultantSlope.y * time_to_complete_x_traversal);
+			calculatedPoint_for_x.z = in_pointA.point.z + (resultantSlope.z * time_to_complete_x_traversal);
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -437,17 +438,17 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			x_dir = -1;			// going towards negative x
 			x_interceptCoord = float(in_pointAKey.x * cellLength);
 			//std::cout << "x-intercept coord: " << x_interceptCoord << std::endl;
-			//std::cout << "point A x: " << in_pointA.x << std::endl;
-			float origin_to_border_x_diff = abs(x_interceptCoord - in_pointA.x);					// make sure to get absolute value for these two lines (WEST border)
+			//std::cout << "point A x: " << in_pointA.point.x << std::endl;
+			float origin_to_border_x_diff = abs(x_interceptCoord - in_pointA.point.x);					// make sure to get absolute value for these two lines (WEST border)
 			time_to_complete_x_traversal = abs(origin_to_border_x_diff / resultantSlope.x);	// ""
 			calculatedPoint_for_x.x = x_interceptCoord;
-			calculatedPoint_for_x.y = in_pointA.y + (resultantSlope.y * time_to_complete_x_traversal);	// "" 
-			calculatedPoint_for_x.z = in_pointA.z + (resultantSlope.z * time_to_complete_x_traversal);	// ""
+			calculatedPoint_for_x.y = in_pointA.point.y + (resultantSlope.y * time_to_complete_x_traversal);	// "" 
+			calculatedPoint_for_x.z = in_pointA.point.z + (resultantSlope.z * time_to_complete_x_traversal);	// ""
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_x.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_x.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_x.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -464,17 +465,17 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			//std::cout << "POS Y entry " << std::endl;
 			y_dir = 1;		// going towards positive y
 			y_interceptCoord = float((in_pointAKey.y * cellLength) + cellLength);								// y_interceptCoord is the precise location of y at the TOP face border
-			float origin_to_border_y_diff = y_interceptCoord - in_pointA.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
+			float origin_to_border_y_diff = y_interceptCoord - in_pointA.point.y;						// this value represents what we need to multiply x and z by in order to get the distance to the border (pythagorean theorem again)
 			time_to_complete_y_traversal = origin_to_border_y_diff / resultantSlope.y;	// get the distance this ray has to travel to get to this value of y
 			//std::cout << "correct value of origin_to_border: " << origin_to_border_y_diff << std::endl;
-			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.x = in_pointA.point.x + (resultantSlope.x * time_to_complete_y_traversal);
 			calculatedPoint_for_y.y = y_interceptCoord;
-			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+			calculatedPoint_for_y.z = in_pointA.point.z + (resultantSlope.z * time_to_complete_y_traversal);
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -493,19 +494,19 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			//std::cout << "BP key B: " << in_pointBKey.x << ", " << in_pointBKey.y << ", " << in_pointBKey.z << std::endl;
 
 			y_interceptCoord = float(in_pointAKey.y * cellLength);
-			float origin_to_border_y_diff = abs(y_interceptCoord - in_pointA.y);
+			float origin_to_border_y_diff = abs(y_interceptCoord - in_pointA.point.y);
 			time_to_complete_y_traversal = abs(origin_to_border_y_diff / resultantSlope.y);
 			//time_to_complete_y_traversal = roundToThousandths(abs(origin_to_border_y_diff / resultantSlope.y));
 			//time_to_complete_y_traversal_RAW = abs(origin_to_border_y_diff / resultantSlope.y);
 			//ECBPolyPoint calculatedPoint;
-			calculatedPoint_for_y.x = in_pointA.x + (resultantSlope.x * time_to_complete_y_traversal);
+			calculatedPoint_for_y.x = in_pointA.point.x + (resultantSlope.x * time_to_complete_y_traversal);
 			calculatedPoint_for_y.y = y_interceptCoord;
-			calculatedPoint_for_y.z = in_pointA.z + (resultantSlope.z * time_to_complete_y_traversal);
+			calculatedPoint_for_y.z = in_pointA.point.z + (resultantSlope.z * time_to_complete_y_traversal);
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_y.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_y.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_y.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -522,19 +523,19 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			//std::cout << ">> POS Z entry " << std::endl;
 			z_dir = 1;
 			z_interceptCoord = float((in_pointAKey.z * cellLength) + cellLength);
-			float origin_to_border_z_diff = z_interceptCoord - in_pointA.z;
+			float origin_to_border_z_diff = z_interceptCoord - in_pointA.point.z;
 			time_to_complete_z_traversal = origin_to_border_z_diff / resultantSlope.z;
 			//time_to_complete_z_traversal = roundToThousandths(origin_to_border_z_diff / resultantSlope.z);
 			//time_to_complete_z_traversal_RAW = origin_to_border_z_diff / resultantSlope.z;
 			//ECBPolyPoint calculatedPoint;
-			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
-			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.x = in_pointA.point.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.point.y + (resultantSlope.y * time_to_complete_z_traversal);
 			calculatedPoint_for_z.z = z_interceptCoord;
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -548,19 +549,19 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			//std::cout << "NEG Z entry " << std::endl;
 			z_dir = -1;
 			z_interceptCoord = float(in_pointAKey.z * cellLength);
-			float origin_to_border_z_diff = abs(z_interceptCoord - in_pointA.z);
+			float origin_to_border_z_diff = abs(z_interceptCoord - in_pointA.point.z);
 			time_to_complete_z_traversal = abs(origin_to_border_z_diff / resultantSlope.z);
 			//time_to_complete_z_traversal = roundToThousandths(abs(origin_to_border_z_diff / resultantSlope.z));
 			//time_to_complete_z_traversal_RAW = abs(origin_to_border_z_diff / resultantSlope.z);
 			//ECBPolyPoint calculatedPoint;
-			calculatedPoint_for_z.x = in_pointA.x + (resultantSlope.x * time_to_complete_z_traversal);
-			calculatedPoint_for_z.y = in_pointA.y + (resultantSlope.y * time_to_complete_z_traversal);
+			calculatedPoint_for_z.x = in_pointA.point.x + (resultantSlope.x * time_to_complete_z_traversal);
+			calculatedPoint_for_z.y = in_pointA.point.y + (resultantSlope.y * time_to_complete_z_traversal);
 			calculatedPoint_for_z.z = z_interceptCoord;
 
 			ECBPolyPoint distanceToCalculatedPoint;
-			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.x;
-			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.y;
-			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.z;
+			distanceToCalculatedPoint.x = calculatedPoint_for_z.x - in_pointA.point.x;
+			distanceToCalculatedPoint.y = calculatedPoint_for_z.y - in_pointA.point.y;
+			distanceToCalculatedPoint.z = calculatedPoint_for_z.z - in_pointA.point.z;
 			float squared_distance_to_x = pow(distanceToCalculatedPoint.x, 2.0f);
 			float squared_distance_to_y = pow(distanceToCalculatedPoint.y, 2.0f);
 			float squared_distance_to_z = pow(distanceToCalculatedPoint.z, 2.0f);
@@ -676,13 +677,13 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 		std::map<int, PointDistance> pointDistanceMap;
 		for (auto& currentUniquePoint : uniqueIntercepts.points)
 		{
-			ECBPolyPoint currentConvertedUnique = ECBPolyPoint(currentUniquePoint.point);
+			ECBPolyPoint currentConvertedUnique = ECBPolyPoint(FTriangleUtils::convertDoubleToECBPolyPoint(currentUniquePoint.point));
 
 			//std::cout << "!!! Found point to insert: ";
 			//currentConvertedUnique.printPointCoords();
 			//std::cout << std::endl;
 
-			PointDistance currentPointDistance(currentConvertedUnique, in_pointA);
+			PointDistance currentPointDistance(currentConvertedUnique, FTriangleUtils::convertDoubleToECBPolyPoint(in_pointA.point));
 			pointDistanceMap[pointDistanceMap.size()] = currentPointDistance;
 
 			
@@ -795,7 +796,7 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 		}
 
 		// Step 6: Determine the normalized slope between the destinationPoint, and the originPoint.
-		ECBPolyPoint normalizedDir = findNormalizedSlope(in_pointA, selectedPointDistance.destinationPoint);
+		ECBPolyPoint normalizedDir = findNormalizedSlope(FTriangleUtils::convertDoubleToECBPolyPoint(in_pointA.point), selectedPointDistance.destinationPoint);
 
 		// Step 7: Compare the masking key against the normalized slope, to determine the final movement key.
 		EnclaveKeyDef::EnclaveKey finalMovementkey;
@@ -831,7 +832,7 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 		}
 
 		intersectMetaReturn.originPoint = in_pointA;
-		intersectMetaReturn.intersectedPoint = selectedPointDistance.destinationPoint;
+		intersectMetaReturn.intersectedPoint.point = selectedPointDistance.destinationPoint;
 		intersectMetaReturn.incrementingKey = finalMovementkey;
 
 		// Once the newKey value has been determined, it must go through the TracingLineBoundingBox instance to check
@@ -878,15 +879,15 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 			std::cout << "calculatedPoint_for_z: " << calculatedPoint_for_z.x << ", " << calculatedPoint_for_z.y << ", " << calculatedPoint_for_z.z << std::endl;
 
 			std::cout << ">>>>>>>>>>> Points: " << std::endl;
-			std::cout << "FCI: PointA " << in_pointA.x << ", " << in_pointA.y << ", " << in_pointA.z << ", " << std::endl;
-			std::cout << "FCI: PointB " << in_pointB.x << ", " << in_pointB.y << ", " << in_pointB.z << ", " << std::endl;
+			std::cout << "FCI: PointA " << in_pointA.point.x << ", " << in_pointA.point.y << ", " << in_pointA.point.z << ", " << std::endl;
+			std::cout << "FCI: PointB " << in_pointB.point.x << ", " << in_pointB.point.y << ", " << in_pointB.point.z << ", " << std::endl;
 
 			std::cout << ">>>>>>>>> Keys: " << std::endl;
 			in_pointAKey.printKey(); std::cout << std::endl;
 			in_pointBKey.printKey(); std::cout << std::endl;
 
 			std::cout << "findIntersectionDataV2 -> beginPoint is:";
-			in_pointA.printPointCoords();
+			//in_pointA.printPointCoords();
 			std::cout << std::endl;
 
 
@@ -900,7 +901,7 @@ FIntersectMeta FTriangleUtils::findIntersectionDataV2(ECBPolyPoint in_pointA,
 				currentCandidate.second.printStats();
 			}
 		
-			std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.x << ", " << intersectMetaReturn.intersectedPoint.y << ", " << intersectMetaReturn.intersectedPoint.z << std::endl;
+			std::cout << "||||| Intersect return meta point: " << intersectMetaReturn.intersectedPoint.point.x << ", " << intersectMetaReturn.intersectedPoint.point.y << ", " << intersectMetaReturn.intersectedPoint.point.z << std::endl;
 
 			int badKey = 3;
 			std::cin >> badKey;
@@ -1834,8 +1835,9 @@ FIntersectMeta FTriangleUtils::calculateIntersection(EnclaveKeyDef::EnclaveKey i
 	// for any corrections.
 	intersectMeta.incrementingKey = in_boundingBox.applyBoundingCorrectionToKeys(in_Key1, newKey);
 
-	intersectMeta.originPoint = in_originPoint;
-	intersectMeta.intersectedPoint = pointToCheck;
+	intersectMeta.originPoint.point = in_originPoint;
+	intersectMeta.intersectedPoint.point = pointToCheck;
+
 	//std::cout << ">>> values of intersectMeta return: " << std::endl;
 	//std::cout << "|||||||| Intersected point values are: " << pointToCheck.x << ", " << pointToCheck.y << ", " << pointToCheck.z << std::endl;
 	//std::cout << "incrementingKey: " << intersectMeta.incrementingKey.x << ", " << intersectMeta.incrementingKey.y << ", " << intersectMeta.incrementingKey.z << std::endl;
@@ -2964,6 +2966,16 @@ FTraceBorderValues FTriangleUtils::getCurrentTracingLimits(EnclaveKeyDef::Enclav
 	borderValues.posZlimit = (in_currentTracingKey.z * cellLength) + cellLength;	// south border
 
 	return borderValues;
+}
+
+glm::vec3 FTriangleUtils::convertDoublePointToVec3(DoublePoint in_doublePoint)
+{
+	return glm::vec3(float(in_doublePoint.x), float(in_doublePoint.y), float(in_doublePoint.z));
+}
+
+ECBPolyPoint FTriangleUtils::convertDoubleToECBPolyPoint(DoublePoint in_doublePoint)
+{
+	return ECBPolyPoint(float(in_doublePoint.x), float(in_doublePoint.y), float(in_doublePoint.z));
 }
 
 FTraceBorderLineList FTriangleUtils::getCurrentBorderLines(EnclaveKeyDef::EnclaveKey in_currentTracingKey, FTraceType in_fTraceType)

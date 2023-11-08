@@ -5,6 +5,7 @@
 
 #include "FTriangleFracturerBase.h"
 #include "FTriangleORETracer.h"
+#include "FTriangleUtils.h"
 
 class OREFracturingMachine : public FTriangleFracturerBase
 {

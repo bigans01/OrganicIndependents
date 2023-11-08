@@ -50,7 +50,7 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 	//printConstructionLines();
 
 	// the root point will be point A of the very first line.
-	DoublePoint rootPoint = constructionLines.begin()->pointA;
+	DoublePoint rootPoint = constructionLines.begin()->pointA.point;
 
 	// the auto iterator for the leading line will be at begin() + 1.
 	auto leadingLineIter = constructionLines.begin();
@@ -58,7 +58,7 @@ void FTriangleContainer::produceFTriangles(FTriangleType in_destinedTriangleType
 
 	for (int x = 0; x < totalTrianglesToProduce; x++)
 	{
-		OutputTriangleFrame newFrame(rootPoint, leadingLineIter->pointA, leadingLineIter->pointB);
+		OutputTriangleFrame newFrame(rootPoint, leadingLineIter->pointA.point, leadingLineIter->pointB.point);
 
 		// Below: FTDEBUG (uncomment when needed)
 		/*
@@ -465,11 +465,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for POS_X
 	if 
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].x == boundsMaxX)
+		(in_fTriangleOutputRef->fracturePoints[0].point.x == boundsMaxX)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].x == boundsMaxX)
+		(in_fTriangleOutputRef->fracturePoints[1].point.x == boundsMaxX)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].x == boundsMaxX)
+		(in_fTriangleOutputRef->fracturePoints[2].point.x == boundsMaxX)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::POS_X;
@@ -479,11 +479,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for NEG_X
 	else if
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].x == boundsMinX)
+		(in_fTriangleOutputRef->fracturePoints[0].point.x == boundsMinX)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].x == boundsMinX)
+		(in_fTriangleOutputRef->fracturePoints[1].point.x == boundsMinX)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].x == boundsMinX)
+		(in_fTriangleOutputRef->fracturePoints[2].point.x == boundsMinX)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::NEG_X;
@@ -493,11 +493,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for POS_Y
 	else if 
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].y == boundsMaxY)
+		(in_fTriangleOutputRef->fracturePoints[0].point.y == boundsMaxY)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].y == boundsMaxY)
+		(in_fTriangleOutputRef->fracturePoints[1].point.y == boundsMaxY)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].y == boundsMaxY)
+		(in_fTriangleOutputRef->fracturePoints[2].point.y == boundsMaxY)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::POS_Y;
@@ -507,11 +507,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for NEG_Y
 	else if
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].y == boundsMinY)
+		(in_fTriangleOutputRef->fracturePoints[0].point.y == boundsMinY)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].y == boundsMinY)
+		(in_fTriangleOutputRef->fracturePoints[1].point.y == boundsMinY)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].y == boundsMinY)
+		(in_fTriangleOutputRef->fracturePoints[2].point.y == boundsMinY)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::NEG_Y;
@@ -521,11 +521,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for POS_Z
 	else if 
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].z == boundsMaxZ)
+		(in_fTriangleOutputRef->fracturePoints[0].point.z == boundsMaxZ)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].z == boundsMaxZ)
+		(in_fTriangleOutputRef->fracturePoints[1].point.z == boundsMaxZ)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].z == boundsMaxZ)
+		(in_fTriangleOutputRef->fracturePoints[2].point.z == boundsMaxZ)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::POS_Z;
@@ -535,11 +535,11 @@ bool FTriangleContainer::FTriangleContainerBounds::runTriangleOrientationAnalysi
 	// Test for NEG_Z
 	else if 
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].z == boundsMinZ)
+		(in_fTriangleOutputRef->fracturePoints[0].point.z == boundsMinZ)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[1].z == boundsMinZ)
+		(in_fTriangleOutputRef->fracturePoints[1].point.z == boundsMinZ)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[2].z == boundsMinZ)
+		(in_fTriangleOutputRef->fracturePoints[2].point.z == boundsMinZ)
 	)
 	{
 		in_fTriangleOutputRef->fractureRequiredOrientation = BoundaryOrientation::NEG_Z;
@@ -681,9 +681,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 	// Test for perfect clamp on X
 	if 
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].x == in_fTriangleOutputRef->fracturePoints[1].x)	
+		(in_fTriangleOutputRef->fracturePoints[0].point.x == in_fTriangleOutputRef->fracturePoints[1].point.x)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[0].x == in_fTriangleOutputRef->fracturePoints[2].x)
+		(in_fTriangleOutputRef->fracturePoints[0].point.x == in_fTriangleOutputRef->fracturePoints[2].point.x)
 	)
 	{
 		// Below: FTDEBUG (uncomment when needed)
@@ -695,9 +695,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 	// Test for perfect clamp on Y
 	else if
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].y == in_fTriangleOutputRef->fracturePoints[1].y)
+		(in_fTriangleOutputRef->fracturePoints[0].point.y == in_fTriangleOutputRef->fracturePoints[1].point.y)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[0].y == in_fTriangleOutputRef->fracturePoints[2].y)
+		(in_fTriangleOutputRef->fracturePoints[0].point.y == in_fTriangleOutputRef->fracturePoints[2].point.y)
 	)
 	{
 		// Below: FTDEBUG (uncomment when needed)
@@ -709,9 +709,9 @@ void FTriangleContainer::FTriangleContainerBounds::runPerfectClampAnalysis(FTria
 	// Test for perfect clamp on Z
 	else if
 	(
-		(in_fTriangleOutputRef->fracturePoints[0].z == in_fTriangleOutputRef->fracturePoints[1].z)
+		(in_fTriangleOutputRef->fracturePoints[0].point.z == in_fTriangleOutputRef->fracturePoints[1].point.z)
 		&&
-		(in_fTriangleOutputRef->fracturePoints[0].z == in_fTriangleOutputRef->fracturePoints[2].z)
+		(in_fTriangleOutputRef->fracturePoints[0].point.z == in_fTriangleOutputRef->fracturePoints[2].point.z)
 	)
 	{
 		// Below: FTDEBUG (uncomment when needed)

@@ -57,7 +57,7 @@ void BlueprintFracturingMachine::determineUncalibratedOREKeys()
 	for (int x = 0; x < 3; x++)
 	{
 		// NEED: a function to determine the uncalibrated keys for ORE coordinates (i.e, the point 29, 0, 0  would be at ORE 7, 0, 0)
-		originFTriangleKeys[x] = getUncalibratedOREKeyForPoint(originFTrianglePoints[x]);
+		originFTriangleKeys[x] = getUncalibratedOREKeyForPoint(originFTrianglePoints[x].point);
 	}
 }
 
@@ -74,17 +74,32 @@ void BlueprintFracturingMachine::calibrateFTriangleLineAndScannerOREKeys()
 
 	//std::cout << "!!! Calibrating keys for FTriangleLine tracing..." << std::endl;
 	FTriangleKeySetCalibrator pairA(FTriangleType::BLUEPRINT);
-	pairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	pairA.initialize(triangleKeysCopy[0], 
+					triangleKeysCopy[1], 
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point)
+	);
 	pairA.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[0] = pairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairB(FTriangleType::BLUEPRINT);
-	pairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	pairB.initialize(triangleKeysCopy[1], 
+					triangleKeysCopy[2], 
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point)
+	);
 	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairC(FTriangleType::BLUEPRINT);
-	pairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	pairC.initialize(triangleKeysCopy[2], 
+					triangleKeysCopy[0], 
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point),
+					FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point));
+
 	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
@@ -97,17 +112,31 @@ void BlueprintFracturingMachine::calibrateFTriangleLineAndScannerOREKeys()
 	// Once key pairs for the FTriangleLines have been established, do the same for the scanningKeys.
 	//std::cout << "!!! Calibrating keys for scanning..." << std::endl;
 	FTriangleKeySetCalibrator scanPairA(FTriangleType::BLUEPRINT);
-	scanPairA.initialize(triangleKeysCopy[0], triangleKeysCopy[1], originFTrianglePoints[0], originFTrianglePoints[1], originFTrianglePoints[2]);
+	scanPairA.initialize(triangleKeysCopy[0], 
+						triangleKeysCopy[1], 
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point), 
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point),
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point));
 	scanPairA.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[0] = scanPairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairB(FTriangleType::BLUEPRINT);
-	scanPairB.initialize(triangleKeysCopy[1], triangleKeysCopy[2], originFTrianglePoints[1], originFTrianglePoints[2], originFTrianglePoints[0]);
+	scanPairB.initialize(triangleKeysCopy[1], 
+						triangleKeysCopy[2], 
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point),
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point),
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point));
+
 	scanPairB.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[1] = scanPairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairC(FTriangleType::BLUEPRINT);
-	scanPairC.initialize(triangleKeysCopy[2], triangleKeysCopy[0], originFTrianglePoints[2], originFTrianglePoints[0], originFTrianglePoints[1]);
+	scanPairC.initialize(triangleKeysCopy[2], 
+						 triangleKeysCopy[0], 
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[2].point),
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[0].point),
+						FTriangleUtils::convertDoubleToECBPolyPoint(originFTrianglePoints[1].point));
+
 	scanPairC.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[2] = scanPairC.getBeginAndEndKeys();
 
@@ -144,9 +173,11 @@ void BlueprintFracturingMachine::loadLocalizedBlueprintPoints()
 {
 	for (int x = 0; x < 3; x++)
 	{
-		localizedFTrianglePoints[x].x = float(originFTrianglePoints[x].x);
-		localizedFTrianglePoints[x].y = float(originFTrianglePoints[x].y);
-		localizedFTrianglePoints[x].z = float(originFTrianglePoints[x].z);
+		//localizedFTrianglePoints[x].x = float(originFTrianglePoints[x].x);
+		//localizedFTrianglePoints[x].y = float(originFTrianglePoints[x].y);
+		//localizedFTrianglePoints[x].z = float(originFTrianglePoints[x].z);
+
+		localizedFTrianglePoints[x] = originFTrianglePoints[x];
 	}
 }
 

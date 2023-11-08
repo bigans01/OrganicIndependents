@@ -1367,6 +1367,19 @@ BlockCopyQuery OrganicRawEnclave::queryForBlockCopy(EnclaveKeyDef::EnclaveKey in
 	return returnQuery;
 }
 
+std::string OrganicRawEnclave::getOREHash()
+{
+	std::string baseOREHash = "0";
+
+	for (auto& currentBlockToHash : blockMap)
+	{
+		std::string hashToAdd = currentBlockToHash.second.getBlockHash();
+		baseOREHash = HashUtils::sha256(hashToAdd + baseOREHash);
+	}
+
+	return baseOREHash;
+}
+
 void OrganicRawEnclave::simulateBlockProduction()
 {
 	BorderDataMap borderDataMap; // for getting trace results in enclaves

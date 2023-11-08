@@ -7,6 +7,7 @@
 #include "FTriangleLineResolutionMachine.h"
 #include "FTLResolutionStatus.h"
 #include "OutputDirector.h"
+#include "FTriangleUtils.h"
 
 /*
 
@@ -34,7 +35,7 @@ class FTriangleProductionStager
 		// -the localized points of the FTriangle, so that we can reconstruct it directly if needed
 		FTLResolutionStatus analyzeAndReorganize(EnclaveKeyDef::EnclaveKey in_stagerKey, 
 												FTriangleType in_fTriangleTypeForDebug,
-												ECBPolyPoint in_localizedFTrianglePointsArrayRef[3],
+												FTrianglePoint in_localizedFTrianglePointsArrayRef[3],
 												OutputDirector* in_stagerWriterRef);
 		std::vector<FTriangleLine> fetchStagerLines();
 	private:

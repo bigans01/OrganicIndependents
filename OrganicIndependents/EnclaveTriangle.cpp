@@ -12,9 +12,9 @@ EnclaveTriangle::EnclaveTriangle(FTriangleOutput in_fTriangleOutput)
 	TriangleLine line1, line2, line3;
 
 	// rounding points isn't necessary, as it should already be done with an FTriangle.
-	ECBPolyPoint roundedPoint1 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[0]);
-	ECBPolyPoint roundedPoint2 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[1]);
-	ECBPolyPoint roundedPoint3 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[2]);
+	ECBPolyPoint roundedPoint1 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[0].point);
+	ECBPolyPoint roundedPoint2 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[1].point);
+	ECBPolyPoint roundedPoint3 = convertDoublePointToECBPolyPointForEnclaveTriangle(in_fTriangleOutput.fracturePoints[2].point);
 
 	line1.pointA = roundedPoint1;
 	line1.pointB = roundedPoint2;

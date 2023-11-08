@@ -34,9 +34,9 @@ class FTriangleOutput
 			TriangleMaterial in_outputTriangleMaterial)
 		{
 			// each of the below ECBPolyPoints is converted to DoublePoint, via the special DoublePoint operator.
-			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
-			fracturePoints[1] = in_fracturePoint1;	// "" 
-			fracturePoints[2] = in_fracturePoint2;	// ""
+			fracturePoints[0].point = DoublePoint(in_fracturePoint0);	// each of these points should already be rounded to the nearest hundredth before this.
+			fracturePoints[1].point = DoublePoint(in_fracturePoint1);	// "" 
+			fracturePoints[2].point = DoublePoint(in_fracturePoint2);	// ""
 			destinedGridType = in_destinedGridType;	// the type of the grid that the FTriangle originated in.
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
 															// constant, and passable to the produced FTriangles in the outputContainers member.
@@ -55,9 +55,9 @@ class FTriangleOutput
 			PerfectClampEnum in_perfectClampValue,
 			TriangleMaterial in_outputTriangleMaterial)
 		{
-			fracturePoints[0] = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
-			fracturePoints[1] = in_fracturePoint1;	// "" 
-			fracturePoints[2] = in_fracturePoint2;	// ""
+			fracturePoints[0].point = in_fracturePoint0;	// each of these points should already be rounded to the nearest hundredth before this.
+			fracturePoints[1].point = in_fracturePoint1;	// "" 
+			fracturePoints[2].point = in_fracturePoint2;	// ""
 			destinedGridType = in_destinedGridType;	// the type of the grid that the FTriangle originated in.
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 
 															// constant, and passable to the produced FTriangles in the outputContainers member.
@@ -68,7 +68,8 @@ class FTriangleOutput
 		}
 
 
-		DoublePoint fracturePoints[3];
+		//DoublePoint fracturePoints[3];
+		FTrianglePoint fracturePoints[3];
 		FTriangleType destinedGridType = FTriangleType::NOVAL;	// the value that determines the type of grid this FTriangleOutput is intended to be.
 																// Valid values would be:
 																//	-BLUEPRINT
@@ -91,7 +92,7 @@ class FTriangleOutput
 			for (int x = 0; x < 3; x++)
 			{
 				std::cout << " [" << x << "]: ";
-				fracturePoints[x].printPointCoords();
+				//fracturePoints[x].printPointCoords();
 			}
 			std::cout << std::endl;
 		}
@@ -99,8 +100,8 @@ class FTriangleOutput
 		// normal and point manipulation functions
 		glm::vec3 getCurrentCrossProduct()
 		{
-			DoublePoint doubleU = fracturePoints[1] - fracturePoints[0];
-			DoublePoint doubleV = fracturePoints[2] - fracturePoints[0];
+			DoublePoint doubleU = fracturePoints[1].point - fracturePoints[0].point;
+			DoublePoint doubleV = fracturePoints[2].point - fracturePoints[0].point;
 			glm::vec3 u(doubleU.x, doubleU.y, doubleU.z);
 			glm::vec3 v(doubleV.x, doubleV.y, doubleV.z);
 			glm::vec3 calcedNormal = cross(u, v);	// the normal of the triangle
@@ -110,8 +111,8 @@ class FTriangleOutput
 		glm::vec3 getReversedCrossProduct()	// returns a cross product that is equivalent of the 2nd and 3rd points
 											// being swapped (this does NOT swap them)
 		{
-			DoublePoint doubleU = fracturePoints[2] - fracturePoints[0];
-			DoublePoint doubleV = fracturePoints[1] - fracturePoints[0];
+			DoublePoint doubleU = fracturePoints[2].point - fracturePoints[0].point;
+			DoublePoint doubleV = fracturePoints[1].point - fracturePoints[0].point;
 			glm::vec3 u(doubleU.x, doubleU.y, doubleU.z);
 			glm::vec3 v(doubleV.x, doubleV.y, doubleV.z);
 			glm::vec3 calcedNormal = cross(u, v);	// the normal of the triangle
@@ -122,7 +123,8 @@ class FTriangleOutput
 											// needing to reverse the points for all produced FTriangleOutput instances in 
 											// the FTriangleContainer::fracturedTriangles member.
 		{
-			DoublePoint point1Copy = fracturePoints[1];
+			//DoublePoint point1Copy = fracturePoints[1];
+			FTrianglePoint point1Copy = fracturePoints[1];
 			fracturePoints[1] = fracturePoints[2];
 			fracturePoints[2] = point1Copy;
 		}

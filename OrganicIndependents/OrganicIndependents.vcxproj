@@ -72,19 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -305,6 +309,7 @@
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GroupSetPair.h" />
+    <ClInclude Include="HashUtils.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="IndependentUtils.h" />
     <ClInclude Include="InterceptValidity.h" />
@@ -520,6 +525,7 @@
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
+    <ClCompile Include="HashUtils.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
     <ClCompile Include="MassDriverLimitArray.cpp" />

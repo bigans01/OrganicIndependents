@@ -5,6 +5,7 @@
 
 #include "FTriangleFracturerBase.h"
 #include "FTriangleBlueprintTracer.h"
+#include "FTriangleUtils.h"
 
 /*
 

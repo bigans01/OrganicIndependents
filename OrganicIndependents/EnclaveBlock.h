@@ -17,6 +17,7 @@
 #include "FanManager.h"
 #include "BlockSubType.h"
 #include "OrganicFanGroup.h"
+#include "HashUtils.h"
 
 class EnclaveBlock
 {
@@ -63,6 +64,9 @@ class EnclaveBlock
 		void setBlockMode(BlockSubType in_modeToSet);
 		BlockSubType getBlockMode();
 		Message writeEnclaveBlockToBDMMessage();	// converts the contents of the block to Message of the type BDM_BLOCK_UNTAGGED. 
+
+		// hash functions
+		std::string getBlockHash();		// generates an SHA256, based on the contents of FanManager.
 
 	private:
 		BlockSubType blockMode = BlockSubType::BLOCK_NORMAL;	// this value is used to determine what should be returned 

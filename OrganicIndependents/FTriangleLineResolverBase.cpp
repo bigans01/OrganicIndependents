@@ -104,7 +104,7 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 		(
 			(remainingLineMap.size() != 0)
 			||
-			(newLineVector.rbegin()->pointB != newLineVector.begin()->pointA)
+			(newLineVector.rbegin()->pointB.point != newLineVector.begin()->pointA.point)
 			||
 			(newLineVector.size() < 3)
 		)
@@ -126,7 +126,7 @@ bool FTriangleLineResolverBase::checkLineValidity(std::vector<FTriangleLine> in_
 				resolverWriterRef->log(" :: lineMapSize not 0 :: | ");
 			}
 
-			if (newLineVector.rbegin()->pointB != newLineVector.begin()->pointA)
+			if (newLineVector.rbegin()->pointB.point != newLineVector.begin()->pointA.point)
 			{
 				resolverWriterRef->log(" :: begin and end points don't match :: | ");
 			}

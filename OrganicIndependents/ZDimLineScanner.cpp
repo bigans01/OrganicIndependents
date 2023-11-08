@@ -261,8 +261,8 @@ void ZDimLineScanner::produceZSliceLines(std::vector<FTrianglePoint>* in_endPoin
 														  FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
 
 		ZSliceLine currentLine(currentLineXYDim,
-								currentPointA.point,
-								currentPointB.point,
+								currentPointA,
+								currentPointB,
 								dimensionalScanBackwardKey,
 								dimensionalScanForwardKey,
 								fixedDimensionalInterval);

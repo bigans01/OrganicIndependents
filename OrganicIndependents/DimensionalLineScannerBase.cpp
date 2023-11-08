@@ -42,9 +42,9 @@ DimensionalLineScannerBase::ReorganizedPoints DimensionalLineScannerBase::reorga
 			{
 				//std::cout << "Generating comparison..." << std::endl;
 				PointComparison newComparison(comparablePoint.first,
-					comparablePoint.second.point,
+					FTriangleUtils::convertDoublePointToVec3(comparablePoint.second.point),
 					currentComparedPoint.first,
-					currentComparedPoint.second.point);
+					FTriangleUtils::convertDoublePointToVec3(currentComparedPoint.second.point));
 
 				// do a scan to ensure that the comparison doesn't match anything that already exists.
 				bool doesComparisonAlreadyExist = false;
@@ -166,7 +166,8 @@ int DimensionalLineScannerBase::findClosestPointIndex(FTrianglePoint in_pointA, 
 
 	for (auto& currentSearchablePoint : *in_searchablePointsMapRef)
 	{
-		float currentDistance = glm::distance(in_pointA.point, currentSearchablePoint.second.point);
+		float currentDistance = glm::distance(FTriangleUtils::convertDoublePointToVec3(in_pointA.point), 
+											  FTriangleUtils::convertDoublePointToVec3(currentSearchablePoint.second.point));
 		distances[currentSearchablePoint.first] = currentDistance;
 	}
 

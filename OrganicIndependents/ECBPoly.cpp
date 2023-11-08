@@ -5,9 +5,9 @@ ECBPoly::ECBPoly(FTriangleOutput in_completeTriangleOutput)
 {
 	TriangleLine line1, line2, line3;
 
-	ECBPolyPoint convertPoint0 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[0]);
-	ECBPolyPoint convertPoint1 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[1]);
-	ECBPolyPoint convertPoint2 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[2]);
+	ECBPolyPoint convertPoint0 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[0].point);
+	ECBPolyPoint convertPoint1 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[1].point);
+	ECBPolyPoint convertPoint2 = convertDoublePointToEcBPolyPoint(in_completeTriangleOutput.fracturePoints[2].point);
 
 	line1.pointA = convertPoint0;
 	line1.pointB = convertPoint1;

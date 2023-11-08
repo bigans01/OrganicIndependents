@@ -268,8 +268,8 @@ void YDimLineScanner::produceYSliceLines(std::vector<FTrianglePoint>* in_endPoin
 														  FTrianglePoint(currentPointB.point, FTrianglePointType::NOVAL));
 
 		YSliceLine currentLine(currentLineXZDim,
-								currentPointA.point,
-								currentPointB.point,
+								currentPointA,
+								currentPointB,
 								dimensionalScanBackwardKey,
 								dimensionalScanForwardKey,
 								fixedDimensionalInterval);

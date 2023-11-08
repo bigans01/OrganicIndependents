@@ -43,7 +43,7 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 				*/
 				
 
-				vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[x]);
+				vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[x].point);
 				masterPointindex++;
 			}
 		}
@@ -65,7 +65,7 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 			std::cout << " at index " << masterPointindex << std::endl;
 			*/
 
-			vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[2]);
+			vertices[masterPointindex] = IndependentUtils::convertFTriangleDoublePointToBlockVertex(currentIter->second.fracturePoints[2].point);
 			masterPointindex++;
 		}
 	}

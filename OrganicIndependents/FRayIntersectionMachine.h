@@ -6,6 +6,7 @@
 #include "FRayIntersectionRoundingMode.h"
 #include "Vec3Pair.h"
 #include "FTrianglePoint.h"
+#include "FTriangleUtils.h"
 
 /*
 
@@ -23,14 +24,14 @@ class FRayIntersectionMachine
 {
 	public:
 		FRayIntersectionMachine(ECBPolyPointPair in_rayToCast,
-								ECBPolyPoint in_interceptableTrianglePoints[3],
+								FTrianglePoint in_interceptableTrianglePoints[3],
 								UniquePointContainer* in_interceptorUniquePointsRef,
 								FRayIntersectionRoundingMode in_interceptionType)
 		{
 			rayToCast = in_rayToCast;
 			for (int x = 0; x < 3; x++)
 			{
-				interceptableTrianglePoints[x] = IndependentUtils::convertECBPolyPointToVec3(in_interceptableTrianglePoints[x]);
+				interceptableTrianglePoints[x] = FTriangleUtils::convertDoublePointToVec3(in_interceptableTrianglePoints[x].point);
 			}
 			intersectorUniquePointsRef = in_interceptorUniquePointsRef;
 			intersectionRoundingMode = in_interceptionType;

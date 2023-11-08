@@ -17,6 +17,22 @@ void FTriangleTracerBase::swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,
 	*in_pointB = tempPointA;
 }
 
+void FTriangleTracerBase::swapValuesDoublePoint(EnclaveKeyDef::EnclaveKey* in_keyA,
+	EnclaveKeyDef::EnclaveKey* in_keyB,
+	DoublePoint* in_pointA,
+	DoublePoint* in_pointB)
+{
+	// swap keys
+	EnclaveKeyDef::EnclaveKey tempKeyA = *in_keyA;
+	*in_keyA = *in_keyB;
+	*in_keyB = tempKeyA;
+
+	// swap points
+	DoublePoint tempPointA = *in_pointA;
+	*in_pointA = *in_pointB;
+	*in_pointB = tempPointA;
+}
+
 void FTriangleTracerBase::runCandidateApplicationLogic()
 {
 	for (auto& currentLineData : lineCandidates)

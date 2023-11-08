@@ -5,6 +5,7 @@
 
 #include "FTriangleProductionStager.h"
 #include "TrackedMap.h"
+#include "FTriangleUtils.h"
 
 class DimensionalLineScannerBase
 {

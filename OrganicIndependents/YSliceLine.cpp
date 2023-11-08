@@ -25,18 +25,18 @@ void YSliceLine::determineYLineOutputs()
 	// -the X values of both point A and B are equal; so the move val remains 0.
 	int calculatedXDimMove = 0;
 	bool perfectlyAlignedToXGridLine = false;
-	float pointBxModulo = fmod(linePointB.x, currentFixedInterval);
+	float pointBxModulo = fmod(linePointB.point.x, currentFixedInterval);
 	if (pointBxModulo == 0.0f)
 	{
-		if (linePointB.x > linePointA.x)
+		if (linePointB.point.x > linePointA.point.x)
 		{
 			calculatedXDimMove++;
 		}
-		else if (linePointB.x < linePointA.x)
+		else if (linePointB.point.x < linePointA.point.x)
 		{
 			calculatedXDimMove--;
 		}
-		else if (linePointB.x == linePointA.x)
+		else if (linePointB.point.x == linePointA.point.x)
 		{
 			perfectlyAlignedToXGridLine = true;
 		}
@@ -45,18 +45,18 @@ void YSliceLine::determineYLineOutputs()
 	// Do the same for Z.
 	int calculatedZDimMove = 0;
 	bool perfectlyAlignedToZGridLine = false;
-	float pointBzModulo = fmod(linePointB.z, currentFixedInterval);
+	float pointBzModulo = fmod(linePointB.point.z, currentFixedInterval);
 	if (pointBzModulo == 0.0f)
 	{
-		if (linePointB.z > linePointA.z)
+		if (linePointB.point.z > linePointA.point.z)
 		{
 			calculatedZDimMove++;
 		}
-		else if (linePointB.z < linePointA.z)
+		else if (linePointB.point.z < linePointA.point.z)
 		{
 			calculatedZDimMove--;
 		}
-		else if (linePointB.z == linePointA.z)
+		else if (linePointB.point.z == linePointA.point.z)
 		{
 			perfectlyAlignedToZGridLine = true;
 		}

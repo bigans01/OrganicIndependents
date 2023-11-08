@@ -379,6 +379,50 @@ void FanManager::listSecondaries()
 	}
 }
 
+std::string FanManager::generateFanManagerHash()
+{
+	std::string generatedHash = "";
+
+	// convert the initial value of 0 to a string
+	std::string currentHashInput = HashUtils::sha256("0");
+
+	switch (currentFanStorageMode)
+	{
+		case FanArrayMode::LOCALIZED:
+		{
+			// For each fan, get each of it's points and put it through SHA256.
+			for (int x = 0; x < totalFans; x++)
+			{
+				auto targetFanPtr = &localFanArray[x];
+				auto currentFanData = targetFanPtr->getFanData();
+				int totalPointsToPrint = currentFanData.numberOfTertiaries + 2;
+				for (int y = 0; y < totalPointsToPrint; y++)
+				{
+					unsigned int currentPointIndex = currentFanData.pointArray[y];
+					auto fetchedVertex = fetchPoint(currentPointIndex);
+
+					// for each vertex dimension, use that as the input for redetermining currentHashInput.
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.x));
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.y));
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.z));
+				}
+			}
+			break;
+		}
+
+		case FanArrayMode::THIN:
+		{
+			break;
+		}
+
+		case FanArrayMode::FAT:
+		{
+			break;
+		}
+	}
+	return generatedHash = currentHashInput;
+}
+
 void FanManager::listPoints()
 {
 	if (currentPointStorageMode == PointArrayMode::LOCAL_POINTS)

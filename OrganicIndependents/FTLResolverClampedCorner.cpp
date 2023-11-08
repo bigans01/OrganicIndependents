@@ -24,14 +24,14 @@ bool FTLResolverClampedCorner::runAttemptedResolution()
 		for (auto& currentLine : originalLines)
 		{
 			// pointA
-			xFloats.insert(currentLine.pointA.x);
-			yFloats.insert(currentLine.pointA.y);
-			zFloats.insert(currentLine.pointA.z);
+			xFloats.insert(currentLine.pointA.point.x);
+			yFloats.insert(currentLine.pointA.point.y);
+			zFloats.insert(currentLine.pointA.point.z);
 
 			// pointB
-			xFloats.insert(currentLine.pointB.x);
-			yFloats.insert(currentLine.pointB.y);
-			zFloats.insert(currentLine.pointB.z);
+			xFloats.insert(currentLine.pointB.point.x);
+			yFloats.insert(currentLine.pointB.point.y);
+			zFloats.insert(currentLine.pointB.point.z);
 		}
 
 		// Now, check which dimension is clamped. There should only be 1.
