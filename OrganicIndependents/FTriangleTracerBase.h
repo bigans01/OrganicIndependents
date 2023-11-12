@@ -62,14 +62,10 @@ class FTriangleTracerBase
 
 		//  Below: this function is used to swap the point/key values of the line,
 		//	in the event that a call to FTriangleUtils::isLinePositivelyOriented returns false
-		void swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,		
-						EnclaveKeyDef::EnclaveKey* in_keyB,
-						ECBPolyPoint* in_pointA,
-						ECBPolyPoint* in_pointB);
-		void swapValuesDoublePoint(EnclaveKeyDef::EnclaveKey* in_keyA,
+		void swapKeysAndPoints(EnclaveKeyDef::EnclaveKey* in_keyA,
 			EnclaveKeyDef::EnclaveKey* in_keyB,
-			DoublePoint* in_pointA,
-			DoublePoint* in_pointB);
+			FTrianglePoint* in_pointA,
+			FTrianglePoint* in_pointB);
 
 		void runCandidateApplicationLogic();	// run each FTriangleLine that was produced, and put them into the appropriate keyed FTriangleProductionStager (in tracerStagerRef)
 												// (i.e., every time an instance of FTriangleWorldTracer::WorldLineTracer iterated during it's trace)

@@ -18,6 +18,8 @@ void FTriangle::determineOutputLevel()
 		case FTriangleType::BLUEPRINT: { triangleOutputGrid = FTriangleType::ORE; break; }
 		case FTriangleType::ORE: { triangleOutputGrid = FTriangleType::BLOCK; break; }
 		case FTriangleType::BLOCK: { triangleOutputGrid = FTriangleType::ATOMIC; break; }
+
+		case FTriangleType::TEXTURE_WORLD: { triangleOutputGrid = FTriangleType::BLUEPRINT; break; }
 	}
 }
 
@@ -90,7 +92,27 @@ void FTriangle::setupAndRunFracturerMachine()
 			break;
 		}
 
-		
+		case FTriangleType::TEXTURE_WORLD:
+		{
+			std::cout << "Selected TEXTURE_WORLD fracturer. " << std::endl;
+
+			std::shared_ptr<FTriangleFracturerBase> worldFracturer(new (WorldTextureFracturingMachine));
+			fracturerMachine = worldFracturer;
+			fracturerMachine->transferFTriangleMetadata(fracturePoints[0],
+				fracturePoints[1],
+				fracturePoints[2],
+				fractureEmptyNormal,
+				fractureRequiredOrientation,
+				fractureRequiredClampValue,
+				fractureMaterial,
+				&outputWriter);
+			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->runFracturing();
+			unresolvedOutputs = fracturerMachine->incalculableKeys;
+
+			hasFracturingCompleted = true;
+			break;
+		}
 	}
 }
 

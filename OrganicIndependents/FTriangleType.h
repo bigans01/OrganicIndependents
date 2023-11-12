@@ -10,8 +10,11 @@ enum class FTriangleType
 	BLUEPRINT,	// the triangle was spawned within the confines of a blueprint.
 	ORE,		// the triangle was spawned within the confines of an ORE.
 	BLOCK,		// the triangle was spawned within the confines of a block.
-	ATOMIC		// the triangle cannot be fratured any lower than this; the output of this FTriangle should be its own points,
+	ATOMIC,		// the triangle cannot be fratured any lower than this; the output of this FTriangle should be its own points,
 				// all ranging between 0.0f and 1.0f (the same as a block)
+
+	TEXTURE_WORLD	// spawned within confines of a blueprint, but is meant to 
+					// frature a world texture.
 
 };
 #endif

@@ -268,6 +268,12 @@
     <Filter Include="Source Files\HashUtils">
       <UniqueIdentifier>{a141d87b-3978-4823-8032-438936a5d39c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FracturableTriangle\FTrianglePointUVProducer">
+      <UniqueIdentifier>{a9ca7d31-9e08-46e2-b83a-d4dd87677889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\FTrianglePointUVProducer">
+      <UniqueIdentifier>{b9d7e448-5bfa-498e-b12c-0998c9222be3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1173,6 +1179,21 @@
     <ClInclude Include="HashUtils.h">
       <Filter>Header Files\HashUtils</Filter>
     </ClInclude>
+    <ClInclude Include="FTrianglePointUVCalculator.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
+    <ClInclude Include="FTrianglePointUVLink.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
+    </ClInclude>
+    <ClInclude Include="FTrianglePointUVLinkContainer.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
+    </ClInclude>
+    <ClInclude Include="FTrianglePointUVProducer.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldTextureFracturingMachine.h">
+      <Filter>Header Files\FracturableTriangle\FracturingMachines\World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1564,6 +1585,18 @@
     </ClCompile>
     <ClCompile Include="HashUtils.cpp">
       <Filter>Source Files\HashUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="FTrianglePointUVCalculator.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FTrianglePointUVLinkContainer.cpp">
+      <Filter>Source Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
+    </ClCompile>
+    <ClCompile Include="FTrianglePointUVProducer.cpp">
+      <Filter>Source Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldTextureFracturingMachine.cpp">
+      <Filter>Source Files\FracturableTriangle\FracturingMachines\World</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

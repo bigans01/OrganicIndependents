@@ -82,8 +82,7 @@ void FTriangleBlueprintTracer::runLineTracing()
 		)
 
 		{
-			//swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
-			swapValuesDoublePoint(&tracingKeyA, &tracingKeyB, &tracingPointA.point, &tracingPointB.point);
+			swapKeysAndPoints(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
 		}
 
 		// Localization shouldn't be needed; the FTriangleBlueprintTracer class assumes that the X/Y/Z values of any point it is operating on

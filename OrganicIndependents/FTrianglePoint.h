@@ -50,6 +50,9 @@ class FTrianglePoint
 
 		FTrianglePointType pointType = FTrianglePointType::NOVAL;	// must be set by constructor #2 above
 		DoublePoint point;	// the actual point contained within this class
+		bool originalPointFlag = false;	// indicates whether or not this instance of 
+										// FTrianglePoint is the original point of an FTriangle.
+													
 		float fTextureU = 0.0f;	// optional: used when using an FTriangle for fracturing a texture; coincides with the usage of 
 								// of FTrianglePointType::ORIGINAL.
 		float fTextureV = 0.0f;	// ""

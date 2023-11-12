@@ -9,6 +9,7 @@
 #include "WorldFracturingMachine.h"
 #include "BlueprintFracturingMachine.h"
 #include "OREFracturingMachine.h"
+#include "WorldTextureFracturingMachine.h"
 #include "OutputDirector.h"
 #include "FTriangleUtils.h"
 
@@ -110,11 +111,13 @@ class FTriangle
 			fracturePoints[1] = in_fracturePoint1;	// "" 
 			fracturePoints[2] = in_fracturePoint2;	// ""
 
+			/*
 			// Remember, all input points become ORIGINAL (so that we know what points to do the UV scaling/calculations from)
 			for (int x = 0; x < 3; x++)
 			{
 				fracturePoints[x].pointType = FTrianglePointType::ORIGINAL;
 			}
+			*/
 
 			triangleOriginGrid = in_originType;	// the type of the grid that the FTriangle originated in.
 			fractureEmptyNormal = in_fractureEmptyNormal;	// the empty normal that was determined for this FTriangle. This should be 

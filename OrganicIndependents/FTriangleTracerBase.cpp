@@ -1,34 +1,18 @@
 #include "stdafx.h"
 #include "FTriangleTracerBase.h"
 
-void FTriangleTracerBase::swapValues(EnclaveKeyDef::EnclaveKey* in_keyA,
+void FTriangleTracerBase::swapKeysAndPoints(EnclaveKeyDef::EnclaveKey* in_keyA,
 	EnclaveKeyDef::EnclaveKey* in_keyB,
-	ECBPolyPoint* in_pointA,
-	ECBPolyPoint* in_pointB)
+	FTrianglePoint* in_pointA,
+	FTrianglePoint* in_pointB)
 {
 	// swap keys
 	EnclaveKeyDef::EnclaveKey tempKeyA = *in_keyA;
 	*in_keyA = *in_keyB;
 	*in_keyB = tempKeyA;
 
-	// swap points
-	ECBPolyPoint tempPointA = *in_pointA;
-	*in_pointA = *in_pointB;
-	*in_pointB = tempPointA;
-}
-
-void FTriangleTracerBase::swapValuesDoublePoint(EnclaveKeyDef::EnclaveKey* in_keyA,
-	EnclaveKeyDef::EnclaveKey* in_keyB,
-	DoublePoint* in_pointA,
-	DoublePoint* in_pointB)
-{
-	// swap keys
-	EnclaveKeyDef::EnclaveKey tempKeyA = *in_keyA;
-	*in_keyA = *in_keyB;
-	*in_keyB = tempKeyA;
-
-	// swap points
-	DoublePoint tempPointA = *in_pointA;
+	// swap points 
+	FTrianglePoint tempPointA = *in_pointA;
 	*in_pointA = *in_pointB;
 	*in_pointB = tempPointA;
 }

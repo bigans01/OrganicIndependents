@@ -300,6 +300,10 @@
     <ClInclude Include="FTriangleOutput.h" />
     <ClInclude Include="FTrianglePoint.h" />
     <ClInclude Include="FTrianglePointType.h" />
+    <ClInclude Include="FTrianglePointUVCalculator.h" />
+    <ClInclude Include="FTrianglePointUVLink.h" />
+    <ClInclude Include="FTrianglePointUVLinkContainer.h" />
+    <ClInclude Include="FTrianglePointUVProducer.h" />
     <ClInclude Include="FTriangleProductionStager.h" />
     <ClInclude Include="FTriangleReverseTranslationMode.h" />
     <ClInclude Include="FTriangleTracerBase.h" />
@@ -449,6 +453,7 @@
     <ClInclude Include="UVTriangleCoords.h" />
     <ClInclude Include="Vec3Pair.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
+    <ClInclude Include="WorldTextureFracturingMachine.h" />
     <ClInclude Include="XDimLineScanner.h" />
     <ClInclude Include="XFRayCastQuad.h" />
     <ClInclude Include="XSliceLine.h" />
@@ -521,6 +526,9 @@
     <ClCompile Include="FTriangleLineResolutionMachine.cpp" />
     <ClCompile Include="FTriangleLineResolverBase.cpp" />
     <ClCompile Include="FTriangleORETracer.cpp" />
+    <ClCompile Include="FTrianglePointUVCalculator.cpp" />
+    <ClCompile Include="FTrianglePointUVLinkContainer.cpp" />
+    <ClCompile Include="FTrianglePointUVProducer.cpp" />
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
@@ -592,6 +600,7 @@
     <ClCompile Include="UVCoordProducerECBPoly.cpp" />
     <ClCompile Include="UVCoordProducerEnclaveTriangle.cpp" />
     <ClCompile Include="WorldFracturingMachine.cpp" />
+    <ClCompile Include="WorldTextureFracturingMachine.cpp" />
     <ClCompile Include="XDimLineScanner.cpp" />
     <ClCompile Include="XFRayCastQuad.cpp" />
     <ClCompile Include="XSliceLine.cpp" />

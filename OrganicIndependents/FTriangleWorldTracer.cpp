@@ -135,8 +135,7 @@ void FTriangleWorldTracer::runLineTracing()
 				FTriangleUtils::convertDoubleToECBPolyPoint(tracingPointB.point))
 		)
 		{
-			//swapValues(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
-			swapValuesDoublePoint(&tracingKeyA, &tracingKeyB, &tracingPointA.point, &tracingPointB.point);
+			swapKeysAndPoints(&tracingKeyA, &tracingKeyB, &tracingPointA, &tracingPointB);
 		}
 
 		// The values to use for the currentTracer, will have to come from the LineLocalizer.
@@ -163,6 +162,7 @@ void FTriangleWorldTracer::runLineTracing()
 		// to put in at least one FTriangleLine. Therefore, we will check if the run is complete once
 		// we are already in the while loop, and not before. If checkIfRunComplete does return true
 		// on the very first iteration, then we will at least put set of data in for an FTriangleLine.
+		int currentLineIteration = 0;
 		while (currentTracer.shouldTraceStop == false)
 		{
 			currentTracer.checkIfRunComplete();
@@ -187,8 +187,34 @@ void FTriangleWorldTracer::runLineTracing()
 			ECBPolyPoint revertedBeginPoint = newLocalizer.getRevertedPoint(FTriangleUtils::convertDoubleToECBPolyPoint(currentBeginPoint.point));
 			ECBPolyPoint revertedEndPoint = newLocalizer.getRevertedPoint(FTriangleUtils::convertDoubleToECBPolyPoint(currentEndPoint.point));
 
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
-			uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
+			// UV for begin point: only attempt an insert if we are on the very iteration; otherwise, proceed as normal.
+			if (currentLineIteration == 0)
+			{
+				uniquePointsContainerRef->insertFTrianglePointAndFlagAsUVOrigin(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR),
+																							  currentTracer.beginPoint.fTextureU,
+																							  currentTracer.beginPoint.fTextureV);
+			}
+			else
+			{
+				uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
+			}
+
+			// UV for end point: only attempt to do this if we have confirmed this is the last iteration (i.e, currentTracer.shouldTraceStop == true)
+			if (currentTracer.shouldTraceStop)
+			{
+				uniquePointsContainerRef->insertFTrianglePointAndFlagAsUVOrigin(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR),
+																				currentTracer.endPoint.fTextureU,
+																				currentTracer.endPoint.fTextureV);
+			}
+			else
+			{
+				uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
+			}
+
+
+
+			//uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedBeginPoint, FTrianglePointType::EXTERIOR));
+			//uniquePointsContainerRef->insertFTrianglePoint(FTrianglePoint(revertedEndPoint, FTrianglePointType::EXTERIOR));
 			
 			//FTriangleLine newRevertedLine(revertedBeginPoint, revertedEndPoint, FTriangleLineType::EXTERIOR);
 
@@ -312,6 +338,8 @@ void FTriangleWorldTracer::runLineTracing()
 			}
 
 			currentTracer.traverseLineOnce();
+
+			currentLineIteration++;
 		}
 
 		// once the current line has been finished, run the application logic. The application logic 

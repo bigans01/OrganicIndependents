@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "WorldFracturingMachine.h"
+#include "WorldTextureFracturingMachine.h"
 
-void WorldFracturingMachine::runFracturing()
+void WorldTextureFracturingMachine::runFracturing()
 {
 	/*
-	std::cout << "(WorldFracturingMachine) !!! Start of runFracturing(). " << std::endl;
+	std::cout << "(WorldTextureFracturingMachine) !!! Start of runFracturing(). " << std::endl;
 	std::cout << "Points are: " << std::endl;
 	for (int x = 0; x < 3; x++)
 	{
@@ -21,10 +21,30 @@ void WorldFracturingMachine::runFracturing()
 	translateTriangleByBlueprintKeys();		// Step 3: do any required translations.
 	loadLocalizedPoints();					// Step 4: Once we have translated, load the DoublePoints into ECBPolyPoints
 											// (don't worry about double to float conversion, as the float values should be very small, and far less than 80000.00~, where the precision loss begins to occur)
-	runWorldTracing();						// Step 5: create exterior FTriangleLines.
-	
+
+	std::cout << "!!! Checking U/V values: " << std::endl;
+	for (int x = 0; x < 3; x++)
+	{
+		std::cout << "U/V for index at " << x << ": " << std::endl;
+		std::cout << "U: " << localizedFTrianglePoints[x].fTextureU << " | V: " << localizedFTrianglePoints[x].fTextureV << std::endl;
+		
+		//localizedFTrianglePoints[x].
+	}
+
+	// If we were doing texture fracturing, we would have to "mark" the FTrianglePoints that were origins, here, before doing runWorldTracing, and insert them into the
+	// unique point container. 
+
+	runWorldTracing();						// Step 5: create exterior FTriangleLines; unlike the related WorldFracturingMachine,
+											// we will actually need to utiize the UV values of FTrianglePoint objects during the fracturing process
+											// (because we need to keep track of the UV coords in a fractured texture)
+
 	buildAndRunFRayCasters();			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
 	//buildAndRunFRayCasters(originFTriangleKeys);			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
+
+	fracturerPoints.printOriginPoints();
+
+
+	/*
 	runRaycastCollisionResolver();				// Step 7: (NEW step): check for any situations where a External-InteriorRayCast occurs, and mitigate it.
 
 	buildAndRunFLineScanners();				// Step 8: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
@@ -36,13 +56,14 @@ void WorldFracturingMachine::runFracturing()
 											// transation mode.
 
 	buildWorldMachineTriangleContainers();	// Step 11: build the FTriangleContainers, according to what this class specifies.
+	*/
 
 	// when everything is done, we need to translate back.
 
-	//std::cout << "(WorldFracturingMachine) !!! End of runFracturing(). " << std::endl;
+	//std::cout << "(WorldTextureFracturingMachine) !!! End of runFracturing(). " << std::endl;
 }
 
-void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
+void WorldTextureFracturingMachine::determineUncalibratedBlueprintKeys()
 {
 	for (int x = 0; x < 3; x++)
 	{
@@ -50,7 +71,7 @@ void WorldFracturingMachine::determineUncalibratedBlueprintKeys()
 	}
 }
 
-void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
+void WorldTextureFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 {
 	// Primer: this function determines the appropriate Blueprint key sets to use for FTriangleLine tracing and scanning.
 
@@ -63,29 +84,29 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 
 
 	FTriangleKeySetCalibrator pairA(FTriangleType::WORLD);
-	pairA.initialize(triangleKeysCopy[0], 
-					 triangleKeysCopy[1], 
-					 originFTrianglePoints[0].point, 
-					 originFTrianglePoints[1].point, 
-					 originFTrianglePoints[2].point);
+	pairA.initialize(triangleKeysCopy[0],
+		triangleKeysCopy[1],
+		originFTrianglePoints[0].point,
+		originFTrianglePoints[1].point,
+		originFTrianglePoints[2].point);
 	pairA.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[0] = pairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairB(FTriangleType::WORLD);
-	pairB.initialize(triangleKeysCopy[1], 
-					triangleKeysCopy[2], 
-					originFTrianglePoints[1].point, 
-					originFTrianglePoints[2].point, 
-					originFTrianglePoints[0].point);
+	pairB.initialize(triangleKeysCopy[1],
+		triangleKeysCopy[2],
+		originFTrianglePoints[1].point,
+		originFTrianglePoints[2].point,
+		originFTrianglePoints[0].point);
 	pairB.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[1] = pairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator pairC(FTriangleType::WORLD);
-	pairC.initialize(triangleKeysCopy[2], 
-					triangleKeysCopy[0], 
-					originFTrianglePoints[2].point, 
-					originFTrianglePoints[0].point, 
-					originFTrianglePoints[1].point);
+	pairC.initialize(triangleKeysCopy[2],
+		triangleKeysCopy[0],
+		originFTrianglePoints[2].point,
+		originFTrianglePoints[0].point,
+		originFTrianglePoints[1].point);
 	pairC.calibrate(FKeyCalibrationMode::FTRIANGLE_LINE);
 	originFTriangleLineKeypairs[2] = pairC.getBeginAndEndKeys();
 
@@ -98,29 +119,29 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 	// Once key pairs for the FTriangleLines have been established, do the same for the scanningKeys.
 
 	FTriangleKeySetCalibrator scanPairA(FTriangleType::WORLD);
-	scanPairA.initialize(triangleKeysCopy[0], 
-						triangleKeysCopy[1], 
-						originFTrianglePoints[0].point, 
-						originFTrianglePoints[1].point, 
-						originFTrianglePoints[2].point);
+	scanPairA.initialize(triangleKeysCopy[0],
+		triangleKeysCopy[1],
+		originFTrianglePoints[0].point,
+		originFTrianglePoints[1].point,
+		originFTrianglePoints[2].point);
 	scanPairA.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[0] = scanPairA.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairB(FTriangleType::WORLD);
-	scanPairB.initialize(triangleKeysCopy[1], 
-						triangleKeysCopy[2], 
-						originFTrianglePoints[1].point, 
-						originFTrianglePoints[2].point, 
-						originFTrianglePoints[0].point);
+	scanPairB.initialize(triangleKeysCopy[1],
+		triangleKeysCopy[2],
+		originFTrianglePoints[1].point,
+		originFTrianglePoints[2].point,
+		originFTrianglePoints[0].point);
 	scanPairB.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[1] = scanPairB.getBeginAndEndKeys();
 
 	FTriangleKeySetCalibrator scanPairC(FTriangleType::WORLD);
-	scanPairC.initialize(triangleKeysCopy[2], 
-						triangleKeysCopy[0], 
-						originFTrianglePoints[2].point, 
-						originFTrianglePoints[0].point, 
-						originFTrianglePoints[1].point);
+	scanPairC.initialize(triangleKeysCopy[2],
+		triangleKeysCopy[0],
+		originFTrianglePoints[2].point,
+		originFTrianglePoints[0].point,
+		originFTrianglePoints[1].point);
 	scanPairC.calibrate(FKeyCalibrationMode::FTRIANGLE_SCANNER);
 	scanningKeypairs[2] = scanPairC.getBeginAndEndKeys();
 
@@ -131,8 +152,8 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 
 	// Below: FTDEBUG (uncomment when needed)
 	/*
-	std::cout << "(WorldFracturingMachine::calibrateOriginBlueprintKeys) -> finished calibrating blueprint keys; keys are: " << std::endl;
-	
+	std::cout << "(WorldTextureFracturingMachine::calibrateOriginBlueprintKeys) -> finished calibrating blueprint keys; keys are: " << std::endl;
+
 	std::cout << "FTriangle line 0: " << std::endl;
 	std::cout << "point A: "; originFTrianglePoints[0].printPointCoords(); std::cout << std::endl;
 	std::cout << "point B: "; originFTrianglePoints[1].printPointCoords(); std::cout << std::endl;
@@ -149,11 +170,11 @@ void WorldFracturingMachine::calibrateFTriangleLineAndScannerBlueprintKeys()
 	std::cout << "point A: "; originFTrianglePoints[2].printPointCoords(); std::cout << std::endl;
 	std::cout << "point B: "; originFTrianglePoints[0].printPointCoords(); std::cout << std::endl;
 	std::cout << "point A key: "; originFTriangleLineKeypairs[2].keyA.printKey(); std::cout << std::endl;
-	std::cout << "point B key: "; originFTriangleLineKeypairs[2].keyB.printKey(); std::cout << std::endl;	
+	std::cout << "point B key: "; originFTriangleLineKeypairs[2].keyB.printKey(); std::cout << std::endl;
 	*/
 }
 
-void WorldFracturingMachine::translateTriangleByBlueprintKeys()
+void WorldTextureFracturingMachine::translateTriangleByBlueprintKeys()
 {
 	// the sets for x/y/z that will contain the min.
 	std::set<int> keyedXValues;
@@ -208,7 +229,7 @@ void WorldFracturingMachine::translateTriangleByBlueprintKeys()
 	//std::cin >> doneTranslate;
 }
 
-void WorldFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKey in_adjustingKey)
+void WorldTextureFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKey in_adjustingKey)
 {
 	for (int x = 0; x < 3; x++)
 	{
@@ -222,7 +243,7 @@ void WorldFracturingMachine::adjustBlueprintKeysByValue(EnclaveKeyDef::EnclaveKe
 	}
 }
 
-void WorldFracturingMachine::adjustPointsByValue(DoublePoint in_adjustingPoint)
+void WorldTextureFracturingMachine::adjustPointsByValue(DoublePoint in_adjustingPoint)
 {
 	for (int x = 0; x < 3; x++)
 	{
@@ -231,36 +252,44 @@ void WorldFracturingMachine::adjustPointsByValue(DoublePoint in_adjustingPoint)
 	}
 }
 
-void WorldFracturingMachine::loadLocalizedPoints()
+void WorldTextureFracturingMachine::loadLocalizedPoints()
 {
 	for (int x = 0; x < 3; x++)
 	{
+		/*
+		localizedFTrianglePoints[x].point.x = originFTrianglePoints[x].point.x;
+		localizedFTrianglePoints[x].point.y = originFTrianglePoints[x].point.y;
+		localizedFTrianglePoints[x].point.z = originFTrianglePoints[x].point.z;
+		localizedFTrianglePoints[x].fTextureU = originFTrianglePoints[x].fTextureU;
+		localizedFTrianglePoints[x].fTextureV = originFTrianglePoints[x].fTextureV;
+		*/
+
 		localizedFTrianglePoints[x] = originFTrianglePoints[x];
 	}
 }
 
-void WorldFracturingMachine::reverseTranslateWorldStagerLines()
+void WorldTextureFracturingMachine::reverseTranslateWorldStagerLines()
 {
 	for (auto& currentStager : stagerMap)
 	{
 		EnclaveKeyDef::EnclaveKey currentTranslationKey;
 		switch (translationMode)
 		{
-			case FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE:
-			{
-				// when in ABSOLUTE mode, all points will be translated by the 
-				// reverse value of the translationKey;
-				currentTranslationKey = translationKey.getInvertedKey();
-				break;
-			}
-			case FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE:
-			{
-				// when in LOCALIZED mode, all points will be translated by the
-				// reverse value of the key that the maps to the stager.
-				EnclaveKeyDef::EnclaveKey currentMapKeyCopy = currentStager.first;
-				currentTranslationKey = currentMapKeyCopy.getInvertedKey();
-				break;
-			}
+		case FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE:
+		{
+			// when in ABSOLUTE mode, all points will be translated by the 
+			// reverse value of the translationKey;
+			currentTranslationKey = translationKey.getInvertedKey();
+			break;
+		}
+		case FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE:
+		{
+			// when in LOCALIZED mode, all points will be translated by the
+			// reverse value of the key that the maps to the stager.
+			EnclaveKeyDef::EnclaveKey currentMapKeyCopy = currentStager.first;
+			currentTranslationKey = currentMapKeyCopy.getInvertedKey();
+			break;
+		}
 		}
 
 		// Below: FTDEBUG (uncomment when needed.
@@ -268,7 +297,7 @@ void WorldFracturingMachine::reverseTranslateWorldStagerLines()
 		std::cout << "Reverse translation key is: ";
 		currentTranslationKey.printKey();
 		std::cout << std::endl;
-			
+
 		// with the key determined, do the translation.
 		EnclaveKeyDef::EnclaveKey debugKeyOutput = currentStager.first;
 		std::cout << "Translating lines for key at: "; debugKeyOutput.printKey();
@@ -284,7 +313,7 @@ void WorldFracturingMachine::reverseTranslateWorldStagerLines()
 	//std::cin >> translationWait;
 }
 
-void WorldFracturingMachine::buildWorldMachineTriangleContainers()
+void WorldTextureFracturingMachine::buildWorldMachineTriangleContainers()
 {
 	// get the current key of each mapped stager;
 	// we will need to apply the inverse of the translationKey to this, in order to determine
@@ -292,7 +321,7 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 	//
 	// If a container needs to be deleted, put into the container containerRemovalSet.
 	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> containerRemovalSet;
-	for (auto& currentStager: stagerMap)
+	for (auto& currentStager : stagerMap)
 	{
 		EnclaveKeyDef::EnclaveKey currentStagerKey = currentStager.first;
 
@@ -319,7 +348,7 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 			(*ftfOutputRef)[currentStagerKey].insertConstructionLines(currentStager.second.fetchStagerLines());
 
 
-			// Remember: the WorldFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::BLUEPRINT.
+			// Remember: the WorldTextureFracturingMachine must produce FTriangleOutput instances that have a type of FTriangleType::BLUEPRINT.
 			(*ftfOutputRef)[currentStagerKey].produceFTriangles(FTriangleType::BLUEPRINT,
 				originFTriangleEmptynormal,
 				originBoundaryOrientation,
@@ -366,7 +395,7 @@ void WorldFracturingMachine::buildWorldMachineTriangleContainers()
 	//std::cin >> buildDone;
 }
 
-void WorldFracturingMachine::runWorldTracing()
+void WorldTextureFracturingMachine::runWorldTracing()
 {
 	FTriangleWorldTracer worldTracer;
 	//worldTracer.initialize(&stagerMap, &fracturerPoints, originFTriangleLineKeypairs, originFTrianglePoints);
