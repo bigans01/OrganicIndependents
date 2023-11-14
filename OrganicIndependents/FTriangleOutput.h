@@ -92,7 +92,7 @@ class FTriangleOutput
 			for (int x = 0; x < 3; x++)
 			{
 				std::cout << " [" << x << "]: ";
-				//fracturePoints[x].printPointCoords();
+				fracturePoints[x].point.printPointCoords();
 			}
 			std::cout << std::endl;
 		}

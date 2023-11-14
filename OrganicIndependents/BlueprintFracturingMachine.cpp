@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "BlueprintFracturingMachine.h"
 
+void BlueprintFracturingMachine::setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs)
+{
+
+}
+
 void BlueprintFracturingMachine::runFracturing()
 {
 	/*

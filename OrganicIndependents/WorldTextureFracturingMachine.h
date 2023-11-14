@@ -31,6 +31,7 @@ All FTriangleOutput instances produced by this must have an FTriangleType::BLUEP
 class WorldTextureFracturingMachine : public FTriangleFracturerBase
 {
 	public:
+		void setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs);
 		void runFracturing();
 	private:
 		void determineUncalibratedBlueprintKeys();	// Step 1: find the uncalibrated blueprint keys.

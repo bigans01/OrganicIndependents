@@ -25,6 +25,7 @@ All FTriangleOutput instances produced by this must have an FTriangleType::BLUEP
 class WorldFracturingMachine : public FTriangleFracturerBase
 {
 	public:
+		void setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs);
 		void runFracturing();
 	private:
 		void determineUncalibratedBlueprintKeys();	// Step 1: find the uncalibrated blueprint keys.
@@ -56,7 +57,9 @@ class WorldFracturingMachine : public FTriangleFracturerBase
 													// respectively, this key will be -1, -2, -3. Its value is determined by the function WorldFracturingMachine::translateTriangleByBlueprintKeys().
 
 
-		FTriangleReverseTranslationMode translationMode = FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE;	// the value used by the function reverseTranslateStagerLines()
+		// ECBPOLY_FIX
+		//FTriangleReverseTranslationMode translationMode = FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE;	// the value used by the function reverseTranslateStagerLines()
+		FTriangleReverseTranslationMode translationMode = FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE;	// the value used by the function reverseTranslateStagerLines()
 																										// to determine the method of reverse translation.
 };
 

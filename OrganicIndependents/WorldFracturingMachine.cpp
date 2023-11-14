@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "WorldFracturingMachine.h"
 
+void WorldFracturingMachine::setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs)
+{
+	translationMode = in_translationModeToRunAs;
+}
+
 void WorldFracturingMachine::runFracturing()
 {
 	/*

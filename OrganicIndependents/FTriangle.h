@@ -146,6 +146,12 @@ class FTriangle
 			fractureMaterial = in_outputTriangle.outputTriangleMaterial;
 		};
 
+		void setMachineTranslationMode(FTriangleReverseTranslationMode in_translationModeToSet);	// must be called before fracture, if choosing to alter the mode. Only works for WORLD-type fracturers.
+																									//
+																									// Using a value of FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE will cause all outputs
+																									// of the WORLD-type FTriangle will cause all outputs to be of a range between 0 and 32.0f
+																									//
+																									// A value of FTriangleReverseTranslationMode::ABSOLUTE_TRANSLATE will cause the outputs to be in world space.
 		void fracture();	// fractures the FTriangle down into the next level; 
 							// i.e., fracture an FTriangle of the type WORLD, into a bunch of FTriangleOutput instances that are of the type BLUEPRINT.
 
@@ -156,6 +162,13 @@ class FTriangle
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> getUnresolvedOutputs();
 		OutputDirector outputWriter;	// used to write FTriangle output to std::cout, or save it for later use/analysis.
 	private:
+		// ECBPOLY_FIX
+		FTriangleReverseTranslationMode targetTranslationMode = FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE;	// passed to all FTriangleFracturerBase-derived objects,
+																														// but only really utilized by WorldTextureFracturingMachine and 
+																														// WorldFracturingMachine.
+																														// A value of LOCALIZED_TRANSLATE must be used when producing ECBPolys, so that they
+																														// use localized coordinates (absolute coordinates are also an option, but shouldn't be the default)
+
 		FTrianglePoint fracturePoints[3];		// the original points of the FTriangle, before anything is done; these values 
 											// may or may not get translated.
 											

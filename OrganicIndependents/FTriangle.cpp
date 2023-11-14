@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "FTriangle.h"
 
+void FTriangle::setMachineTranslationMode(FTriangleReverseTranslationMode in_translationModeToSet)
+{
+	targetTranslationMode = in_translationModeToSet;
+}
+
 void FTriangle::fracture()
 {
 	determineOutputLevel();		// first, determine the output level.
@@ -42,6 +47,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureMaterial,
 														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->setPointTranslationMode(targetTranslationMode);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
@@ -64,6 +70,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureMaterial,
 														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->setPointTranslationMode(targetTranslationMode);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
@@ -85,6 +92,7 @@ void FTriangle::setupAndRunFracturerMachine()
 														fractureMaterial,
 														&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->setPointTranslationMode(targetTranslationMode);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
 
@@ -107,6 +115,7 @@ void FTriangle::setupAndRunFracturerMachine()
 				fractureMaterial,
 				&outputWriter);
 			fracturerMachine->setOutputRef(&outputContainers);
+			fracturerMachine->setPointTranslationMode(targetTranslationMode);
 			fracturerMachine->runFracturing();
 			unresolvedOutputs = fracturerMachine->incalculableKeys;
 

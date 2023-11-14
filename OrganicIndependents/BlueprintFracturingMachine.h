@@ -23,6 +23,7 @@ All FTriangleOutput instances produced by this must have an FTriangleType::ORE.
 class BlueprintFracturingMachine : public FTriangleFracturerBase
 {
 	public:
+		void setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs);
 		void runFracturing();
 	private:
 		void determineUncalibratedOREKeys();	// Step 1:  find the uncalibrated ORE keys.

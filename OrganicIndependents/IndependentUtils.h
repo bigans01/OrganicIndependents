@@ -190,9 +190,14 @@ class IndependentUtils
 		static ECBPoly buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enclaveTriangle, 
 			                                           EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
 			                                           EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation);
+
 		static ECBPolyPoint translateEnclavePointToWorldSpace(ECBPolyPoint in_pointToTranslate,
 															EnclaveKeyDef::EnclaveKey in_blueprintKeyForTranslation,
 															EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation);
+
+		static ECBPolyPoint translateEnclavePointToBlueprintLocalSpace(ECBPolyPoint in_pointToTranslate,			// Used by IndependentUtils::buildECBPolyFromEnclaveTriangle
+															EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation);		// to translate ECBPoly objects that come from an ORE, into localized blueprint space.
+
 		static ECBPolyPoint convertEnclaveBlockVertexToFloats(EnclaveBlockVertex in_vertex);
 		static ECBPolyPointTri convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri);
 		static ECBPolyPointTri combineClampedCoordsWithPrecise(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);

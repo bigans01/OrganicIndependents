@@ -10466,9 +10466,14 @@ ECBPoly IndependentUtils::buildECBPolyFromEnclaveTriangle(EnclaveTriangle in_enc
 	//translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[1].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
 	//translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.lineArray[2].pointA, in_blueprintKeyForTranslation, in_oreKeyForTranslation);
 
-	translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[0], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
-	translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[1], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
-	translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[2], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint0 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[0], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint1 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[1], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+	//translatedPoint2 = translateEnclavePointToWorldSpace(in_enclaveTriangle.points[2], in_blueprintKeyForTranslation, in_oreKeyForTranslation);
+
+	// ECBPOLY_FIX (new function goes here)
+	translatedPoint0 = translateEnclavePointToBlueprintLocalSpace(in_enclaveTriangle.points[0], in_oreKeyForTranslation);
+	translatedPoint1 = translateEnclavePointToBlueprintLocalSpace(in_enclaveTriangle.points[1], in_oreKeyForTranslation);
+	translatedPoint2 = translateEnclavePointToBlueprintLocalSpace(in_enclaveTriangle.points[2], in_oreKeyForTranslation);
 
 	ECBPolyLine polyLine0, polyLine1, polyLine2;
 
@@ -10508,6 +10513,16 @@ ECBPolyPoint IndependentUtils::translateEnclavePointToWorldSpace(ECBPolyPoint in
 	translatedPoint.x = (in_blueprintKeyForTranslation.x*32.0f) + (in_oreKeyForTranslation.x*4.0f) + in_pointToTranslate.x;
 	translatedPoint.y = (in_blueprintKeyForTranslation.y*32.0f) + (in_oreKeyForTranslation.y*4.0f) + in_pointToTranslate.y;
 	translatedPoint.z = (in_blueprintKeyForTranslation.z*32.0f) + (in_oreKeyForTranslation.z*4.0f) + in_pointToTranslate.z;
+	return translatedPoint;
+}
+
+ECBPolyPoint IndependentUtils::translateEnclavePointToBlueprintLocalSpace(ECBPolyPoint in_pointToTranslate,
+	EnclaveKeyDef::EnclaveKey in_oreKeyForTranslation)
+{
+	ECBPolyPoint translatedPoint;
+	translatedPoint.x = (in_oreKeyForTranslation.x*4.0f) + in_pointToTranslate.x;
+	translatedPoint.y = (in_oreKeyForTranslation.y*4.0f) + in_pointToTranslate.y;
+	translatedPoint.z = (in_oreKeyForTranslation.z*4.0f) + in_pointToTranslate.z;
 	return translatedPoint;
 }
 

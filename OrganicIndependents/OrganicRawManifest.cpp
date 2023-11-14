@@ -276,14 +276,19 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 			//std::cout << "point 1: " << polysBegin->second.ecbPolyPoints[1].pointA.x << ", " << polysBegin->second.ecbPolyPoints[1].pointA.y << ", " << polysBegin->second.ecbPolyPoints[1].pointA.z << std::endl;
 			//std::cout << "point 2: " << polysBegin->second.ecbPolyPoints[2].pointA.x << ", " << polysBegin->second.ecbPolyPoints[2].pointA.y << ", " << polysBegin->second.ecbPolyPoints[2].pointA.z << std::endl;
 
-			// UPDATE 9
+			// For the below: 
+			//
+			// All ECBPoly instances come from an FTriangle that runs in  WORLD-based space, 
+			// and produces it's coordinates in FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE;
+			// therefore, all values range between 0 and 32.0f -- so we must a zeroed-out EnclaveKey, 
+			// to get the texture coordinates.
 			UVCoordProducerECBPoly ecbPolyCoords(polysBegin->second.materialID,
 				polysBegin->second.ecbPolyPoints[0],
 				polysBegin->second.ecbPolyPoints[1],
 				polysBegin->second.ecbPolyPoints[2],
 				//texturesRef->terrainAtlas.get(),
 				atlasMapRef,
-				0, in_collectionKey);
+				0, EnclaveKeyDef::EnclaveKey(0,0,0));	// ECBPOLY_FIX (see change to EnclaveKey argument here, it's initialized to 0,0,0., versus using in_collectionKey.)
 
 			GLfloat vertexAttribData[6];
 			UVTriangleCoords testCoords = ecbPolyCoords.getCoords();
@@ -300,9 +305,27 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 			for (int b = 0; b < 3; b++)		// cycle through all 3 points; index 0 = point A, 1 = point B, 2 = point C
 			{
 				// UPDATE 10
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z;
+
+				// ECBPOLY_FIX
+
+				// As of circa 11/14/2023, ECBPoly instances are constructed from a WORLD-based FTriangle,
+				// that is running in FTriangleReverseTranslationMode::LOCALIZED_TRANSLATE for it's translation mode;
+				// i.e, it no longer uses the old mode where the FTriangleOutput objects (which are used to make the ECBPoly objects)
+				// are translated to absolute space. In other words, the FTriangleOutput objects are now localized.
+				//
+				// This decision allows the option to send the ECBPoly coordinates as localized,
+				// or make them absolute (adding the result of multiplying by the blueprint key dimensions by 32.0f)
+				//
+				// The first 3 lines below, will send the localized points of the ECBPoly to a shader...
+				//worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x;
+				//worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y;
+				//worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z;
+
+				// ...otherwise, if the shader expects absolute coordinates, we will first multiply by the blueprint key
+				// before storing the data for rendering.
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x + in_collectionKey.x * 32.0f;
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y + in_collectionKey.y * 32.0f;
+				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z + in_collectionKey.z * 32.0f;
 
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.x;
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.y;
@@ -562,6 +585,9 @@ std::vector<TerrainTriangle> OrganicRawManifest::produceTerrainTrianglesFromOREB
 			{
 				EnclaveBlockVertexTri currentVertexTri = triangleProducer.getTrianglePointsAndIterateToNext();
 				ECBPolyPointTri currentPolyPointTri = IndependentUtils::convertEnclaveBlockVertexesToFloats(currentVertexTri);
+
+				// Note: the call to IndependentUtils::combineClampedCoordsWithPrecise below should only be used if we expect to send
+				// ECBPoly data in absoloute world coordinates to the shader (not blueprint-localized)
 				ECBPolyPointTri preciseCoords = IndependentUtils::combineClampedCoordsWithPrecise(currentPolyPointTri, blockKey, in_oreKey, in_blueprintKey);
 				testCoords = textureCoordProducer.getUVPointsAndIterateToNext();
 

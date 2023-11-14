@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "OREFracturingMachine.h"
 
+void OREFracturingMachine::setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs)
+{
+
+}
+
 void OREFracturingMachine::runFracturing()
 {
 	/*

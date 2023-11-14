@@ -10,6 +10,7 @@
 class OREFracturingMachine : public FTriangleFracturerBase
 {
 	public:
+		void setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs);
 		void runFracturing();
 	private:
 		void determineUncalibratedBlockKeys();

@@ -40,7 +40,10 @@ class FTriangleFracturerBase
 		void printFracturerPoints();
 
 		// required virtual functions
+		virtual void setPointTranslationMode(FTriangleReverseTranslationMode in_translationModeToRunAs) = 0;	// only works with WORLD based fracturers; must be called before runFracturing() is called,
+																												// if wishing to use the desired value.
 		virtual void runFracturing() = 0;
+
 	protected:
 		friend class FTriangle;
 
