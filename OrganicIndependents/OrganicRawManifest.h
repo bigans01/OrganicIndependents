@@ -111,14 +111,20 @@ class OrganicRawManifest
 
 		int totalPolys = 0;	// for blueprint polys only
 
-		void initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, OrganicVtxColorDict* in_organicVtxColorDictRef, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_collectionKey, std::mutex* in_mutexRef, AtlasMap* in_atlasMapRef);	// set up the raw manifest (required before loading, obviously)
-		//std::map<int, ECBPoly>
+		void initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, 
+								OrganicVtxColorDict* in_organicVtxColorDictRef, 
+								EnclaveKeyDef::EnclaveKey in_enclaveKey, 
+								EnclaveKeyDef::EnclaveKey in_collectionKey, 
+								std::mutex* in_mutexRef, 
+								AtlasMap* in_atlasMapRef);	// set up the raw manifest (required before loading, obviously)
+
 		void initializeRawManifestFromBlueprintPolys(EnclaveFractureResultsMap* in_fractureResultsMapRef,
 			std::map<int, ECBPoly>* in_polyMapRef,
 			OrganicVtxColorDict* in_organicVtxColorDictRef,
 			std::mutex* in_mutexRef,
 			EnclaveKeyDef::EnclaveKey in_collectionKey,
 			AtlasMap* in_atlasMapRef);
+
 		void loadDataFromOrganicRawEnclave();
 		void loadDataFromOrganicRawEnclaveDebug();
 		void allocateArrays(int in_numberOfVertexFloats, int in_numberOfColorFloats, int in_numberOfTextureFloats);

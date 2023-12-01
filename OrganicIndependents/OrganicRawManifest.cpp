@@ -181,7 +181,12 @@ void OrganicRawManifest::loadDataFromOrganicRawEnclaveDebug()
 	}
 }
 
-void OrganicRawManifest::initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, OrganicVtxColorDict* in_organicVtxColorDictRef, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_collectionKey, std::mutex* in_mutexRef, AtlasMap* in_atlasMapRef)
+void OrganicRawManifest::initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, 
+											OrganicVtxColorDict* in_organicVtxColorDictRef, 
+											EnclaveKeyDef::EnclaveKey in_enclaveKey, 
+											EnclaveKeyDef::EnclaveKey in_collectionKey, 
+											std::mutex* in_mutexRef, 
+											AtlasMap* in_atlasMapRef)
 {
 	rawEnclaveRef = in_rawEnclaveRef;
 	vtxColorsRef = in_organicVtxColorDictRef;
@@ -620,72 +625,66 @@ std::vector<TerrainTriangle> OrganicRawManifest::produceTerrainTrianglesFromOREE
 	bool in_debugFlag)
 {
 	std::vector<TerrainTriangle> returnVector;
-	auto skeletonSGMBegin = in_orePointer->skeletonSGM.triangleSkeletonSupergroups.begin();
-	auto skeletonSGMEnd = in_orePointer->skeletonSGM.triangleSkeletonSupergroups.end();
-	for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
+
+	auto oreProducedTerrainTriangles = in_orePointer->produceAndReturnTerrainTriangles();
+	for (auto& currentProducedTriangle : oreProducedTerrainTriangles)
 	{
-		auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
-		auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
-		for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
+		ECBPolyPoint fetchedEmptyNormal = currentProducedTriangle.otEmptyNormal;
+		ECBPolyPointTri currentPolyPointTri;
+		currentPolyPointTri.triPoints[0] = currentProducedTriangle.otPoints[0];
+		currentPolyPointTri.triPoints[1] = currentProducedTriangle.otPoints[1];
+		currentPolyPointTri.triPoints[2] = currentProducedTriangle.otPoints[2];
+		ECBPolyPointTri preciseCoords = IndependentUtils::adjustEnclaveTriangleCoordsToWorldSpace(currentPolyPointTri, in_oreKey, in_blueprintKey);
+
+		int debugFlagValue = 0;
+		if (in_debugFlag == true)
 		{
-			auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
-			auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
-			for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
-			{
-				ECBPolyPoint fetchedEmptyNormal = currentSkeletonBegin->second.emptyNormal;
-				ECBPolyPointTri currentPolyPointTri;
-				currentPolyPointTri.triPoints[0] = currentSkeletonBegin->second.points[0];
-				currentPolyPointTri.triPoints[1] = currentSkeletonBegin->second.points[1];
-				currentPolyPointTri.triPoints[2] = currentSkeletonBegin->second.points[2];
-				ECBPolyPointTri preciseCoords = IndependentUtils::adjustEnclaveTriangleCoordsToWorldSpace(currentPolyPointTri, in_oreKey, in_blueprintKey);
-
-				int debugFlagValue = 0;
-				if (in_debugFlag == true)
-				{
-					std::cout << "|||||||||||||| Start of TerrainTrianglePoint data: " << std::endl;
-					debugFlagValue = 1;
-				}
-				UVCoordProducerEnclaveTriangle enclaveTriangleCoords(currentSkeletonBegin->second.materialID,
-					currentSkeletonBegin->second.points[0],
-					currentSkeletonBegin->second.points[1],
-					currentSkeletonBegin->second.points[2],
-					in_atlasMapRef,
-					debugFlagValue,
-					in_blueprintKey);
-				UVTriangleCoords testCoords = enclaveTriangleCoords.getCoords();
-
-
-				TerrainTrianglePoint trianglePointArray[3];
-				for (int b = 0; b < 3; b++)
-				{
-
-					TerrainTrianglePoint pointToInsert(preciseCoords.triPoints[b],
-						fetchedEmptyNormal,
-						testCoords.UVpoint[b].x,
-						testCoords.UVpoint[b].y,
-						testCoords.U_tile_coord,
-						testCoords.V_tile_coord);
-					if (in_debugFlag == true)
-					{
-						std::cout << "Point " << b << ": " << std::endl;
-						std::cout << "Point coords: " << preciseCoords.triPoints[b].x << ", " << preciseCoords.triPoints[b].y << ", " << preciseCoords.triPoints[b].z << std::endl;
-						std::cout << "UV coords: UVPoint.x->" << testCoords.UVpoint[b].x << " | UVPoint.y-> " << testCoords.UVpoint[b].y << std::endl;
-					}
-
-
-					trianglePointArray[b] = pointToInsert;
-				}
-
-				if (in_debugFlag == true)
-				{
-					std::cout << "|||||||||||||| End of TerrainTrianglePoint data: " << std::endl;
-				}
-
-				TerrainTriangle currentTriangle(trianglePointArray[0], trianglePointArray[1], trianglePointArray[2]);
-				returnVector.push_back(currentTriangle);
-			}
+			std::cout << "|||||||||||||| Start of TerrainTrianglePoint data: " << std::endl;
+			debugFlagValue = 1;
 		}
+
+		UVCoordProducerEnclaveTriangle enclaveTriangleCoords(currentProducedTriangle.otMaterial,
+			currentProducedTriangle.otPoints[0],
+			currentProducedTriangle.otPoints[1],
+			currentProducedTriangle.otPoints[2],
+			in_atlasMapRef,
+			debugFlagValue,
+			in_blueprintKey);
+		UVTriangleCoords testCoords = enclaveTriangleCoords.getCoords();
+
+
+		TerrainTrianglePoint trianglePointArray[3];
+		for (int b = 0; b < 3; b++)
+		{
+
+			TerrainTrianglePoint pointToInsert(preciseCoords.triPoints[b],
+				fetchedEmptyNormal,
+				testCoords.UVpoint[b].x,
+				testCoords.UVpoint[b].y,
+				testCoords.U_tile_coord,
+				testCoords.V_tile_coord);
+			if (in_debugFlag == true)
+			{
+				std::cout << "Point " << b << ": " << std::endl;
+				std::cout << "Point coords: " << preciseCoords.triPoints[b].x << ", " << preciseCoords.triPoints[b].y << ", " << preciseCoords.triPoints[b].z << std::endl;
+				std::cout << "UV coords: UVPoint.x->" << testCoords.UVpoint[b].x << " | UVPoint.y-> " << testCoords.UVpoint[b].y << std::endl;
+			}
+
+
+			trianglePointArray[b] = pointToInsert;
+		}
+
+		if (in_debugFlag == true)
+		{
+			std::cout << "|||||||||||||| End of TerrainTrianglePoint data: " << std::endl;
+		}
+
+		TerrainTriangle currentTriangle(trianglePointArray[0], trianglePointArray[1], trianglePointArray[2]);
+		returnVector.push_back(currentTriangle);
+
 	}
+
+
 
 	return returnVector;
 }

@@ -243,7 +243,7 @@ OrganicRawEnclave::OrganicRawEnclave(ORELodState in_ORELodState)
 		}
 	}
 }
-void OrganicRawEnclave::insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
+void OrganicRawEnclave::insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
 {
 	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
 }
@@ -616,45 +616,14 @@ int OrganicRawEnclave::getNumberOfTrianglesByLOD()
 	{
 		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
-			// if LOD_ENCLAVE, simply look at the skeletonSGM
-			auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
-			auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
-			for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
-			{
-				auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
-				auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
-				for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
-				{
-					auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
-					auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
-					for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
-					{
-						triangleCount++;
-					}
-				}
-			}
+			triangleCount = skeletonSGM.getTriangleCountFromContainers();
 			break;
 		};
 
 		case ORELodState::LOD_ENCLAVE_RMATTER:
 		{
 			// if LOD_ENCLAVE, simply look at the skeletonSGM
-			auto skeletonSGMBegin = skeletonSGM.triangleSkeletonSupergroups.begin();
-			auto skeletonSGMEnd = skeletonSGM.triangleSkeletonSupergroups.end();
-			for (skeletonSGMBegin; skeletonSGMBegin != skeletonSGMEnd; skeletonSGMBegin++)
-			{
-				auto currentSkeletonContainerBegin = skeletonSGMBegin->second.skeletonMap.begin();
-				auto currentSkeletonContainerEnd = skeletonSGMBegin->second.skeletonMap.end();
-				for (; currentSkeletonContainerBegin != currentSkeletonContainerEnd; currentSkeletonContainerBegin++)
-				{
-					auto currentSkeletonBegin = currentSkeletonContainerBegin->second.skeletons.begin();
-					auto currentSkeletonEnd = currentSkeletonContainerBegin->second.skeletons.end();
-					for (; currentSkeletonBegin != currentSkeletonEnd; currentSkeletonBegin++)
-					{
-						triangleCount++;
-					}
-				}
-			}
+			triangleCount = skeletonSGM.getTriangleCountFromContainers();
 			break;
 		};
 
@@ -1118,7 +1087,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 
 			// Finally, insert the finished product into the organicTriangleSecondarySGM, 
 			// so that blocks may be created when needed.
-			insertOrganicTriangleSecondary(etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
+			insertOTSecondaryIntoORE(etcSGMBegin2->first, currentTriangleContainerBegin->first, container);
 		}
 
 	}
@@ -1745,6 +1714,11 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 	std::map<int, EnclaveBlock> exposedBlockMap;
 	tempOtsSGM.simulateExposedBlockGeneration(&exposedBlockMap);
 	return exposedBlockMap;
+}
+
+std::vector<ORETerrainTriangle> OrganicRawEnclave::produceAndReturnTerrainTriangles()
+{
+	return skeletonSGM.produceTerrainTriangles();
 }
 
 OperableIntSet OrganicRawEnclave::getExistingEnclaveTriangleSkeletonContainerTracker()

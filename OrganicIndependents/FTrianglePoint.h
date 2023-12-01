@@ -17,6 +17,13 @@ class FTrianglePoint
 			pointType(in_pointType)
 		{};
 
+		FTrianglePoint(ECBPolyPoint in_point)
+		{
+			point.x = in_point.x;
+			point.y = in_point.y;
+			point.z = in_point.z;
+		}
+
 		FTrianglePoint(ECBPolyPoint in_point,
 			FTrianglePointType in_pointType) :
 			pointType(in_pointType)

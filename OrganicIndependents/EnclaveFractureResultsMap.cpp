@@ -12,7 +12,7 @@ void EnclaveFractureResultsMap::insertFractureResults(EnclaveKeyDef::EnclaveKey 
 	//fractureResultsContainerMap[in_enclaveKey].insertOrganicTriangleSecondary(in_polygonId, in_container);						// needed for OrganicRawEnclave::getTouchedBlockList(); which is used for MassDriverElevator
 
 	fractureResultsContainerMap[in_enclaveKey].insertEnclaveTriangleContainer(in_polygonId, 0, *in_enclaveTriangleContainer);		// needed for OrganicRawEnclave::spawnEnclaveTriangleSkeletonContainers()
-	fractureResultsContainerMap[in_enclaveKey].insertOrganicTriangleSecondary(in_polygonId, 0, in_container);						// needed for OrganicRawEnclave::getTouchedBlockList(); which is used for MassDriverElevator
+	fractureResultsContainerMap[in_enclaveKey].insertOTSecondaryIntoORE(in_polygonId, 0, in_container);						// needed for OrganicRawEnclave::getTouchedBlockList(); which is used for MassDriverElevator
 }
 
 void EnclaveFractureResultsMap::transferEnclaveTrianglesIntoOREs(int in_polygonID, OrganicTriangle* in_organicTriangleRef, std::mutex* in_mutexRef)

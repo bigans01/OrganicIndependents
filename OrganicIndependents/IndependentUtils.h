@@ -97,6 +97,7 @@ class IndependentUtils
 		static ECBPolyPoint snapPointToOrganicGrid(ECBPolyPoint in_polyPoint, float in_gridLimit);
 		static EnclaveBlockVertex convertPolyPointToBlockVertex(ECBPolyPoint in_polyPoint);
 		static EnclaveBlockVertex convertFTriangleDoublePointToBlockVertex(DoublePoint in_fTriangleDoublePoint);
+		static ECBPolyPoint convertFTriangleDoublePointToECBPolyPoint(DoublePoint in_fTriangleDoublePoint);
 		static ECBPolyPoint roundPolyPointToThousandths(ECBPolyPoint in_polyPoint);
 		static ECBPolyPoint roundPolyPointToTenThousandths(ECBPolyPoint in_polyPoint);
 

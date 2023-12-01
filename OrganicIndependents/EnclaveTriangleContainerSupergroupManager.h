@@ -16,10 +16,12 @@ public:
 	{
 		enclaveTriangleSupergroups[in_polyID].insertEnclaveTriangleContainer(in_supergroupID, in_enclaveTriangleContainer);
 	}
+
 	void insertEnclaveTriangleDirectIntoSuperGroup(int in_polyID, int in_supergroupID, int in_containerID, EnclaveTriangle in_enclaveTriangle)
 	{
 		enclaveTriangleSupergroups[in_polyID].insertTriangleDirectIntoContainer(in_supergroupID, in_containerID, in_enclaveTriangle);
 	}
+
 	EnclaveTriangleSkeletonSupergroupManager produceEnclaveTriangleSkeletons()
 	{
 		EnclaveTriangleSkeletonSupergroupManager producedManager;

@@ -112,7 +112,7 @@ public:
 		                       Message in_skeletonSGMBuildingMessage);
 
 	// ||||||||||| EnclaveTriangle and OrganicTriangleSecondary manipulation (only known usage is from EnclaveFractureResultsMap::insertFractureResults in OrganicCoreLib)
-	void insertOrganicTriangleSecondary(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
+	void insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
 	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
 
 
@@ -187,6 +187,8 @@ public:
 														// the ORE's currentLodState is already in LOD_BLOCK, as there will be nothing in etcSGM to read from.
 														// 
 														// The use of this function is mostly private; but some classes such as ORELightweightCollider may use it as well.
+
+	std::vector<ORETerrainTriangle> produceAndReturnTerrainTriangles();
 
 	bool checkIfFull();		// analyzes the number of unexposed blocks, to determine if the ORE is FULL. If the number equals 64, the currentLodState is updated to FULL,
 							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out; the total_triangles value also gets reset to 0. This case can occur in OrganicCoreLib functions,

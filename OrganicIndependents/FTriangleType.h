@@ -13,8 +13,11 @@ enum class FTriangleType
 	ATOMIC,		// the triangle cannot be fratured any lower than this; the output of this FTriangle should be its own points,
 				// all ranging between 0.0f and 1.0f (the same as a block)
 
-	TEXTURE_WORLD	// spawned within confines of a blueprint, but is meant to 
-					// frature a world texture.
+	TEXTURE_WORLD,	// spawned within world space, but is meant to represent a part of a 
+					// fracture a world texture.
+	TEXTURE_BLUEPRINT	// spawned within blueprint space, but is meant to represent a part of a 
+						// fracture a world texture.
+
 
 };
 #endif

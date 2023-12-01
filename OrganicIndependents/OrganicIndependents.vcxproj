@@ -343,6 +343,7 @@
     <ClInclude Include="OREAppendedState.h" />
     <ClInclude Include="OREDependencyState.h" />
     <ClInclude Include="OREFracturingMachine.h" />
+    <ClInclude Include="ORETerrainTriangle.h" />
     <ClInclude Include="OrganicFanGroup.h" />
     <ClInclude Include="OrganicLineBase.h" />
     <ClInclude Include="OrganicPolygon.h" />
@@ -409,14 +410,22 @@
     <ClInclude Include="QuatRotationPoints.h" />
     <ClInclude Include="QuatRotationRecord.h" />
     <ClInclude Include="QuatRotationType.h" />
+    <ClInclude Include="RDerivedTypeEnum.h" />
     <ClInclude Include="ReconBlueprintRunmode.h" />
     <ClInclude Include="ReconBlueprintRunmodeRequest.h" />
     <ClInclude Include="ReconstitutedBlueprint.h" />
     <ClInclude Include="ReconstitutedBlueprintRunState.h" />
     <ClInclude Include="ReconstitutionManager.h" />
+    <ClInclude Include="RenderableGenerationResult.h" />
+    <ClInclude Include="RenderableTiledTriangle.h" />
+    <ClInclude Include="RenderableTriangleContainer.h" />
+    <ClInclude Include="RenderableTriangleContainerManager.h" />
+    <ClInclude Include="RenderableTriangleHandler.h" />
     <ClInclude Include="ResolverLink.h" />
     <ClInclude Include="ResolverLinkMap.h" />
     <ClInclude Include="RippleImpactRegister.h" />
+    <ClInclude Include="RenderableTriangleBase.h" />
+    <ClInclude Include="RTypeEnum.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
     <ClInclude Include="SecondarySearchResult.h" />
@@ -583,6 +592,11 @@
     <ClCompile Include="QuatRotationRecord.cpp" />
     <ClCompile Include="ReconstitutedBlueprint.cpp" />
     <ClCompile Include="ReconstitutionManager.cpp" />
+    <ClCompile Include="RenderableTiledTriangle.cpp" />
+    <ClCompile Include="RenderableTriangleBase.cpp" />
+    <ClCompile Include="RenderableTriangleContainer.cpp" />
+    <ClCompile Include="RenderableTriangleContainerManager.cpp" />
+    <ClCompile Include="RenderableTriangleHandler.cpp" />
     <ClCompile Include="SCircuitSegment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -274,6 +274,12 @@
     <Filter Include="Source Files\FracturableTriangle\FTrianglePointUVProducer">
       <UniqueIdentifier>{b9d7e448-5bfa-498e-b12c-0998c9222be3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RType">
+      <UniqueIdentifier>{5fb1f965-6fa6-47f6-a8c9-7b04d20b18a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RType">
+      <UniqueIdentifier>{06e2bb00-d54b-4d9a-835e-83e45a379439}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1194,6 +1200,33 @@
     <ClInclude Include="WorldTextureFracturingMachine.h">
       <Filter>Header Files\FracturableTriangle\FracturingMachines\World</Filter>
     </ClInclude>
+    <ClInclude Include="RTypeEnum.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableTriangleBase.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableTiledTriangle.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableTriangleContainer.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableTriangleContainerManager.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableTriangleHandler.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableGenerationResult.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="ORETerrainTriangle.h">
+      <Filter>Header Files\Blueprints\ORE</Filter>
+    </ClInclude>
+    <ClInclude Include="RDerivedTypeEnum.h">
+      <Filter>Source Files\RType</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1597,6 +1630,21 @@
     </ClCompile>
     <ClCompile Include="WorldTextureFracturingMachine.cpp">
       <Filter>Source Files\FracturableTriangle\FracturingMachines\World</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableTriangleBase.cpp">
+      <Filter>Source Files\RType</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableTiledTriangle.cpp">
+      <Filter>Source Files\RType</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableTriangleContainerManager.cpp">
+      <Filter>Source Files\RType</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableTriangleContainer.cpp">
+      <Filter>Source Files\RType</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableTriangleHandler.cpp">
+      <Filter>Source Files\RType</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7268,6 +7268,15 @@ EnclaveBlockVertex IndependentUtils::convertFTriangleDoublePointToBlockVertex(Do
 	return returnVertex;
 }
 
+ECBPolyPoint IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(DoublePoint in_fTriangleDoublePoint)
+{
+	ECBPolyPoint returnPoint;
+	returnPoint.x = float(in_fTriangleDoublePoint.x);
+	returnPoint.y = float(in_fTriangleDoublePoint.y);
+	returnPoint.z = float(in_fTriangleDoublePoint.z);
+	return returnPoint;
+}
+
 ECBPolyPoint IndependentUtils::findNormalizedPoint(ECBPolyPoint in_pointA)
 {
 	ECBPolyPoint returnPoint;
