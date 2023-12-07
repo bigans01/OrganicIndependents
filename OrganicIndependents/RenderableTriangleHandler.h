@@ -11,6 +11,7 @@
 #include "EnclaveBlockSkeleton.h"
 #include "EnclaveBlock.h"
 #include "ORETerrainTriangle.h"
+#include "EnclaveTriangleContainer.h"
 
 /*
 
@@ -29,19 +30,50 @@ The main feature of this object will be the ability to store both tiled texture 
 class RenderableTriangleHandler
 {
 	public:
+
+		// For below: meant to mirror EnclaveTriangleContainerSupergroupManager::insertEnclaveTriangle; behaves similiar to 
+		// insertSkeletonContainerIntoSupergroup in this class, except that the data comes from EnclaveTriangleContainer.
+		// 
+		// The function EnclaveFractureResultsMap::transferEnclaveTrianglesIntoOREs is the primary method for EnclaveTriangle insertion, from an 
+		// existing OrganicTriangle; the function calls EnclaveFractureResultsMap::insertFractureResults for each detected EnclavePoly in 
+		// a referenced OrganicTriangle, which subsequently calls OrganicRawEnclave::insertEnclaveTriangleContainer. The last function mentioned,
+		// is what should be responsible for calling this below function.
+		void insertEnclaveTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert);
+
+		// For below: this is a mirror of EnclaveTriangleSkeletonSupergroupManager::eraseSupergroup. Would be needed when a call to 
+		// OrganicRawEnclave::removeSkeletonSupergroup is issued.
+		void eraseSupergroup(int in_supergroupID);
+
+		// For below: meant to mirror EnclaveTriangleSkeletonSupergroupManager::appendSkeletonContainers;
+		// Should be utilized when the function OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers is called.
+		OperableIntSet appendSkeletonContainers(RenderableTriangleHandler* in_otherHandler);
+
 		// For below: in reality, this will be refactored later; but it's being done in this way so that existing code that uses the definition from 
 		// EnclaveTriangleContainerSupergroupManager will still be happy with the below call. The value of in_skeletonContainerID would not be used.
-		// should only touch the entry in the rTypesMap that is keyed to RTypeEnum::TERRAIN_TILE_!, for the time being.
+		// should only touch the entry in the rTypesMap that is keyed to RTypeEnum::TERRAIN_TILE_1, for the time being.
+		//
+		// This is needed by classes that seek to load up data into a fresh RenderableTriangleHandler, before passing it down to the ORE -- so it should be public.
+		// An example of a function using this, in this manner, is OREMatterCollider::extractResultsAndSendToORE, in OrganicCoreLib.
 		void insertSkeletonContainerIntoSupergroup(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleSkeletonContainer in_skeletonContainer);
 
 
 		// For below: this function is from OrganicTriangleSecondarySupergroupManager. It is what actually produces the fan data that goes into 
 		// blocks; the total number of triangles from an insertion is then added to the referenced in_totalTrianglesRef. For the time being, 
 		// this should only be used with the rTypesMap entry at RTypeEnum::TERRAIN_TILE_1.
+		//
+		// Should mirror the usage in OrganicRawEnclave::createBlocksFromOrganicTriangleSecondaries.
 		void generateBlockTrianglesFromSecondaries(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,	// generates the triangles for EnclaveBlocks, and loads them into the passed in map, 
 			std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,												// and also updates the number of total triangles in the ORE.
 			int* in_totalTrianglesRef);
 
+		// For below: this function should functionally all of the combined code in the OrganicRawEnclave::produceBlockCopies function.
+		std::map<int, EnclaveBlock> produceBlockCopies();
+
+		// For below: this is performs in a logical manner to OrganicRawEnclave::spawnContainersAndCreateBlocks, minus the call to OrganicRawEnclave::resetBlockDataAndTriangleCount();
+		// before the below function is called, the ORE instance that calls this function needs to call resetBlockDataAndTriangleCount().
+		Operable3DEnclaveKeySet produceBlocksAndInvalids(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,
+														std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,
+														int* in_totalTrianglesRef);
 
 		// For below: this function should produce the same results as found in the function, EnclaveTriangleSkeletonSupergroupManager::produceTerrainTriangles;
 		// it just has to do it in a compatible way. For the time being, this should only be working with TERRAIN_TILE_1 rTypesMap entry.
@@ -59,6 +91,8 @@ class RenderableTriangleHandler
 
 		void clear();	// wipe out everything, start from scratch, clean up memory etc; equivalent of calling clear() on all 3 of the old data maps in OrganicRawEnclave
 						// (i.e., how OrganicRawEnclave::checkIfFull() calls clear on skeletonSGM, etcSGM, and organicTriangleSecondarySGM.
+
+		void printData();
 
 	private:
 		std::map<RTypeEnum, RenderableTriangleContainerManager> rTypesMap;

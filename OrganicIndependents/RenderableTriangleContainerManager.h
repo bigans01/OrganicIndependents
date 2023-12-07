@@ -22,6 +22,8 @@ class RenderableTriangleContainerManager
 		// the function is called.
 		void insertRenderableTriangleIntoContainer(int in_uniqueID,														
 												   std::unique_ptr<RenderableTriangleBase>* in_renderableTrianglePtr);	 
+
+		void eraseContainer(int in_supergroupUniqueID);
 			
 	private:
 		friend class RenderableTriangleHandler;

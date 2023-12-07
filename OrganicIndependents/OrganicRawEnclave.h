@@ -25,6 +25,8 @@
 #include "MessageContainer.h"
 #include "HashUtils.h"
 
+#include "RenderableTriangleHandler.h"
+
 /*
 
 Description:
@@ -43,20 +45,10 @@ NOTE #1	->	How EnclaveBlocks are produced
 
 	1.	The skeletonSGM instance must be populated with relevant EnclaveTriangleSkeleton supergroups.
 
-	2.  The data from step 1 above is used to inflate EnclaveTriangleContainer instances, which are then used to populate the etcSGM member. This
-		correlates with "PART 1" of spawnEnclaveTriangleContainers.
+	2.	Assuming the skeletonSGM is populated, spawnContainersAndCreateBlocks is called. This function will erase any blocks that exist, reset
+		the total_triangles counter, and then read from the skeletonSGM to produce EnclaveTriangles and block data.
 
-	3.	After the EnclaveTriangleContainers have been inflated in the etcSGM member, the executeRun() function is called on each EnclaveTriangle in each
-		EnclaveTriangleContainer. This populates the OrganicTriangleTertiary of each EnclaveTriangle, which contains a map of OrganicWrappedBBFans 
-		that were produced by the EnclaveTriangle. Invalid EnclaveTriangles are also purged here.
-		This correlates with "PART 2" of spawnEnclaveTriangleContainers.
-
-	4.	We cycle through etcSGM once again, except this time, we take create an OrganicTriangleSecondary from each EnclaveTriangleContainer in each supergroup
-		of the etcSGM. Each OrganicTriangleSecondary is then inserted into organicTriangleSecondarySGM. This is "PART 3" of spawnEnclaveTriangleContainers.
-
-	Steps 2 through 4 above are handled by the function spawnEnclaveTriangleContainers().
-	Once step 4 is complete, blocks can be spawned, via functions such as createBlocksFromOrganicTriangleSecondaries.
-
+	3.	At this point, blocks are now generated and may be queried.
 
 
 */
@@ -80,6 +72,9 @@ public:
 		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
 		etcSGM = resultsContainer_b.etcSGM;					// copy 
 		organicTriangleSecondarySGM = resultsContainer_b.organicTriangleSecondarySGM;														// copy, copy, MORE COPYYYYY
+
+		oreRTHandler = resultsContainer_b.oreRTHandler;
+
 		// copy blocks, if the copied OrganicRawEnclave doesn't have its blockMap empty.
 		if (!resultsContainer_b.blockMap.empty())														// copy 
 		{																								// ""
@@ -111,9 +106,11 @@ public:
 							   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef,
 		                       Message in_skeletonSGMBuildingMessage);
 
-	// ||||||||||| EnclaveTriangle and OrganicTriangleSecondary manipulation (only known usage is from EnclaveFractureResultsMap::insertFractureResults in OrganicCoreLib)
-	void insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
-	void insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer);
+	
+	void insertEnclaveTriangleComponents(int in_polyID,											// This function is used by EnclaveFractureResultsMap::insertFractureResults,
+										int in_clusterID,										// to load various EnclaveTriangle data into all relevant members. such as:
+										EnclaveTriangleContainer in_enclaveTriangleContainer,	// skeletonSGM, etcSGM, organicTriangleSecondarySGM, and the oreRTHandler.
+										OrganicTriangleSecondary in_secondaryComponent);
 
 
 
@@ -201,18 +198,22 @@ public:
 												// It will then set the value of the blockSkeletonMap to be the rMassSolidMap, which is the only way 
 												// to update the blockSkeletonMap with new solid blocks, when in an ORELodState::LOD_ENCLAVE_RMATTER.
 
-	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);	// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL.
+	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);		// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL;
+																								// used by functions such as OrganicSystem::jobMorphOREToBlock (OrganicCoreLib), to configure the ORE
+																								// to have it's blocks ready for analysis/modification.
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
-	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// appends new enclave triangle skeletons, to the existing ones; also updates the appended state of the ORE.
-	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
+	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
+														EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
+														RenderableTriangleHandler* in_handlerRef);		// appends new enclave triangle skeletons, to the existing ones; also updates the appended state of the ORE.
+
+	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
+														EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
+														RenderableTriangleHandler* in_handlerRef);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
 																																									// and wipes out the existing skeletons in skeletonSGM, 
 																																									// before appending an entirely new series of skeleton containers. Needed by 
 																																									// OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib.
 	void removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove);
-	void loadSkeletonContainersFromEnclaveContainers();														// ***********WARNING: do not use this function if the ORE is part of a shared resource (multiple threads) ***************
-																											// populates the skeletonSGM of this ore, by spawning skeletons from
-																											// the etcSGM. This function should NOT
 
 	void setOREasIndependent();																				// flags the ORE to have dependency state of INDEPENDENT; used by the function BlueprintMassManager::updatePersistentBlueprintPolys() 
 																											// in OrganicServerLib.
@@ -270,29 +271,19 @@ public:
 	//
 	// used to produce or "inflate" the data in a whole EnclaveTriangle; these are read from disk and used to populate the etcSGM;
 	// it is designed to save memory and disk space.
-	//
-	// it has two main functions:
-	// 1.) When "deflating" of EnclaveTriangles needs to be done, the results are stored here.
-	// 2.) When "inflating" of EnclaveTriangles needs to be done, this map is read by this class's function,
-	//     spawnEnclaveTriangleContainers.
+
 	// contains blocks that must be run in a final pass, if there are any to run.
 	EnclaveTriangleSkeletonSupergroupManager skeletonSGM;
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 2: For storing "Inflated" data; generated at run time during high-LOD terrain requests.
 
 	// etcSGM
-	// 
-	// This map has two functions:
-	// 1.) When "deflating" of EnclaveTriangles needs to be done, each element in this map is read to produce an EnclaveTriangleSkeletonContainer,
-	//     each of which is inserted into the skeletonSGM.
-	//
-	// 2.) When "inflating" of EnclaveTriangles needs to be done, each element in the skeletonSGM is read to produce a corresponding
-	//     enclave triangle container here.
 	EnclaveTriangleContainerSupergroupManager etcSGM;
 	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;	// used to store produced OrganicTriangleSecondary instances, in their appropriate supergrpup.
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 
+	RenderableTriangleHandler oreRTHandler;	// the candidate to replace the other 3 data containers.
 private:
 
 	// Below: data members critical to the functioning of the ORE; these will need to be transformed into relavant Messages (i.e, BDM_ORE_HEADER)
@@ -307,16 +298,22 @@ private:
 
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void resetBlockDataAndTriangleCount();																							// clears the blockMap, and resets triangle count
-	Operable3DEnclaveKeySet spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);			// reads from the skeletonSGM to produce their corresponding EnclaveTriangleContainers;
-																																		// The return value contains the keys of any blocks that wwre deemed incalculable
-																																		// as a result of a call to EnclaveTriangle::executeRun().
 
 	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
 																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
+
+	Operable3DEnclaveKeySet spawnContainersAndCreateBlocks(std::mutex* in_mutexRef,						// clears out the blocks and resets the total_triangles to 0,
+														   EnclaveKeyDef::EnclaveKey in_enclaveKey);	// and then generates block data. Any incalculable blocks are then returned.
+																										// Essentially combines the old spawnEnclaveTriangleContainers and
+																										// createBlocksFromOrganicTriangleSecondaries into one function.
+																										//
+																										// Called by the functions spawnRenderableBlocks and morphLodToBlock
+
 	void produceAllUnexposedBlocks(std::mutex* in_mutexRef);		// should be used when going from currentLodState of FULL to BLOCK; this will 
 																	// make all 64 possible blocks in the ORE be stored in the blockSkeletonMap. 
 																	// Currently used by morphLodToBlock function. Default material for each block is 0.
 																	
+	void insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
 
 	void insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,	// inserts OrganicTriangleSecondaries into a refed OrganicTriangleSecondarySupergroupManager;
 														int in_polyID,												// needed by the function, simulateBlockProduction(). 
@@ -336,6 +333,9 @@ private:
 	void reconstituteSkeletonsFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef);
 
 	void reconstituteOREStatesFromMessage(Message in_oreHeaderMessage);	// takes in a MessageType::BDM_ORE_HEADER Message, to populate the currentLodState, currentAppendedState, and currentDependencyState, in that order.
+
+	void clearOutDataContainers();	// calls clear on skeletonSGM, etcSGM, and organicTriangleSecondarySGM; these are often all cleared at once, back-to-back,
+									// so this makes things simpler. Also created as part of transition to the RenderableTriangleHandler member for ORE.
 };
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "EnclaveTriangleSkeletonSupergroup.h"
 #include "ORETerrainTriangle.h"
+#include "EnclaveTriangleContainer.h"	// OF-1
 
 class EnclaveTriangleSkeletonSupergroupManager
 {
@@ -17,6 +18,34 @@ class EnclaveTriangleSkeletonSupergroupManager
 																				
 
 		std::map<int, EnclaveTriangleSkeletonSupergroup> triangleSkeletonSupergroups;
+
+		// OF-2
+		//
+		// Converts each element of the input EnclaveTriangleContainer into an equivalent EnclaveTriangleSkeleton,
+		// before inserting said skeleton into a EnclaveTriangleSkeletonContainer. Functionally the same as insertSkeletonContainerIntoSupergroup,
+		// it is required as part of the usage for the OrganicRawEnclave::insertEnclaveTriangleComponents function.
+		// This function will probably remain until the end of this class, when this class is deemed as no longer necessary.
+		void insertEnclaveTriangleContainerIntoSGM(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_skeletonContainer)
+		{
+			// convert each ET in the container, to an equivalent EnclaveTriangleSkeletonContainer.
+			EnclaveTriangleSkeletonContainer convertedContainer;
+			for (auto& currentETEntry : in_skeletonContainer.triangles)
+			{
+				EnclaveTriangleSkeleton convertedSkeleton;
+				convertedSkeleton.points[0] = currentETEntry.second.points[0];
+				convertedSkeleton.points[1] = currentETEntry.second.points[1];
+				convertedSkeleton.points[2] = currentETEntry.second.points[2];
+				convertedSkeleton.emptyNormal = currentETEntry.second.emptyNormal;
+				convertedSkeleton.materialID = currentETEntry.second.enclaveTriangleMaterialID;
+				convertedSkeleton.skeletonBoundaryIndicatorValue = currentETEntry.second.enclaveTriangleBoundaryPolyIndicator;
+				convertedSkeleton.isPolyPerfectlyClamped = currentETEntry.second.isEnclaveTrianglePolyPerfectlyClamped;
+
+				convertedContainer.insertSkeleton(currentETEntry.first, convertedSkeleton);
+			}
+
+			triangleSkeletonSupergroups[in_supergroupID].insertSkeletonContainer(in_skeletonContainerID, convertedContainer);
+		}
+
 		void insertSkeletonContainerIntoSupergroup(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleSkeletonContainer in_skeletonContainer)
 		{
 			triangleSkeletonSupergroups[in_supergroupID].insertSkeletonContainer(in_skeletonContainerID, in_skeletonContainer);

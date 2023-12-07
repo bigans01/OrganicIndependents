@@ -114,6 +114,13 @@ void OrganicRawEnclave::reconstituteOREStatesFromMessage(Message in_oreHeaderMes
 	currentDependencyState = OREDependencyState(in_oreHeaderMessage.readInt());
 }
 
+void OrganicRawEnclave::clearOutDataContainers()
+{
+	skeletonSGM.triangleSkeletonSupergroups.clear();
+	etcSGM.enclaveTriangleSupergroups.clear();
+	organicTriangleSecondarySGM.secondarySupergroups.clear();
+}
+
 void OrganicRawEnclave::reconstituteBlocksFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef)
 {
 	int exposedBlockCounter = 0;
@@ -243,10 +250,7 @@ OrganicRawEnclave::OrganicRawEnclave(ORELodState in_ORELodState)
 		}
 	}
 }
-void OrganicRawEnclave::insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
-{
-	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
-}
+
 
 void OrganicRawEnclave::insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,
 	int in_polyID,
@@ -256,11 +260,23 @@ void OrganicRawEnclave::insertOrganicTriangleSecondaryIntoRefedManager(OrganicTr
 	in_refedManager->insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
 }
 
-void OrganicRawEnclave::insertEnclaveTriangleContainer(int in_polyID, int in_clusterID, EnclaveTriangleContainer in_enclaveTriangleContainer)
+void OrganicRawEnclave::insertEnclaveTriangleComponents(int in_polyID, 
+													   int in_clusterID, 
+													   EnclaveTriangleContainer in_enclaveTriangleContainer,
+													   OrganicTriangleSecondary in_secondaryComponent)
 {
+	// OF-3
+	skeletonSGM.insertEnclaveTriangleContainerIntoSGM(in_polyID, in_clusterID, in_enclaveTriangleContainer);
 	etcSGM.insertEnclaveTriangle(in_polyID, in_clusterID, in_enclaveTriangleContainer);
+	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_secondaryComponent);
+
+	oreRTHandler.insertEnclaveTriangles(in_polyID, in_clusterID, in_enclaveTriangleContainer);
 }
 
+void OrganicRawEnclave::insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
+{
+	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
+}
 void OrganicRawEnclave::insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton)
 {
 	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
@@ -335,9 +351,7 @@ bool OrganicRawEnclave::checkIfFull()
 		//
 		// ...however, we want the enclave block skeletons to remain.
 		blockMap.clear();
-		skeletonSGM.triangleSkeletonSupergroups.clear();
-		etcSGM.enclaveTriangleSupergroups.clear();
-		organicTriangleSecondarySGM.secondarySupergroups.clear();
+		clearOutDataContainers();
 		total_triangles = 0;
 		currentLodState = ORELodState::FULL;
 	}
@@ -488,16 +502,14 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
-			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			spawnContainersAndCreateBlocks(in_mutexRef, in_enclaveKey);
 			break;
 		};
 
 		case ORELodState::LOD_ENCLAVE_RMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
-			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			spawnContainersAndCreateBlocks(in_mutexRef, in_enclaveKey);
 			break;
 		};
 
@@ -516,10 +528,7 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 	// as any data that exists should come from blocks and blocks alone, even if they have a state of EXPOSED, UNEXPOSED, etc; if this ORE is read from a file, the part of the file for that ORE 
 	// needs to only have block data.
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
-	skeletonSGM.triangleSkeletonSupergroups.clear();
-	etcSGM.enclaveTriangleSupergroups.clear();
-	organicTriangleSecondarySGM.secondarySupergroups.clear();
-
+	clearOutDataContainers();	
 }
 
 void OrganicRawEnclave::produceAllUnexposedBlocks(std::mutex* in_mutexRef)
@@ -582,16 +591,14 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnRenderableBlocks(std::mutex* in_
 		case ORELodState::LOD_ENCLAVE_SMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			uncalculatedBlocks += spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
-			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			uncalculatedBlocks += spawnContainersAndCreateBlocks(in_mutexRef, in_enclaveKey);
 			break;
 		};
 
 		case ORELodState::LOD_ENCLAVE_RMATTER:
 		{
 			// will spawn all renderable blocks via stored EnclaveTriangles.
-			uncalculatedBlocks += spawnEnclaveTriangleContainers(in_mutexRef, in_enclaveKey);
-			createBlocksFromOrganicTriangleSecondaries(in_mutexRef);
+			uncalculatedBlocks += spawnContainersAndCreateBlocks(in_mutexRef, in_enclaveKey);
 			break;
 		};
 
@@ -688,7 +695,10 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 	OperableIntSet preAddSet = getExistingEnclaveTriangleSkeletonContainerTracker();
 	//std::cout << "---Set contents, before add: " << std::endl;
 	//preAddSet.printSet();
-	appendSpawnedEnclaveTriangleSkeletonContainers(in_mutexRef, in_otherEnclave->spawnEnclaveTriangleSkeletonContainers());
+	appendSpawnedEnclaveTriangleSkeletonContainers(in_mutexRef, 
+												   in_otherEnclave->spawnEnclaveTriangleSkeletonContainers(),
+												   &in_otherEnclave->oreRTHandler);
+
 	OperableIntSet postAddSet = getExistingEnclaveTriangleSkeletonContainerTracker();
 	//std::cout << "---Set contents, post add: " << std::endl;
 	//postAddSet.printSet();
@@ -940,11 +950,6 @@ EnclaveTriangleSkeletonSupergroupManager OrganicRawEnclave::spawnEnclaveTriangle
 
 }
 
-void OrganicRawEnclave::loadSkeletonContainersFromEnclaveContainers()
-{
-	skeletonSGM = etcSGM.produceEnclaveTriangleSkeletons();
-}
-
 void OrganicRawEnclave::clearBlockSkeletons(std::mutex* in_mutexRef)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
@@ -963,35 +968,55 @@ bool OrganicRawEnclave::doesBlockSkeletonExistNoMutex(EnclaveKeyDef::EnclaveKey 
 	return isASkeleton;
 }
 
-void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
+void OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
+																		EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
+																		RenderableTriangleHandler* in_handlerRef)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
+
+	// when ready, be sure to append the results of the below function to the appropriate Operable3DEnclaveKeySet.
+	oreRTHandler.appendSkeletonContainers(in_handlerRef);
+
 	updateCurrentAppendedState();
 }
 
-void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer)
+void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
+																		EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
+																		RenderableTriangleHandler* in_handlerRef)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+
 	skeletonSGM.resetSupergroups();		// clear out existing skeletons, reset the group counter
+	oreRTHandler.clear();
+
 	existingEnclaveTriangleSkeletonContainerTracker.intSet.clear();		// because we will be reloading the tracker entirely, wipe it clean. Used by OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib, when an RMatter mass has been produced.
 	existingEnclaveTriangleSkeletonContainerTracker += skeletonSGM.appendSkeletonContainers(&in_enclaveTriangleSkeletonContainer);		// when appeneding a new container, keep track of the old group range, and the new group range (will be needed for ORE reforming)
+
+	oreRTHandler.appendSkeletonContainers(in_handlerRef);
 }
 
 void OrganicRawEnclave::removeSkeletonSupergroup(std::mutex* in_mutexRef, int in_supergroupIDToRemove)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
 	skeletonSGM.eraseSupergroup(in_supergroupIDToRemove);
+	oreRTHandler.eraseSupergroup(in_supergroupIDToRemove);
 }
 
-Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)	// change the enclave key logic later...
+Operable3DEnclaveKeySet OrganicRawEnclave::spawnContainersAndCreateBlocks(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
+
+	// PART 1: Before creating the containers, remove the block data.
+	resetBlockDataAndTriangleCount();
+
+
 	Operable3DEnclaveKeySet incalculableBlocks;	// stores blocks that a call to EnclaveTriangle::executeRun() failed to produce.
 
 	//std::cout << ":::::::::: Calling spawn enclave triangle containers... " << std::endl;
 
-	// PART 1: inflate the triangle containers
+	// PART 2: inflate the triangle containers
 	BorderDataMap borderDataMap; // for getting trace results in enclaves
 	BlockBorderLineList blockBorderLineList;
 
@@ -1014,7 +1039,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 		}
 	}
 
-	// PART 2: execute the runs for each EnclaveTriangle, in each EnclaveTriangleContainer that is fonud in each supergroup; delete/move EnclaveTriangles that are invalid, so that they don't run.
+	// PART 3: execute the runs for each EnclaveTriangle, in each EnclaveTriangleContainer that is fonud in each supergroup; delete/move EnclaveTriangles that are invalid, so that they don't run.
 	// it should be noted, that if not erased, invalid EnclaveTriangles can still produce BBFan data that secondaries can read. It's just that all of them stop upon the first invalid detection.
 
 	// When the runs for the EnclaveTriangle instances are complete, each of those EnclaveTriangle instances have their respective enclaveTriangleTertiary 
@@ -1051,7 +1076,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 			}
 		}
 
-		if (removalMap.size() != 0)	
+		if (removalMap.size() != 0)
 		{
 			//std::cout << "(OrganicRawEnclave): found some EnclaveTriangles to remove. " << std::endl;
 			auto removalsBegin = removalMap.begin();
@@ -1063,7 +1088,7 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 		}
 	}
 
-	// PART 3: At this point, each EnclaveTriangle in each EnclaveTriangleContainer should have its OrganicWrappedBBFans ready, which
+	// PART 4: At this point, each EnclaveTriangle in each EnclaveTriangleContainer should have its OrganicWrappedBBFans ready, which
 	// are stored in the enclaveTriangleTertiary member of EnclaveTriangle. The enclaveTriangleTertiary member is used in the call
 	// to loadDataFromEnclaveTriangleContainer, to produce an OrganicTriangleSecondary.
 	//
@@ -1091,6 +1116,10 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnEnclaveTriangleContainers(std::m
 		}
 
 	}
+
+
+	// PART 5: generate the block data, after all the calls to insertOTSecondaryIntoORE above.
+	organicTriangleSecondarySGM.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &blockMap, &total_triangles);
 
 	// the return value of this function will be any malformed/bad blocks.
 	return incalculableBlocks;

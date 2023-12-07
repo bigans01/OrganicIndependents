@@ -16,7 +16,7 @@ class EnclaveTriangleContainer
 		int triangleCount = 0;
 
 		void insertTriangle(EnclaveTriangle in_enclaveTriangle);							// used by EnclavePolyFracturer::EnclavePolyFracturer
-		void insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle);	// used by OrganicRawEnclave::spawnEnclaveTriangleContainers
+		void insertTriangleDirect(int in_triangleID, EnclaveTriangle in_enclaveTriangle);	
 
 		bool checkForYSliceBlocks(int in_yCoord);
 		void printTrianglesInContainer();

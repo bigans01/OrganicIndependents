@@ -1,10 +1,71 @@
 #include "stdafx.h"
 #include "RenderableTriangleHandler.h"
 
+OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTriangleHandler* in_otherHandler)
+{
+	OperableIntSet appendedSupergroupValues;
+
+	
+	// Cycle through the TERRAIN_TILE_1 entry in the mappedContainers of the other referenced handler (in_otherHandler)
+	for (auto& currentSupergroupToCopy : in_otherHandler->rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		// For each supergroup we find in the handler we are appending from, 
+		// we must ensure a proper lookup value exists, for all the triangles that belong to a supergroup;
+		// This is for functions that only know a given ID of an ECBPoly.
+		uniqueIDLookup[currentSupergroupToCopy.first] = RTypeEnum::TERRAIN_TILE_1;
+
+		// Append the supegroup ID to the return value set.
+		appendedSupergroupValues += currentSupergroupToCopy.first;
+
+		// We won't be creating the individual blocks, but we will be doing a 1:1 copy of each triangle into the 
+		// appropriate group.
+		for (auto& currentOtherTiledTriangle : currentSupergroupToCopy.second.rtVector)
+		{
+			rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &currentOtherTiledTriangle);
+		}
+	}
+
+	return appendedSupergroupValues;
+}
+
+void RenderableTriangleHandler::insertEnclaveTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert)
+{
+	uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
+
+	for (auto& currentEnclaveTriangleToConvert : in_containerToConvert.triangles)
+	{
+		std::unique_ptr<RenderableTriangleBase> newTiledTriangle(new (RenderableTiledTriangle));
+
+		newTiledTriangle->initRenderable(currentEnclaveTriangleToConvert.second.points[0],
+			currentEnclaveTriangleToConvert.second.points[1],
+			currentEnclaveTriangleToConvert.second.points[2],
+			currentEnclaveTriangleToConvert.second.emptyNormal,
+			currentEnclaveTriangleToConvert.second.enclaveTriangleBoundaryPolyIndicator,
+			currentEnclaveTriangleToConvert.second.isEnclaveTrianglePolyPerfectlyClamped);
+		newTiledTriangle->setRenderingType(RDerivedTypeEnum::R_TILED);
+		newTiledTriangle->setMaterialID(currentEnclaveTriangleToConvert.second.enclaveTriangleMaterialID);
+
+		rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
+
+	}
+}
+
+void RenderableTriangleHandler::eraseSupergroup(int in_supergroupID)
+{
+	// First, lookup where the supergroup is.
+	RTypeEnum targetSupergroupCategory = uniqueIDLookup[in_supergroupID];
+	rTypesMap[targetSupergroupCategory].eraseContainer(in_supergroupID);
+}
+
 void RenderableTriangleHandler::insertSkeletonContainerIntoSupergroup(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleSkeletonContainer in_skeletonContainer)
 {
 	// For each skeleton, make a RenderableTiledTriangle. Insert the supergroup (unique id) and TERRAIN_TILE_1 keyed value in uniqueIDLookup; 
 	// then, insert into rTypesMap.
+
+	// We must ensure a proper lookup value exists, for all the triangles that belong to a supergroup, 
+	// for functions that only know a given ID of an ECBPoly.
+	uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
+
 	for (auto& currentSkeletonToConvert : in_skeletonContainer.skeletons)
 	{
 		// The points from the in_skeletonContainer must be converted to FTrianglePoint instances;
@@ -22,8 +83,6 @@ void RenderableTriangleHandler::insertSkeletonContainerIntoSupergroup(int in_sup
 		newTiledTriangle->setRenderingType(RDerivedTypeEnum::R_TILED);
 		newTiledTriangle->setMaterialID(currentSkeletonToConvert.second.materialID);
 
-		// We must ensure a proper lookup value exists, for functions that only know a given ID of an ECBPoly.
-		uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
 
 		// Once all data has been setup for the tiled renderable triangle, send it on down to the appropriate container.
 		rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
@@ -87,7 +146,114 @@ void RenderableTriangleHandler::generateBlockTrianglesFromSecondaries(std::map<i
 			}
 		}
 	}
-	
+}
+
+std::map<int, EnclaveBlock> RenderableTriangleHandler::produceBlockCopies()
+{
+	std::map<int, EnclaveBlock> producedBlocks;
+	// Ideally, this function should be able to handle more than just RTypeEnum::TERRAIN_TILE_1; it
+	// should theoretically be able to combine all necessary data and insert it into the returned block map.
+	//
+	// At this time, only RTypeEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
+	// the future, to accomodate for non-tile textures (logic isn't implemented yet, as of 11/30/2023)
+	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
+		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
+		{
+			// Call on the current derivative class of the RenderableTriangleBase function, to generate the applicable data.
+			RenderableGenerationResult currentGenerationResult = currentTiledContainer->generateData();
+
+			//	...
+			//	TODO: need to do something with incalculable results here (potentially)...
+			//	...
+
+			for (auto& currentGroup : currentGenerationResult.producedFans)
+			{
+				EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
+				int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				EnclaveBlock* blockRef = &producedBlocks[keyToSingle];
+
+				// Set the current blockRef to be the BlockSubMode from the group.
+				blockRef->setBlockMode(currentGroup.second.groupSubType);
+
+				// Remember, if the currentGroup was filled because incalculable (aka BlockSubType::BLOCK_NORMAL_FILLED), 
+				// the block must first be reset before anything else.
+				if (currentGroup.second.getFilledBecauseIncalculableValue() == true)
+				{
+					blockRef -= blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
+				}
+
+				// Insert the fan group; there is no need to fetch the number of triangles here.
+				blockRef->insertFanGroup(currentGroup.second);				
+			}
+		}
+	}
+	return producedBlocks;
+}
+
+Operable3DEnclaveKeySet RenderableTriangleHandler::produceBlocksAndInvalids(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,
+	std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,
+	int* in_totalTrianglesRef)
+{
+	Operable3DEnclaveKeySet incalculableBlocks;
+
+	// Ideally, this function should be able to handle more than just RTypeEnum::TERRAIN_TILE_1; it
+	// should theoretically be able to combine all necessary data and insert it into the returned block map.
+	//
+	// At this time, only RTypeEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
+	// the future, to accomodate for non-tile textures (logic isn't implemented yet, as of 11/30/2023)
+	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
+		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
+		{
+			// Call on the current derivative class of the RenderableTriangleBase function, to generate the applicable data.
+			RenderableGenerationResult currentGenerationResult = currentTiledContainer->generateData();
+			
+			// Remember, for each call to generateData(), we must append any invalid blocks that were produced.
+			incalculableBlocks += currentGenerationResult.invalidBlockSet;
+
+			for (auto& currentGroup : currentGenerationResult.producedFans)
+			{
+				EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
+				auto blockFinder = (*in_skeletonMapRef).find(currentGroup.first);
+				if (blockFinder == (*in_skeletonMapRef).end())		// if it isn't in the skeleton map, we'll display it.
+				{
+					int keyToSingle = PolyUtils::convertBlockCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+					EnclaveBlock* blockRef = &(*in_enclaveBlockMapRef)[keyToSingle];
+
+					// If the block is in a BLOCK_NORMAL_FILLED state, we should no longer append triangles to it, as these would be unnecessary,
+					// since BLOCK_NORMAL_FILLED means all 6 sides of the block have been filled (usually to account for incalculable blocks)
+					auto filledBlockCheck = blockRef->getBlockMode();
+					if (filledBlockCheck != BlockSubType::BLOCK_NORMAL_FILLED)
+					{
+						// As long as the subtype of the block isn't BlockSubType::BLOCK_NORMAL_FILLED, 
+						// we should be ok to add data. However, it's entirely possible in the next call to 
+						// setBlockMode below, that this will become BlockSubType::BLOCK_NORMAL_FILLED;
+						// At the same time, if this condition is met, it also means that the block will be entirely 
+						// filled on all 6 sides in block of code.
+
+						// Set the current blockRef to be the BlockSubMode from the group.
+						blockRef->setBlockMode(currentGroup.second.groupSubType);
+
+						// Remember, if the currentGroup was filled because incalculable (aka BlockSubType::BLOCK_NORMAL_FILLED), 
+						// the block must first be reset before anything else.
+						if (currentGroup.second.getFilledBecauseIncalculableValue() == true)
+						{
+							*in_totalTrianglesRef -= blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
+						}
+
+						// Insert the fan group, but remember to fetch the number of triangles.
+						*in_totalTrianglesRef += blockRef->insertFanGroup(currentGroup.second);
+
+					}
+				}
+			}
+		}
+	}
+
+	return incalculableBlocks;
 }
 
 std::vector<ORETerrainTriangle> RenderableTriangleHandler::produceTerrainTriangles()
@@ -162,4 +328,16 @@ void RenderableTriangleHandler::clear()
 	uniqueIDLookup.clear();
 	rTypesMap.clear();
 	touchedBlockList.clear();
+}
+
+void RenderableTriangleHandler::printData()
+{
+	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		std::cout << "Printing renderable triangles for supergroup: " << currentTiledData.first << std::endl;
+		for (auto& currentContainerEntry : currentTiledData.second.rtVector)
+		{
+			currentContainerEntry->printStats();
+		}
+	}
 }
