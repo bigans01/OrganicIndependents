@@ -119,6 +119,8 @@ void OrganicRawEnclave::clearOutDataContainers()
 	skeletonSGM.triangleSkeletonSupergroups.clear();
 	etcSGM.enclaveTriangleSupergroups.clear();
 	organicTriangleSecondarySGM.secondarySupergroups.clear();
+
+	oreRTHandler.clear();
 }
 
 void OrganicRawEnclave::reconstituteBlocksFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef)
@@ -1742,15 +1744,50 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 	// part 4: generate the block triangles, and put them into the tempBlockMap before the function returns; these are the "exposed" blocks.
 	std::map<int, EnclaveBlock> exposedBlockMap;
 	tempOtsSGM.simulateExposedBlockGeneration(&exposedBlockMap);
+
+	std::map<int, EnclaveBlock> testMap;
+	testMap = oreRTHandler.produceBlockCopies();
+
+	// OT-1: tested, verified
+	//exposedBlockMap = oreRTHandler.produceBlockCopies();
+
+
 	return exposedBlockMap;
 }
 
 std::vector<ORETerrainTriangle> OrganicRawEnclave::produceAndReturnTerrainTriangles()
 {
+	// OT-2: In progress. the oreRTHandler needs to have functionality
+	// that copies the call to skeletonSGM below.
+	//return oreRTHandler.produceTerrainTriangles();
+
 	return skeletonSGM.produceTerrainTriangles();
 }
 
 OperableIntSet OrganicRawEnclave::getExistingEnclaveTriangleSkeletonContainerTracker()
 {
 	return existingEnclaveTriangleSkeletonContainerTracker;
+}
+
+void OrganicRawEnclave::testORTHblocks()
+{
+	std::cout << "Testing block copying functionality..." << std::endl;
+
+	std::cout << "Printing container stats..." << std::endl;
+	printMapData();
+	std::cout << "++++++++" << std::endl;
+	printContainerStats();
+
+	std::map<int, EnclaveBlock> oldBlocksMethodMap = produceBlockCopies();
+	//organicTriangleSecondarySGM.simulateExposedBlockGeneration(&oldBlocksMethodMap);
+
+	std::cout << "Size of old blocks method (from produceBlockCopies): " << oldBlocksMethodMap.size() << std::endl;
+
+	std::cout << ">>>> getting stats of oreRTHandler..." << std::endl;
+	int tCount = oreRTHandler.getTriangleCountFromContainers();
+	std::cout << "count of triangles from oreRTHandler: " << tCount << std::endl;
+
+	std::map<int, EnclaveBlock> newBlocksMethodMap = oreRTHandler.produceBlockCopies();
+
+	std::cout << "Size of new blocks method: " << newBlocksMethodMap.size() << std::endl;
 }

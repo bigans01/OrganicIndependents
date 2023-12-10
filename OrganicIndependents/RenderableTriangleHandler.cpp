@@ -19,9 +19,19 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 
 		// We won't be creating the individual blocks, but we will be doing a 1:1 copy of each triangle into the 
 		// appropriate group.
+		//
+		// To do this correctly, we will create new unique_pointer that will contain a copy of the data in the referenced one;
+		// we will then move this copy. This has to be done because we are appending existing data to this one;
+		// however, because of unique_ptr ownership, using std::move via the referenced object will invalidate
+		// the referenced unique_ptr (which we still want to keep), which will result in an error/crash. This is the reason
+		// for the copy.
 		for (auto& currentOtherTiledTriangle : currentSupergroupToCopy.second.rtVector)
 		{
-			rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &currentOtherTiledTriangle);
+			std::unique_ptr<RenderableTriangleBase> triangleToTransferPtr;
+			RenderableTiledTriangle* castedPtr = static_cast<RenderableTiledTriangle*>(currentOtherTiledTriangle.get());
+			triangleToTransferPtr.reset(new RenderableTiledTriangle(*castedPtr));
+
+			rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &triangleToTransferPtr);
 		}
 	}
 
@@ -148,9 +158,29 @@ void RenderableTriangleHandler::generateBlockTrianglesFromSecondaries(std::map<i
 	}
 }
 
+bool RenderableTriangleHandler::scanForNullPointers()
+{
+	bool nullFound = false;
+
+	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
+		{
+			if (!currentTiledContainer)
+			{
+				nullFound = true;
+			}
+		}
+	}
+
+
+	return nullFound;
+}
+
 std::map<int, EnclaveBlock> RenderableTriangleHandler::produceBlockCopies()
 {
 	std::map<int, EnclaveBlock> producedBlocks;
+
 	// Ideally, this function should be able to handle more than just RTypeEnum::TERRAIN_TILE_1; it
 	// should theoretically be able to combine all necessary data and insert it into the returned block map.
 	//
@@ -167,7 +197,7 @@ std::map<int, EnclaveBlock> RenderableTriangleHandler::produceBlockCopies()
 			//	...
 			//	TODO: need to do something with incalculable results here (potentially)...
 			//	...
-
+		
 			for (auto& currentGroup : currentGenerationResult.producedFans)
 			{
 				EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
@@ -181,12 +211,13 @@ std::map<int, EnclaveBlock> RenderableTriangleHandler::produceBlockCopies()
 				// the block must first be reset before anything else.
 				if (currentGroup.second.getFilledBecauseIncalculableValue() == true)
 				{
-					blockRef -= blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
+					// Why was a -= operator even acceptable here? WHY :(
+					blockRef->resetBlock();	// subtract the number of triangles that were in the block, and reset it.
 				}
 
 				// Insert the fan group; there is no need to fetch the number of triangles here.
-				blockRef->insertFanGroup(currentGroup.second);				
-			}
+				blockRef->insertFanGroup(currentGroup.second);
+			}			
 		}
 	}
 	return producedBlocks;

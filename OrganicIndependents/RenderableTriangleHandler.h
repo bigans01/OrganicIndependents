@@ -46,6 +46,10 @@ class RenderableTriangleHandler
 
 		// For below: meant to mirror EnclaveTriangleSkeletonSupergroupManager::appendSkeletonContainers;
 		// Should be utilized when the function OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers is called.
+		//
+		// Designed for the RTypeEnum::TERRAIN_TILE_1-keyed entry in rTypesMap,
+		// this function will analyze all the unique_ptr base instances of the other handler, and create equivalent 
+		// versions of each one, before inserting each one into the calling container.
 		OperableIntSet appendSkeletonContainers(RenderableTriangleHandler* in_otherHandler);
 
 		// For below: in reality, this will be refactored later; but it's being done in this way so that existing code that uses the definition from 
@@ -93,6 +97,8 @@ class RenderableTriangleHandler
 						// (i.e., how OrganicRawEnclave::checkIfFull() calls clear on skeletonSGM, etcSGM, and organicTriangleSecondarySGM.
 
 		void printData();
+
+		bool scanForNullPointers();	// utility/debug: scans through all RenderableTriangleBase pointers, to see if any are null. 
 
 	private:
 		std::map<RTypeEnum, RenderableTriangleContainerManager> rTypesMap;

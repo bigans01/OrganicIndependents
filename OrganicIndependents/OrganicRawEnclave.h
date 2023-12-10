@@ -284,6 +284,11 @@ public:
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 
 	RenderableTriangleHandler oreRTHandler;	// the candidate to replace the other 3 data containers.
+
+	// Functions for testing oreRTHandler transition (OT-*) 
+	// (these will be temporary until the transition to oreRTHandler is complete)
+	void testORTHblocks();
+
 private:
 
 	// Below: data members critical to the functioning of the ORE; these will need to be transformed into relavant Messages (i.e, BDM_ORE_HEADER)

@@ -54,7 +54,7 @@ RenderableGenerationResult RenderableTiledTriangle::generateData()
 		rClampEnum,
 		tilingMaterial);
 
-	RenderableGenerationResult(fTertProducer.incalculableAttempts, fTertProducer.triangleMap);
+	returnResult = RenderableGenerationResult(fTertProducer.incalculableAttempts, fTertProducer.triangleMap);
 
 	return returnResult;
 }
