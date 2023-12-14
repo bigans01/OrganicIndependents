@@ -287,6 +287,30 @@ Operable3DEnclaveKeySet RenderableTriangleHandler::produceBlocksAndInvalids(std:
 	return incalculableBlocks;
 }
 
+std::vector<EnclaveTriangle> RenderableTriangleHandler::retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID)
+{
+	std::vector<EnclaveTriangle> returnTriangles;
+
+	auto targetSGFinder = rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers.find(in_superGroupID);
+	if (targetSGFinder != rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers.end())
+	{
+		for (auto& currentTriangleInTargetGroup : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers[in_superGroupID].rtVector)
+		{
+			EnclaveTriangle newTriangle;
+			newTriangle.points[0] = IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(currentTriangleInTargetGroup->getPoint(0).point);
+			newTriangle.points[1] = IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(currentTriangleInTargetGroup->getPoint(1).point);
+			newTriangle.points[2] = IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(currentTriangleInTargetGroup->getPoint(2).point);
+			newTriangle.emptyNormal = currentTriangleInTargetGroup->getEmptyNormal();
+			newTriangle.enclaveTriangleMaterialID = currentTriangleInTargetGroup->fetchMaterialID();
+			newTriangle.enclaveTriangleBoundaryPolyIndicator = currentTriangleInTargetGroup->getRBoundaryIndicator();
+
+			returnTriangles.push_back(newTriangle);
+		}
+	}
+
+	return returnTriangles;
+}
+
 std::vector<ORETerrainTriangle> RenderableTriangleHandler::produceTerrainTriangles()
 {
 	std::vector<ORETerrainTriangle> returnTriangles;

@@ -70,6 +70,7 @@ class RenderableTriangleBase
 
 		FTrianglePoint getPoint(int in_index); // ranges between 0 and 2, obviously.
 		ECBPolyPoint getEmptyNormal();	// fetch the empty normal value
+		BoundaryPolyIndicator getRBoundaryIndicator();
 
 	protected:
 		FTrianglePoint rPoints[3];	// all 3 points that constituted the triangle. Note that not all data members of each FTrianglePoint may be used;

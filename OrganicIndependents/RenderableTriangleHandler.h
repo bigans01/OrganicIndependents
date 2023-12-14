@@ -79,6 +79,10 @@ class RenderableTriangleHandler
 														std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,
 														int* in_totalTrianglesRef);
 
+		// Below: this function is meant to mirror waht is produced by the function OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup.
+		// That function produces the returning vector, from the contents found in the skeletonSGM.
+		std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);
+
 		// For below: this function should produce the same results as found in the function, EnclaveTriangleSkeletonSupergroupManager::produceTerrainTriangles;
 		// it just has to do it in a compatible way. For the time being, this should only be working with TERRAIN_TILE_1 rTypesMap entry.
 		std::vector<ORETerrainTriangle> produceTerrainTriangles();

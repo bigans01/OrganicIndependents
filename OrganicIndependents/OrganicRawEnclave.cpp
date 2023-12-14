@@ -766,6 +766,9 @@ std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSup
 	}
 
 	return triangleVector;
+
+	//OT-4 -- tested, verified.
+	//return oreRTHandler.retriveAllEnclaveTrianglesForSupergroup(in_superGroupID);
 }
 
 void OrganicRawEnclave::printMapData()
@@ -1123,6 +1126,9 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnContainersAndCreateBlocks(std::m
 	// PART 5: generate the block data, after all the calls to insertOTSecondaryIntoORE above.
 	organicTriangleSecondarySGM.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &blockMap, &total_triangles);
 
+	// OT-3: generation of blocks (tested, verified)
+	//oreRTHandler.generateBlockTrianglesFromSecondaries(&blockSkeletonMap, &blockMap, &total_triangles);
+
 	// the return value of this function will be any malformed/bad blocks.
 	return incalculableBlocks;
 }
@@ -1134,6 +1140,10 @@ Message OrganicRawEnclave::fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveK
 
 void OrganicRawEnclave::printBlockCategorizations()
 {
+	// DEBUG: print container data for oreRTHandler.
+	printContainerStats();
+	std::cout << "Total oreRTHandler triangle count: " << oreRTHandler.getTriangleCountFromContainers() << std::endl;
+
 	// print surrounded/cube (UNEXPOSED) blocks (skeletons)
 	std::cout << "Printing UNEXPOSED blocks (skeletons), total count is:  " << blockSkeletonMap.size() << std::endl;
 	auto blockSkeletonsBegin = blockSkeletonMap.begin();
@@ -1757,7 +1767,7 @@ std::map<int, EnclaveBlock> OrganicRawEnclave::produceBlockCopies()
 
 std::vector<ORETerrainTriangle> OrganicRawEnclave::produceAndReturnTerrainTriangles()
 {
-	// OT-2: In progress. the oreRTHandler needs to have functionality
+	// OT-2: tested, verified. the oreRTHandler needs to have functionality
 	// that copies the call to skeletonSGM below.
 	//return oreRTHandler.produceTerrainTriangles();
 

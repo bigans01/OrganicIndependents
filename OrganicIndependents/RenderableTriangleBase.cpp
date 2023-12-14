@@ -40,3 +40,8 @@ ECBPolyPoint RenderableTriangleBase::getEmptyNormal()
 {
 	return rEmptyNormal;
 }
+
+BoundaryPolyIndicator RenderableTriangleBase::getRBoundaryIndicator()
+{
+	return rBoundaryIndicator;
+}
