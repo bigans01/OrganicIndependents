@@ -1,6 +1,101 @@
 #include "stdafx.h"
 #include "RenderableTriangleHandler.h"
 
+Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey in_blueprintKey,
+	EnclaveKeyDef::EnclaveKey in_oreKey)
+{
+	Message handlerToBDMMsg(MessageType::BDM_ORE_SKELETONSGM);
+	
+	// Each triangle to insert needs the following:
+	//
+	//	-the type (represented by an RTypeEnum value)
+	//	-the corresponding supergroup ID
+	int totalNumbeOfHandlerEntries = 0;
+	for (auto& currentTypeContainer : rTypesMap)
+	{
+		for (auto& currentContainer : currentTypeContainer.second.mappedContainers)
+		{
+			for (auto& currentContainerTriangle : currentContainer.second.rtVector)
+			{
+				// The category of triangles to insert is based on the RTypeEnum key.
+				//
+				// -RTypeEnum::TERRAIN_TILE_1 should correspond to any RDerivedTypeEnum::R_TILED derivative.
+				switch (currentTypeContainer.first)
+				{
+					case RTypeEnum::TERRAIN_TILE_1:
+					{
+						// The order of values, in this case, is the following:
+						// 
+						// -the category type (ie. RTypeEnum)
+						// -the corresponding supergroup
+						// -data from the actual triangle
+
+						handlerToBDMMsg.insertInt(int(RTypeEnum::TERRAIN_TILE_1));	// TERRAIN_TILE_1 should always be this
+						handlerToBDMMsg.insertInt(currentContainer.first);			// insert the super group ID
+						handlerToBDMMsg.insertInt(int(currentContainerTriangle->getRenderingType()));	// get the derived type, store it
+
+						// Append the actual data
+						handlerToBDMMsg.appendOtherMessage(&currentContainerTriangle->writeRTToMessage());	// insert the actual data.
+
+
+						totalNumbeOfHandlerEntries++;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// After we have acquired all the skeletons and sent them into the message, we must put the following into the 
+	// front of the message, in this order:
+	// 
+	// -total number of RenderableTriangleBase entries
+	// -the key of the ORE 
+	// -the blueprint key.
+	handlerToBDMMsg.insertIntFront(totalNumbeOfHandlerEntries);
+	handlerToBDMMsg.insertEnclaveKeyFront(in_oreKey);
+	handlerToBDMMsg.insertEnclaveKeyFront(in_blueprintKey);
+
+
+	return handlerToBDMMsg;
+}
+
+RenderableTriangleHandler::RenderableTriangleHandler(Message in_buildingMessage)
+{
+	// Step 1: open the message.
+	in_buildingMessage.open();
+
+	// Step 2: Read the total number of RenderableTriangleBase entries to build.
+	int totalEntries = in_buildingMessage.readInt();
+
+	for (int x = 0; x < totalEntries; x++)
+	{
+		RTypeEnum currentRType = RTypeEnum(in_buildingMessage.readInt());	// Read the RTypeEnum (eg, TERRAIN_TILE_1), 
+																			// so we know which category in the map it goes into.
+
+		int currentSupergroup = in_buildingMessage.readInt();	// get the supergroup.
+
+		RDerivedTypeEnum currentRenderingType = RDerivedTypeEnum(in_buildingMessage.readInt());	// get enum value that represents the derived type;
+																								// this value will determine what derived 
+																								// class of RenderableTriangleBase that we will use.
+
+		// We must switch off of currentRenderingType, to determine the derived to class to use for the pointer. 
+		// The category (currentRType) isn't as critical, as a category can have multiple RDerivedTypeEnum types.
+		switch (currentRenderingType)
+		{
+			case RDerivedTypeEnum::R_TILED:
+			{
+				std::unique_ptr<RenderableTriangleBase> newTiledTriangle(new (RenderableTiledTriangle));
+				newTiledTriangle->initFromMessage(&in_buildingMessage);
+				newTiledTriangle->setRenderingType(RDerivedTypeEnum::R_TILED);
+				rTypesMap[currentRType].insertRenderableTriangleIntoContainer(currentSupergroup, &newTiledTriangle);
+				break;
+			}
+		}
+
+	}
+}
+
 OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTriangleHandler* in_otherHandler)
 {
 	OperableIntSet appendedSupergroupValues;

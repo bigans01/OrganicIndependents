@@ -1225,7 +1225,7 @@
       <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="RDerivedTypeEnum.h">
-      <Filter>Source Files\RType</Filter>
+      <Filter>Header Files\RType</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

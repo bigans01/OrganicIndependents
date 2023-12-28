@@ -1,6 +1,54 @@
 #include "stdafx.h"
 #include "RenderableTiledTriangle.h"
 
+Message RenderableTiledTriangle::writeRTToMessage()
+{
+	Message tiledMessage;
+
+	// second: add the 3 points.
+	for (int x = 0; x < 3; x++)
+	{
+		tiledMessage.insertPoint(IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(getPoint(x).point));
+	}
+
+	// next: add the material ID:
+	tiledMessage.insertInt(int(tilingMaterial));
+
+	// next: add the perfect clamp enum value:
+	tiledMessage.insertInt(int(rClampEnum));
+
+	// next: add the empty normal:
+	tiledMessage.insertPoint(getEmptyNormal());
+
+	// next: convert te unsigned char of the BoundaryPolyIndicator value, to int, and put that in.
+	tiledMessage.insertInt(int(getRBoundaryIndicator().getIndicatorData()));
+
+	return tiledMessage;
+}
+
+void RenderableTiledTriangle::initFromMessage(Message* in_messageREf)
+{
+	// Message should already be open; just read from it.
+
+	// For points of a RenderableTiledTriangle, there is only the point data, no UV data is necessary.
+	for (int x = 0; x < 3; x++)
+	{
+		rPoints[x] = in_messageREf->readPoint();
+	}
+
+	// next: set the material ID.
+	tilingMaterial = TriangleMaterial(in_messageREf->readInt());
+
+	// next: set the perfect clamp enum value.
+	rClampEnum = PerfectClampEnum(in_messageREf->readInt());
+
+	// next: set the empty normal.
+	rEmptyNormal = in_messageREf->readPoint();
+
+	// next: set the indicator data.
+	rBoundaryIndicator.setIndicatorData(unsigned char(in_messageREf->readInt()));
+}
+
 void RenderableTiledTriangle::printStats()
 {
 	std::cout << "!!! Printing stats for RenderableTiledTriangle! " << std::endl;

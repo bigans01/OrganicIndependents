@@ -1800,4 +1800,24 @@ void OrganicRawEnclave::testORTHblocks()
 	std::map<int, EnclaveBlock> newBlocksMethodMap = oreRTHandler.produceBlockCopies();
 
 	std::cout << "Size of new blocks method: " << newBlocksMethodMap.size() << std::endl;
+
+	std::cout << "+++++++++++++++++ Testing init from message. " << std::endl;
+	int originalContainerCount = oreRTHandler.getTriangleCountFromContainers();
+	std::cout << "Original container count: " << originalContainerCount << std::endl;
+	oreRTHandler.printData();
+
+	Message testMessage = oreRTHandler.convertHandlerToBDM(EnclaveKeyDef::EnclaveKey(0, 0, 0), EnclaveKeyDef::EnclaveKey(0, 0, 0));
+
+	// For the sake of this test only, 
+	// remove the equivalent of 2 EnclaveKeys from the front of the Message (because we insert the blueprint and OREkeys, in that order.)
+	// Normally, these would be read to determine which ORE to populate in a specific blueprint, but we don't care about that
+	// here.
+	testMessage.removeIntsFromFrontAndResetIter(6);
+
+	RenderableTriangleHandler testHandler(testMessage);
+
+	int newContainerCount = testHandler.getTriangleCountFromContainers();
+	std::cout << "New container count: " << newContainerCount << std::endl;
+	testHandler.printData();
+
 }

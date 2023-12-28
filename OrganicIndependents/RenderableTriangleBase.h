@@ -34,7 +34,10 @@ class RenderableTriangleBase
 		// ******************************************************************
 		virtual void setMaterialID(TriangleMaterial in_tilingMaterial) = 0;
 		virtual TriangleMaterial fetchMaterialID() = 0;
+		virtual Message writeRTToMessage() = 0;		// Required by each derived class: writes all relevant data of the derived class (i.e, RenderableTiledTriangle)
+													// to a Message of an undefined type.
 
+		virtual void initFromMessage(Message* in_messageREf) = 0;	// uses a Message to instantiate the contents of the derived class
 
 		// Common virtual functions for all derived classes
 		virtual RenderableGenerationResult generateData() = 0;	// this is the function that would produce data that would be put into EnclaveBlocks

@@ -19,8 +19,22 @@ can then be appened into individual blocks.
 class RenderableTiledTriangle : public RenderableTriangleBase
 {
 	public:
+		Message writeRTToMessage();		// inserts in this order, from a Message: 
+										//	-points
+										//	-material ID
+										//	-perfect clamp enum
+										//	-empty normal
+										//	-boundary indictoar
+
+		void initFromMessage(Message* in_messageREf);	// Reads from a Message, and populates data, in this order:
+														//	-points
+														//	-material ID
+														//	-perfect clamp enum
+														//	-empty normal
+														//	-boundary indictoar
 		void printStats();
 		void setMaterialID(TriangleMaterial in_tilingMaterial);
+
 		TriangleMaterial fetchMaterialID();
 		RenderableGenerationResult generateData();	// this derived-class will use an OrganicTriangleTertiary to produce the BB fans that this tiled triangle produced,
 													// along with any bad/incalculable blocks. The return value may be used in whatever way seems applicable, and is a

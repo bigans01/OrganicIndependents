@@ -31,6 +31,14 @@ class RenderableTriangleHandler
 {
 	public:
 
+		RenderableTriangleHandler(Message in_buildingMessage);	// populates the rTypesMap of the RenderableTriangleHandler
+																// with data from a Message; the Message will have data for instantianting various data types,
+																// such as RenderableTiledTriangle. The blueprint and ORE keys that were originally part
+																// of the Message must have already been stripped off before calling this function,
+																// otherwise an error will likely occur.
+
+		RenderableTriangleHandler() {};	// required default constructor to make C++ happy, since we have a constructor that instantiates from a Message.
+
 		// For below: meant to mirror EnclaveTriangleContainerSupergroupManager::insertEnclaveTriangle; behaves similiar to 
 		// insertSkeletonContainerIntoSupergroup in this class, except that the data comes from EnclaveTriangleContainer.
 		// 
@@ -103,6 +111,11 @@ class RenderableTriangleHandler
 		void printData();
 
 		bool scanForNullPointers();	// utility/debug: scans through all RenderableTriangleBase pointers, to see if any are null. 
+
+		Message convertHandlerToBDM(EnclaveKeyDef::EnclaveKey in_blueprintKey,	// converts this instance of RenderableTriangleHandler into a 
+								    EnclaveKeyDef::EnclaveKey in_oreKey);		// digestable Message format; the Message should contain the blueprint key and ORE key (in that order)
+																				// at the front of the Message.
+
 
 	private:
 		std::map<RTypeEnum, RenderableTriangleContainerManager> rTypesMap;
