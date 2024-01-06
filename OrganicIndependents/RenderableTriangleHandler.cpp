@@ -126,6 +126,14 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 			RenderableTiledTriangle* castedPtr = static_cast<RenderableTiledTriangle*>(currentOtherTiledTriangle.get());
 			triangleToTransferPtr.reset(new RenderableTiledTriangle(*castedPtr));
 
+			// make the triangle generate data, to fetch the touched blocks; so that we may insert the touchedBlockList.			
+			RenderableGenerationResult currentGenerationResult = triangleToTransferPtr->generateData();
+			for (auto& currentGroup : currentGenerationResult.producedFans)
+			{
+				touchedBlockList.insert(currentGroup.first);
+			}
+			
+
 			rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &triangleToTransferPtr);
 		}
 	}
@@ -133,7 +141,7 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 	return appendedSupergroupValues;
 }
 
-void RenderableTriangleHandler::insertEnclaveTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert)
+void RenderableTriangleHandler::insertTiledTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert)
 {
 	uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
 
@@ -150,6 +158,14 @@ void RenderableTriangleHandler::insertEnclaveTriangles(int in_supergroupID, int 
 		newTiledTriangle->setRenderingType(RDerivedTypeEnum::R_TILED);
 		newTiledTriangle->setMaterialID(currentEnclaveTriangleToConvert.second.enclaveTriangleMaterialID);
 
+		// make the triangle generate data, to fetch the touched blocks; so that we may insert the touchedBlockList.	
+		RenderableGenerationResult currentGenerationResult = newTiledTriangle->generateData();
+		for (auto& currentGroup : currentGenerationResult.producedFans)
+		{
+			touchedBlockList.insert(currentGroup.first);
+		}
+		
+
 		rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
 
 	}
@@ -160,6 +176,25 @@ void RenderableTriangleHandler::eraseSupergroup(int in_supergroupID)
 	// First, lookup where the supergroup is.
 	RTypeEnum targetSupergroupCategory = uniqueIDLookup[in_supergroupID];
 	rTypesMap[targetSupergroupCategory].eraseContainer(in_supergroupID);
+}
+
+bool RenderableTriangleHandler::containsRenderableTriangles()
+{
+	bool hasRenderables = false;
+
+	// This function should only really be touching TERRAIN_TILE_1 entry; but will need to be updated at a later time
+	// 
+	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	{
+		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
+		if (currentTiledData.second.rtVector.size() > 0)
+		{
+			// there is at least one triangle found; break and return
+			hasRenderables = true;
+			break;
+		}
+	}
+	return hasRenderables;
 }
 
 void RenderableTriangleHandler::insertSkeletonContainerIntoSupergroup(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleSkeletonContainer in_skeletonContainer)
@@ -342,6 +377,9 @@ Operable3DEnclaveKeySet RenderableTriangleHandler::produceBlocksAndInvalids(std:
 
 			for (auto& currentGroup : currentGenerationResult.producedFans)
 			{
+				// insert the touched block into touchedBlockList.
+				touchedBlockList.insert(currentGroup.first);
+
 				EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(currentGroup.first);
 				auto blockFinder = (*in_skeletonMapRef).find(currentGroup.first);
 				if (blockFinder == (*in_skeletonMapRef).end())		// if it isn't in the skeleton map, we'll display it.
@@ -432,9 +470,10 @@ std::vector<ORETerrainTriangle> RenderableTriangleHandler::produceTerrainTriangl
 
 std::set<int> RenderableTriangleHandler::generateTouchedBlockList()
 {
-	std::set<int> touchedSet;	// the set to return
 
-	
+
+	/*
+	std::set<int> touchedSet;	// the set to return
 	for (auto& currentRenderableType : rTypesMap)
 	{
 		for (auto& currentRenderableData : currentRenderableType.second.mappedContainers)
@@ -453,6 +492,31 @@ std::set<int> RenderableTriangleHandler::generateTouchedBlockList()
 	
 
 	return touchedSet;
+	*/
+
+	/*
+	if (touchedBlockList.empty())
+	{
+		for (auto& currentRenderableType : rTypesMap)
+		{
+			for (auto& currentRenderableData : currentRenderableType.second.mappedContainers)
+			{
+				// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
+				for (auto& currentDataContainer : currentRenderableData.second.rtVector)
+				{
+					RenderableGenerationResult currentGenerationResult = currentDataContainer->generateData();
+					for (auto& currentGroup : currentGenerationResult.producedFans)
+					{
+						//touchedSet.insert(currentGroup.first);
+						touchedBlockList.insert(currentGroup.first);
+					}
+				}
+			}
+		}
+	}
+	*/
+
+	return touchedBlockList;
 }
 
 int RenderableTriangleHandler::getTriangleCountFromContainers()

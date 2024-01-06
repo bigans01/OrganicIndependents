@@ -23,7 +23,7 @@ class EnclaveTriangleSkeletonSupergroupManager
 		//
 		// Converts each element of the input EnclaveTriangleContainer into an equivalent EnclaveTriangleSkeleton,
 		// before inserting said skeleton into a EnclaveTriangleSkeletonContainer. Functionally the same as insertSkeletonContainerIntoSupergroup,
-		// it is required as part of the usage for the OrganicRawEnclave::insertEnclaveTriangleComponents function.
+		// it is required as part of the usage for the OrganicRawEnclave::insertTiledTriangleIntoRTHandler function.
 		// This function will probably remain until the end of this class, when this class is deemed as no longer necessary.
 		void insertEnclaveTriangleContainerIntoSGM(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_skeletonContainer)
 		{

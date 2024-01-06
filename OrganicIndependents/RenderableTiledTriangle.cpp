@@ -59,10 +59,11 @@ void RenderableTiledTriangle::printStats()
 		std::cout << std::endl;
 	}
 
-	std::cout << "Empty normal: " << std::endl;
-	rEmptyNormal.printPointCoords(); std::cout << std::endl;
+	std::cout << "Empty normal: ";
+	rEmptyNormal.printPointCoords(); 
+	std::cout << std::endl;
 
-	std::cout << "Value of tiling material: " << std::endl;
+	std::cout << "Value of tiling material: ";
 	switch (tilingMaterial)
 	{
 		case TriangleMaterial::NOVAL: { std::cout << "NOVAL" << std::endl; break; }
@@ -70,7 +71,7 @@ void RenderableTiledTriangle::printStats()
 		case TriangleMaterial::GRASS: { std::cout << "GRASS" << std::endl; break; }
 	}
 
-	std::cout << "Rendering type: " << std::endl;
+	std::cout << "Rendering type: ";
 	switch (rDerived)
 	{
 		case RDerivedTypeEnum::DERIVED_TYPE_UNDEFINED: { std::cout << "DERIVED_TYPE_UNDEFINED" << std::endl; break;}

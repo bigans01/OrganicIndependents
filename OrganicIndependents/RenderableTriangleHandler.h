@@ -46,11 +46,14 @@ class RenderableTriangleHandler
 		// existing OrganicTriangle; the function calls EnclaveFractureResultsMap::insertFractureResults for each detected EnclavePoly in 
 		// a referenced OrganicTriangle, which subsequently calls OrganicRawEnclave::insertEnclaveTriangleContainer. The last function mentioned,
 		// is what should be responsible for calling this below function.
-		void insertEnclaveTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert);
+		void insertTiledTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert);
 
 		// For below: this is a mirror of EnclaveTriangleSkeletonSupergroupManager::eraseSupergroup. Would be needed when a call to 
 		// OrganicRawEnclave::removeSkeletonSupergroup is issued.
 		void eraseSupergroup(int in_supergroupID);
+
+		bool containsRenderableTriangles();	// Scans the RTypeEnum::TERRAIN_TILE_1 entry in rTypesMap, to see if any triangles exist; will return true 
+											// upon detecting the first available triangle.
 
 		// For below: meant to mirror EnclaveTriangleSkeletonSupergroupManager::appendSkeletonContainers;
 		// Should be utilized when the function OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers is called.

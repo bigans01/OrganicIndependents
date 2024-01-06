@@ -107,7 +107,7 @@ public:
 		                       Message in_skeletonSGMBuildingMessage);
 
 	
-	void insertEnclaveTriangleComponents(int in_polyID,											// This function is used by EnclaveFractureResultsMap::insertFractureResults,
+	void insertTiledTriangleIntoRTHandler(int in_polyID,											// This function is used by EnclaveFractureResultsMap::insertFractureResults,
 										int in_clusterID,										// to load various EnclaveTriangle data into all relevant members. such as:
 										EnclaveTriangleContainer in_enclaveTriangleContainer,	// skeletonSGM, etcSGM, organicTriangleSecondarySGM, and the oreRTHandler.
 										OrganicTriangleSecondary in_secondaryComponent);
@@ -148,9 +148,8 @@ public:
 	
 	// ||||||||||| Miscellaneous print functions
 	void printMapData();
-	void printEnclaveTriangleContainers(bool in_pauseBetweenTrianglesFlag);
-	void printTriangleMetadata();
-	void printMetadata();
+	void printRTHandlerContainers(bool in_pauseBetweenTrianglesFlag);		// prints data about EnclaveTriangles in a containers; used by functions such as OrganicGLManager::jobConstructORECompositionHighlight (OrganicCoreLib)
+
 	void printTrianglesPerBlock();
 	void printContainerStats();
 	void printOREStates();	// prints out the values of the currentLodState, currentAppendedState, and currentDependencyState enum values.
@@ -204,11 +203,9 @@ public:
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
-														EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
 														RenderableTriangleHandler* in_handlerRef);		// appends new enclave triangle skeletons, to the existing ones; also updates the appended state of the ORE.
 
 	void reloadSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
-														EnclaveTriangleSkeletonSupergroupManager in_enclaveTriangleSkeletonContainer,
 														RenderableTriangleHandler* in_handlerRef);		// clears out the old values in existingEnclaveTriangleSkeletonContainerTracker,
 																																									// and wipes out the existing skeletons in skeletonSGM, 
 																																									// before appending an entirely new series of skeleton containers. Needed by 
@@ -236,10 +233,6 @@ public:
 									   std::vector<OrganicWrappedBBFan> in_fanVector,						// this function assumes that the EnclaveBlock exists.
 									   EnclaveKeyDef::EnclaveKey in_key);
 
-
-	EnclaveTriangleSkeletonSupergroupManager spawnEnclaveTriangleSkeletonContainers();						// reads from the EnclaveTriangleContainer map to produce their corresponding EnclaveTriangleSkeletonContainers; the produced skeleton containers can then be sent (appended) to 
-																											// a different instance of OrganicRawEnclave, using the function appendSpawnedEnclaveTriangleSkeletonContainers; see usage in 
-																											// OrganicSystem::spawnAndAppendEnclaveTriangleSkeletonsToBlueprint.
 	OperableIntSet getExistingEnclaveTriangleSkeletonContainerTracker();
 																									// used by the RJPhasedBlueprintMM class in OrganicCoreLib to determine whether or not to use this ORE in rendering.
 	ORELodState getLodState();																// returns the level-of-detail state of the ORE.
@@ -250,12 +243,14 @@ public:
 																													// set 
 	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
 																											// EnclaveTriangleContainerSupergroup with a given ID.
+																											// Utilized by functions such as ECBPolyReformer::processPersistentPolysAgainstContouredMass
+																																																						
 
 
 
 	// **************************** START DEBUG FUNCTIONS *********************************************
 
-	void simulateBlockProduction();			// debug function; will simulate block production by reading from skeletonSGM, without modifying contents of the ORE.
+	void simulateBlockProduction();			// debug function; needs revisit/refactor (doesn nothing since the oreRTHandler transition commit)
 	EnclaveBlockState getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey);
 	void printBlockCategorizations();
 	Message fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM);
@@ -304,8 +299,6 @@ private:
 	void updateCurrentAppendedState();		// updates the appended state to SINGLE_APPEND or MULTIPLE_APPEND
 	void resetBlockDataAndTriangleCount();																							// clears the blockMap, and resets triangle count
 
-	void createBlocksFromOrganicTriangleSecondaries(std::mutex* in_mutexRef);										// spawn the EnclaveBlocks, and Fans from the OrganicTriangleSecondaries; used when the currentState is
-																													// in LOD_ENCLAVE or LOD_ENCLAVE_MODIFIED
 
 	Operable3DEnclaveKeySet spawnContainersAndCreateBlocks(std::mutex* in_mutexRef,						// clears out the blocks and resets the total_triangles to 0,
 														   EnclaveKeyDef::EnclaveKey in_enclaveKey);	// and then generates block data. Any incalculable blocks are then returned.
