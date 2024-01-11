@@ -425,7 +425,7 @@
     <ClInclude Include="ResolverLinkMap.h" />
     <ClInclude Include="RippleImpactRegister.h" />
     <ClInclude Include="RenderableTriangleBase.h" />
-    <ClInclude Include="RTypeEnum.h" />
+    <ClInclude Include="RCategoryEnum.h" />
     <ClInclude Include="SCircuitSegment.h" />
     <ClInclude Include="SecondaryLineType.h" />
     <ClInclude Include="SecondarySearchResult.h" />

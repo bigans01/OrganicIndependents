@@ -94,7 +94,7 @@ public:
 
 	// debug/diag functions; not critical to application but handy for development/debug.
 	void printBDMForORESkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		// attempts to query an ORE, if it exists, to
-																														// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's skeletonSGM.
+																														// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's oreRTHandler.
 																														// This function just prints out the contents in a readable manner, for testing purposes.
 
 	MessageContainer convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// generate all data necessary to make an instance of this class, in BDM format.

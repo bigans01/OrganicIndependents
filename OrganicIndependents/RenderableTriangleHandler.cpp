@@ -8,7 +8,7 @@ Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey
 	
 	// Each triangle to insert needs the following:
 	//
-	//	-the type (represented by an RTypeEnum value)
+	//	-the type (represented by an RCategoryEnum value)
 	//	-the corresponding supergroup ID
 	int totalNumbeOfHandlerEntries = 0;
 	for (auto& currentTypeContainer : rTypesMap)
@@ -17,20 +17,20 @@ Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey
 		{
 			for (auto& currentContainerTriangle : currentContainer.second.rtVector)
 			{
-				// The category of triangles to insert is based on the RTypeEnum key.
+				// The category of triangles to insert is based on the RCategoryEnum key.
 				//
-				// -RTypeEnum::TERRAIN_TILE_1 should correspond to any RDerivedTypeEnum::R_TILED derivative.
+				// -RCategoryEnum::TERRAIN_TILE_1 should correspond to any RDerivedTypeEnum::R_TILED derivative.
 				switch (currentTypeContainer.first)
 				{
-					case RTypeEnum::TERRAIN_TILE_1:
+					case RCategoryEnum::TERRAIN_TILE_1:
 					{
 						// The order of values, in this case, is the following:
 						// 
-						// -the category type (ie. RTypeEnum)
+						// -the category type (ie. RCategoryEnum)
 						// -the corresponding supergroup
 						// -data from the actual triangle
 
-						handlerToBDMMsg.insertInt(int(RTypeEnum::TERRAIN_TILE_1));	// TERRAIN_TILE_1 should always be this
+						handlerToBDMMsg.insertInt(int(RCategoryEnum::TERRAIN_TILE_1));	// TERRAIN_TILE_1 should always be this
 						handlerToBDMMsg.insertInt(currentContainer.first);			// insert the super group ID
 						handlerToBDMMsg.insertInt(int(currentContainerTriangle->getRenderingType()));	// get the derived type, store it
 
@@ -70,7 +70,7 @@ RenderableTriangleHandler::RenderableTriangleHandler(Message in_buildingMessage)
 
 	for (int x = 0; x < totalEntries; x++)
 	{
-		RTypeEnum currentRType = RTypeEnum(in_buildingMessage.readInt());	// Read the RTypeEnum (eg, TERRAIN_TILE_1), 
+		RCategoryEnum currentRType = RCategoryEnum(in_buildingMessage.readInt());	// Read the RCategoryEnum (eg, TERRAIN_TILE_1), 
 																			// so we know which category in the map it goes into.
 
 		int currentSupergroup = in_buildingMessage.readInt();	// get the supergroup.
@@ -102,12 +102,12 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 
 	
 	// Cycle through the TERRAIN_TILE_1 entry in the mappedContainers of the other referenced handler (in_otherHandler)
-	for (auto& currentSupergroupToCopy : in_otherHandler->rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentSupergroupToCopy : in_otherHandler->rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// For each supergroup we find in the handler we are appending from, 
 		// we must ensure a proper lookup value exists, for all the triangles that belong to a supergroup;
 		// This is for functions that only know a given ID of an ECBPoly.
-		uniqueIDLookup[currentSupergroupToCopy.first] = RTypeEnum::TERRAIN_TILE_1;
+		uniqueIDLookup[currentSupergroupToCopy.first] = RCategoryEnum::TERRAIN_TILE_1;
 
 		// Append the supegroup ID to the return value set.
 		appendedSupergroupValues += currentSupergroupToCopy.first;
@@ -134,7 +134,7 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 			}
 			
 
-			rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &triangleToTransferPtr);
+			rTypesMap[RCategoryEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(currentSupergroupToCopy.first, &triangleToTransferPtr);
 		}
 	}
 
@@ -143,7 +143,7 @@ OperableIntSet RenderableTriangleHandler::appendSkeletonContainers(RenderableTri
 
 void RenderableTriangleHandler::insertTiledTriangles(int in_supergroupID, int in_skeletonContainerID, EnclaveTriangleContainer in_containerToConvert)
 {
-	uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
+	uniqueIDLookup[in_supergroupID] = RCategoryEnum::TERRAIN_TILE_1;
 
 	for (auto& currentEnclaveTriangleToConvert : in_containerToConvert.triangles)
 	{
@@ -166,7 +166,7 @@ void RenderableTriangleHandler::insertTiledTriangles(int in_supergroupID, int in
 		}
 		
 
-		rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
+		rTypesMap[RCategoryEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
 
 	}
 }
@@ -174,7 +174,7 @@ void RenderableTriangleHandler::insertTiledTriangles(int in_supergroupID, int in
 void RenderableTriangleHandler::eraseSupergroup(int in_supergroupID)
 {
 	// First, lookup where the supergroup is.
-	RTypeEnum targetSupergroupCategory = uniqueIDLookup[in_supergroupID];
+	RCategoryEnum targetSupergroupCategory = uniqueIDLookup[in_supergroupID];
 	rTypesMap[targetSupergroupCategory].eraseContainer(in_supergroupID);
 }
 
@@ -184,7 +184,7 @@ bool RenderableTriangleHandler::containsRenderableTriangles()
 
 	// This function should only really be touching TERRAIN_TILE_1 entry; but will need to be updated at a later time
 	// 
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
 		if (currentTiledData.second.rtVector.size() > 0)
@@ -204,7 +204,7 @@ void RenderableTriangleHandler::insertSkeletonContainerIntoSupergroup(int in_sup
 
 	// We must ensure a proper lookup value exists, for all the triangles that belong to a supergroup, 
 	// for functions that only know a given ID of an ECBPoly.
-	uniqueIDLookup[in_supergroupID] = RTypeEnum::TERRAIN_TILE_1;
+	uniqueIDLookup[in_supergroupID] = RCategoryEnum::TERRAIN_TILE_1;
 
 	for (auto& currentSkeletonToConvert : in_skeletonContainer.skeletons)
 	{
@@ -225,7 +225,7 @@ void RenderableTriangleHandler::insertSkeletonContainerIntoSupergroup(int in_sup
 
 
 		// Once all data has been setup for the tiled renderable triangle, send it on down to the appropriate container.
-		rTypesMap[RTypeEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
+		rTypesMap[RCategoryEnum::TERRAIN_TILE_1].insertRenderableTriangleIntoContainer(in_supergroupID, &newTiledTriangle);
 
 	}
 }
@@ -236,7 +236,7 @@ void RenderableTriangleHandler::generateBlockTrianglesFromSecondaries(std::map<i
 {
 	
 	// This function should only really be touching TERRAIN_TILE_1 entry; so cycle through each container here.
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
@@ -292,7 +292,7 @@ bool RenderableTriangleHandler::scanForNullPointers()
 {
 	bool nullFound = false;
 
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
 		{
@@ -311,12 +311,12 @@ std::map<int, EnclaveBlock> RenderableTriangleHandler::produceBlockCopies()
 {
 	std::map<int, EnclaveBlock> producedBlocks;
 
-	// Ideally, this function should be able to handle more than just RTypeEnum::TERRAIN_TILE_1; it
+	// Ideally, this function should be able to handle more than just RCategoryEnum::TERRAIN_TILE_1; it
 	// should theoretically be able to combine all necessary data and insert it into the returned block map.
 	//
-	// At this time, only RTypeEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
+	// At this time, only RCategoryEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
 	// the future, to accomodate for non-tile textures (logic isn't implemented yet, as of 11/30/2023)
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
@@ -359,12 +359,12 @@ Operable3DEnclaveKeySet RenderableTriangleHandler::produceBlocksAndInvalids(std:
 {
 	Operable3DEnclaveKeySet incalculableBlocks;
 
-	// Ideally, this function should be able to handle more than just RTypeEnum::TERRAIN_TILE_1; it
+	// Ideally, this function should be able to handle more than just RCategoryEnum::TERRAIN_TILE_1; it
 	// should theoretically be able to combine all necessary data and insert it into the returned block map.
 	//
-	// At this time, only RTypeEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
+	// At this time, only RCategoryEnum::TERRAIN_TILE_1 is being used, but this will likely be changed sometime in 
 	// the future, to accomodate for non-tile textures (logic isn't implemented yet, as of 11/30/2023)
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
@@ -420,14 +420,14 @@ Operable3DEnclaveKeySet RenderableTriangleHandler::produceBlocksAndInvalids(std:
 	return incalculableBlocks;
 }
 
-std::vector<EnclaveTriangle> RenderableTriangleHandler::retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID)
+std::vector<EnclaveTriangle> RenderableTriangleHandler::retrieveTiledTrianglesForSupergroup(int in_superGroupID)
 {
 	std::vector<EnclaveTriangle> returnTriangles;
 
-	auto targetSGFinder = rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers.find(in_superGroupID);
-	if (targetSGFinder != rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers.end())
+	auto targetSGFinder = rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers.find(in_superGroupID);
+	if (targetSGFinder != rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers.end())
 	{
-		for (auto& currentTriangleInTargetGroup : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers[in_superGroupID].rtVector)
+		for (auto& currentTriangleInTargetGroup : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers[in_superGroupID].rtVector)
 		{
 			EnclaveTriangle newTriangle;
 			newTriangle.points[0] = IndependentUtils::convertFTriangleDoublePointToECBPolyPoint(currentTriangleInTargetGroup->getPoint(0).point);
@@ -449,7 +449,7 @@ std::vector<ORETerrainTriangle> RenderableTriangleHandler::produceTerrainTriangl
 	std::vector<ORETerrainTriangle> returnTriangles;
 
 	
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Below: check each triangle in the rtVector, generate the results, and attempt to append into the block map.
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
@@ -524,7 +524,7 @@ int RenderableTriangleHandler::getTriangleCountFromContainers()
 	int triangleCount = 0;
 
 	
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		// Each triangle found in rtVector should increment the count by 1.
 		for (auto& currentTiledContainer : currentTiledData.second.rtVector)
@@ -546,7 +546,7 @@ void RenderableTriangleHandler::clear()
 
 void RenderableTriangleHandler::printData()
 {
-	for (auto& currentTiledData : rTypesMap[RTypeEnum::TERRAIN_TILE_1].mappedContainers)
+	for (auto& currentTiledData : rTypesMap[RCategoryEnum::TERRAIN_TILE_1].mappedContainers)
 	{
 		std::cout << "Printing renderable triangles for supergroup: " << currentTiledData.first << std::endl;
 		for (auto& currentContainerEntry : currentTiledData.second.rtVector)

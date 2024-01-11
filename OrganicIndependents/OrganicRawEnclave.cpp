@@ -271,10 +271,6 @@ void OrganicRawEnclave::insertTiledTriangleIntoRTHandler(int in_polyID,
 	oreRTHandler.insertTiledTriangles(in_polyID, in_clusterID, in_enclaveTriangleContainer);
 }
 
-void OrganicRawEnclave::insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults)
-{
-	organicTriangleSecondarySGM.insertSecondary(in_polyID, in_clusterID, in_enclavePolyFractureResults);
-}
 void OrganicRawEnclave::insertBlockSkeleton(EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveBlockSkeleton in_blockSkeleton)
 {
 	int blockCoordsToSingle = PolyUtils::convertBlockCoordsToSingle(in_blockKey.x, in_blockKey.y, in_blockKey.z);
@@ -706,10 +702,10 @@ GroupSetPair OrganicRawEnclave::appendEnclaveTrianglesFromOtherORE(std::mutex* i
 	return returnPair;
 }
 
-std::vector<EnclaveTriangle> OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID)
+std::vector<EnclaveTriangle> OrganicRawEnclave::retrieveHandlerTiledTriangles(int in_superGroupID)
 {
 	//OT-4 -- tested, verified.
-	return oreRTHandler.retriveAllEnclaveTrianglesForSupergroup(in_superGroupID);
+	return oreRTHandler.retrieveTiledTrianglesForSupergroup(in_superGroupID);
 }
 
 void OrganicRawEnclave::printMapData()
@@ -727,7 +723,8 @@ void OrganicRawEnclave::printMapData()
 	{
 		std::cout << "++State: FULL " << std::endl;
 	}
-	std::cout << "Skeleton container map size: " << skeletonSGM.triangleSkeletonSupergroups.size() << std::endl;
+
+	//std::cout << "Skeleton container map size: " << skeletonSGM.triangleSkeletonSupergroups.size() << std::endl;
 	std::cout << "Number of blocks: " << blockMap.size() << std::endl;
 	std::cout << "Number of skeletons: " << blockSkeletonMap.size() << std::endl;
 	//ECBPolyPoint dumbPoint;
@@ -736,9 +733,9 @@ void OrganicRawEnclave::printMapData()
 
 void OrganicRawEnclave::printContainerStats()
 {
-	std::cout << "Number of entries in skeletonSGM: " << skeletonSGM.getTotalEntries() << std::endl;
-	std::cout << "Number of entires in etcSGM: " << etcSGM.enclaveTriangleSupergroups.size() << std::endl;
-	std::cout << "Number of entries in organicTriangleSecondarySGM: " << organicTriangleSecondarySGM.secondarySupergroups.size() << std::endl;
+	//std::cout << "Number of entries in skeletonSGM: " << skeletonSGM.getTotalEntries() << std::endl;
+	//std::cout << "Number of entires in etcSGM: " << etcSGM.enclaveTriangleSupergroups.size() << std::endl;
+	//std::cout << "Number of entries in organicTriangleSecondarySGM: " << organicTriangleSecondarySGM.secondarySupergroups.size() << std::endl;
 	std::cout << "Total blocks: " << blockMap.size() << std::endl;
 	std::cout << "Total triangles: " << total_triangles << std::endl;
 	std::cout << "Total skeletons: " << blockSkeletonMap.size() << std::endl;
@@ -891,9 +888,10 @@ Operable3DEnclaveKeySet OrganicRawEnclave::spawnContainersAndCreateBlocks(std::m
 	return incalculableBlocks;
 }
 
-Message OrganicRawEnclave::fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM)
+Message OrganicRawEnclave::fetchBDMMessageForRTHandler(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM)
 {
-	return skeletonSGM.convertSkeletonSGMToBDM(in_blueprintKeyForBDM, in_oreKeyForBDM);
+	//return skeletonSGM.convertSkeletonSGMToBDM(in_blueprintKeyForBDM, in_oreKeyForBDM);
+	return oreRTHandler.convertHandlerToBDM(in_blueprintKeyForBDM, in_oreKeyForBDM);
 }
 
 void OrganicRawEnclave::printBlockCategorizations()

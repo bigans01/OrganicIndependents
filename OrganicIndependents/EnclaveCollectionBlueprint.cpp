@@ -194,64 +194,103 @@ void EnclaveCollectionBlueprint::printBDMForORESkeletonSGM(EnclaveKeyDef::Enclav
 	// Safety: only attempt to fetch the message if the ORE actually exists.
 	if (fractureResults.checkIfSpecificOREExists(in_oreKey))
 	{
-		// The below Message that gets returned from the function call comes from the EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM
-		// function. See that function for how a Message of the type BDM_ORE_SKELETONSGM is built (that is the type of Message that is returned here)
-		Message generatedMessage = fractureResults.submitBDMForORESGM(in_blueprintKey, in_oreKey);
 
-		std::cout << ">>>>>>>>>>> Beginning test of read of BDM SGM message. " << std::endl;
+		// All of the associated triangles to print out will come from a Message
+		// that is returned from a call to fetchBDMForORERTHandler. The methodology to
+		// interpret that Message must be done in this function.
+		Message generatedMessage = fractureResults.fetchBDMForORERTHandler(in_blueprintKey, in_oreKey);
+
+		std::cout << ">>>>>>>>>>> Beginning test of read of BDM oreRTHandler data message. " << std::endl;
 		generatedMessage.open();
 
+		// Optional for output, but the blueprint and ORE keys must be read / stripped out first.
 		EnclaveKeyDef::EnclaveKey readBPKey = generatedMessage.readEnclaveKey();
 		EnclaveKeyDef::EnclaveKey readOreKey = generatedMessage.readEnclaveKey();
-		int totalSkeletons = generatedMessage.readInt();
+		
+		// The next value in the Message should be the total number of RenderableTriangleBase objects
+		// that we will be reading.
+		int totalRenderableTriangleBaseEntries = generatedMessage.readInt();	// the total number of entries found in the oreRTHandler member of the ORE.
 
-		std::cout << "BP key: ";
-		readBPKey.printKey();
-		std::cout << std::endl;
-
-		std::cout << "ORE key: ";
-		readOreKey.printKey();
-		std::cout << std::endl;
-
-		std::cout << "Number of skeletons: " << totalSkeletons << std::endl;
-
-		std::cout << "Printing out skeleton stats: " << std::endl;
-		for (int x = 0; x < totalSkeletons; x++)
+		// As we iterate through each set of data the pertains to a RenderableTriangleBase, 
+		// we must first get the RCategoryEnum, related supergroup, and RDerivedTypeEnum, in that order, from
+		// the currently opened Message. This will determine the next steps to take for interpreting
+		// the contents of the Message.
+		for (int x = 0; x < totalRenderableTriangleBaseEntries; x++)
 		{
-			// read out the indices. 
-			int supergroupID = generatedMessage.readInt();
-			int containerID = generatedMessage.readInt();
-			int skeletonID = generatedMessage.readInt();
-			std::cout << "[" << supergroupID << "][" << containerID << "][" << skeletonID << "] ||| Points: ";
+			RCategoryEnum currentRType = RCategoryEnum(generatedMessage.readInt());	// Read the RCategoryEnum (eg, TERRAIN_TILE_1), 
+																			// so we know which category in the map it goes into.
 
+			int currentSupergroup = generatedMessage.readInt();	// get the supergroup.
 
-			// next: read 3 points.
-			for (int y = 0; y < 3; y++)
+			RDerivedTypeEnum currentRenderingType = RDerivedTypeEnum(generatedMessage.readInt());	// get enum value that represents the derived type;
+																									// this value will determine what derived 
+																									// class of RenderableTriangleBase that we will use.
+
+			// The current rendering type needs to be used, to determine how to print out the data for the current RenderableTriangleBase entry 
+			// that we are looking at.
+			switch (currentRenderingType)
 			{
-				ECBPolyPoint currentPoint = generatedMessage.readPoint();
-				currentPoint.printPointCoords();
-				std::cout << " | ";
+				// R_TILED matches to RenderableTiledTriangle
+				case RDerivedTypeEnum::R_TILED:
+				{
+					// Print the supergroup
+					std::cout << "Supergroup: " << currentSupergroup << " | ";
+
+					// Determine the category to print out
+					std::cout << "RCategoryEnum: ";
+					switch (currentRType)
+					{
+						case RCategoryEnum::TERRAIN_TILE_1:
+						{
+							std::cout << "TERRAIN_TILE_1";
+							break;
+						}
+					}
+					std::cout << " |";
+
+					// Determine the derived type to print out
+					std::cout << "RDerivedTypeEnum: ";
+					switch (currentRenderingType)
+					{
+						case RDerivedTypeEnum::R_TILED:
+						{
+							std::cout << "R_TILED";
+							break;
+						}
+					}
+					std::cout << " |";
+
+					// Now, print in this order: points (3), material, clamp value, empty normal, boundary indicator
+					std::cout << " | Points: ";
+					for (int x = 0; x < 3; x++)
+					{
+						FTrianglePoint currentPoint = generatedMessage.readPoint();
+						currentPoint.printPointData();
+						std::cout << " | ";
+					}
+
+					// next: set the material ID.
+					TriangleMaterial tilingMaterial = TriangleMaterial(generatedMessage.readInt());
+
+					// next: set the perfect clamp enum value.
+					PerfectClampEnum rClampEnum = PerfectClampEnum(generatedMessage.readInt());
+
+					// next: set the empty normal.
+					ECBPolyPoint rEmptyNormal = generatedMessage.readPoint();
+
+					// next: set the indicator data.
+					BoundaryPolyIndicator rBoundaryIndicator;
+					rBoundaryIndicator.setIndicatorData(unsigned char(generatedMessage.readInt()));
+
+					std::cout << std::endl;
+
+
+					break;
+				}
 			}
-
-			// next: read the materialID.
-			int currentMaterialID = generatedMessage.readInt();
-			std::cout << "Material ID: " << currentMaterialID << " | ";
-
-			// next: read the perfect clamp enum value.
-			int currentPerfectClampValue = generatedMessage.readInt();
-			std::cout << "Perfect clamp value: " << currentPerfectClampValue << " | ";
-
-			// next: read the empty normal.
-			ECBPolyPoint currentEmptyNormal = generatedMessage.readPoint();
-			std::cout << "Empty normal: ";
-			currentEmptyNormal.printPointCoords();
-			std::cout << " | ";
-
-			// next: read the boundary poly indicator data.
-			int currentIndicatorData = generatedMessage.readInt();
-			BoundaryPolyIndicator tempIndicator(currentIndicatorData);
-			std::cout << "Boundary indicator: " << tempIndicator.getPrintableIndicatorValue() << std::endl;
 		}
+
+
 	}
 	else
 	{

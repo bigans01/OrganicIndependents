@@ -73,7 +73,7 @@ public:
 	bool checkIfAnyOREsExist();
 	bool checkIfSpecificOREExists(EnclaveKeyDef::EnclaveKey in_enclaveKey);
 	bool checkIfSpecificOREContainsAnyBlocks(EnclaveKeyDef::EnclaveKey in_enclaveKey);
-	Message submitBDMForORESGM( EnclaveKeyDef::EnclaveKey in_blueprintKeyForRequest,	// attempts to produce an BDM_ORE_SKELETONSGM Message, if
+	Message fetchBDMForORERTHandler( EnclaveKeyDef::EnclaveKey in_blueprintKeyForRequest,	// attempts to produce an BDM_ORE_SKELETONSGM Message, if
 								EnclaveKeyDef::EnclaveKey in_enclaveKeyForRequest);		// the ORE exists. If the ORE doesn't exist, a blank Message is returned;
 																						// So make sure that the ORE exists before calling this.
 

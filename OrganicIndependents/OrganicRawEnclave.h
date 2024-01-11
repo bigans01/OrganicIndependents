@@ -69,10 +69,7 @@ public:
 		currentDependencyState = resultsContainer_b.currentDependencyState;
 
 		blockSkeletonMap = resultsContainer_b.blockSkeletonMap;
-		skeletonSGM = resultsContainer_b.skeletonSGM;									// copy skeleton container map
-		etcSGM = resultsContainer_b.etcSGM;					// copy 
-		organicTriangleSecondarySGM = resultsContainer_b.organicTriangleSecondarySGM;														// copy, copy, MORE COPYYYYY
-
+		
 		oreRTHandler = resultsContainer_b.oreRTHandler;
 
 		// copy blocks, if the copied OrganicRawEnclave doesn't have its blockMap empty.
@@ -241,9 +238,9 @@ public:
 																							// in OrganicCoreLib.
 	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
 																													// set 
-	std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);				// returns a vector that contains all EnclaveTriangles found in a 
-																											// EnclaveTriangleContainerSupergroup with a given ID.
-																											// Utilized by functions such as ECBPolyReformer::processPersistentPolysAgainstContouredMass
+	std::vector<EnclaveTriangle> retrieveHandlerTiledTriangles(int in_superGroupID);		// returns a vector that contains all RenderableTiledTriangles found in a 
+																							// EnclaveTriangleContainerSupergroup with a given ID, that are converted to EnclaveTriangle format before being returned.
+																							// Utilized by functions such as ECBPolyReformer::processPersistentPolysAgainstContouredMass
 																																																						
 
 
@@ -253,32 +250,23 @@ public:
 	void simulateBlockProduction();			// debug function; needs revisit/refactor (doesn nothing since the oreRTHandler transition commit)
 	EnclaveBlockState getBlockStatus(EnclaveKeyDef::EnclaveKey in_blockKey);
 	void printBlockCategorizations();
-	Message fetchBDMMessageForSkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM);
+	Message fetchBDMMessageForRTHandler(EnclaveKeyDef::EnclaveKey in_blueprintKeyForBDM, EnclaveKeyDef::EnclaveKey in_oreKeyForBDM);
 
 	// **************************** END DEBUG FUNCTIONS *********************************************
 
 
 
 
-	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 1: For storing "Deflated" data;
 
-	// skeletonSGM
-	//
-	// used to produce or "inflate" the data in a whole EnclaveTriangle; these are read from disk and used to populate the etcSGM;
-	// it is designed to save memory and disk space.
-
-	// contains blocks that must be run in a final pass, if there are any to run.
-	EnclaveTriangleSkeletonSupergroupManager skeletonSGM;
-
-	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| GROUP 2: For storing "Inflated" data; generated at run time during high-LOD terrain requests.
-
-	// etcSGM
-	EnclaveTriangleContainerSupergroupManager etcSGM;
-	OrganicTriangleSecondarySupergroupManager organicTriangleSecondarySGM;	// used to store produced OrganicTriangleSecondary instances, in their appropriate supergrpup.
 	std::map<int, EnclaveBlock> blockMap;	// this map is built when the OrganicSystem requires a high LOD terrain job, such as RJPhasedBlueprintMM (see OrganicCoreLib)
 											// contains individual blocks which can be used to render (can be read from a file as well); otherwise, they are generated from OrganicTriangleSecondaries.
 
-	RenderableTriangleHandler oreRTHandler;	// the candidate to replace the other 3 data containers.
+	RenderableTriangleHandler oreRTHandler;	// capable of managing multiple types of ORE triangles for rendering,
+											// this is where all the data for ORE triangles is stored. It is also the object
+											// of the class that is primarily responsbile for rendering data and block generation.
+											// All of the capabilities and functionality of the old members (skeletonSGM, etcSGM, organicTriangleSecondarySGM)
+											// have been merged into this class.
+											
 
 	// Functions for testing oreRTHandler transition (OT-*) 
 	// (these will be temporary until the transition to oreRTHandler is complete)
@@ -311,8 +299,6 @@ private:
 																	// make all 64 possible blocks in the ORE be stored in the blockSkeletonMap. 
 																	// Currently used by morphLodToBlock function. Default material for each block is 0.
 																	
-	void insertOTSecondaryIntoORE(int in_polyID, int in_clusterID, OrganicTriangleSecondary in_enclavePolyFractureResults);
-
 	void insertOrganicTriangleSecondaryIntoRefedManager(OrganicTriangleSecondarySupergroupManager* in_refedManager,	// inserts OrganicTriangleSecondaries into a refed OrganicTriangleSecondarySupergroupManager;
 														int in_polyID,												// needed by the function, simulateBlockProduction(). 
 														int in_clusterID, 

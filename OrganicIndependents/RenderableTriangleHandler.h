@@ -6,7 +6,7 @@
 #include "EnclaveTriangleSkeletonContainer.h"
 
 #include "RenderableTriangleContainerManager.h"
-#include "RTypeEnum.h"
+#include "RCategoryEnum.h"
 #include "RenderableTiledTriangle.h"
 #include "EnclaveBlockSkeleton.h"
 #include "EnclaveBlock.h"
@@ -52,20 +52,20 @@ class RenderableTriangleHandler
 		// OrganicRawEnclave::removeSkeletonSupergroup is issued.
 		void eraseSupergroup(int in_supergroupID);
 
-		bool containsRenderableTriangles();	// Scans the RTypeEnum::TERRAIN_TILE_1 entry in rTypesMap, to see if any triangles exist; will return true 
+		bool containsRenderableTriangles();	// Scans the RCategoryEnum::TERRAIN_TILE_1 entry in rTypesMap, to see if any triangles exist; will return true 
 											// upon detecting the first available triangle.
 
 		// For below: meant to mirror EnclaveTriangleSkeletonSupergroupManager::appendSkeletonContainers;
 		// Should be utilized when the function OrganicRawEnclave::appendSpawnedEnclaveTriangleSkeletonContainers is called.
 		//
-		// Designed for the RTypeEnum::TERRAIN_TILE_1-keyed entry in rTypesMap,
+		// Designed for the RCategoryEnum::TERRAIN_TILE_1-keyed entry in rTypesMap,
 		// this function will analyze all the unique_ptr base instances of the other handler, and create equivalent 
 		// versions of each one, before inserting each one into the calling container.
 		OperableIntSet appendSkeletonContainers(RenderableTriangleHandler* in_otherHandler);
 
 		// For below: in reality, this will be refactored later; but it's being done in this way so that existing code that uses the definition from 
 		// EnclaveTriangleContainerSupergroupManager will still be happy with the below call. The value of in_skeletonContainerID would not be used.
-		// should only touch the entry in the rTypesMap that is keyed to RTypeEnum::TERRAIN_TILE_1, for the time being.
+		// should only touch the entry in the rTypesMap that is keyed to RCategoryEnum::TERRAIN_TILE_1, for the time being.
 		//
 		// This is needed by classes that seek to load up data into a fresh RenderableTriangleHandler, before passing it down to the ORE -- so it should be public.
 		// An example of a function using this, in this manner, is OREMatterCollider::extractResultsAndSendToORE, in OrganicCoreLib.
@@ -74,7 +74,7 @@ class RenderableTriangleHandler
 
 		// For below: this function is from OrganicTriangleSecondarySupergroupManager. It is what actually produces the fan data that goes into 
 		// blocks; the total number of triangles from an insertion is then added to the referenced in_totalTrianglesRef. For the time being, 
-		// this should only be used with the rTypesMap entry at RTypeEnum::TERRAIN_TILE_1.
+		// this should only be used with the rTypesMap entry at RCategoryEnum::TERRAIN_TILE_1.
 		//
 		// Should mirror the usage in OrganicRawEnclave::createBlocksFromOrganicTriangleSecondaries.
 		void generateBlockTrianglesFromSecondaries(std::map<int, EnclaveBlockSkeleton>* in_skeletonMapRef,	// generates the triangles for EnclaveBlocks, and loads them into the passed in map, 
@@ -90,9 +90,8 @@ class RenderableTriangleHandler
 														std::map<int, EnclaveBlock>* in_enclaveBlockMapRef,
 														int* in_totalTrianglesRef);
 
-		// Below: this function is meant to mirror waht is produced by the function OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup.
-		// That function produces the returning vector, from the contents found in the skeletonSGM.
-		std::vector<EnclaveTriangle> retriveAllEnclaveTrianglesForSupergroup(int in_superGroupID);
+		std::vector<EnclaveTriangle> retrieveTiledTrianglesForSupergroup(int in_superGroupID);	// return all tiled triangles for a given supergroup, if they exist; the RenderableTiledTriangle instances
+																								// are converted to an equivalent EnclaveTriangle format, and put into a vector.
 
 		// For below: this function should produce the same results as found in the function, EnclaveTriangleSkeletonSupergroupManager::produceTerrainTriangles;
 		// it just has to do it in a compatible way. For the time being, this should only be working with TERRAIN_TILE_1 rTypesMap entry.
@@ -121,13 +120,22 @@ class RenderableTriangleHandler
 
 
 	private:
-		std::map<RTypeEnum, RenderableTriangleContainerManager> rTypesMap;
-		std::map<int, RTypeEnum> uniqueIDLookup;	// used to determine the corresponding container that a specific unique ID can be found, in the rTypesMap;
-													// Needed by functions such as OrganicRawEnclave::retriveAllEnclaveTrianglesForSupergroup, which need to retrieve
-													// EnclaveTriangles, but only knows a given ECBPoly ID.
+		std::map<RCategoryEnum, RenderableTriangleContainerManager> rTypesMap;
+		std::map<int, RCategoryEnum> uniqueIDLookup;	// used to determine the corresponding container that a specific unique ID can be found, in the rTypesMap;
+													// Needed by functions such as OrganicRawEnclave::retrieveHandlerTiledTriangles, which need to retrieve
+													// RenderableTiledTriangles, but when only a given supergroup ID is available.
 
-		std::set<int> touchedBlockList;	// Still in-development/testing: blocks that were generated as a result of a call to generateBlockTrianglesFromSecondaries 
-										// (or another similiar function) can go here.
+		std::set<int> touchedBlockList;	// NOTE: Currently, this won't get copied over if instantiating a RenderableTriangleHandler from a Message; this is because 
+										// the touchedBlockList only needs to really be used for mass driving; Building a RenderableTriangleHandler from a Message is really
+										// only utilized when using the BDM methodology to reconstruct a blueprint, which would be after mass driving has completed (the blueprint
+										// would then be sent over to an OrganicSYstem instance, over networking etc)
+										//
+										// When mass-driving is being performed, this std::set is checked against to see what blocks in an ORE are considered "exposed",
+										// when an EnclaveTriangle has executed its run. The list gets updated when during the following calls of this class:
+										//
+										// -insertTiledTriangles
+										// -appendSkeletonContainers
+										// -produceBlocksAndInvalids
 };
 
 #endif

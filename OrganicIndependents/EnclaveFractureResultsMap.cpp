@@ -95,7 +95,7 @@ EnclaveBlockState EnclaveFractureResultsMap::getBlockStateFromORE(EnclaveKeyDef:
 
 }
 
-Message EnclaveFractureResultsMap::submitBDMForORESGM(EnclaveKeyDef::EnclaveKey in_blueprintKeyForRequest, EnclaveKeyDef::EnclaveKey in_enclaveKeyForRequest)
+Message EnclaveFractureResultsMap::fetchBDMForORERTHandler(EnclaveKeyDef::EnclaveKey in_blueprintKeyForRequest, EnclaveKeyDef::EnclaveKey in_enclaveKeyForRequest)
 {
 	// Remember, a blank Message will be returned if the ORE isn't found. So the Message type will be NONE.
 	// Regardless, the best practice is to check that the ORE exists before calling this.
@@ -103,7 +103,7 @@ Message EnclaveFractureResultsMap::submitBDMForORESGM(EnclaveKeyDef::EnclaveKey 
 	auto findSpecificORE = fractureResultsContainerMap.find(in_enclaveKeyForRequest);
 	if (findSpecificORE != fractureResultsContainerMap.end())	// it was found
 	{
-		returnMessage = findSpecificORE->second.fetchBDMMessageForSkeletonSGM(in_blueprintKeyForRequest, in_enclaveKeyForRequest);
+		returnMessage = findSpecificORE->second.fetchBDMMessageForRTHandler(in_blueprintKeyForRequest, in_enclaveKeyForRequest);
 	}
 	return returnMessage;
 }

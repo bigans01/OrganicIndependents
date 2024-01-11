@@ -102,7 +102,7 @@ class EnclaveTriangleSkeletonSupergroupManager
 		// Append some skeleton containers from another manager; the IDs of the supergroups from the other manager
 		// must be used here. If not done correctly, then the ECBPolyReformer class processing functions,
 		// processContouredPolysAgainstPersistentMass and processPersistentPolysAgainstContouredMass will not function correctly,
-		// when they call retriveAllEnclaveTrianglesForSupergroup. If those functions can't find a correclating supergroup ID in this manager,
+		// when they call retrieveHandlerTiledTriangles. If those functions can't find a correclating supergroup ID in this manager,
 		// it leads to ECBPolys not being inserted, which leads to unwanted rendering strangeness.
 		OperableIntSet appendSkeletonContainers(EnclaveTriangleSkeletonSupergroupManager* in_groupManagerB)
 		{

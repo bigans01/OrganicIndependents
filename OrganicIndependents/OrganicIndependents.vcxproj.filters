@@ -1200,9 +1200,6 @@
     <ClInclude Include="WorldTextureFracturingMachine.h">
       <Filter>Header Files\FracturableTriangle\FracturingMachines\World</Filter>
     </ClInclude>
-    <ClInclude Include="RTypeEnum.h">
-      <Filter>Header Files\RType</Filter>
-    </ClInclude>
     <ClInclude Include="RenderableTriangleBase.h">
       <Filter>Header Files\RType</Filter>
     </ClInclude>
@@ -1225,6 +1222,9 @@
       <Filter>Header Files\Blueprints\ORE</Filter>
     </ClInclude>
     <ClInclude Include="RDerivedTypeEnum.h">
+      <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="RCategoryEnum.h">
       <Filter>Header Files\RType</Filter>
     </ClInclude>
   </ItemGroup>
