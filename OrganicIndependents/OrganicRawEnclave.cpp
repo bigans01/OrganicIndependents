@@ -739,6 +739,7 @@ void OrganicRawEnclave::printContainerStats()
 	std::cout << "Total blocks: " << blockMap.size() << std::endl;
 	std::cout << "Total triangles: " << total_triangles << std::endl;
 	std::cout << "Total skeletons: " << blockSkeletonMap.size() << std::endl;
+	std::cout << "Total oreRTHandler entries: " << oreRTHandler.getTriangleCountFromContainers() << std::endl;
 }
 
 void OrganicRawEnclave::printRTHandlerContainers(bool in_pauseBetweenTrianglesFlag)

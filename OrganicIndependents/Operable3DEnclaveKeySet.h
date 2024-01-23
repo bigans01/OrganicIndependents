@@ -39,6 +39,11 @@ class Operable3DEnclaveKeySet
 			return *this;
 		}
 
+		void clear()
+		{
+			keySet.clear();
+		}
+
 		int size()
 		{
 			return int(keySet.size());

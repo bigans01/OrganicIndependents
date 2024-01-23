@@ -236,8 +236,10 @@ public:
 	OREAppendedState getAppendedState();													// returns the appended state of the ORE.
 	OREDependencyState getDependencyState();												// returns the current dependency state of the ORE; needed by the function OrganicRawManifest::getNumberOfTrianglesFromModifiedOREs
 																							// in OrganicCoreLib.
+
 	GroupSetPair appendEnclaveTrianglesFromOtherORE(std::mutex* in_mutexRef, OrganicRawEnclave* in_otherEnclave);	// will append enclave triangles from another ORE; will also 
-																													// set 
+																													// set. Should NOT be called if currentLodState is set to ORELodState::LOD_BLOCK.
+
 	std::vector<EnclaveTriangle> retrieveHandlerTiledTriangles(int in_superGroupID);		// returns a vector that contains all RenderableTiledTriangles found in a 
 																							// EnclaveTriangleContainerSupergroup with a given ID, that are converted to EnclaveTriangle format before being returned.
 																							// Utilized by functions such as ECBPolyReformer::processPersistentPolysAgainstContouredMass
