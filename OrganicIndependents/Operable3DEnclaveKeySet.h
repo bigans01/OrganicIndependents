@@ -22,12 +22,6 @@ class Operable3DEnclaveKeySet
 			return *this;
 		}
 
-		Operable3DEnclaveKeySet& operator-=(const EnclaveKeyDef::EnclaveKey& in_keytoSubtract)
-		{
-			keySet.erase(in_keytoSubtract);
-			return *this;
-		}
-
 		Operable3DEnclaveKeySet& operator+=(const Operable3DEnclaveKeySet& set_b)
 		{
 			auto otherSetBegin = set_b.keySet.begin();
@@ -39,6 +33,24 @@ class Operable3DEnclaveKeySet
 			return *this;
 		}
 
+		Operable3DEnclaveKeySet& operator-=(const EnclaveKeyDef::EnclaveKey& in_keytoSubtract)
+		{
+			keySet.erase(in_keytoSubtract);
+			return *this;
+		}
+
+		Operable3DEnclaveKeySet& operator-=(const Operable3DEnclaveKeySet& set_b)
+		{
+			auto otherSetBegin = set_b.keySet.begin();
+			auto otherSetEnd = set_b.keySet.end();
+			for (; otherSetBegin != otherSetEnd; otherSetBegin++)
+			{
+				keySet.erase(*otherSetBegin);
+			}
+			return *this;
+		}
+
+
 		void clear()
 		{
 			keySet.clear();
@@ -47,6 +59,11 @@ class Operable3DEnclaveKeySet
 		int size()
 		{
 			return int(keySet.size());
+		}
+
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>::iterator find(EnclaveKeyDef::EnclaveKey in_keyToFind)
+		{
+			return keySet.find(in_keyToFind);
 		}
 
 		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher>::iterator begin()
