@@ -280,6 +280,12 @@
     <Filter Include="Source Files\RType">
       <UniqueIdentifier>{06e2bb00-d54b-4d9a-835e-83e45a379439}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BlockLocation">
+      <UniqueIdentifier>{5cd1b563-3a6b-4c76-b7dc-e081700bf43d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BlockLocation">
+      <UniqueIdentifier>{5eab5cb0-4cdf-4864-843a-b97864645c65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
