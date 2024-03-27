@@ -57,7 +57,7 @@ void OrganicRawManifest::loadDataFromOrganicRawEnclave()
 				{
 					EnclaveBlockVertexTri currentVertexTri = triangleProducer.getTrianglePointsAndIterateToNext();
 					ECBPolyPointTri currentPolyPointTri = OrganicUtils::convertEnclaveBlockVertexesToFloats(currentVertexTri);
-					ECBPolyPointTri preciseCoords = OrganicUtils::combineClampedCoordsWithPrecise(currentPolyPointTri, blockKey, enclaveKey, collectionKey);
+					ECBPolyPointTri preciseCoords = OrganicUtils::translateBlockCoordsForAbsoluteMode(currentPolyPointTri, blockKey, enclaveKey, collectionKey);
 
 					GLfloat vertexAttribData[6];
 					testCoords = textureCoordProducer.getUVPointsAndIterateToNext();
@@ -186,7 +186,8 @@ void OrganicRawManifest::initializeRawManifest(OrganicRawEnclave* in_rawEnclaveR
 											EnclaveKeyDef::EnclaveKey in_enclaveKey, 
 											EnclaveKeyDef::EnclaveKey in_collectionKey, 
 											std::mutex* in_mutexRef, 
-											AtlasMap* in_atlasMapRef)
+											AtlasMap* in_atlasMapRef,
+											GPUCoordinateMode in_vertexCoordMode)
 {
 	rawEnclaveRef = in_rawEnclaveRef;
 	vtxColorsRef = in_organicVtxColorDictRef;
@@ -194,6 +195,7 @@ void OrganicRawManifest::initializeRawManifest(OrganicRawEnclave* in_rawEnclaveR
 	enclaveKey = in_enclaveKey;
 	collectionKey = in_collectionKey;
 	atlasMapRef = in_atlasMapRef;
+	manifestGPUCoordMode = in_vertexCoordMode;
 }
 
 void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFractureResultsMap* in_fractureResultsMapRef,
@@ -201,9 +203,11 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 	OrganicVtxColorDict* in_organicVtxColorDictRef,
 	std::mutex* in_mutexRef,
 	EnclaveKeyDef::EnclaveKey in_collectionKey,
-	AtlasMap* in_atlasMapRef)
+	AtlasMap* in_atlasMapRef,
+	GPUCoordinateMode in_vertexCoordMode)
 {
 	atlasMapRef = in_atlasMapRef;
+	manifestGPUCoordMode = in_vertexCoordMode;
 
 	// variable initialization:
 	// set up index variables, for tracking the current index to use in each smart pointer array
@@ -328,9 +332,29 @@ void OrganicRawManifest::initializeRawManifestFromBlueprintPolys(EnclaveFracture
 
 				// ...otherwise, if the shader expects absolute coordinates, we will first multiply by the blueprint key
 				// before storing the data for rendering.
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x + in_collectionKey.x * 32.0f;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y + in_collectionKey.y * 32.0f;
-				worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z + in_collectionKey.z * 32.0f;
+
+				switch (manifestGPUCoordMode)
+				{
+					// When in absolute mode, the coordinates of the ECBPoly stored in the blueprint
+					// must have the Blueprint's key * 32.0f added to them;
+					case GPUCoordinateMode::COORDINATE_MODE_ABSOLUTE:
+					{
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x + in_collectionKey.x * 32.0f;
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y + in_collectionKey.y * 32.0f;
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z + in_collectionKey.z * 32.0f;
+						break;
+					}
+
+					// When in local mode, just use the coordinates of the ECBPoly as they are currently stored;
+					// In local mode, the selected shaders should manage the vertex adjustment when rendering.
+					case GPUCoordinateMode::COORDINATE_MODE_LOCAL:
+					{
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].x;
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].y;
+						worldPositionGL[currentPointIndex++] = polysBegin->second.ecbPolyPoints[b].z;
+						break;
+					}
+				}
 
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.x;
 				emptyNormalGL[currentNormalIndex++] = polysBegin->second.emptyNormal.y;
@@ -591,9 +615,25 @@ std::vector<TerrainTriangle> OrganicRawManifest::produceTerrainTrianglesFromOREB
 				EnclaveBlockVertexTri currentVertexTri = triangleProducer.getTrianglePointsAndIterateToNext();
 				ECBPolyPointTri currentPolyPointTri = IndependentUtils::convertEnclaveBlockVertexesToFloats(currentVertexTri);
 
-				// Note: the call to IndependentUtils::combineClampedCoordsWithPrecise below should only be used if we expect to send
+				// Note: the call to IndependentUtils::translateBlockCoordsForAbsoluteMode below should only be used if we expect to send
 				// ECBPoly data in absoloute world coordinates to the shader (not blueprint-localized)
-				ECBPolyPointTri preciseCoords = IndependentUtils::combineClampedCoordsWithPrecise(currentPolyPointTri, blockKey, in_oreKey, in_blueprintKey);
+				ECBPolyPointTri preciseCoords; 
+				switch (manifestGPUCoordMode)
+				{
+					case GPUCoordinateMode::COORDINATE_MODE_ABSOLUTE:
+					{
+						preciseCoords = IndependentUtils::translateBlockCoordsForAbsoluteMode(currentPolyPointTri, blockKey, in_oreKey, in_blueprintKey);
+						break;
+					}
+
+					case GPUCoordinateMode::COORDINATE_MODE_LOCAL:
+					{
+						preciseCoords = IndependentUtils::translateBlockCoordsForLocalMode(currentPolyPointTri, blockKey, in_oreKey);
+						break;
+					}
+				}
+
+
 				testCoords = textureCoordProducer.getUVPointsAndIterateToNext();
 
 				TerrainTrianglePoint trianglePointArray[3];
@@ -634,7 +674,25 @@ std::vector<TerrainTriangle> OrganicRawManifest::produceTerrainTrianglesFromOREE
 		currentPolyPointTri.triPoints[0] = currentProducedTriangle.otPoints[0];
 		currentPolyPointTri.triPoints[1] = currentProducedTriangle.otPoints[1];
 		currentPolyPointTri.triPoints[2] = currentProducedTriangle.otPoints[2];
-		ECBPolyPointTri preciseCoords = IndependentUtils::adjustEnclaveTriangleCoordsToWorldSpace(currentPolyPointTri, in_oreKey, in_blueprintKey);
+
+		ECBPolyPointTri preciseCoords;
+
+		switch (manifestGPUCoordMode)
+		{
+			// For enclave triangles, translation to absolute mode requires the blueprint key and the ORE key.
+			case GPUCoordinateMode::COORDINATE_MODE_ABSOLUTE:
+			{
+				preciseCoords = IndependentUtils::translateEnclaveTriangleCoordsForAbsoluteMode(currentPolyPointTri, in_oreKey, in_blueprintKey);
+				break;
+			}
+
+			// ...otherwise for local mode (i.e, blueprint local), we only need the ORE key.
+			case GPUCoordinateMode::COORDINATE_MODE_LOCAL:
+			{
+				preciseCoords = IndependentUtils::translateEnclaveTriangleCoordsForLocalMode(currentPolyPointTri, in_oreKey);
+				break;
+			}
+		}
 
 		int debugFlagValue = 0;
 		if (in_debugFlag == true)

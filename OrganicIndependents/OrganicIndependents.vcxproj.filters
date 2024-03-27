@@ -286,6 +286,9 @@
     <Filter Include="Source Files\BlockLocation">
       <UniqueIdentifier>{5eab5cb0-4cdf-4864-843a-b97864645c65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GPUCoordinateMode">
+      <UniqueIdentifier>{1a1a88e9-8ebd-4564-84ab-6c436117e23e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1232,6 +1235,9 @@
     </ClInclude>
     <ClInclude Include="RCategoryEnum.h">
       <Filter>Header Files\RType</Filter>
+    </ClInclude>
+    <ClInclude Include="GPUCoordinateMode.h">
+      <Filter>Header Files\GPUCoordinateMode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

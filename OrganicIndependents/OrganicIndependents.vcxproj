@@ -312,6 +312,7 @@
     <ClInclude Include="FTriangleWorldTracer.h" />
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
+    <ClInclude Include="GPUCoordinateMode.h" />
     <ClInclude Include="GroupSetPair.h" />
     <ClInclude Include="HashUtils.h" />
     <ClInclude Include="Header.h" />

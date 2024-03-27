@@ -201,8 +201,18 @@ class IndependentUtils
 
 		static ECBPolyPoint convertEnclaveBlockVertexToFloats(EnclaveBlockVertex in_vertex);
 		static ECBPolyPointTri convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri);
-		static ECBPolyPointTri combineClampedCoordsWithPrecise(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
-		static ECBPolyPointTri adjustEnclaveTriangleCoordsToWorldSpace(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+
+		// Below: translate block vertices to absolute mode (i.e, world space)
+		static ECBPolyPointTri translateBlockCoordsForAbsoluteMode(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+
+		// Below: translate block vertices to local mode (i.e, blueprint-local space, and let shaders handle blueprint offset)
+		static ECBPolyPointTri translateBlockCoordsForLocalMode(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_blockKey, EnclaveKeyDef::EnclaveKey in_enclaveKey);
+
+		// Below: translate enclave triangle vertices to absolute mode (i.e, world space)
+		static ECBPolyPointTri translateEnclaveTriangleCoordsForAbsoluteMode(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+
+		// Below: translate enclave triangle vertices to local mode (i.e, blueprint-local space, and let shaders handle blueprint offset)
+		static ECBPolyPointTri translateEnclaveTriangleCoordsForLocalMode(ECBPolyPointTri in_precisePolyPointTri, EnclaveKeyDef::EnclaveKey in_enclaveKey);
 
 		static BoundaryOrientation getOppositeOrientation(BoundaryOrientation in_boundaryOrientation);
 		static void printBoundaryOrientation(BoundaryOrientation in_boundaryOrientation);

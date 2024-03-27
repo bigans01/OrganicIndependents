@@ -14,6 +14,7 @@
 #include "AtlasMap.h"	// moved to OrganicIndependentsLib
 #include "TerrainTriangle.h"
 #include "UVCoordProducerEnclaveTriangle.h"
+#include "GPUCoordinateMode.h"
 
 class EnclaveFractureResultsMap;
 class OrganicRawManifest
@@ -84,50 +85,52 @@ class OrganicRawManifest
 
 
 
+		// Below: initialize the OrganicRawManifest with data for per-ORE rendering; used primarily for T1 style rendering.
+		// See its usage in the OrganicSystem::jobProduceRawManifestGLData function of OrganicCoreLib.
+		void initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, 
+								OrganicVtxColorDict* in_organicVtxColorDictRef, 
+								EnclaveKeyDef::EnclaveKey in_enclaveKey, 
+								EnclaveKeyDef::EnclaveKey in_collectionKey, 
+								std::mutex* in_mutexRef, 
+								AtlasMap* in_atlasMapRef,
+								GPUCoordinateMode in_vertexCoordMode);	// set up the raw manifest (required before loading, obviously)
+
+		// **NOTE**: this definitely needs to be refactored. 
+		//
+		// Below: This function initializes the OrganicRawManifest --AND-- combines the rendering data for OREs having a dependency state of INDEPENDENT, 
+		// with the regular ECBPoly instances that are found in the primaryPolygonMap of an EnclaveCollectionBlueprint, to produce a single array of renderable data. 
+		// This style of rendering (T2, aka "Remote" ) is used by the function OrganicSystem::jobProduceAndLoadRawManifestGLDataFromBlueprint in OrganicCoreLib.
+		void initializeRawManifestFromBlueprintPolys(EnclaveFractureResultsMap* in_fractureResultsMapRef,
+			std::map<int, ECBPoly>* in_polyMapRef,
+			OrganicVtxColorDict* in_organicVtxColorDictRef,
+			std::mutex* in_mutexRef,
+			EnclaveKeyDef::EnclaveKey in_collectionKey,
+			AtlasMap* in_atlasMapRef,
+			GPUCoordinateMode in_vertexCoordMode);
+
+		// Below: loads rendering data directly from the exposed blocks in a single ORE, which is the same ORE 
+		// specified in the call to initializeRawManifest.
+		void loadDataFromOrganicRawEnclave();
+		void loadDataFromOrganicRawEnclaveDebug();
+		void allocateArrays(int in_numberOfVertexFloats, int in_numberOfColorFloats, int in_numberOfTextureFloats);
+
 		std::unique_ptr<GLfloat[]> worldPositionGL;
 		std::unique_ptr<GLfloat[]> vertexColorGL;
 		std::unique_ptr<GLfloat[]> emptyNormalGL;
 		std::unique_ptr<GLfloat[]> textureCoordGL;
 		std::unique_ptr<GLfloat[]> atlasTileGL;
 
-		int worldPositionSize = 0;
-		int vertexColorSize = 0;
-		int emptyNormalSize = 0;
-		int textureCoordSize = 0;
-		int atlasTileSize = 0;
+
+		int totalPolys = 0;	// for blueprint polys only
 
 		// a pointer to the raw enclave
 		OrganicRawEnclave* rawEnclaveRef = NULL;
 
 		// references to data
 		OrganicVtxColorDict *vtxColorsRef = NULL;
-		std::mutex* rawManifestMutex;
 
-		// world location keys
 		EnclaveKeyDef::EnclaveKey enclaveKey;
-		EnclaveKeyDef::EnclaveKey collectionKey;
 
-		AtlasMap* atlasMapRef = NULL;
-
-		int totalPolys = 0;	// for blueprint polys only
-
-		void initializeRawManifest(OrganicRawEnclave* in_rawEnclaveRef, 
-								OrganicVtxColorDict* in_organicVtxColorDictRef, 
-								EnclaveKeyDef::EnclaveKey in_enclaveKey, 
-								EnclaveKeyDef::EnclaveKey in_collectionKey, 
-								std::mutex* in_mutexRef, 
-								AtlasMap* in_atlasMapRef);	// set up the raw manifest (required before loading, obviously)
-
-		void initializeRawManifestFromBlueprintPolys(EnclaveFractureResultsMap* in_fractureResultsMapRef,
-			std::map<int, ECBPoly>* in_polyMapRef,
-			OrganicVtxColorDict* in_organicVtxColorDictRef,
-			std::mutex* in_mutexRef,
-			EnclaveKeyDef::EnclaveKey in_collectionKey,
-			AtlasMap* in_atlasMapRef);
-
-		void loadDataFromOrganicRawEnclave();
-		void loadDataFromOrganicRawEnclaveDebug();
-		void allocateArrays(int in_numberOfVertexFloats, int in_numberOfColorFloats, int in_numberOfTextureFloats);
 	private:
 		int getNumberOfTrianglesFromModifiedOREs(EnclaveFractureResultsMap* in_enclaveFractureResultsMapRef,
 			EnclaveKeyDef::EnclaveKey in_blueprintKey);
@@ -151,6 +154,26 @@ class OrganicRawManifest
 			EnclaveKeyDef::EnclaveKey in_blueprintKey,
 			AtlasMap* atlasMapRef,
 			bool in_debugFlag);
+
+		// Below: This variable is used to determine whether the vertices should be aligned in a LOCAL
+		// or ABSOLUTE manner. This value must be set by initialize functions, such as initializeRawManifest.
+		// It's value after the OrganicRawManifest should be either COORDINATE_MODE_LOCAL or COORDINATE_MODE_ABSOLUTE, and never 
+		// COORDINATE_MODE_UNDEFINED. COORDINATE_MODE_UNDEFINED is simply the default value until a valid one is determined.
+		GPUCoordinateMode manifestGPUCoordMode = GPUCoordinateMode::COORDINATE_MODE_UNDEFINED;
+
+		std::mutex* rawManifestMutex;
+
+		// world location keys
+		EnclaveKeyDef::EnclaveKey collectionKey;
+
+		AtlasMap* atlasMapRef = NULL;
+
+		int worldPositionSize = 0;
+		int vertexColorSize = 0;
+		int emptyNormalSize = 0;
+		int textureCoordSize = 0;
+		int atlasTileSize = 0;
+
 };
 
 #endif
