@@ -456,6 +456,7 @@
     <ClInclude Include="TrackedMap.h" />
     <ClInclude Include="TriangleLine.h" />
     <ClInclude Include="TriangleMaterial.h" />
+    <ClInclude Include="UniqueHighlightEnum.h" />
     <ClInclude Include="UniquePointContainer.h" />
     <ClInclude Include="UVCoordProducer.h" />
     <ClInclude Include="UVCoordProducerECBPoly.h" />

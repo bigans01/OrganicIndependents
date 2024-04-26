@@ -289,6 +289,9 @@
     <Filter Include="Header Files\GPUCoordinateMode">
       <UniqueIdentifier>{1a1a88e9-8ebd-4564-84ab-6c436117e23e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Highlighting">
+      <UniqueIdentifier>{994f6a28-0378-489b-bab9-3cdd6ea09122}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1238,6 +1241,9 @@
     </ClInclude>
     <ClInclude Include="GPUCoordinateMode.h">
       <Filter>Header Files\GPUCoordinateMode</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueHighlightEnum.h">
+      <Filter>Header Files\Highlighting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

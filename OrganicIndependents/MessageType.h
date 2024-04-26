@@ -127,7 +127,14 @@ enum class MessageType
 	BDM_BLOCK_TAGGED,		// The Message should contain everything the BDM_BLOCK_UNTAGGED does, but it should also have the specific Blueprint, ORE, and block keys at the front of the message, in that order;
 							// Remember, that to put it in that order when the Message already contains data, that you will have to call Message::insertEnclaveKeyFront to insert the block key.
 
-	BDM_SKELETONBLOCK_TAGGED	// The Message contains data relative to a skeleton block; it should have the specific Blueprint, ORE and block key that this pertains to as well.
+	BDM_SKELETONBLOCK_TAGGED,	// The Message contains data relative to a skeleton block; it should have the specific Blueprint, ORE and block key that this pertains to as well.
+
+
+	// Direct buffer data to Gear transmission
+	SHADERMACHINE_BUFFER_DATA_COLLECTION_HIGHLIGHT	// Should contain, in the following order:
+													//	-an EnclaveKey value representing the blueprint to highlight
+													//	-an int representing the number of triangles to draw.
+													
 
 };
 
