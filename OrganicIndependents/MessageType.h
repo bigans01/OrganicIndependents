@@ -131,10 +131,15 @@ enum class MessageType
 
 
 	// Direct buffer data to Gear transmission
-	SHADERMACHINE_BUFFER_DATA_COLLECTION_HIGHLIGHT	// Should contain, in the following order:
+	SHADERMACHINE_BUFFER_DATA_COLLECTION_HIGHLIGHT,	// Should contain, in the following order:
 													//	-an EnclaveKey value representing the blueprint to highlight
 													//	-an int representing the number of triangles to draw.
-													
+
+	SHADERMACHINE_BUFFER_DATA_TARGETBLOCK_HIGHLIGHT,	// Should contain, in the following order:
+													//	-an EnclaveKey represeting the value of the blueprint that the highlighted block is located in
+													//	-an int representing the number of triangles to draw.
+
+	SHADERMACHINE_REMOVE_TARGETBLOCK_HIGHLIGHT	// Simply used to signify to a localized highlighting gear, that the current block highlight should be deleted.
 
 };
 
