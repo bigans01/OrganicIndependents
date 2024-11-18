@@ -139,6 +139,20 @@ enum class MessageType
 													//	-an EnclaveKey represeting the value of the blueprint that the highlighted block is located in
 													//	-an int representing the number of triangles to draw.
 
+	SHADERMACHINE_BUFFER_DATA_WAVE_CURRENT_ORE,			// Used when sending data to the LocalizedWaveHighlighterGearT1 shader Gear, in OrganicGLWinLib.
+														//	-an EnclaveKey representing the value of the blueprint that the highlighted ORE is located in
+														//	-an int representing the number of triangles to draw.
+
+	SHADERMACHINE_BUFFER_DATA_WAVE_ORE_COMPOSITION,		// Used when sending data to the LocalizedWaveHighlighterGearT1 shader Gear, in OrganicGLWinLib.
+														//	-an EnclaveKey representing the value of the blueprint that the ORE composition highlight is located in
+														//	-an int representing the number of triangles to draw.
+
+	SHADERMACHINE_REMOVE_DATA_WAVE_CURRENT_ORE,		// Intended to signal that the currently highlighted camera ORE should be removed from rendering;
+													// Should be used in the LocalizedWaveHighlighterGearT1 class (OrganicGLWinLib)
+
+	SHADERMACHINE_REMOVE_DATA_WAVE_ORE_COMPOSITION, // Intended to signal that the currently selected ORE composition should be removed from rendering;
+													// Should be used in the LocalizedWaveHighlighterGearT1 class (OrganicGLWinLib)
+
 	SHADERMACHINE_REMOVE_TARGETBLOCK_HIGHLIGHT	// Simply used to signify to a localized highlighting gear, that the current block highlight should be deleted.
 
 };

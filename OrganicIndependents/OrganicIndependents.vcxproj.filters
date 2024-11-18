@@ -1245,6 +1245,9 @@
     <ClInclude Include="UniqueHighlightEnum.h">
       <Filter>Header Files\Highlighting</Filter>
     </ClInclude>
+    <ClInclude Include="WaveHighlightCategories.h">
+      <Filter>Header Files\Highlighting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

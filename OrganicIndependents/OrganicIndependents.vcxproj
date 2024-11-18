@@ -463,6 +463,7 @@
     <ClInclude Include="UVCoordProducerEnclaveTriangle.h" />
     <ClInclude Include="UVTriangleCoords.h" />
     <ClInclude Include="Vec3Pair.h" />
+    <ClInclude Include="WaveHighlightCategories.h" />
     <ClInclude Include="WorldFracturingMachine.h" />
     <ClInclude Include="WorldTextureFracturingMachine.h" />
     <ClInclude Include="XDimLineScanner.h" />
