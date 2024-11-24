@@ -6,9 +6,62 @@
 #include "MessageLocality.h"
 #include "MessageType.h"
 
+/*
+
+Description: The Message class is designed to be a jack-of-all-trades data container, that can be used as a means to transfer across multiple classes.
+The MessageType of this class is an enum value that represents the intent of the Message; assuming that each MessageType is only used in a few functions,
+finding where the Message is utilized should be trivial, as it is simply matter of running a ctrl+f or other similiar find logic on the libraries, to 
+see where Message objects or instances of a certain MessageType are being utilized.
+
+Additionally, a templated constructor was added/tested, on or around 11/23/2024. The templated constructor functions allow for inserting
+of various data types covered by this class in one singular call, where each parameter int the template is inserted into the Message object
+via recursion. 
+
+NOTE: the templated constructor only supports std::string values directly, such as std::string("hello"); simply typing "hello" will resolve
+to a const char[5] array, and this will cause an error.
+
+*/
+
 class Message
 {
 	public:
+		// Below: base Message templated constructor
+		template<typename FirstItem, typename ...RemainingItems> Message(MessageType in_messageType, FirstItem && firstI, RemainingItems && ...remainingI)
+		{
+			messageType = in_messageType;
+			insertRecursively(std::forward<FirstItem>(firstI), std::forward<RemainingItems>(remainingI)...);
+		}
+
+		// Below: recursion template that does all the actual work when needing to insert data via a templated Message constructor.
+		template<typename FirstItem, typename ...RemainingItems> void insertRecursively(FirstItem && firstI, RemainingItems && ...remainingI)
+		{
+			if constexpr (std::is_same<FirstItem, int>::value)
+			{
+				intVector.push_back(std::forward<FirstItem>(firstI));
+			}
+			
+			else if constexpr (std::is_same<FirstItem, float>::value)
+			{
+				floatVector.push_back(std::forward<FirstItem>(firstI));
+			}
+
+			else if constexpr (std::is_same<FirstItem, std::string>::value)		// Remember: the value passed in the templated constructor call MUST be of type std::string
+			{
+				stringVector.push_back(std::forward<FirstItem>(firstI));
+			}
+			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey>::value)
+			{
+				insertEnclaveKey(std::forward<FirstItem>(firstI));
+			}
+			else if constexpr (std::is_same<FirstItem, ECBPolyPoint>::value)
+			{
+				insertPoint(std::forward<FirstItem>(firstI));
+			}
+
+			insertRecursively(std::forward<RemainingItems>(remainingI)...);
+		}
+		void insertRecursively() {};
+
 		Message() {};
 		Message& operator=(const Message& message_b)
 		{
