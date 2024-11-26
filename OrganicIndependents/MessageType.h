@@ -153,7 +153,18 @@ enum class MessageType
 	SHADERMACHINE_REMOVE_DATA_WAVE_ORE_COMPOSITION, // Intended to signal that the currently selected ORE composition should be removed from rendering;
 													// Should be used in the LocalizedWaveHighlighterGearT1 class (OrganicGLWinLib)
 
-	SHADERMACHINE_REMOVE_TARGETBLOCK_HIGHLIGHT	// Simply used to signify to a localized highlighting gear, that the current block highlight should be deleted.
+	SHADERMACHINE_REMOVE_TARGETBLOCK_HIGHLIGHT,	// Simply used to signify to a localized highlighting gear, that the current block highlight should be deleted.
+
+	// MShader-style Messages
+	MSHADER_INFO,						// Generic Message type used in MShaderController or its constituents, to store strings (i.e., things that might be written to a log)
+
+	MSHADER_SET_COMPUTE_RESOLUTION		// Signals to the MShaderController that it's selected resolution should be compatible with a compute-shader style format;
+										// for instance, a resolution of 640 x 640 would equal a grid of 40x40 compute shaders that have a dimension of 16x16.
+										// The order of arguments is: 
+										// (int) -The dimensions of the compute shaders to use
+										// (int) -desired screen width
+										// (int) -desired screen height
+
 
 };
 
