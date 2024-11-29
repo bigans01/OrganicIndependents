@@ -33,30 +33,37 @@ class Message
 		}
 
 		// Below: recursion template that does all the actual work when needing to insert data via a templated Message constructor.
+		// There are multiple if else checks, per basic data type:
+		//
+		//	-one check where the value is hardcoded in-line, i.e the int 5
+		//  -another check that examines if a variable of of that type is passed as a template argument (i.e, int myVal = 5, then pasisng myVal as a template parameter);
+		//   this action causes the passed-in template parameter to evaluate as a referenced value (so it would equate to <data type>& below)
+		//
+		// Attempts to use std::remove_reference were made, but this resulted in an "illegal indirection" error, with code such as this:
+		//
+		//	else if constexpr (std::is_same<std::remove_reference<FirstItem>::type, ECBPolyPoint>) { ... }
 		template<typename FirstItem, typename ...RemainingItems> void insertRecursively(FirstItem && firstI, RemainingItems && ...remainingI)
 		{
-			if constexpr (std::is_same<FirstItem, int>::value)
-			{
-				intVector.push_back(std::forward<FirstItem>(firstI));
-			}
-			
-			else if constexpr (std::is_same<FirstItem, float>::value)
-			{
-				floatVector.push_back(std::forward<FirstItem>(firstI));
-			}
+			// int types
+			if constexpr (std::is_same<FirstItem, int>::value)			{	intVector.push_back(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, int&>::value)	{	intVector.push_back(std::forward<FirstItem>(firstI));	}
 
-			else if constexpr (std::is_same<FirstItem, std::string>::value)		// Remember: the value passed in the templated constructor call MUST be of type std::string
-			{
-				stringVector.push_back(std::forward<FirstItem>(firstI));
-			}
-			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey>::value)
-			{
-				insertEnclaveKey(std::forward<FirstItem>(firstI));
-			}
-			else if constexpr (std::is_same<FirstItem, ECBPolyPoint>::value)
-			{
-				insertPoint(std::forward<FirstItem>(firstI));
-			}
+			// float types
+			else if constexpr (std::is_same<FirstItem, float>::value)	{	floatVector.push_back(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, float&>::value)	{	floatVector.push_back(std::forward<FirstItem>(firstI)); }
+			
+			// std::string types
+			// Remember: the value passed in the templated constructor call MUST be of type std::string, not hardcoded (i.e, "hello") 
+			else if constexpr (std::is_same<FirstItem, std::string>::value)		{	stringVector.push_back(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, std::string&>::value)	{	stringVector.push_back(std::forward<FirstItem>(firstI));	}
+
+			// EnclaveKeyDef::EnclaveKey types
+			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey>::value)	{	insertEnclaveKey(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey&>::value)	{	insertEnclaveKey(std::forward<FirstItem>(firstI));	}
+					
+			// ECBPolyPoint types
+			else if constexpr (std::is_same<FirstItem, ECBPolyPoint>::value)	{	insertPoint(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, ECBPolyPoint&>::value)	{	insertPoint(std::forward<FirstItem>(firstI));	}
 
 			insertRecursively(std::forward<RemainingItems>(remainingI)...);
 		}

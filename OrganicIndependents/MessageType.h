@@ -158,13 +158,15 @@ enum class MessageType
 	// MShader-style Messages
 	MSHADER_INFO,						// Generic Message type used in MShaderController or its constituents, to store strings (i.e., things that might be written to a log)
 
-	MSHADER_SET_COMPUTE_RESOLUTION		// Signals to the MShaderController that it's selected resolution should be compatible with a compute-shader style format;
+	MSHADER_SET_COMPUTE_RESOLUTION,		// Signals to the MShaderController that it's selected resolution should be compatible with a compute-shader style format;
 										// for instance, a resolution of 640 x 640 would equal a grid of 40x40 compute shaders that have a dimension of 16x16.
 										// The order of arguments is: 
 										// (int) -The dimensions of the compute shaders to use
 										// (int) -desired screen width
 										// (int) -desired screen height
 
+	MGRADIENT_VEC3_INPUT,				// Signals that the Message is used as input designed for the MVec3Gradient class. Should contain exactly two ECBPolyPoints.
+	MGRADIENT_VEC3_OUTPUT				// Signals that the Message is used as output for MVec3Gradient class. Should contain exactly one ECBPolyPoint value.
 
 };
 
