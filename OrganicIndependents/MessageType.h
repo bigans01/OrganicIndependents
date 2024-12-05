@@ -165,8 +165,32 @@ enum class MessageType
 										// (int) -desired screen width
 										// (int) -desired screen height
 
-	MGRADIENT_VEC3_INPUT,				// Signals that the Message is used as input designed for the MVec3Gradient class. Should contain exactly two ECBPolyPoints.
-	MGRADIENT_VEC3_OUTPUT				// Signals that the Message is used as output for MVec3Gradient class. Should contain exactly one ECBPolyPoint value.
+	MGRADIENT_VEC3_INPUT,				// Signals that the Message is used as input designed for the MVec3Gradient class. Should contain the following:
+										// --exactly two ECBPolyPoints.
+										// --a float that represents the full pi cycle, measured in float radians
+										// --a float ther represents the amount of milliseconds required for a 1 full pi cycle
+	MGRADIENT_VEC3_OUTPUT,				// Signals that the Message is used as output for MVec3Gradient class. Should contain exactly one ECBPolyPoint value.
+
+	MSHADER_CREATE_MSBASICCOMPUTE,		// Signals that the Message is intended to signal the created of an MSBasicCompute M-shader
+
+	MSHADERSELECTIONCYCLER_ATTEMPT,		// Contains information about an attempted switch to a MShader: contains 1 int (a value of 0 or 1), and a string.
+
+	MSHADER_SETUP_CYCLICAL_MGRADIENT,		// Signals that the Message contains data for setting up a cyclical gradient;
+											// Should contain:
+											//	-int representing the value of the input gradient type (i.e, MGRADIENT_VEC3_INPUT)
+											//  -a float containing the single cycle pi value
+											//  -a float containing the pi divisor value in ms 
+											//	-a string representing what the gradient's name will be
+											//	< plus remaming float/int/whatever data pertinent to the gradient type > 
+
+	MSHADER_SETUP_FINITE_MGRADIENT			// Signals that the Message contains data for setting up a finite gradient;
+											// Should contain:
+											//	-int representing the value of the input gradient type (i.e, MGRADIENT_VEC3_INPUT)
+											//  -a float containing the single cycle pi value
+											//  -a float containing the pi divisor value in ms
+											//	-a string representing what the gradient's name will be
+											//  -a float that represents the finite duration of the cycle
+											//	< plus remaming float/int/whatever data pertinent to the gradient type > 
 
 };
 
