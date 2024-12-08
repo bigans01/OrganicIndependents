@@ -55,7 +55,7 @@ public:
 		return returnPoint;
 	}
 
-	bool operator==(const ECBPolyPoint& in_otherPoint)
+	bool operator==(const ECBPolyPoint& in_otherPoint) const	// const is required at end here for C++_20
 	{
 		return (x == in_otherPoint.x
 			&&

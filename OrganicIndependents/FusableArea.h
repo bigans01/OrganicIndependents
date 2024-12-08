@@ -27,7 +27,7 @@ class FusableArea
 			return *this;
 		}
 
-		bool operator==(const FusableArea& in_fusableAreaB)	// a FusableArea is considered "equal" to another FusableArea, if the pointAgents have the same value.
+		bool operator==(const FusableArea& in_fusableAreaB)	const // a FusableArea is considered "equal" to another FusableArea, if the pointAgents have the same value; const is required at end for C++_20
 		{
 			return pointAgent == in_fusableAreaB.pointAgent;
 		}

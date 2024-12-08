@@ -35,7 +35,10 @@ Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey
 						handlerToBDMMsg.insertInt(int(currentContainerTriangle->getRenderingType()));	// get the derived type, store it
 
 						// Append the actual data
-						handlerToBDMMsg.appendOtherMessage(&currentContainerTriangle->writeRTToMessage());	// insert the actual data.
+						//handlerToBDMMsg.appendOtherMessage(&currentContainerTriangle->writeRTToMessage());	// insert the actual data; works with C++_17
+
+						Message messageToAppend = currentContainerTriangle->writeRTToMessage();	// works with C++_20
+						handlerToBDMMsg.appendOtherMessage(&messageToAppend);
 
 
 						totalNumbeOfHandlerEntries++;

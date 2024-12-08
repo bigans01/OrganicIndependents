@@ -34,7 +34,11 @@ Message EnclaveBlock::writeEnclaveBlockToBDMMessage()
 	//
 	// Remember, BDM_BLOCK_UNTAGGED does NOT contain the individual block key.
 	convertedBlockDataMessage.insertInt(int(blockflags.flags));
-	convertedBlockDataMessage.appendOtherMessage(&manager.writeFanManagerToBDMFormat());
+
+	//convertedBlockDataMessage.appendOtherMessage(&manager.writeFanManagerToBDMFormat()); // Works with C++_17
+
+	Message fanManagerFormattedMsg = manager.writeFanManagerToBDMFormat();	// Required for C++_20
+	convertedBlockDataMessage.appendOtherMessage(&fanManagerFormattedMsg);
 
 	return convertedBlockDataMessage;
 }

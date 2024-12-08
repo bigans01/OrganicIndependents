@@ -36,7 +36,7 @@ class FTriangleLine
 
 
 		// self-comparison operator; will return true if the points of both lines match.
-		bool operator==(const FTriangleLine& in_otherLine)
+		bool operator==(const FTriangleLine& in_otherLine) const	// const is required at end here for C++_20
 		{
 			bool doLinesMatch = false;
 			return 

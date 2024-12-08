@@ -5,6 +5,7 @@
 
 #include "MessageLocality.h"
 #include "MessageType.h"
+#include <type_traits>
 
 /*
 
@@ -16,9 +17,6 @@ see where Message objects or instances of a certain MessageType are being utiliz
 Additionally, a templated constructor was added/tested, on or around 11/23/2024. The templated constructor functions allow for inserting
 of various data types covered by this class in one singular call, where each parameter int the template is inserted into the Message object
 via recursion. 
-
-NOTE: the templated constructor only supports std::string values directly, such as std::string("hello"); simply typing "hello" will resolve
-to a const char[5] array, and this will cause an error.
 
 */
 
@@ -45,25 +43,52 @@ class Message
 		template<typename FirstItem, typename ...RemainingItems> void insertRecursively(FirstItem && firstI, RemainingItems && ...remainingI)
 		{
 			// int types
-			if constexpr (std::is_same<FirstItem, int>::value)			{	intVector.push_back(std::forward<FirstItem>(firstI));	}
-			else if constexpr (std::is_same<FirstItem, int&>::value)	{	intVector.push_back(std::forward<FirstItem>(firstI));	}
+			if constexpr (std::is_same<FirstItem, int>::value) { intVector.push_back(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, int&>::value) { intVector.push_back(std::forward<FirstItem>(firstI)); }
 
 			// float types
-			else if constexpr (std::is_same<FirstItem, float>::value)	{	floatVector.push_back(std::forward<FirstItem>(firstI)); }
-			else if constexpr (std::is_same<FirstItem, float&>::value)	{	floatVector.push_back(std::forward<FirstItem>(firstI)); }
-			
+			else if constexpr (std::is_same<FirstItem, float>::value) { floatVector.push_back(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, float&>::value) { floatVector.push_back(std::forward<FirstItem>(firstI)); }
+
 			// std::string types
 			// Remember: the value passed in the templated constructor call MUST be of type std::string, not hardcoded (i.e, "hello") 
-			else if constexpr (std::is_same<FirstItem, std::string>::value)		{	stringVector.push_back(std::forward<FirstItem>(firstI));	}
-			else if constexpr (std::is_same<FirstItem, std::string&>::value)	{	stringVector.push_back(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, std::string>::value) { stringVector.push_back(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, std::string&>::value) { stringVector.push_back(std::forward<FirstItem>(firstI)); }
 
 			// EnclaveKeyDef::EnclaveKey types
-			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey>::value)	{	insertEnclaveKey(std::forward<FirstItem>(firstI));	}
-			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey&>::value)	{	insertEnclaveKey(std::forward<FirstItem>(firstI));	}
-					
+			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey>::value) { insertEnclaveKey(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, EnclaveKeyDef::EnclaveKey&>::value) { insertEnclaveKey(std::forward<FirstItem>(firstI)); }
+
 			// ECBPolyPoint types
-			else if constexpr (std::is_same<FirstItem, ECBPolyPoint>::value)	{	insertPoint(std::forward<FirstItem>(firstI));	}
-			else if constexpr (std::is_same<FirstItem, ECBPolyPoint&>::value)	{	insertPoint(std::forward<FirstItem>(firstI));	}
+			else if constexpr (std::is_same<FirstItem, ECBPolyPoint>::value) { insertPoint(std::forward<FirstItem>(firstI)); }
+			else if constexpr (std::is_same<FirstItem, ECBPolyPoint&>::value) { insertPoint(std::forward<FirstItem>(firstI)); }
+
+			// Const array type checks
+			// 
+			//else if constexpr (std::is_same<char[5], std::remove_cvref_t<FirstItem>>::value)	// --> works with "yes!" const char [5] in Message
+
+			//else if constexpr (std::is_same_v<FirstItem, const char(&)[5]>)		// --> works with "yes!"
+			//else if constexpr (std::is_same_v<std::remove_extent_t<FirstItem>, const char(&)[5]>)
+
+			// For below, using an example of the string "yes!" passed as an arg:
+			// 
+			// Using std::remove_cvref_t<FirstItem>> causes the value to be char[5], from it's original form of const char(&)[5].
+			// When using the char[5] check against std::is_array_v, it works.
+			else if constexpr (std::is_array_v<std::remove_cvref_t<FirstItem>>)	// --> works, when attempting to detect an array; we can get size wof array with this!!!
+			{
+				// Get the size of array (must be a const value)
+				const int arraySize = sizeof(std::remove_cvref_t<FirstItem>);
+
+				// Check for char array (i.e, "thing" passed in Message directly, not std::string("thing"))
+				if constexpr (std::is_same_v<std::remove_extent_t<FirstItem>, const char(&)[arraySize]>)
+				{
+					stringVector.push_back(std::forward<FirstItem>(firstI));
+				}
+			}
+			else
+			{
+				std::cout << "UH OH..." << std::endl;
+			}
 
 			insertRecursively(std::forward<RemainingItems>(remainingI)...);
 		}

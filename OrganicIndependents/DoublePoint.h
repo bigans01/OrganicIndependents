@@ -40,7 +40,7 @@ class DoublePoint
 		}
 
 		// equivalent operators
-		bool operator==(const DoublePoint in_vec3)
+		bool operator==(const DoublePoint in_vec3) const	// const is required at end here for C++_20
 		{
 			return
 			(

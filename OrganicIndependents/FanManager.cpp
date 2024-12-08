@@ -663,7 +663,10 @@ Message FanManager::writeFanManagerToBDMFormat()
 			for (int x = 0; x < totalPoints; x++)
 			{
 				// write out the EnclaveBlockVertices from localVertexArray into this
-				fanManagerToMsg.appendOtherMessage(&localVertexArray[x].convertBlockVertexToMessage());
+				//fanManagerToMsg.appendOtherMessage(&localVertexArray[x].convertBlockVertexToMessage());	// Works with C++_17
+
+				Message otherBlockVertexMessage = localVertexArray[x].convertBlockVertexToMessage();	// Works with C++_20
+				fanManagerToMsg.appendOtherMessage(&otherBlockVertexMessage);
 			}
 			break;
 		}
@@ -673,7 +676,10 @@ Message FanManager::writeFanManagerToBDMFormat()
 			for (int x = 0; x < totalPoints; x++)
 			{
 				// write out the EnclaveBlockVertices from expandedVertexArray into this
-				fanManagerToMsg.appendOtherMessage(&expandedVertexArray[x].convertBlockVertexToMessage());
+				//fanManagerToMsg.appendOtherMessage(&expandedVertexArray[x].convertBlockVertexToMessage());
+
+				Message otherBlockVertexMessage = expandedVertexArray[x].convertBlockVertexToMessage();	// Works with C++_20
+				fanManagerToMsg.appendOtherMessage(&otherBlockVertexMessage);
 			}
 			break;
 		}
@@ -705,7 +711,10 @@ Message FanManager::writeFanManagerToBDMFormat()
 		{
 			for (int x = 0; x < totalFans; x++)
 			{
-				fanManagerToMsg.appendOtherMessage(&localFanArray[x].getFanData().convertFanDataToMessage());
+				//fanManagerToMsg.appendOtherMessage(&localFanArray[x].getFanData().convertFanDataToMessage());
+
+				Message otherMessageToAppend = localFanArray[x].getFanData().convertFanDataToMessage();
+				fanManagerToMsg.appendOtherMessage(&otherMessageToAppend);
 			}
 			break;
 		}
@@ -715,7 +724,10 @@ Message FanManager::writeFanManagerToBDMFormat()
 		{
 			for (int x = 0; x < totalFans; x++)
 			{
-				fanManagerToMsg.appendOtherMessage(&expandedThinFanArray[x].getFanData().convertFanDataToMessage());
+				//fanManagerToMsg.appendOtherMessage(&expandedThinFanArray[x].getFanData().convertFanDataToMessage());	// Works in C++_17
+
+				Message ohterMessageToAppend = expandedThinFanArray[x].getFanData().convertFanDataToMessage();	// Must be this way for C++_20
+				fanManagerToMsg.appendOtherMessage(&ohterMessageToAppend);
 			}
 			break;
 		}

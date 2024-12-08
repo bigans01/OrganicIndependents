@@ -49,7 +49,7 @@ class DimensionalLineScannerBase
 				distanceBetweenPoints = glm::distance(in_pointA, in_pointB);
 			}
 
-			bool operator==(const PointComparison& in_otherPoint)
+			bool operator==(const PointComparison& in_otherPoint) const	// const is required at end here for C++_20
 			{
 				return
 				(

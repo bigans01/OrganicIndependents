@@ -40,21 +40,24 @@ class FTrianglePoint
 			point = in_point;
 		};
 
-
-		bool operator==(const ECBPolyPoint& in_otherPoint)
-		{
+		
+		
+		bool operator==(const ECBPolyPoint& in_otherPoint) const	// const is required at end here for C++_20
+		{		
 			return (point.x == in_otherPoint.x
 				&&
 				point.y == in_otherPoint.y
 				&&
 				point.z == in_otherPoint.z);
 		}
+		
 
-		bool operator==(const FTrianglePoint& in_otherPoint)
+		
+		bool operator==(const FTrianglePoint& in_otherPoint) const	// const is required at end here for C++_20
 		{
 			return (point == in_otherPoint.point);
 		}
-
+		
 		FTrianglePointType pointType = FTrianglePointType::NOVAL;	// must be set by constructor #2 above
 		DoublePoint point;	// the actual point contained within this class
 		bool originalPointFlag = false;	// indicates whether or not this instance of 

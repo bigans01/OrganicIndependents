@@ -35,7 +35,10 @@ Message EnclaveTriangleSkeletonSupergroupManager::convertSkeletonSGMToBDM(Enclav
 				etcSGMToMsg.insertInt(currentSkeleton.first);
 
 				// Build the skeleton message data, and append it to the current etcSGMToMsg.
-				etcSGMToMsg.appendOtherMessage(&currentSkeleton.second.convertETSkeletonToMessage());
+				//etcSGMToMsg.appendOtherMessage(&currentSkeleton.second.convertETSkeletonToMessage());	// Works with FROM_C++_17
+
+				Message convertedMessage = currentSkeleton.second.convertETSkeletonToMessage();	// Works with C++_20
+				etcSGMToMsg.appendOtherMessage(&convertedMessage);
 
 				totalNumberOfSkeletons++;
 			}
