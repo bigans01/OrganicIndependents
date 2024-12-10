@@ -80,7 +80,7 @@ class Message
 				const int arraySize = sizeof(std::remove_cvref_t<FirstItem>);
 
 				// Check for char array (i.e, "thing" passed in Message directly, not std::string("thing"))
-				if constexpr (std::is_same_v<std::remove_extent_t<FirstItem>, const char(&)[arraySize]>)
+				if constexpr (std::is_same_v<FirstItem, const char(&)[arraySize]>)
 				{
 					stringVector.push_back(std::forward<FirstItem>(firstI));
 				}
