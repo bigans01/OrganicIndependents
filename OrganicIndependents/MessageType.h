@@ -171,7 +171,9 @@ enum class MessageType
 										// --a float ther represents the amount of milliseconds required for a 1 full pi cycle
 	MGRADIENT_VEC3_OUTPUT,				// Signals that the Message is used as output for MVec3Gradient class. Should contain exactly one ECBPolyPoint value.
 
-	MSHADER_CREATE_MSBASICCOMPUTE,		// Signals that the Message is intended to signal the created of an MSBasicCompute M-shader
+	MSHADER_CREATE_MSBASICCOMPUTE,		// Signals that the Message is intended to signal the creation of an MSBasicCompute M-shader
+
+	MSHADER_CREATE_MSBASICGRAYSCALE,	// Signals that the Message is intended to signal the creation of an MSBasicGrayscale M-shader
 
 	MSHADERSELECTIONCYCLER_ATTEMPT,		// Contains information about an attempted switch to a MShader: contains 1 int (a value of 0 or 1), and a string.
 
