@@ -185,7 +185,7 @@ enum class MessageType
 											//	-a string representing what the gradient's name will be
 											//	< plus remaming float/int/whatever data pertinent to the gradient type > 
 
-	MSHADER_SETUP_FINITE_MGRADIENT			// Signals that the Message contains data for setting up a finite gradient;
+	MSHADER_SETUP_FINITE_MGRADIENT,			// Signals that the Message contains data for setting up a finite gradient;
 											// Should contain:
 											//	-int representing the value of the input gradient type (i.e, MGRADIENT_VEC3_INPUT)
 											//  -a float containing the single cycle pi value
@@ -193,6 +193,8 @@ enum class MessageType
 											//	-a string representing what the gradient's name will be
 											//  -a float that represents the finite duration of the cycle
 											//	< plus remaming float/int/whatever data pertinent to the gradient type > 
+
+	MSHADER_TRANSITIONAL_HINT				// Used to indicate that the single int value this Message has is meant to represent a transitional hint in an MShaderController
 
 };
 
