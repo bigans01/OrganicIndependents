@@ -13,7 +13,8 @@
 enum class MShaderHintEnum
 {
 	UNSET,					// default value
-	TRANSIT_CLEAR_COLOR,	// if the previous MShaderController being used, and the current one have clear color values, cleanly transit between the two.
+	TRANSIT_CLEAR_COLOR,	// cleanly transit between the current value of the clear color found in the MShaderController's controllerValueRegistry,
+							// and the shader we are transiting to
 };
 
 #endif
