@@ -194,7 +194,9 @@ enum class MessageType
 											//  -a float that represents the finite duration of the cycle
 											//	< plus remaming float/int/whatever data pertinent to the gradient type > 
 
-	MSHADER_TRANSITIONAL_HINT				// Used to indicate that the single int value this Message has is meant to represent a transitional hint in an MShaderController
+	MSHADER_TRANSITIONAL_HINT,				// Used to indicate that the single int value this Message has is meant to represent a transitional hint in an MShaderController
+
+	MSHADER_SWITCH_SHADER_NAME				// This Message contains a string that is the name of an MShader that should be used when switching between MShaders at run time.
 
 };
 
