@@ -196,7 +196,9 @@ enum class MessageType
 
 	MSHADER_TRANSITIONAL_HINT,				// Used to indicate that the single int value this Message has is meant to represent a transitional hint in an MShaderController
 
-	MSHADER_SWITCH_SHADER_NAME				// This Message contains a string that is the name of an MShader that should be used when switching between MShaders at run time.
+	MSHADER_SWITCH_SHADER_NAME,				// This Message contains a string that is the name of an MShader that should be used when switching between MShaders at run time.
+
+	MSHADER_SET_WORLD_POSITION				// Indicates that the data within is designed to set the current world position; should contain an ECBPoly that represents a world point
 
 };
 
