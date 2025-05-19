@@ -200,6 +200,7 @@
     <ClInclude Include="EnclavePoly.h" />
     <ClInclude Include="EnclaveTriangleOld.h" />
     <ClInclude Include="EPolyMap.h" />
+    <ClInclude Include="FBarycentricCoordProducer.h" />
     <ClInclude Include="FExteriorRaycastCollisionResolver.h" />
     <ClInclude Include="FKeyCalibrationMode.h" />
     <ClInclude Include="CircuitSegmentType.h" />
@@ -523,6 +524,7 @@
     <ClCompile Include="FanBase.cpp" />
     <ClCompile Include="FanManager.cpp" />
     <ClCompile Include="FatFan.cpp" />
+    <ClCompile Include="FBarycentricCoordProducer.cpp" />
     <ClCompile Include="FExteriorRaycastCollisionResolver.cpp" />
     <ClCompile Include="FRayCasterQuadBase.cpp" />
     <ClCompile Include="FRayIntersectionMachine.cpp" />

@@ -3,5 +3,5 @@
 
 void FBarycentricCoordProducer::calculateBarycentricBasedUV()
 {
-
+	std::cout << "yes";
 }

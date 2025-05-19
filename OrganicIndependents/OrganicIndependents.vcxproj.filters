@@ -1254,6 +1254,9 @@
     <ClInclude Include="MShaderHintEnum.h">
       <Filter>Header Files\MShaderHintEnum</Filter>
     </ClInclude>
+    <ClInclude Include="FBarycentricCoordProducer.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1672,6 +1675,9 @@
     </ClCompile>
     <ClCompile Include="RenderableTriangleHandler.cpp">
       <Filter>Source Files\RType</Filter>
+    </ClCompile>
+    <ClCompile Include="FBarycentricCoordProducer.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
