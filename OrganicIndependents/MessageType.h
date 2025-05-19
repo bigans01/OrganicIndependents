@@ -198,7 +198,10 @@ enum class MessageType
 
 	MSHADER_SWITCH_SHADER_NAME,				// This Message contains a string that is the name of an MShader that should be used when switching between MShaders at run time.
 
-	MSHADER_SET_WORLD_POSITION				// Indicates that the data within is designed to set the current world position; should contain an ECBPoly that represents a world point
+	MSHADER_SET_WORLD_POSITION,				// Indicates that the data within is designed to set the current world position; should contain an ECBPoly that represents a world point
+
+	MSHADER_CREATE_STRINGED_BUFFER			// The Message should serve as a flag to indicate that a stringed GL data buffer should be created when this is seen.
+											// This Message should contain a single string value that indicates the desired name of the stringed buffer.
 
 };
 
