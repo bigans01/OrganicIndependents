@@ -132,6 +132,7 @@ class UniquePointContainer
 		friend class FExteriorRaycastCollisionResolver;
 		friend class FTriangleUtils;
 		friend class FTrianglePointUVProducer;
+		friend class FTriangleUVCalculator;
 		std::vector<FTrianglePoint> points;
 };
 

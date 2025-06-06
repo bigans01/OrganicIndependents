@@ -203,7 +203,7 @@ class FTrianglePoint
 
 		void printPointData()
 		{
-			std::cout << "(" << point.x << ", " << point.y << ", " << point.z << ") | Type: ";
+			std::cout << "(" << point.x << ", " << point.y << ", " << point.z << ") | fTextureU: " << fTextureU << " | fTextureV: " << fTextureV << " | Type: ";
 			switch (pointType)
 			{
 				case FTrianglePointType::NOVAL: { std::cout << "NOVAL"; break; }

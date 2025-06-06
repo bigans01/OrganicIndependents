@@ -300,6 +300,7 @@
     <ClInclude Include="FTriangleORETracer.h" />
     <ClInclude Include="FTriangleOutput.h" />
     <ClInclude Include="FTrianglePoint.h" />
+    <ClInclude Include="FTrianglePointShadow.h" />
     <ClInclude Include="FTrianglePointType.h" />
     <ClInclude Include="FTrianglePointUVCalculator.h" />
     <ClInclude Include="FTrianglePointUVLink.h" />
@@ -310,6 +311,7 @@
     <ClInclude Include="FTriangleTracerBase.h" />
     <ClInclude Include="FTriangleType.h" />
     <ClInclude Include="FTriangleUtils.h" />
+    <ClInclude Include="FTriangleUVCalculator.h" />
     <ClInclude Include="FTriangleWorldTracer.h" />
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
@@ -547,6 +549,7 @@
     <ClCompile Include="FTriangleProductionStager.cpp" />
     <ClCompile Include="FTriangleTracerBase.cpp" />
     <ClCompile Include="FTriangleUtils.cpp" />
+    <ClCompile Include="FTriangleUVCalculator.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
     <ClCompile Include="HashUtils.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />

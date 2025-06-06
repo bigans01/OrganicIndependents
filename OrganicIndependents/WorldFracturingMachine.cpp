@@ -32,6 +32,9 @@ void WorldFracturingMachine::runFracturing()
 	//buildAndRunFRayCasters(originFTriangleKeys);			// Step 6: third, determine the ray casters we have to use for the FTriangle, and run them.
 	runRaycastCollisionResolver();				// Step 7: (NEW step): check for any situations where a External-InteriorRayCast occurs, and mitigate it.
 
+	// NEW: with exterior lines done, and FRay casting complete, attempt to find UV coords in all triangle points (if the triangle is configured to do so)
+
+
 	buildAndRunFLineScanners();				// Step 8: fourth, figure out which FLineScanner-derived classes to use by analyzing the triangle points, 
 											// and then run them.
 

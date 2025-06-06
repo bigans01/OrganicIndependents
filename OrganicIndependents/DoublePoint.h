@@ -92,6 +92,14 @@ class DoublePoint
 			return *this;
 		}
 
+		DoublePoint& operator*=(const float& in_multiplyingFloat)
+		{
+			x *= in_multiplyingFloat;
+			y *= in_multiplyingFloat;
+			z *= in_multiplyingFloat;
+			return *this;
+		}
+
 		DoublePoint operator-(const DoublePoint& in_doublePointB)
 		{
 			DoublePoint returnPoint;

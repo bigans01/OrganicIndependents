@@ -76,9 +76,6 @@
     <Filter Include="Header Files\FracturableTriangle\FracturingMachines">
       <UniqueIdentifier>{f9f59192-9e99-49c4-b23f-6d0dcdaad393}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\FracturableTriangle\FracturingMachines">
-      <UniqueIdentifier>{bf565c0b-4d83-41f6-8a7c-a0e2cee328b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\FracturableTriangle\FTriangleTracer">
       <UniqueIdentifier>{0670afa0-a0d9-4058-95cf-ac5fd1f4cbc9}</UniqueIdentifier>
     </Filter>
@@ -130,12 +127,6 @@
     <Filter Include="Header Files\FracturableTriangle\FracturingMachines\Blueprint">
       <UniqueIdentifier>{e6afe290-2fc9-499d-9d57-d8d1efcbc6a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\World">
-      <UniqueIdentifier>{08f08cad-c1c3-4297-b68f-49b07d69c89a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\Blueprint">
-      <UniqueIdentifier>{47be6e4f-cfe9-4005-9375-3f934dadcef6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\FracturableTriangle\FTriangleLineResolutionMachine">
       <UniqueIdentifier>{4297ba9a-e72b-4c6f-8a6f-f1fc01e33f4c}</UniqueIdentifier>
     </Filter>
@@ -150,9 +141,6 @@
     </Filter>
     <Filter Include="Header Files\FracturableTriangle\FracturingMachines\ORE">
       <UniqueIdentifier>{9d0bcc8d-8b2d-408e-a60f-d3f389784d70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FracturableTriangle\FracturingMachines\ORE">
-      <UniqueIdentifier>{a637ba17-b49b-4e54-9e34-830b014d59e7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Archived">
       <UniqueIdentifier>{52237e80-cea0-4b29-8d08-c354d885982d}</UniqueIdentifier>
@@ -294,6 +282,18 @@
     </Filter>
     <Filter Include="Header Files\MShaderHintEnum">
       <UniqueIdentifier>{5cd6fa29-95d5-4913-b3db-297b1bdb46a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines">
+      <UniqueIdentifier>{bf565c0b-4d83-41f6-8a7c-a0e2cee328b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\World">
+      <UniqueIdentifier>{08f08cad-c1c3-4297-b68f-49b07d69c89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\Blueprint">
+      <UniqueIdentifier>{47be6e4f-cfe9-4005-9375-3f934dadcef6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\ORE">
+      <UniqueIdentifier>{a637ba17-b49b-4e54-9e34-830b014d59e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1257,6 +1257,12 @@
     <ClInclude Include="FBarycentricCoordProducer.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
+    <ClInclude Include="FTrianglePointShadow.h">
+      <Filter>Header Files\FracturableTriangle\FTrianglePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="FTriangleUVCalculator.h">
+      <Filter>Header Files\FracturableTriangle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1431,7 +1437,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleFracturerBase.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleWorldTracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
@@ -1491,13 +1497,13 @@
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
     </ClCompile>
     <ClCompile Include="WorldFracturingMachine.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines\World</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\World</Filter>
     </ClCompile>
     <ClCompile Include="BlueprintFracturingMachine.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\Blueprint</Filter>
     </ClCompile>
     <ClCompile Include="CalibrateableOREKeyPair.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines\Blueprint</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\Blueprint</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleBlueprintTracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
@@ -1515,7 +1521,7 @@
       <Filter>Source Files\FracturableTriangle\FTriangleLineResolutionMachine</Filter>
     </ClCompile>
     <ClCompile Include="OREFracturingMachine.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines\ORE</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\ORE</Filter>
     </ClCompile>
     <ClCompile Include="FTriangleORETracer.cpp">
       <Filter>Source Files\FracturableTriangle\FTriangleTracer</Filter>
@@ -1659,7 +1665,7 @@
       <Filter>Source Files\FracturableTriangle\FTrianglePointUVProducer</Filter>
     </ClCompile>
     <ClCompile Include="WorldTextureFracturingMachine.cpp">
-      <Filter>Source Files\FracturableTriangle\FracturingMachines\World</Filter>
+      <Filter>Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\World</Filter>
     </ClCompile>
     <ClCompile Include="RenderableTriangleBase.cpp">
       <Filter>Source Files\RType</Filter>
@@ -1677,6 +1683,9 @@
       <Filter>Source Files\RType</Filter>
     </ClCompile>
     <ClCompile Include="FBarycentricCoordProducer.cpp">
+      <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="FTriangleUVCalculator.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
     </ClCompile>
   </ItemGroup>
