@@ -87,9 +87,9 @@ int FanManager::addNewPoint(EnclaveBlockVertex in_blockVertex)
 ECBPolyPoint FanManager::convertVertexToPolyPoint(EnclaveBlockVertex in_blockVertex)
 {
 	ECBPolyPoint pointToReturn;
-	pointToReturn.x = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.x);
-	pointToReturn.y = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.y);
-	pointToReturn.z = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.z);
+	pointToReturn.x = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexX());
+	pointToReturn.y = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexY());
+	pointToReturn.z = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexZ());
 	return pointToReturn;
 }
 
@@ -138,51 +138,51 @@ PointSearchData FanManager::checkIfNearbyPointExists(EnclaveBlockVertex in_block
 			EnclaveBlockVertex currentVertex = in_blockVertex;	// copy the current vertex
 			int searchArmLength = 3;
 			// x floats
-			float x_pos = float(currentVertex.x + searchArmLength);
-			float x_current = currentVertex.x;
-			float x_neg = float(currentVertex.x - searchArmLength);
+			float x_pos = float(currentVertex.getVertexX() + searchArmLength);
+			float x_current = currentVertex.getVertexX();
+			float x_neg = float(currentVertex.getVertexX() - searchArmLength);
 
 			// y floats
-			float y_pos = float(currentVertex.y + searchArmLength);
-			float y_current = currentVertex.y;
-			float y_neg = float(currentVertex.z - searchArmLength);
+			float y_pos = float(currentVertex.getVertexY() + searchArmLength);
+			float y_current = currentVertex.getVertexY();
+			float y_neg = float(currentVertex.getVertexY() - searchArmLength);
 
 			// z floats
-			float z_pos = float(currentVertex.z + searchArmLength);
-			float z_current = currentVertex.z;
-			float z_neg = float(currentVertex.z - searchArmLength);
+			float z_pos = float(currentVertex.getVertexZ() + searchArmLength);
+			float z_current = currentVertex.getVertexZ();
+			float z_neg = float(currentVertex.getVertexZ() - searchArmLength);
 
 			if
 				(
 					// x checks
 				(
-					(x_pos == arrayPtr[y].x)
+					(x_pos == arrayPtr[y].getVertexX())
 					||
-					(x_current == arrayPtr[y].x)
+					(x_current == arrayPtr[y].getVertexX())
 					||
-					(x_neg == arrayPtr[y].x)
+					(x_neg == arrayPtr[y].getVertexX())
 					)
 
 					&&
 
 					// y checks
 					(
-					(y_pos == arrayPtr[y].y)
+					(y_pos == arrayPtr[y].getVertexY())
 						||
-						(y_current == arrayPtr[y].y)
+						(y_current == arrayPtr[y].getVertexY())
 						||
-						(y_neg == arrayPtr[y].y)
+						(y_neg == arrayPtr[y].getVertexY())
 						)
 
 					&&
 
 					// z checks
 					(
-					(z_pos == arrayPtr[y].z)
+					(z_pos == arrayPtr[y].getVertexZ())
 						||
-						(z_current == arrayPtr[y].z)
+						(z_current == arrayPtr[y].getVertexZ())
 						||
-						(z_neg == arrayPtr[y].z)
+						(z_neg == arrayPtr[y].getVertexZ())
 						)
 					)
 			{
@@ -225,7 +225,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 		EnclaveBlockVertex negSearch = baseVertex;
 		for (int x = 0; x < numberOfIncrementTicks; x++)
 		{
-			posSearch.x += 1;
+			//posSearch.x += 1;
+			posSearch.incrementX(1);
 			PointSearchData posResults = checkIfPointExists(posSearch);
 			if (posResults.isPointFound == 1)
 			{
@@ -234,7 +235,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 				break;
 			}
 
-			negSearch.x -= 1;
+			//negSearch.x -= 1;
+			negSearch.decrementX(1);
 			PointSearchData negResults = checkIfPointExists(negSearch);
 			if (negResults.isPointFound == 1)
 			{
@@ -250,7 +252,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 		EnclaveBlockVertex negSearch = baseVertex;
 		for (int x = 0; x < numberOfIncrementTicks; x++)
 		{
-			posSearch.y += 1;
+			//posSearch.y += 1;
+			posSearch.incrementY(1);
 			PointSearchData posResults = checkIfPointExists(posSearch);
 			if (posResults.isPointFound == 1)
 			{
@@ -259,7 +262,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 				break;
 			}
 
-			negSearch.y -= 1;
+			//negSearch.y -= 1;
+			negSearch.decrementY(1);
 			PointSearchData negResults = checkIfPointExists(negSearch);
 			if (negResults.isPointFound == 1)
 			{
@@ -276,7 +280,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 		EnclaveBlockVertex negSearch = baseVertex;
 		for (int x = 0; x < numberOfIncrementTicks; x++)
 		{
-			posSearch.z += 1;
+			//posSearch.z += 1;
+			posSearch.incrementZ(1);
 			PointSearchData posResults = checkIfPointExists(posSearch);
 			if (posResults.isPointFound == 1)
 			{
@@ -286,7 +291,8 @@ BlockSearchMeta FanManager::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_point
 				break;
 			}
 
-			negSearch.z -= 1;
+			//negSearch.z -= 1;
+			posSearch.decrementZ(1);
 			PointSearchData negResults = checkIfPointExists(negSearch);
 			if (negResults.isPointFound == 1)
 			{
@@ -402,9 +408,9 @@ std::string FanManager::generateFanManagerHash()
 					auto fetchedVertex = fetchPoint(currentPointIndex);
 
 					// for each vertex dimension, use that as the input for redetermining currentHashInput.
-					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.x));
-					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.y));
-					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.z));
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.getVertexX()));
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.getVertexY()));
+					currentHashInput = HashUtils::sha256(currentHashInput + std::to_string(fetchedVertex.getVertexZ()));
 				}
 			}
 			break;
@@ -429,14 +435,14 @@ void FanManager::listPoints()
 	{
 		for (int x = 0; x < totalPoints; x++)
 		{
-			std::cout << "(LOCAL_POINTS) Point at index: [" << x << "]: " << int(localVertexArray[x].x) << ", " << int(localVertexArray[x].y) << ", " << int(localVertexArray[x].z) << std::endl;
+			std::cout << "(LOCAL_POINTS) Point at index: [" << x << "]: " << int(localVertexArray[x].getVertexX()) << ", " << int(localVertexArray[x].getVertexY()) << ", " << int(localVertexArray[x].getVertexZ()) << std::endl;
 		}
 	}
 	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 	{
 		for (int x = 0; x < totalPoints; x++)
 		{
-			std::cout << "(NONLOCAL_POINTS) Point at index: [" << x << "]: " << int(expandedVertexArray[x].x) << ", " << int(expandedVertexArray[x].y) << ", " << int(expandedVertexArray[x].z) << std::endl;
+			std::cout << "(NONLOCAL_POINTS) Point at index: [" << x << "]: " << int(expandedVertexArray[x].getVertexX()) << ", " << int(expandedVertexArray[x].getVertexY()) << ", " << int(expandedVertexArray[x].getVertexZ()) << std::endl;
 		}
 	}
 }
@@ -776,7 +782,17 @@ void FanManager::constructManagerFromMessage(Message* in_managerDataMessage)
 				unsigned char current_vertex_x = unsigned char(in_managerDataMessage->readInt());
 				unsigned char current_vertex_y = unsigned char(in_managerDataMessage->readInt());
 				unsigned char current_vertex_z = unsigned char(in_managerDataMessage->readInt());
-				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
+				unsigned char current_vertex_usesUV = unsigned char(in_managerDataMessage->readInt());
+				float current_vertex_U = in_managerDataMessage->readFloat();
+				float current_vertex_V = in_managerDataMessage->readFloat();
+
+				EnclaveBlockVertexTextureModeEnum textureMode = EnclaveBlockVertexTextureModeEnum::TILED_COORDS;
+				if (current_vertex_usesUV == 1)
+				{
+					textureMode = EnclaveBlockVertexTextureModeEnum::TEXTURE_COORDS;
+				}
+
+				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z, textureMode, current_vertex_U, current_vertex_V);
 				localVertexArray[x] = constructedVertex;
 			}
 			break;
@@ -794,7 +810,17 @@ void FanManager::constructManagerFromMessage(Message* in_managerDataMessage)
 				unsigned char current_vertex_x = unsigned char(in_managerDataMessage->readInt());
 				unsigned char current_vertex_y = unsigned char(in_managerDataMessage->readInt());
 				unsigned char current_vertex_z = unsigned char(in_managerDataMessage->readInt());
-				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z);
+				unsigned char current_vertex_usesUV = unsigned char(in_managerDataMessage->readInt());
+				float current_vertex_U = in_managerDataMessage->readFloat();
+				float current_vertex_V = in_managerDataMessage->readFloat();
+
+				EnclaveBlockVertexTextureModeEnum textureMode = EnclaveBlockVertexTextureModeEnum::TILED_COORDS;
+				if (current_vertex_usesUV == 1)
+				{
+					textureMode = EnclaveBlockVertexTextureModeEnum::TEXTURE_COORDS;
+				}
+
+				EnclaveBlockVertex constructedVertex(current_vertex_x, current_vertex_y, current_vertex_z, textureMode, current_vertex_U, current_vertex_V);
 				expandedVertexArray[x] = constructedVertex;
 			}
 			break;

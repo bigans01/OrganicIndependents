@@ -195,9 +195,9 @@ BlockSearchMeta EnclaveBlock::checkIfNearbyPointExistsOnLine(ECBPolyPoint in_poi
 ECBPolyPoint EnclaveBlock::convertVertexToPolyPoint(EnclaveBlockVertex in_blockVertex)
 {
 	ECBPolyPoint pointToReturn;
-	pointToReturn.x = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.x);
-	pointToReturn.y = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.y);
-	pointToReturn.z = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.z);
+	pointToReturn.x = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexX());
+	pointToReturn.y = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexY());
+	pointToReturn.z = IndependentUtils::convertPreciseCoordToFloat(in_blockVertex.getVertexZ());
 	return pointToReturn;
 }
 

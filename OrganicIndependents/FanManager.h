@@ -11,6 +11,9 @@
 #include "OrganicWrappedBBFan.h"
 #include "BlockSearchMeta.h"
 #include "HashUtils.h"
+#include "EnclaveBlockVertexTextureModeEnum.h"
+#include "TriangleMaterial.h"
+#include "ECBPolyPoint.h"
 
 class IndependentUtils;
 class FanManager

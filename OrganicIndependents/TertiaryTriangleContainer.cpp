@@ -9,18 +9,18 @@ void TertiaryTriangleContainer::sanitizePoints(int in_debugFlag)
 	EnclaveBlockVertex pointB = triangleVertices[1];
 	if (in_debugFlag == 1)
 	{
-		std::cout << "pointA: " << int(pointA.x) << ", " << int(pointA.y) << ", " << int(pointA.z) << std::endl;
-		std::cout << "pointB: " << int(pointB.x) << ", " << int(pointB.y) << ", " << int(pointB.z) << std::endl;
+		std::cout << "pointA: " << int(pointA.getVertexX()) << ", " << int(pointA.getVertexY()) << ", " << int(pointA.getVertexZ()) << std::endl;
+		std::cout << "pointB: " << int(pointB.getVertexX()) << ", " << int(pointB.getVertexY()) << ", " << int(pointB.getVertexZ()) << std::endl;
 	}
 
 
 	if
 		(
-		(pointA.x == pointB.x)
+		(pointA.getVertexX() == pointB.getVertexX())
 			&&
-			(pointA.y == pointB.y)
+			(pointA.getVertexY() == pointB.getVertexY())
 			&&
-			(pointA.z == pointB.z)
+			(pointA.getVertexZ() == pointB.getVertexZ())
 			)
 	{
 		duplicateFlag = 1;
@@ -55,6 +55,6 @@ void TertiaryTriangleContainer::listPoints()
 	for (int x = 0; x < loopCount; x++)
 	{
 		EnclaveBlockVertex currentPoint = triangleVertices[x];
-		std::cout << "Point " << x << ": " << int(currentPoint.x) << ", " << int(currentPoint.y) << ", " << int(currentPoint.z) << std::endl;
+		std::cout << "Point " << x << ": " << int(currentPoint.getVertexX()) << ", " << int(currentPoint.getVertexY()) << ", " << int(currentPoint.getVertexZ()) << std::endl;
 	}
 }

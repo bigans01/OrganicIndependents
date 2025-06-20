@@ -1263,6 +1263,9 @@
     <ClInclude Include="FTriangleUVCalculator.h">
       <Filter>Header Files\FracturableTriangle</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveBlockVertexTextureModeEnum.h">
+      <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

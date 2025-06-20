@@ -7227,7 +7227,7 @@ int IndependentUtils::checkIfFaceListsMatch(BorderMDFaceList in_faceListA, Borde
 
 EnclaveBlockVertex IndependentUtils::convertPolyPointToBlockVertex(ECBPolyPoint in_polyPoint)
 {
-	EnclaveBlockVertex returnVertex;
+	//EnclaveBlockVertex returnVertex;
 
 	// ten-thousndths rounding
 	ECBPolyPoint roundedPointsTenThousandths = roundPolyPointToTenThousandths(in_polyPoint);
@@ -7243,9 +7243,11 @@ EnclaveBlockVertex IndependentUtils::convertPolyPointToBlockVertex(ECBPolyPoint 
 	//std::cout << roundedPoints.x << std::endl;
 	//std::cout << roundedPoints.y << std::endl;
 	//std::cout << roundedPoints.z << std::endl;
-	returnVertex.x = unsigned char(roundedPoints.x * 100.0f);
-	returnVertex.y = unsigned char(roundedPoints.y * 100.0f);
-	returnVertex.z = unsigned char(roundedPoints.z * 100.0f);
+	
+	//returnVertex.x = unsigned char(roundedPoints.x * 100.0f);
+	//returnVertex.y = unsigned char(roundedPoints.y * 100.0f);
+	//returnVertex.z = unsigned char(roundedPoints.z * 100.0f);
+
 	//std::cout << "Test of blockVertex conversion: " << std::endl;
 	//std::cout << char(returnVertex.x) << std::endl;
 	//std::cout << char(returnVertex.y) << std::endl;
@@ -7254,17 +7256,37 @@ EnclaveBlockVertex IndependentUtils::convertPolyPointToBlockVertex(ECBPolyPoint 
 	//{
 		//std::cout << "Hey! ho! let's go!" << std::endl;
 	//}
+
+	EnclaveBlockVertex returnVertex(unsigned char(roundedPoints.x * 100.0f),
+									unsigned char(roundedPoints.y * 100.0f),
+									unsigned char(roundedPoints.z * 100.0f),
+									EnclaveBlockVertexTextureModeEnum::UNDEFINED_COORDS,
+									0.0f,
+									0.0f);
+
 	return returnVertex;
 }
 
-EnclaveBlockVertex IndependentUtils::convertFTriangleDoublePointToBlockVertex(DoublePoint in_fTriangleDoublePoint)
+EnclaveBlockVertex IndependentUtils::convertFTrianglePointToBlockVertex(FTrianglePoint in_fTriangleDoublePoint)
 {
 	// There should no be need for round for points from an FTriangle, as that is handled by the FTriangle itself.
 	// This function also assumes that the values being passed in are from a FTriangleOutput that has a destingedGridType of FTriangleType::BLOCK.
+
+	/*
 	EnclaveBlockVertex returnVertex;
-	returnVertex.x = unsigned char(in_fTriangleDoublePoint.x * 100.0f);
-	returnVertex.y = unsigned char(in_fTriangleDoublePoint.y * 100.0f);
-	returnVertex.z = unsigned char(in_fTriangleDoublePoint.z * 100.0f);
+	returnVertex.x = unsigned char(in_fTriangleDoublePoint.point.x * 100.0f);
+	returnVertex.y = unsigned char(in_fTriangleDoublePoint.point.y * 100.0f);
+	returnVertex.z = unsigned char(in_fTriangleDoublePoint.point.z * 100.0f);
+	returnVertex.vertU = in_fTriangleDoublePoint.fTextureU;
+	returnVertex.vertV = in_fTriangleDoublePoint.fTextureV;
+	*/
+
+	EnclaveBlockVertex returnVertex(unsigned char(in_fTriangleDoublePoint.point.x * 100.0f),
+									unsigned char(in_fTriangleDoublePoint.point.y * 100.0f),
+									unsigned char(in_fTriangleDoublePoint.point.z * 100.0f),
+									EnclaveBlockVertexTextureModeEnum::TILED_COORDS,
+									in_fTriangleDoublePoint.fTextureU,
+									in_fTriangleDoublePoint.fTextureV);
 	return returnVertex;
 }
 
@@ -10538,26 +10560,26 @@ ECBPolyPoint IndependentUtils::translateEnclavePointToBlueprintLocalSpace(ECBPol
 ECBPolyPoint IndependentUtils::convertEnclaveBlockVertexToFloats(EnclaveBlockVertex in_vertex)
 {
 	ECBPolyPoint returnPoint;
-	returnPoint.x = convertPreciseCoordToFloat(in_vertex.x);
-	returnPoint.y = convertPreciseCoordToFloat(in_vertex.y);
-	returnPoint.z = convertPreciseCoordToFloat(in_vertex.z);
+	returnPoint.x = convertPreciseCoordToFloat(in_vertex.getVertexX());
+	returnPoint.y = convertPreciseCoordToFloat(in_vertex.getVertexY());
+	returnPoint.z = convertPreciseCoordToFloat(in_vertex.getVertexZ());
 	return returnPoint;
 }
 
 ECBPolyPointTri IndependentUtils::convertEnclaveBlockVertexesToFloats(EnclaveBlockVertexTri in_vertexTri)
 {
 	ECBPolyPointTri returnTri;
-	returnTri.triPoints[0].x = convertPreciseCoordToFloat(in_vertexTri.pointA.x);
-	returnTri.triPoints[0].y = convertPreciseCoordToFloat(in_vertexTri.pointA.y);
-	returnTri.triPoints[0].z = convertPreciseCoordToFloat(in_vertexTri.pointA.z);
+	returnTri.triPoints[0].x = convertPreciseCoordToFloat(in_vertexTri.pointA.getVertexX());
+	returnTri.triPoints[0].y = convertPreciseCoordToFloat(in_vertexTri.pointA.getVertexY());
+	returnTri.triPoints[0].z = convertPreciseCoordToFloat(in_vertexTri.pointA.getVertexZ());
 
-	returnTri.triPoints[1].x = convertPreciseCoordToFloat(in_vertexTri.pointB.x);
-	returnTri.triPoints[1].y = convertPreciseCoordToFloat(in_vertexTri.pointB.y);
-	returnTri.triPoints[1].z = convertPreciseCoordToFloat(in_vertexTri.pointB.z);
+	returnTri.triPoints[1].x = convertPreciseCoordToFloat(in_vertexTri.pointB.getVertexX());
+	returnTri.triPoints[1].y = convertPreciseCoordToFloat(in_vertexTri.pointB.getVertexY());
+	returnTri.triPoints[1].z = convertPreciseCoordToFloat(in_vertexTri.pointB.getVertexZ());
 
-	returnTri.triPoints[2].x = convertPreciseCoordToFloat(in_vertexTri.pointC.x);
-	returnTri.triPoints[2].y = convertPreciseCoordToFloat(in_vertexTri.pointC.y);
-	returnTri.triPoints[2].z = convertPreciseCoordToFloat(in_vertexTri.pointC.z);
+	returnTri.triPoints[2].x = convertPreciseCoordToFloat(in_vertexTri.pointC.getVertexX());
+	returnTri.triPoints[2].y = convertPreciseCoordToFloat(in_vertexTri.pointC.getVertexY());
+	returnTri.triPoints[2].z = convertPreciseCoordToFloat(in_vertexTri.pointC.getVertexZ());
 	return returnTri;
 
 }
