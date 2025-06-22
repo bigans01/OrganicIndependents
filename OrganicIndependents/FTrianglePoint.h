@@ -40,6 +40,14 @@ class FTrianglePoint
 			point = in_point;
 		};
 
+		FTrianglePoint& operator+=(const FTrianglePoint& ecbPolyPoint_b)
+		{
+			point.x += ecbPolyPoint_b.point.x;
+			point.y += ecbPolyPoint_b.point.y;
+			point.z += ecbPolyPoint_b.point.z;
+			return *this;
+		}
+
 		
 		
 		bool operator==(const ECBPolyPoint& in_otherPoint) const	// const is required at end here for C++_20
