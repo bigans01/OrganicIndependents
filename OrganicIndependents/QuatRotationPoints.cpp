@@ -151,6 +151,21 @@ glm::vec3 QuatRotationPoints::getFirstPoint()
 	return **pointsStart;
 }
 
+glm::vec3 QuatRotationPoints::getSecondPoint()
+{
+	auto pointsStart = pointsRefVector.begin();
+	pointsStart++;
+	return **pointsStart;
+}
+
+glm::vec3 QuatRotationPoints::getThirdPoint()
+{
+	auto pointsStart = pointsRefVector.begin();
+	pointsStart++;
+	pointsStart++;
+	return **pointsStart;
+}
+
 glm::vec3 QuatRotationPoints::getLastPoint()
 {
 	auto pointsStart = pointsRefVector.rbegin();
@@ -161,13 +176,6 @@ glm::vec3* QuatRotationPoints::getLastPointRef()
 {
 	auto pointsStart = pointsRefVector.rbegin();
 	return *pointsStart;
-}
-
-glm::vec3 QuatRotationPoints::getSecondPoint()
-{
-	auto pointsStart = pointsRefVector.begin();
-	pointsStart++;
-	return **pointsStart;
 }
 
 glm::vec3* QuatRotationPoints::getFirstPointRef()

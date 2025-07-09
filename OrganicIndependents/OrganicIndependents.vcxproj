@@ -414,6 +414,7 @@
     <ClInclude Include="PRResult.h" />
     <ClInclude Include="QuatRotationManager.h" />
     <ClInclude Include="QuatRotationPoints.h" />
+    <ClInclude Include="QuatRotationPointsV2.h" />
     <ClInclude Include="QuatRotationRecord.h" />
     <ClInclude Include="QuatRotationType.h" />
     <ClInclude Include="RDerivedTypeEnum.h" />

@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "QuatRotationManager.h"
 
+void QuatRotationManager::setDebugLevel(PolyDebugLevel in_polyDebugLevel)
+{
+	quatRotationManagerLogger.setDebugLevel(in_polyDebugLevel);
+}
+
 void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
@@ -8,15 +13,20 @@ void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_
 	pointBRef = rotationpointsRefVector->getSecondPointRef();
 	pointCRef = rotationpointsRefVector->getThirdPointRef();
 
+	pointACopy = rotationpointsRefVector->getFirstPoint();
+	pointBCopy = rotationpointsRefVector->getSecondPoint();
+	pointCCopy = rotationpointsRefVector->getThirdPoint();
+
+
 	// check if we need to rotate about the Y-axis to get to the same Z values for the line
-	if (pointBRef->z != 0.0f)
+	if (pointBCopy.z != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Y;
 		rotationOrder.push_back(rotateType); //push into the vector
 	}
 
 	// check if we need to rotate about the Z-axis to get to the same Y values for the line
-	if (pointBRef->y != 0.0f)
+	if (pointBCopy.y != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
 		rotationOrder.push_back(rotateType);
@@ -27,10 +37,6 @@ void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_
 	rotateToOriginalPosition();
 }
 
-void QuatRotationManager::setDebugLevel(PolyDebugLevel in_polyDebugLevel)
-{
-	quatRotationManagerLogger.setDebugLevel(in_polyDebugLevel);
-}
 
 
 
@@ -41,8 +47,12 @@ void QuatRotationManager::initializeAndRunForZFracture(QuatRotationPoints* in_qu
 	pointBRef = rotationpointsRefVector->getSecondPointRef();
 	pointCRef = rotationpointsRefVector->getThirdPointRef();
 
+	pointACopy = rotationpointsRefVector->getFirstPoint();
+	pointBCopy = rotationpointsRefVector->getSecondPoint();
+	pointCCopy = rotationpointsRefVector->getThirdPoint();
+
 	// check if we need to rotate about the Y-axis to get to the same Z values for the line
-	if (pointBRef->z != 0.0f)
+	if (pointBCopy.z != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Y;
 		//std::cout << "ROTATE_AROUND_Y required." << std::endl;
@@ -50,7 +60,7 @@ void QuatRotationManager::initializeAndRunForZFracture(QuatRotationPoints* in_qu
 	}
 
 	// check if we need to rotate about the Z-axis to get to the same Y values for the line
-	if (pointBRef->y != 0.0f)
+	if (pointBCopy.y != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
 		//std::cout << "ROTATE_AROUND_Z required." << std::endl;
@@ -125,8 +135,10 @@ void QuatRotationManager::initializeAndRunForCoplanarCategorizedLineEmptyNormal(
 	rotationpointsRefVector = in_quatpointsRefVector;
 	pointBRef = in_quatpointsRefVector->getPointRefByIndex(1);
 
+	pointBCopy= in_quatpointsRefVector->getPointByIndex(1);
+
 	// we should only need to check if the y is equal to 0; this function assumes that the SPoly has been aligned to the Z-plane.
-	if (pointBRef->y != 0.0f)
+	if (pointBCopy.y != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
 		//std::cout << "ROTATE_AROUND_Z required." << std::endl;
@@ -134,7 +146,7 @@ void QuatRotationManager::initializeAndRunForCoplanarCategorizedLineEmptyNormal(
 	}
 
 	// otherwise, if it's already on Y = 0, do this:
-	if (pointBRef->y == 0.0f)
+	if (pointBCopy.y == 0.0f)
 	{
 		glm::vec3 centroid = in_quatpointsRefVector->getPointByIndex(2);
 		glm::vec3* emptyNormalRef = in_quatpointsRefVector->getPointRefByIndex(3);
@@ -158,7 +170,9 @@ void QuatRotationManager::initializeAndRunForCoplanarCategorizedLineEmptyNormal(
 float QuatRotationManager::initializeAndRunForFindingObserverRadians(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
-	pointBRef = in_quatpointsRefVector->getPointRefByIndex(3);
+
+	pointBCopy = in_quatpointsRefVector->getPointByIndex(3);
+
 
 	// check if the slopes are the same; if they are, set a flag to indicate that the degrees will always be 180.
 	glm::vec3 observerSlope = rotationpointsRefVector->getPointByIndex(1) - rotationpointsRefVector->getPointByIndex(0);
@@ -173,13 +187,17 @@ float QuatRotationManager::initializeAndRunForFindingObserverRadians(QuatRotatio
 	//}
 
 
+	pointBCopy = in_quatpointsRefVector->getPointByIndex(3);
+
 	// we should only need to check if the y is equal to 0; this function assumes that the SPoly has been aligned to the Z-plane.
-	if (pointBRef->y != 0.0f)
+	if (pointBCopy.y != 0.0f)
 	{
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
 		//std::cout << "ROTATE_AROUND_Z required." << std::endl;
 		rotationOrder.push_back(rotateType);
 	}
+
+	pointBCopy = in_quatpointsRefVector->getPointByIndex(3);
 
 	return executeRotationsForFindingObserverRadians();
 }
@@ -187,19 +205,23 @@ float QuatRotationManager::initializeAndRunForFindingObserverRadians(QuatRotatio
 bool QuatRotationManager::initializeAndRunForCheckingCoplanarity(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
+	
 	pointBRef = in_quatpointsRefVector->getPointRefByIndex(2);	// get a ref to the point to compare to; we need to rotate this point to 1,0,0. (we should be using the normal.)
-	if (pointBRef->x != 1.0f)
+	pointBCopy = in_quatpointsRefVector->getPointByIndex(2);	// get a ref to the point to compare to; we need to rotate this point to 1,0,0. (we should be using the normal.)
+
+	if (pointBCopy.x != 1.0f)
 	{
 		//std::cout << "::::::: Co-planarity: rotate around Z required. " << std::endl;
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
 		//std::cout << "ROTATE_AROUND_Z required." << std::endl;
-		rotationOrder.push_back(rotateType);		// should call rotateAroundZToYZero();
+		rotationOrder.push_back(rotateType);		// should call rotate?AroundZToYZero();
 	}
-	if (pointBRef->z != 0.0f)
+
+	if (pointBCopy.z != 0.0f)
 	{
 		//std::cout << "::::::: Co-planarity: rotate around Y required. " << std::endl;
 		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Y;		// rotate around Y to x = 1.0f
-		rotationOrder.push_back(rotateType);		// should call rotateAroundZToYZero();
+		rotationOrder.push_back(rotateType);		// should call rotate?AroundZToYZero();
 	}
 	//rotationpointsRefVector->printPoints();
 
@@ -211,6 +233,7 @@ bool QuatRotationManager::executeRotationsForCheckingCoplanarity()
 	bool isCoplanar = false;
 	auto vectorBegin = rotationOrder.begin();
 	auto vectorEnd = rotationOrder.end();
+
 	for (vectorBegin; vectorBegin != vectorEnd; vectorBegin++)
 	{
 		if (*vectorBegin == QuatRotationType::ROTATE_AROUND_Z)
@@ -219,7 +242,7 @@ bool QuatRotationManager::executeRotationsForCheckingCoplanarity()
 		}
 		if (*vectorBegin == QuatRotationType::ROTATE_AROUND_Y)
 		{
-			//rotateAroundZToYZero();
+			//rotate?AroundZToYZero();
 		}
 	}
 
@@ -297,7 +320,7 @@ float QuatRotationManager::executeRotationsForFindingObserverRadians()
 	{
 		if (*vectorBegin == QuatRotationType::ROTATE_AROUND_Z)
 		{
-			rotateAroundZToYZero();
+			rotateAroundZToYZeroV2();
 		}
 	}
 
@@ -311,16 +334,20 @@ float QuatRotationManager::executeRotationsForFindingObserverRadians()
 	return findRadiansForObservation();
 }
 
-void QuatRotationManager::rotateAroundZToYZero()
+void QuatRotationManager::rotateAroundZToYZeroV2()
 {
-	if (pointBRef->y != 0.0f)
+	pointBCopy = rotationpointsRefVector->getPointByIndex(3);	// Must get the latest value of pointB
+	if (pointBCopy.y != 0.0f)
 	{
+
 		float radians = 0.0f;
 		float fullRadian360 = 6.28319f;
 
 		//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
 		//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-		float atan2result = atan2(pointBRef->y, pointBRef->x); // find the radians we'll need to rotate by
+
+		float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
+
 		//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
 		float firstPassRotateRadians = 0.0f;
 
@@ -353,6 +380,58 @@ void QuatRotationManager::rotateAroundZToYZero()
 		//std::cout << ":::: Observer calculation: Printing points after Z-axis bound rotation: " << std::endl;
 		//rotationpointsRefVector->printPoints();
 
+		//pointBCopy = rotationpointsRefVector->getPointByIndex(3);	// Must get the latest value of pointB
+
+		//std::cout << ":::: Radian value is: " << radianValue << std::endl;
+	}
+}
+
+void QuatRotationManager::rotateAroundZToYZero()
+{
+	pointBCopy = rotationpointsRefVector->getThirdPoint();	// Must get the latest value of pointB
+	if (pointBCopy.y != 0.0f)
+	{
+		float radians = 0.0f;
+		float fullRadian360 = 6.28319f;
+
+		//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
+		//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
+
+		float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
+
+		//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
+		float firstPassRotateRadians = 0.0f;
+
+		//std::cout << "::: atan2 result is: " << atan2result << std::endl;
+
+		if (atan2result > 0.0)
+		{
+			//firstPassRotateRadians = fullRadian360 - atan2result;
+			firstPassRotateRadians = atan2result;
+		}
+		else if (atan2result < 0.0) // if a is less than 0, add the result to fullRadian360 to get the amount to rotate by. (the quat goes CW when the rotation axis is pointing in a positive direction)
+		{
+			//firstPassRotateRadians = abs(atan2result);
+			firstPassRotateRadians = fullRadian360 + atan2result;
+		}
+
+		if (debugFlag == 1)
+		{
+			//std::cout << "First pass rotate radians is: " << firstPassRotateRadians << std::endl;
+		}
+		glm::vec3 rotationAroundZ;
+		rotationAroundZ.z = -1.0f;
+		QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
+
+		glm::quat originalQuat = s1record.returnOriginalRotation();
+		//*pointBRef = originalQuat * *pointBRef;	
+		rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
+		rotationRecords.push(s1record);
+
+		//std::cout << ":::: Observer calculation: Printing points after Z-axis bound rotation: " << std::endl;
+		//rotationpointsRefVector->printPoints();
+
+		//pointBCopy = rotationpointsRefVector->getThirdPoint();	// Must get the latest value of pointB
 		//std::cout << ":::: Radian value is: " << radianValue << std::endl;
 	}
 }
@@ -510,23 +589,6 @@ void QuatRotationManager::executeRotationsForFindingCoplanarCategorizedLineEmpty
 		{
 			//rotateAroundZToFindBorderLineEmptyNormalAndPushIntoStack();
 			rotateAroundZToFindCoplanarCategorizedLineEmptyNormalAndPushIntoStack();
-		}
-	}
-}
-
-void QuatRotationManager::executeRotationsForFindingBorderLineEmptyNormalWithRotateToZ()
-{
-	auto vectorBegin = rotationOrder.begin();
-	auto vectorEnd = rotationOrder.end();
-	for (vectorBegin; vectorBegin != vectorEnd; vectorBegin++)
-	{
-		if (*vectorBegin == QuatRotationType::ROTATE_AROUND_Z)
-		{
-			rotateAroundZToYZero();
-		}
-		else if (*vectorBegin == QuatRotationType::ROTATE_AROUND_Y)
-		{
-			rotateAroundYToPosXAndPushIntoStack();
 		}
 	}
 }

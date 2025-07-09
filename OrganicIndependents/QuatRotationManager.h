@@ -18,9 +18,6 @@ class QuatRotationManager
 		int debugFlag = 0;			// for debugging purposes 
 		QuatRotationPoints* rotationpointsRefVector;
 		glm::vec3 focusedLine;							// the line that we will be rotating until it's y and z values are equal (calculations are based around this line)
-		glm::vec3* pointARef;
-		glm::vec3* pointBRef;
-		glm::vec3* pointCRef;
 		glm::vec3* triangleNormalRef;					// a reference to the vec3 that is the calculate normal for a triangle
 		std::vector<QuatRotationType> rotationOrder;	// stores the types of rotations that need to be executed
 		std::stack<QuatRotationRecord> rotationRecords;
@@ -52,10 +49,7 @@ class QuatRotationManager
 		void executeRotationsForPlanarSlide();
 		void executeRotationsForFindingBorderLine();
 		void executeRotationsForFindingCoplanarCategorizedLineEmptyNormal();
-		void executeRotationsForFindingBorderLineEmptyNormalWithRotateToZ();
 
-		float executeRotationsForFindingObserverRadians();
-		bool executeRotationsForCheckingCoplanarity();
 
 		void rotateAroundYAndPushIntoStack();
 		void rotateAroundYToPosZForPlanarSlideAndPushIntoStack();
@@ -71,7 +65,6 @@ class QuatRotationManager
 
 		void rotateEmptyNormalToPosY(glm::vec3* in_normal);
 		void rotateAroundZForPosYNormalAndPushIntoStack(glm::vec3 in_normal);
-		void rotateAroundZToYZero();
 		void rotateAroundYToPosXAndPushIntoStack();
 		void rotatePointAroundXToPosY(glm::vec3 in_point);
 
@@ -97,6 +90,27 @@ class QuatRotationManager
 
 		float radianValue;				// may be optionally used by some functions.
 	private:
+		glm::vec3* pointARef;
+		glm::vec3* pointBRef;
+		glm::vec3* pointCRef;
+
+		glm::vec3 pointACopy;
+		glm::vec3 pointBCopy;
+		glm::vec3 pointCCopy;
+
+		void rotateAroundZToYZero();	// Needed for when QuatRotationManager::initializeAndRunForCheckingCoplanarity 
+										// ends up calling executeRotationsForCheckingCoplanarity; it expects that
+										// pointBRef/Copy is the 3rd point (at index value 2)
+
+		void rotateAroundZToYZeroV2();	// Needed for when QuatRotationManager::initializeAndRunForFindingObserverRadians ends up calling
+										// executeRotationsForFindingObserverRadians; expects that the value of
+										// pointBRef/Copy is the 4th point (at index value 3).
+		//void executeRotationsForFindingBorderLineEmptyNormalWithRotateToZ();
+		float executeRotationsForFindingObserverRadians();
+
+		
+		bool executeRotationsForCheckingCoplanarity();
+
 		PolyLogger quatRotationManagerLogger;
 };
 

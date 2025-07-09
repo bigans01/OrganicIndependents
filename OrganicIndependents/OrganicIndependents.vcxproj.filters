@@ -295,6 +295,9 @@
     <Filter Include="Source Files\FracturableTriangle\DimensionalLineScanners\FracturingMachines\ORE">
       <UniqueIdentifier>{a637ba17-b49b-4e54-9e34-830b014d59e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\OpenGLDataStructures\QuatV2">
+      <UniqueIdentifier>{c3898e38-0e9c-48e7-bcab-1eb871bf982f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1265,6 +1268,9 @@
     </ClInclude>
     <ClInclude Include="EnclaveBlockVertexTextureModeEnum.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="QuatRotationPointsV2.h">
+      <Filter>Header Files\OpenGLDataStructures\QuatV2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -42,19 +42,24 @@ class QuatRotationPoints
 		void roundAllPointsToHundredths();
 		int getSize();
 		void eraseLastElement();
-		glm::vec3 getFirstPoint();
-		glm::vec3 getLastPoint();
-		glm::vec3* getLastPointRef();
-		glm::vec3 getSecondPoint();
+		
 		glm::vec3* getFirstPointRef();
 		glm::vec3* getSecondPointRef();
 		glm::vec3* getThirdPointRef();
+		glm::vec3* getPointRefByIndex(int in_index);
 		glm::vec3* getMRPRef();
 		glm::vec3* getNormalRef();
+		
+		glm::vec3 getFirstPoint();
+		glm::vec3 getSecondPoint();
+		glm::vec3 getThirdPoint();
 		glm::vec3 getPointByIndex(int in_index);
-		glm::vec3* getPointRefByIndex(int in_index);
+
+
+		glm::vec3 getLastPoint();
 	private:
 		std::vector<glm::vec3*> pointsRefVector;	// contains the points to cycle through
+		glm::vec3* getLastPointRef();		// 1 usage, in QMVoidTranslatePointsForRasterization
 };
 
 #endif
