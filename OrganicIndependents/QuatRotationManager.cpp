@@ -9,10 +9,7 @@ void QuatRotationManager::setDebugLevel(PolyDebugLevel in_polyDebugLevel)
 void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
-	pointARef = rotationpointsRefVector->getFirstPointRef();
-	pointBRef = rotationpointsRefVector->getSecondPointRef();
-	pointCRef = rotationpointsRefVector->getThirdPointRef();
-
+	
 	pointACopy = rotationpointsRefVector->getFirstPoint();
 	pointBCopy = rotationpointsRefVector->getSecondPoint();
 	pointCCopy = rotationpointsRefVector->getThirdPoint();
@@ -43,10 +40,7 @@ void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_
 void QuatRotationManager::initializeAndRunForZFracture(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
-	pointARef = rotationpointsRefVector->getFirstPointRef();
-	pointBRef = rotationpointsRefVector->getSecondPointRef();
-	pointCRef = rotationpointsRefVector->getThirdPointRef();
-
+	
 	pointACopy = rotationpointsRefVector->getFirstPoint();
 	pointBCopy = rotationpointsRefVector->getSecondPoint();
 	pointCCopy = rotationpointsRefVector->getThirdPoint();
@@ -133,7 +127,6 @@ void QuatRotationManager::initializeAndRunForCyclingDirectionFinderV2(QuatRotati
 void QuatRotationManager::initializeAndRunForCoplanarCategorizedLineEmptyNormal(QuatRotationPoints* in_quatpointsRefVector)
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
-	pointBRef = in_quatpointsRefVector->getPointRefByIndex(1);
 
 	pointBCopy= in_quatpointsRefVector->getPointByIndex(1);
 
@@ -206,7 +199,6 @@ bool QuatRotationManager::initializeAndRunForCheckingCoplanarity(QuatRotationPoi
 {
 	rotationpointsRefVector = in_quatpointsRefVector;
 	
-	pointBRef = in_quatpointsRefVector->getPointRefByIndex(2);	// get a ref to the point to compare to; we need to rotate this point to 1,0,0. (we should be using the normal.)
 	pointBCopy = in_quatpointsRefVector->getPointByIndex(2);	// get a ref to the point to compare to; we need to rotate this point to 1,0,0. (we should be using the normal.)
 
 	if (pointBCopy.x != 1.0f)
@@ -279,8 +271,6 @@ bool QuatRotationManager::checkForRightAngle(glm::vec3 in_pointAtY0, glm::vec3 i
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
 
-	//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-	//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
 	float atan2result = atan2(in_otherPoint.y, in_otherPoint.x); // find the radians we'll need to rotate by
 	//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
 	float firstPassRotateRadians = 0.0f;
@@ -343,9 +333,6 @@ void QuatRotationManager::rotateAroundZToYZeroV2()
 		float radians = 0.0f;
 		float fullRadian360 = 6.28319f;
 
-		//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-		//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-
 		float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
 
 		//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
@@ -373,7 +360,6 @@ void QuatRotationManager::rotateAroundZToYZeroV2()
 		QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
 
 		glm::quat originalQuat = s1record.returnOriginalRotation();
-		//*pointBRef = originalQuat * *pointBRef;	
 		rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 		rotationRecords.push(s1record);
 
@@ -394,9 +380,6 @@ void QuatRotationManager::rotateAroundZToYZero()
 		float radians = 0.0f;
 		float fullRadian360 = 6.28319f;
 
-		//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-		//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-
 		float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
 
 		//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
@@ -424,7 +407,6 @@ void QuatRotationManager::rotateAroundZToYZero()
 		QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
 
 		glm::quat originalQuat = s1record.returnOriginalRotation();
-		//*pointBRef = originalQuat * *pointBRef;	
 		rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 		rotationRecords.push(s1record);
 
@@ -462,18 +444,10 @@ float QuatRotationManager::findRadiansForObservation()
 {
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
-	pointARef = rotationpointsRefVector->getFirstPointRef();
+	pointACopy = rotationpointsRefVector->getPointByIndex(0);
 
-	//std::cout << "!! Point A ref X is: " << pointARef->x << std::endl;
-	//std::cout << "!! Point A ref Y is: " << pointARef->y << std::endl;
+	float atan2result = atan2(pointACopy.y, pointACopy.x); // find the radians we'll need to rotate by
 
-	//std::cout << "=========================== " << std::endl;
-
-	//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-	//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-
-	//float atan2result = roundToThousandths(atan2(pointARef->y, pointARef->x)); // find the radians we'll need to rotate by
-	float atan2result = atan2(pointARef->y, pointARef->x); // find the radians we'll need to rotate by
 	float firstPassRotateRadians = 0.0f;
 
 	//std::cout << "::: atan2 result is: " << atan2result << std::endl;
@@ -660,34 +634,37 @@ CyclingDirection QuatRotationManager::initializeAndRunForCyclingDirectionFinder(
 	rotationpointsRefVector = in_quatpointsRefVector;
 	CyclingDirection direction = CyclingDirection::NOVAL;	// make the compiler happy
 
-	glm::vec3* borderLinePointARef = rotationpointsRefVector->getPointRefByIndex(0);
-	glm::vec3* borderLinePointBRef = rotationpointsRefVector->getPointRefByIndex(1);
-	pointARef = rotationpointsRefVector->getPointRefByIndex(2);	// get point A of categorized line
-	pointBRef = rotationpointsRefVector->getPointRefByIndex(3);	// get point B of categorized line
-	glm::vec3* categorizedLineEmptyNormal = rotationpointsRefVector->getPointRefByIndex(4);
+	glm::vec3* borderLinePointA = rotationpointsRefVector->getPointRefByIndex(0);
+	glm::vec3* borderLinePointB = rotationpointsRefVector->getPointRefByIndex(1);
+
+	
+	pointACopy = rotationpointsRefVector->getPointByIndex(2);
+	pointBCopy = rotationpointsRefVector->getPointByIndex(3);
+
+	glm::vec3 categorizedLineEmptyNormal = rotationpointsRefVector->getPointByIndex(4);
 
 
-	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | BorderLine Point A ref values " << borderLinePointARef->x << ", " << borderLinePointARef->y << ", " << borderLinePointARef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | BorderLine Point B ref values: " << borderLinePointBRef->x << ", " << borderLinePointBRef->y << ", " << borderLinePointBRef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Point A ref values: " << pointARef->x << ", " << pointARef->y << ", " << pointARef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Point B ref values: " << pointBRef->x << ", " << pointBRef->y << ", " << pointBRef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Empty Normal: " << categorizedLineEmptyNormal->x << ", " << categorizedLineEmptyNormal->y << ", " << categorizedLineEmptyNormal->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | BorderLine Point A ref values " << borderLinePointA->x << ", " << borderLinePointA->y << ", " << borderLinePointA->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | BorderLine Point B ref values: " << borderLinePointB->x << ", " << borderLinePointB->y << ", " << borderLinePointB->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Point A ref values: " << pointACopy.x << ", " << pointACopy.y << ", " << pointACopy.z << std::endl;
+	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Point B ref values: " << pointBCopy.x << ", " << pointBCopy.y << ", " << pointBCopy.z << std::endl;
+	std::cout << "#- Cycling Direction    > (Pre-quat rotation)  | Categorized Line Empty Normal: " << categorizedLineEmptyNormal.x << ", " << categorizedLineEmptyNormal.y << ", " << categorizedLineEmptyNormal.z << std::endl;
 
-	rotateEmptyNormalToPosY(categorizedLineEmptyNormal);		// rotate the normal to have Y = 1.0f, so that we may calculate the direction the appropriate way.
+	rotateEmptyNormalToPosY(&categorizedLineEmptyNormal);		// rotate the normal to have Y = 1.0f, so that we may calculate the direction the appropriate way.
 
 
 	std::cout << "#- Cycling Direction    > -------------------After quaternions applied (for rotation of empty normal to positive Y): " << std::endl;
-	std::cout << "#- Cycling Direction    > (Post-quat rotation) | BorderLine Point A ref values: " << borderLinePointARef->x << ", " << borderLinePointARef->y << ", " << borderLinePointARef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Post-quat rotation) | BorderLine Point B ref values: " << borderLinePointBRef->x << ", " << borderLinePointBRef->y << ", " << borderLinePointBRef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Point A ref values: " << pointARef->x << ", " << pointARef->y << ", " << pointARef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Point B ref values: " << pointBRef->x << ", " << pointBRef->y << ", " << pointBRef->z << std::endl;
-	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Empty Normal: " << categorizedLineEmptyNormal->x << ", " << categorizedLineEmptyNormal->y << ", " << categorizedLineEmptyNormal->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Post-quat rotation) | BorderLine Point A ref values: " << borderLinePointA->x << ", " << borderLinePointA->y << ", " << borderLinePointA->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Post-quat rotation) | BorderLine Point B ref values: " << borderLinePointB->x << ", " << borderLinePointB->y << ", " << borderLinePointB->z << std::endl;
+	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Point A ref values: " << pointACopy.x << ", " << pointACopy.y << ", " << pointACopy.z << std::endl;
+	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Point B ref values: " << pointBCopy.x << ", " << pointBCopy.y << ", " << pointBCopy.z << std::endl;
+	std::cout << "#- Cycling Direction    > (Post-quat rotation) | Categorized Line Empty Normal: " << categorizedLineEmptyNormal.x << ", " << categorizedLineEmptyNormal.y << ", " << categorizedLineEmptyNormal.z << std::endl;
 
 
 	// find the direction, based on comparing the y's of the borderLine's points and the empty normal of the categorized line.
-	float normalizedBorderLinePointAY = borderLinePointARef->y / abs(borderLinePointARef->y);
-	float normalizedBorderLinePointBY = borderLinePointBRef->y / abs(borderLinePointBRef->y);
-	float normalizedEmptyNormalY = categorizedLineEmptyNormal->y / abs(categorizedLineEmptyNormal->y);
+	float normalizedBorderLinePointAY = borderLinePointA->y / abs(borderLinePointA->y);
+	float normalizedBorderLinePointBY = borderLinePointB->y / abs(borderLinePointB->y);
+	float normalizedEmptyNormalY = categorizedLineEmptyNormal.y / abs(categorizedLineEmptyNormal.y);
 
 	std::cout << "|| Value of normalizedEmptyNormalY: " << normalizedEmptyNormalY << std::endl;
 	std::cout << "|| Normalized point A Y: " << normalizedBorderLinePointAY << std::endl;
@@ -695,17 +672,16 @@ CyclingDirection QuatRotationManager::initializeAndRunForCyclingDirectionFinder(
 
 	if (normalizedEmptyNormalY == normalizedBorderLinePointAY)
 	{
-		std::cout << "#- Cycling Direction    > Direction is REVERSE, going towards border line's point A -> " << borderLinePointARef->x << ", " << borderLinePointARef->y << ", " << borderLinePointARef->z << std::endl;
+		std::cout << "#- Cycling Direction    > Direction is REVERSE, going towards border line's point A -> " << borderLinePointA->x << ", " << borderLinePointA->y << ", " << borderLinePointA->z << std::endl;
 		direction = CyclingDirection::REVERSE;
 	}
 	else if (normalizedEmptyNormalY == normalizedBorderLinePointBY)
 	{
-		std::cout << "#- Cycling Direction    > Direction is FORWARD, going towards border line's point B -> " << borderLinePointBRef->x << ", " << borderLinePointBRef->y << ", " << borderLinePointBRef->z << std::endl;
+		std::cout << "#- Cycling Direction    > Direction is FORWARD, going towards border line's point B -> " << borderLinePointB->x << ", " << borderLinePointB->y << ", " << borderLinePointB->z << std::endl;
 		direction = CyclingDirection::FORWARD;
 	}
 
 	return direction;
-	//pointARef = rotationpointsRefVector->
 }
 
 void QuatRotationManager::initializeAndRunforAligningNeighboringCleaveSequencesToPosY(QuatRotationPoints* in_quatpointsRefVector)
@@ -733,7 +709,7 @@ void QuatRotationManager::executeRotationsForEmptyNormal()
 		}
 	}
 
-	if (pointCRef->y != pointARef->y)		// only rotate around X if point A's y and point C's y aren't equal (otherwise, its where we want it to be, which is all points having same Y)
+	if (pointCCopy.y != pointACopy.y)		// only rotate around X if point A's y and point C's y aren't equal (otherwise, its where we want it to be, which is all points having same Y)
 	{
 		//std::cout << "!! Rotation around X required, performing..." << std::endl;
 		rotateAroundXToYZeroAndPushIntoStack();		// rotate the points so that Y = 0 for the triangle (but the MRP and empty normal's y value will not be 0)
@@ -764,13 +740,11 @@ void QuatRotationManager::executeRotationsForZFracture()
 		}
 	}
 
-	// only rotate around X if point C's z is not the same as point A's z.... otherwise, its where we want it to be, which is all points having same Z --AND-- pointCRef veers towards positive 1
+	// only rotate around X if point C's z is not the same as point A's z.... otherwise, its where we want it to be, which is all points having same Z --AND-- pointCCopy veers towards positive 1
 	if
-		(
-		(pointCRef->z != pointARef->z)		// must be on same Z coordinate
-		//&&									// --AND--
-		//(pointCRef->y > 0)					// y for the third point must be positive
-			)
+	(
+		(pointCCopy.z != pointACopy.z)
+	)
 	{
 		if (debugFlag == 1)
 		{
@@ -807,15 +781,6 @@ void QuatRotationManager::executeRotationsForPlanarSlide()
 	}
 
 	//rotationpointsRefVector->printPoints();
-}
-
-void QuatRotationManager::executeRotationsForCyclingDirectionFinder()
-{
-	if (pointBRef->y != 0)
-	{
-		std::cout << "####--> Rotating around z..." << std::endl;
-		rotateAroundZAndPushIntoStack();
-	}
 }
 
 void QuatRotationManager::calculateEmptyNormal()
@@ -868,7 +833,7 @@ void QuatRotationManager::rotateAroundYAndPushIntoStack()
 {
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
-	float atan2result = atan2(pointBRef->z, pointBRef->x); // find the radians we'll need to rotate by
+	float atan2result = atan2(pointBCopy.z, pointBCopy.x); // find the radians we'll need to rotate by
 	float firstPassRotateRadians = 0.0f;
 	if (atan2result > 0.0)
 	{
@@ -886,7 +851,6 @@ void QuatRotationManager::rotateAroundYAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundY);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);						// push into the stack
 
@@ -899,7 +863,7 @@ void QuatRotationManager::rotateAroundYToPosXAndPushIntoStack()
 {
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
-	float atan2result = atan2(pointBRef->z, pointBRef->x); // find the radians we'll need to rotate by
+	float atan2result = atan2(pointBCopy.z, pointBCopy.x); // find the radians we'll need to rotate by
 	float firstPassRotateRadians = 0.0f;
 	if (atan2result > 0.0)
 	{
@@ -917,7 +881,6 @@ void QuatRotationManager::rotateAroundYToPosXAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundY);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);						// push into the stack
 
@@ -952,7 +915,6 @@ void QuatRotationManager::rotateAroundYToPosZForPlanarSlideAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundY);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);						// push into the stack
 
@@ -985,7 +947,6 @@ void QuatRotationManager::rotateAroundXToYZeroForPlanarSlideAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundY);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);
 
@@ -999,9 +960,7 @@ void QuatRotationManager::rotateAroundZAndPushIntoStack()
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
 
-	//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-	//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-	float atan2result = atan2(pointBRef->y, pointBRef->x); // find the radians we'll need to rotate by
+	float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
 	//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
 	float firstPassRotateRadians = 0.0f;
 
@@ -1025,63 +984,9 @@ void QuatRotationManager::rotateAroundZAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);
 
-	//std::cout << "Printing points after Z-axis bound rotation: " << std::endl;
-	//rotationpointsRefVector->printPoints();
-}
-
-void QuatRotationManager::rotateAroundZToFindBorderLineEmptyNormalAndPushIntoStack()
-{
-	float radians = 0.0f;
-	float fullRadian360 = 6.28319f;
-
-	//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-	//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-	float atan2result = atan2(pointBRef->y, pointBRef->x); // find the radians we'll need to rotate by
-	//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
-	float firstPassRotateRadians = 0.0f;
-
-	if (atan2result > 0.0)
-	{
-		//firstPassRotateRadians = fullRadian360 - atan2result;
-		firstPassRotateRadians = atan2result;
-	}
-	else if (atan2result < 0.0) // if a is less than 0, add the result to fullRadian360 to get the amount to rotate by. (the quat goes CW when the rotation axis is pointing in a positive direction)
-	{
-		//firstPassRotateRadians = abs(atan2result);
-		firstPassRotateRadians = fullRadian360 + atan2result;
-	}
-
-	if (debugFlag == 1)
-	{
-		std::cout << "First pass rotate radians is: " << firstPassRotateRadians << std::endl;
-	}
-	glm::vec3 rotationAroundZ;
-	rotationAroundZ.z = -1.0f;
-	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
-
-	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
-	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
-	rotationRecords.push(s1record);
-
-	// check if the 3rd point (the centroid of the triangle is positive Y or negative Y; it's Y should never be 0, if we did things correctly (the triangle would be invalid).
-	glm::vec3 determinedEmptyNormal;
-	glm::vec3 currentCentroid = rotationpointsRefVector->getPointByIndex(2);
-	if (currentCentroid.y > 0)
-	{
-		determinedEmptyNormal.y = 1;
-	}
-	else if (currentCentroid.y < 0)
-	{
-		determinedEmptyNormal.y = -1;
-	}
-
-	glm::vec3* centroidRef = rotationpointsRefVector->getPointRefByIndex(2);
-	*centroidRef = determinedEmptyNormal;
 	//std::cout << "Printing points after Z-axis bound rotation: " << std::endl;
 	//rotationpointsRefVector->printPoints();
 }
@@ -1090,10 +995,9 @@ void QuatRotationManager::rotateAroundZToFindCoplanarCategorizedLineEmptyNormalA
 {
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
+	
+	float atan2result = atan2(pointBCopy.y, pointBCopy.x); // find the radians we'll need to rotate by
 
-	//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-	//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
-	float atan2result = atan2(pointBRef->y, pointBRef->x); // find the radians we'll need to rotate by
 	//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
 	float firstPassRotateRadians = 0.0f;
 
@@ -1116,8 +1020,7 @@ void QuatRotationManager::rotateAroundZToFindCoplanarCategorizedLineEmptyNormalA
 	rotationAroundZ.z = -1.0f;
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
 
-	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
+	glm::quat originalQuat = s1record.returnOriginalRotation();	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);
 
@@ -1146,8 +1049,6 @@ void QuatRotationManager::rotateAroundZAndPushIntoStack(glm::vec3* in_point)
 		float radians = 0.0f;
 		float fullRadian360 = 6.28319f;
 
-		//std::cout << "!! Point B x is: " << pointBRef->x << std::endl;
-		//std::cout << "!! Point B y is: " << pointBRef->y << std::endl;
 		float atan2result = atan2(in_point->y, in_point->x); // find the radians we'll need to rotate by
 		//std::cout << "!!! Atan2result is: " << atan2result << std::endl;
 		float firstPassRotateRadians = 0.0f;
@@ -1172,7 +1073,6 @@ void QuatRotationManager::rotateAroundZAndPushIntoStack(glm::vec3* in_point)
 		QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundZ);
 
 		glm::quat originalQuat = s1record.returnOriginalRotation();
-		//*pointBRef = originalQuat * *pointBRef;	
 		rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 		rotationRecords.push(s1record);
 	}
@@ -1183,7 +1083,10 @@ void QuatRotationManager::rotateAroundXToYZeroAndPushIntoStack()
 	float radians = 0.0f;
 	float fullRadian360 = 6.28319f;
 
-	float atan2result = atan2(pointCRef->y, pointCRef->z);
+
+	// get the newest, latest value of pointCCopy, since it was probably modified.
+	pointCCopy = rotationpointsRefVector->getThirdPoint();
+	float atan2result = atan2(pointCCopy.y, pointCCopy.z);
 
 	float firstPassRotateRadians = 0.0f;
 
@@ -1204,7 +1107,6 @@ void QuatRotationManager::rotateAroundXToYZeroAndPushIntoStack()
 	QuatRotationRecord s1record(firstPassRotateRadians, rotationAroundY);
 
 	glm::quat originalQuat = s1record.returnOriginalRotation();
-	//*pointBRef = originalQuat * *pointBRef;	
 	rotationpointsRefVector->applyQuaternion(originalQuat);	// rotate all values by this one
 	rotationRecords.push(s1record);
 

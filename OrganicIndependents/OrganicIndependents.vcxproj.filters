@@ -298,6 +298,18 @@
     <Filter Include="Header Files\OpenGLDataStructures\QuatV2">
       <UniqueIdentifier>{c3898e38-0e9c-48e7-bcab-1eb871bf982f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OpenGLDataStructures\QuatV2">
+      <UniqueIdentifier>{fda7ce3f-a20e-4ee3-bf6a-11d3c325659f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Grid">
+      <UniqueIdentifier>{81612993-d4fd-439a-896e-e35d226c8c38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Procedural">
+      <UniqueIdentifier>{7a1d4e40-22be-4090-8d28-4199436e7ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Grid">
+      <UniqueIdentifier>{d438968b-dcda-466f-8108-61f67597751a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1272,6 +1284,12 @@
     <ClInclude Include="QuatRotationPointsV2.h">
       <Filter>Header Files\OpenGLDataStructures\QuatV2</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="ProceduralMachine.h">
+      <Filter>Header Files\Procedural</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1696,6 +1714,12 @@
     </ClCompile>
     <ClCompile Include="FTriangleUVCalculator.cpp">
       <Filter>Source Files\FracturableTriangle</Filter>
+    </ClCompile>
+    <ClCompile Include="QuatRotationPointsV2.cpp">
+      <Filter>Source Files\OpenGLDataStructures\QuatV2</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -40,10 +40,7 @@ class QuatRotationManager
 		bool initializeAndRunForCheckingCoplanarity(QuatRotationPoints* in_quatpointsRefVector);
 
 		void calculateEmptyNormal();					// find the empty normal (should only be run when all points of triangle are on y
-		void executeRotationsForEmptyNormal();
-		void executeRotationsForZFracture();
 
-		void executeRotationsForCyclingDirectionFinder();
 		void executeRotationsForCyclingDirectionFinderV2();
 
 		void executeRotationsForPlanarSlide();
@@ -55,7 +52,6 @@ class QuatRotationManager
 		void rotateAroundYToPosZForPlanarSlideAndPushIntoStack();
 		void rotateAroundXToYZeroForPlanarSlideAndPushIntoStack();
 		void rotateAroundZAndPushIntoStack();
-		void rotateAroundZToFindBorderLineEmptyNormalAndPushIntoStack();
 		void rotateAroundZToFindCoplanarCategorizedLineEmptyNormalAndPushIntoStack();
 
 		void rotateAroundZAndPushIntoStack(glm::vec3* in_point);
@@ -76,7 +72,6 @@ class QuatRotationManager
 		float findRotationRadainsForGettingToPosYThroughX(glm::vec3 in_vec3);
 
 		void flipOnXAxis();
-		float findRadiansForObservation();
 
 		glm::quat createQuaternion(float radians, glm::vec3 in_angle);
 		void rotateToOriginalPosition();
@@ -90,14 +85,11 @@ class QuatRotationManager
 
 		float radianValue;				// may be optionally used by some functions.
 	private:
-		glm::vec3* pointARef;
-		glm::vec3* pointBRef;
-		glm::vec3* pointCRef;
-
 		glm::vec3 pointACopy;
 		glm::vec3 pointBCopy;
 		glm::vec3 pointCCopy;
 
+		//void executeRotationsForCyclingDirectionFinder();
 		void rotateAroundZToYZero();	// Needed for when QuatRotationManager::initializeAndRunForCheckingCoplanarity 
 										// ends up calling executeRotationsForCheckingCoplanarity; it expects that
 										// pointBRef/Copy is the 3rd point (at index value 2)
@@ -105,9 +97,12 @@ class QuatRotationManager
 		void rotateAroundZToYZeroV2();	// Needed for when QuatRotationManager::initializeAndRunForFindingObserverRadians ends up calling
 										// executeRotationsForFindingObserverRadians; expects that the value of
 										// pointBRef/Copy is the 4th point (at index value 3).
-		//void executeRotationsForFindingBorderLineEmptyNormalWithRotateToZ();
-		float executeRotationsForFindingObserverRadians();
 
+		float executeRotationsForFindingObserverRadians();
+		float findRadiansForObservation();
+
+		void executeRotationsForEmptyNormal();
+		void executeRotationsForZFracture();
 		
 		bool executeRotationsForCheckingCoplanarity();
 

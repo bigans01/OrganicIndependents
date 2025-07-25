@@ -317,6 +317,7 @@
     <ClInclude Include="FusableArea.h" />
     <ClInclude Include="FusableAreaState.h" />
     <ClInclude Include="GPUCoordinateMode.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="GroupSetPair.h" />
     <ClInclude Include="HashUtils.h" />
     <ClInclude Include="Header.h" />
@@ -411,6 +412,7 @@
     <ClInclude Include="PRMA2DResolverXY.h" />
     <ClInclude Include="PRMAtomic2D.h" />
     <ClInclude Include="PRMTypeEnum.h" />
+    <ClInclude Include="ProceduralMachine.h" />
     <ClInclude Include="PRResult.h" />
     <ClInclude Include="QuatRotationManager.h" />
     <ClInclude Include="QuatRotationPoints.h" />
@@ -553,6 +555,7 @@
     <ClCompile Include="FTriangleUtils.cpp" />
     <ClCompile Include="FTriangleUVCalculator.cpp" />
     <ClCompile Include="FTriangleWorldTracer.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="HashUtils.cpp" />
     <ClCompile Include="IndependentUtils.cpp" />
     <ClCompile Include="LinePointSynchronizer.cpp" />
@@ -600,6 +603,7 @@
     <ClCompile Include="PRMAtomic2D.cpp" />
     <ClCompile Include="QuatRotationManager.cpp" />
     <ClCompile Include="QuatRotationPoints.cpp" />
+    <ClCompile Include="QuatRotationPointsV2.cpp" />
     <ClCompile Include="QuatRotationRecord.cpp" />
     <ClCompile Include="ReconstitutedBlueprint.cpp" />
     <ClCompile Include="ReconstitutionManager.cpp" />
