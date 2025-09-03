@@ -97,6 +97,10 @@ void ReconstitutionManager::runManagerOnThread()
 	std::cout << "ReconstitutionManager::runManagerOnThread(): started dedicated thread for ReconstitutionManager. " << std::endl;
 	while (getManagerRunState())
 	{
+		//std::cout << "Looping recon thread..." << std::endl;
+		// always: check if loop is halted via the CV.
+		checkForReconstitutionHalt();
+
 		// Get the current run mode value, to determine what to do in this tick of the while loop; 
 		// Only attempt to process blueprints if the value of currentRunMdoe is ReconBlueprintRunmode::PROCESSING.
 		auto fetchedRunMode = getRunMode();
@@ -169,6 +173,37 @@ ReconBlueprintRunmode ReconstitutionManager::getRunMode()
 	std::lock_guard<std::mutex> lock(managerRunmodeMutex);
 	return currentRunMode;
 }
+
+void ReconstitutionManager::checkForReconstitutionHalt()
+{
+	if (getReconstitutionLoopRunValue() == 0)
+	{
+		std::cout << "ReconstitutionManager reconstitution loop halted!" << std::endl;
+		std::unique_lock<std::mutex> reconLock(reconstitutionLoopMutex);
+		reconstitutionLoopCV.wait(reconLock, [&] { return getReconstitutionLoopRunValue() == 1;});
+		std::cout << "ReconstitutionManager reconstitution loop resumed!" << std::endl;
+	}
+}
+
+void ReconstitutionManager::haltReconstitutionLoop()
+{
+	std::lock_guard<std::mutex> lock(reconPipelineLoopMutex);
+	shouldReconstitutionLoopRun = 0;
+}
+
+void ReconstitutionManager::resumeReconstitutionLoop()
+{
+	std::lock_guard<std::mutex> lock(reconPipelineLoopMutex);
+	shouldReconstitutionLoopRun = 1;
+	reconstitutionLoopCV.notify_all();
+}
+
+int ReconstitutionManager::getReconstitutionLoopRunValue()
+{
+	std::lock_guard<std::mutex> lock(reconPipelineLoopMutex);
+	return shouldReconstitutionLoopRun;
+}
+
 
 
 void ReconstitutionManager::printReconstitutedBlueprintStats(EnclaveKeyDef::EnclaveKey in_blueprintStatsToFetch)

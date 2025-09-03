@@ -132,6 +132,13 @@ class ReconstitutionManager
 
 		bool getProcessingFlag();	// used by external threads to determine if the dedicated thread that an instance of this class runs on is doing any work.
 
+		void haltReconstitutionLoop();		// sets the value of shouldReconstitutionLoopRun to 0; this should cause the
+											// loop in ReconstitutionManager::runManagerOnThread() to halt during the call to 
+											// checkForReconstitutionHalt(), thereby freeing up the CPU from this thread until it is resumed. 										
+
+		void resumeReconstitutionLoop();	// sets the value of shouldReconstitutionLoopRun to 1; this will effectively allow the thread to resume
+											// if it's waiting on the CV to be notified in the call to checkForReconstitutionHalt()
+
 	private:
 		std::mutex processingContainerMutex;	// safety: used when writing to processableContainers (by the networking thread), and reading from it (for the dedicated blueprint thread)
 		std::mutex dockMutex;					// safety: should be used with any function that needs to access the reconstitutionDock.
@@ -140,6 +147,19 @@ class ReconstitutionManager
 		// runtime related members
 		std::mutex managerRuntimeMutex;		// safety: used when starting an instance of this class on a dedicated logging thread, and is used to check if the continueRunningFlag is set or not.
 		bool continueRunningFlag = false;	// used to determine if the while loop in the call to 
+
+		// loop halting members
+		std::mutex reconPipelineLoopMutex;		// used to safely set the value of shouldReconstitutionLoopRun (and call notify on the CV)
+		int shouldReconstitutionLoopRun = 1;	// when running the ReconstitutionManager on ReconstitutionManager::runManagerOnThread, 
+												// the value of this will determine if the loop in this function halts when
+												// checkForReconstitutionHalt is called; 0 will cause the thread to halt, 1 will allow it to continue.
+													
+
+		std::condition_variable reconstitutionLoopCV;	// this CV gets waited on when haltReconstitutionLoop is called;
+														// notify_all gets called on it when resumeReconstitutionLoop is called.
+		
+		std::mutex reconstitutionLoopMutex;	   // mutex used when the CV needs to do waiting.
+
 
 		// runmode request members
 		std::mutex managerRunmodeRequestMutex;
@@ -205,6 +225,9 @@ class ReconstitutionManager
 
 		// processsing setting functions
 		void setProcessingFlag(bool in_flagValue);	// thread safe; used in executeContainerProcessing() to indicate when work is actively being done (true), and when it is done (false)
+
+		void checkForReconstitutionHalt();
+		int getReconstitutionLoopRunValue();
 };
 
 #endif
