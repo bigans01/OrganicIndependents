@@ -41,6 +41,12 @@ template <typename QueueObjectType> class ThreadSafeQueue {
 			tsQueue.pop();
 		}
 
+		int size()
+		{
+			std::lock_guard<std::mutex> guard(tsQueueMutex);
+			return tsQueue.size();
+		}
+
 	private:
 		std::mutex tsQueueMutex;
 		std::queue<QueueObjectType> tsQueue;

@@ -1290,6 +1290,15 @@
     <ClInclude Include="ProceduralMachine.h">
       <Filter>Header Files\Procedural</Filter>
     </ClInclude>
+    <ClInclude Include="ReconManagerV2WorkState.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconManagerWorkPipe.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconManagerV2.h">
+      <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1720,6 +1729,9 @@
     </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="ReconManagerV2.cpp">
+      <Filter>Source Files\Blueprints\ReconstitutedBlueprint</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -53,28 +53,17 @@ class ReconstitutionManager
 		// ||||||||||||||||||| START: PROCESSING mode functions -- when running this instance on a dedicated thread, these should only be called 
 		// when the value of currentRunMode is set to ReconBlueprintRunmode::PROCESSING.
 																	
-		void executeContainerProcessing();	// attempt to process any MessageContainer instances in the processableContainers member; MessageContainer instances
-											// are discarded after they are read, via queue pop. All Message instances to process must have a blueprint key that can be 
-											// read and then stripped, to determine where each Message in the containers will go. When this class truly functions in the intended manner,
-											// this function should only be called by the dedicated blueprint thread.
+		
 
-		void checkForReconstitutableBlueprints();	// Should be called after executeContainerProcessing() function above, by the dedicated blueprint thread; this function
-													// will attempt to find blueprints in the reconstitutionDock that ready to be processed and output to the generatedBlueprints map.
+		bool hasBlueprintsToProcess();	// will return true if the processableContainers queue isn't empty.
 
-		void attemptFullReconstitution(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey);	// attempts to fully reconstitute a blueprint (i.e, all ECBPolys and OREs). 
-																								// For this to work successfully, the following must occur:
-																								//
-																								//	1. The target dock must already exist, and have a valid MessageType::BDM_BLUEPRINT_HEADER in its reconBlueprintHeader
-																								//	2. The BDM_BLUEPRINT_HEADER must be stripped of its blueprint key, and contain the number of ECBPolys and ORES (they must be read in in that order)
-																								//	3. The number of produced ECBPoly and ORE instances must matched the values that were read in from the BDM_BLUEPRINT_HEADER.
-																								//	4. The value of reconBlueprintState in the ReconstitutedBlueprint being looked at must be WAITING_FOR_RUN.
-																								//
-																								//	At the end of the reconstitution attempt, this function will set the reconBlueprintState to RECONSTITUTION_SUCCESS in the event of a successful reconstitution,
-																								//	or RECONSTITUTION_FAILURE if the process fails.
+
+		
 
 		void processMessageContainersAndCheckForReconstitutables();	// calls the executeContainerProcessing() function, and then checkForReconstitutableBlueprints(), for any blueprints to process.
 																	// All entries in the reconstitutionDock that have a value of WAITING_FOR_RUN for the reconBlueprintState will undergo an attempted
 																	// reconstitution. In it's true implementation, only the blueprint processing thread should be calling this function at a regular interval.
+
 		// ||||||||||||||||||| END: PROCESSING mode functions
 
 
@@ -209,7 +198,28 @@ class ReconstitutionManager
 
 		ThreadSafeQueue<MessageContainer> processableContainers;	// a thread-safe queue of MessageContainers (which contain BDM) that will be processed by the call to executeContainerProcessing().
 
+		void attemptFullReconstitution(EnclaveKeyDef::EnclaveKey in_containingBlueprintKey);	// attempts to fully reconstitute a blueprint (i.e, all ECBPolys and OREs). 
+																								// For this to work successfully, the following must occur:
+																								//
+																								//	1. The target dock must already exist, and have a valid MessageType::BDM_BLUEPRINT_HEADER in its reconBlueprintHeader
+																								//	2. The BDM_BLUEPRINT_HEADER must be stripped of its blueprint key, and contain the number of ECBPolys and ORES (they must be read in in that order)
+																								//	3. The number of produced ECBPoly and ORE instances must matched the values that were read in from the BDM_BLUEPRINT_HEADER.
+																								//	4. The value of reconBlueprintState in the ReconstitutedBlueprint being looked at must be WAITING_FOR_RUN.
+																								//
+																								//	At the end of the reconstitution attempt, this function will set the reconBlueprintState to RECONSTITUTION_SUCCESS in the event of a successful reconstitution,
+																								//	or RECONSTITUTION_FAILURE if the process fails.
+
 		void processMessageContainer(MessageContainer* in_messageContainer);
+
+		void executeContainerProcessing();	// attempt to process any MessageContainer instances in the processableContainers member; MessageContainer instances
+											// are discarded after they are read, via queue pop. All Message instances to process must have a blueprint key that can be 
+											// read and then stripped, to determine where each Message in the containers will go. When this class truly functions in the intended manner,
+											// this function should only be called by the dedicated blueprint thread.
+
+		void checkForReconstitutableBlueprints();	// Should be called after executeContainerProcessing() function above, by the dedicated blueprint thread; this function
+													// will attempt to find blueprints in the reconstitutionDock that ready to be processed and output to the generatedBlueprints map.
+
+		
 
 		// critical, thread-safe functions
 		bool doesBlueprintExistInDock(EnclaveKeyDef::EnclaveKey in_blueprintToCheck);	// thread safe check to see if a blueprint exists in the dock. 

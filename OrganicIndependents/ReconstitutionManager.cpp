@@ -73,6 +73,21 @@ void ReconstitutionManager::executeContainerProcessing()
 	}
 }
 
+bool ReconstitutionManager::hasBlueprintsToProcess()
+{
+	bool hasWorktoDo = false;
+	if 
+	(
+		!processableContainers.empty()
+		//&&
+		//getProcessingFlag() == false
+	)
+	{
+		hasWorktoDo = true;
+	}
+	return hasWorktoDo;
+}
+
 void ReconstitutionManager::checkForReconstitutableBlueprints()
 {
 	// Cycle through the dock, check for any blueprints that are ready for processing, and if they are, process them (i.e, build OREs, ECBPolys, etc)

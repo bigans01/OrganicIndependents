@@ -422,6 +422,9 @@
     <ClInclude Include="RDerivedTypeEnum.h" />
     <ClInclude Include="ReconBlueprintRunmode.h" />
     <ClInclude Include="ReconBlueprintRunmodeRequest.h" />
+    <ClInclude Include="ReconManagerV2.h" />
+    <ClInclude Include="ReconManagerV2WorkState.h" />
+    <ClInclude Include="ReconManagerWorkPipe.h" />
     <ClInclude Include="ReconstitutedBlueprint.h" />
     <ClInclude Include="ReconstitutedBlueprintRunState.h" />
     <ClInclude Include="ReconstitutionManager.h" />
@@ -605,6 +608,7 @@
     <ClCompile Include="QuatRotationPoints.cpp" />
     <ClCompile Include="QuatRotationPointsV2.cpp" />
     <ClCompile Include="QuatRotationRecord.cpp" />
+    <ClCompile Include="ReconManagerV2.cpp" />
     <ClCompile Include="ReconstitutedBlueprint.cpp" />
     <ClCompile Include="ReconstitutionManager.cpp" />
     <ClCompile Include="RenderableTiledTriangle.cpp" />

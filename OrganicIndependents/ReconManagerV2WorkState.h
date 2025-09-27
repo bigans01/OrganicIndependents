@@ -1,0 +1,14 @@
+#pragma once
+
+#ifndef RECONMANAGERV2WORKSTATE_H
+#define RECONMANAGERV2WORKSTATE_H
+
+enum class ReconManagerV2WorkState
+{
+	WS_IDLE,
+	WS_HAS_WORK_TICKETS,
+	WS_HAS_ITEMS_IN_DOCK,
+	WS_HAS_BLUEPRINTS_READY
+};
+
+#endif

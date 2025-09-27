@@ -44,6 +44,7 @@ class ReconstitutedBlueprint
 																																			
 	private:
 		friend class ReconstitutionManager;
+		friend class ReconManagerV2;
 		struct ReconstitutedMessageHeader
 		{
 			bool reconstituted = false;
