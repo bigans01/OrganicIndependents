@@ -13,6 +13,32 @@ bool ReconManagerV2::hasBlueprintsToProcess()
 	return !ticketPipe.empty();
 }
 
+void ReconManagerV2::printPipelineTickets()
+{
+	std::cout << "ReconManagerV2: printing pipeline tickets..." << std::endl;
+	ticketPipe.printTickets();
+	std::cout << "ReconManagerV2: total number of containers to process: ";
+	std::cout << processableContainers.size() << std::endl;
+
+	std::cout << "ReconManagerV2: tickets left to process before next batch: ";
+	std::cout << getTicketCounterValue() << std::endl;
+
+	std::cout << "ReconManagerV2: size of next batch: ";
+	std::cout << processableContainers.size() - getTicketCounterValue() << std::endl;
+
+	std::cout << "ReconManagerV2: number of processed, unexported, BP keys:";
+	std::cout << getBPKeyCount() << std::endl;
+
+	std::cout << "ReconManagerV2: number of tickets in pipe: ";
+	std::cout << ticketPipe.size() << std::endl;
+
+	std::cout << "ReconManagerV2: ticket counter value is: ";
+	std::cout << remainingContainerTicketCounter << std::endl;
+
+	std::cout << "ReconManagerV2: number of ready generated blueprints: ";
+	std::cout << getNumberOfReadyBlueprints() << std::endl;
+}
+
 void ReconManagerV2::insertMessageContainerForProcessing(MessageContainer in_containerForProcessing)
 {
 	// The lock guard below is used to ensure that the dedicated network thread will only be inserting into the 
@@ -43,6 +69,16 @@ void ReconManagerV2::checkForNewContainerTickets()
 			// remember: one container, one ticket.
 			ticketPipe.insertTicket(RMWorkPipeTicketEnum::PROCESS_BLUEPRINTS);
 		}
+	}
+}
+
+void ReconManagerV2::manuallyPushBlueprintMoveTicket()
+{
+	if 
+	(ticketPipe.contains_value(RMWorkPipeTicketEnum::PROCESS_BLUEPRINTS) && !manualMovePushCalled)
+	{
+		ticketPipe.insertTicket(RMWorkPipeTicketEnum::MOVE_BLUEPRINTS_FROM_DOCK);
+		manualMovePushCalled = true;
 	}
 }
 
@@ -96,6 +132,25 @@ void ReconManagerV2::moveGeneratedBlueprintsToReady()
 		eraseBPKey(currentKeyToErase);
 	}
 }
+
+int ReconManagerV2::getNumberOfReadyBlueprints()
+{
+	std::lock_guard<std::mutex> readyMoveLock(readyBlueprintsMutex);
+	return readyBlueprints.size();
+}
+
+std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> ReconManagerV2::getReadyBlueprintKeys()
+{
+	std::lock_guard<std::mutex> readyMoveLock(readyBlueprintsMutex);
+	std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> readySet;
+
+	for (auto& currentBlueprintKey : readyBlueprints)
+	{
+		readySet.insert(currentBlueprintKey.first);
+	}
+	return readySet;
+}
+
 
 void ReconManagerV2::transferBlueprintOut(EnclaveKeyDef::EnclaveKey in_transferKey,
 	std::mutex* in_transferTargetMutex,
@@ -153,6 +208,39 @@ void ReconManagerV2::runManagerOnThread()
 			ticketPipe.pop();
 		}
 
+	}
+}
+
+void ReconManagerV2::runPipeProcessingTick()
+{
+	// Check if there's tickets in the work pipe.
+	if (!ticketPipe.empty())
+	{
+		auto currentTicket = ticketPipe.front();
+
+		// if PROCESS_BLUEPRINTS, process exactly 1 blueprint. Process means, attempt full reconstitution
+		// and then move it into the generatedBlueprints map.
+		if (currentTicket == RMWorkPipeTicketEnum::PROCESS_BLUEPRINTS)
+		{
+			// 1. do execute container processsing...
+			// 2. reconstitute the blueprint...
+			// 3. insert the key of the processed blueprint into generatedBPSet.
+			processAndReconstituteNextContainer();
+
+			// decrement the blueprint ticket counter, by 1.
+			decrementTicketCounter();
+		}
+
+		// ...other wise, if the ticket is MOVE_BLUEPRINTS_FROM_DOCK (which must be set by another thread),
+		// move over all finished blueprints from the generatedBlueprints into the readyBlueprints (sp?) map.
+		// The associated EnclaveKey of each blueprint that has been moved into readyBlueprints, should have its key
+		// removed from the generatedBPSet.
+		else if (currentTicket == RMWorkPipeTicketEnum::MOVE_BLUEPRINTS_FROM_DOCK)
+		{
+			moveGeneratedBlueprintsToReady();
+		}
+
+		ticketPipe.pop();
 	}
 }
 
@@ -296,6 +384,24 @@ void ReconManagerV2::eraseBPKey(EnclaveKeyDef::EnclaveKey in_keyToErase)
 {
 	std::lock_guard<std::mutex> lock(generatedSetMutex);
 	generatedBPSet.erase(in_keyToErase);
+}
+
+void ReconManagerV2::printBPKeys()
+{
+	std::lock_guard<std::mutex> lock(generatedSetMutex);
+	std::cout << "ReconManagerV2: printing processed BP keys:" << std::endl;
+	for (auto& currentKey : generatedBPSet)
+	{
+		EnclaveKeyDef::EnclaveKey keyCopy = currentKey;
+		keyCopy.printKey();
+		std::cout << std::endl;
+	}
+}
+
+int ReconManagerV2::getBPKeyCount()
+{
+	std::lock_guard<std::mutex> lock(generatedSetMutex);
+	return generatedBPSet.size();
 }
 
 EnclaveKeyDef::EnclaveKey ReconManagerV2::processMessageContainer(MessageContainer* in_messageContainer)

@@ -15,6 +15,13 @@ class ReconManagerV2
 		bool hasBlueprintsToProcess();	// should return true, if the ticketPipe has tickets in it; used by OrganicSystem to determine
 										// whether or not a thread should go to sleep or be awake.
 
+		int getNumberOfReadyBlueprints();	// thread-safe call that returns the number of blueprints in readyBlueprints.
+											// Should be utilized by OrganicSystem::checkReconPipeline (OrganicCoreLib)
+
+		std::unordered_set<EnclaveKeyDef::EnclaveKey, EnclaveKeyDef::KeyHasher> getReadyBlueprintKeys();	// thread-safe call that fetches an unordered_set of keys found
+																											// in the ready blueprints map; the return value should be used to iterate through
+																											// and call transferBlueprintOut for each iteration. Should be utilized by OrganicSystem::checkReconPipeline (OrganicCoreLib)
+
 		void insertMessageContainerForProcessing(MessageContainer in_containerForProcessing);	// inserts a MessageContainer into the 
 																								// container processing queue (processableContainers); must utilize a 
 																								// lock_guard via processingContainerMutex when writing to processableContainers. 
@@ -28,6 +35,9 @@ class ReconManagerV2
 		void checkForCompletedBlueprintsReadyToExport();
 
 		void runManagerOnThread();	// starts the manager on a dedicated thread; sets the value of continueRunningFlag to True, so that the while loop continues until that value is False.
+		void runPipeProcessingTick();	// allows for manually running of a tick; currently public for testing purposes in OrganicCoreLib,
+										// but will need to move to private.
+
 		bool getManagerRunState();
 		void setManagerRunState(bool in_value);
 
@@ -48,6 +58,11 @@ class ReconManagerV2
 			std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>* in_targetBlueprintMap
 		);
 
+		void printPipelineTickets();	// print all tickets currently in the pipeline.
+
+		// debugging/misc
+		void manuallyPushBlueprintMoveTicket();	// for testing purposes via OrganicCoreLib/OrganicSystem, this allows for a single 
+												// RMWorkPipeTicketEnum::MOVE_BLUEPRINTS_FROM_DOCK ticket to be put into the pipe.
 	private:
 		// the work pipe.
 		ReconManagerWorkPipe ticketPipe;
@@ -112,6 +127,8 @@ class ReconManagerV2
 		bool doAnyGeneratedBPKeysExist();
 		EnclaveKeyDef::EnclaveKey fetchFirstBPKey();
 		void eraseBPKey(EnclaveKeyDef::EnclaveKey in_keyToErase);
+		void printBPKeys();
+		int getBPKeyCount();
 
 		// access methods/declarations for remainingContainerTicketCounter; this counter should get incremented by a certain amount, if the check in 
 		// checkForNewContainerTickets is successful, and decremented by one each time a PROCESS_BLUEPRINTS ticket is processed.
@@ -123,6 +140,10 @@ class ReconManagerV2
 
 		void moveGeneratedBlueprintsToReady();	// transfer blueprints from generatedBlueprints to readyBlueprints; should only ever be called by
 												// the runManagerOnThread function, when operating on a ticket that is RMWorkPipeTicketEnum::MOVE_BLUEPRINTS_FROM_DOCK.
+		
+		
+		// misc. test variables
+		bool manualMovePushCalled = false;
 };
 
 #endif
