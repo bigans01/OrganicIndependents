@@ -68,7 +68,6 @@ public:
 			return returnKey;
 		}
 
-
 		// operator overloading (required)
 		bool operator==(const EnclaveKey &other) const
 		{
@@ -133,6 +132,22 @@ public:
 		Enclave2DKey() {};
 		Enclave2DKey(int in_a, int in_b) : a(in_a), b(in_b) {};
 
+		Enclave2DKey operator-(const Enclave2DKey& enclaveKey_b)
+		{
+			Enclave2DKey returnKey;
+			returnKey.a = a - enclaveKey_b.a;
+			returnKey.b = b - enclaveKey_b.b;
+			return returnKey;
+		}
+
+		Enclave2DKey operator+(const Enclave2DKey& enclaveKey_b)
+		{
+			Enclave2DKey returnKey;
+			returnKey.a = a + enclaveKey_b.a;
+			returnKey.b = b + enclaveKey_b.b;
+			return returnKey;
+		}
+
 		bool equals(int in_a, int in_b)
 		{
 			bool equalsValue = false;
@@ -159,6 +174,12 @@ public:
 		void printKey()
 		{
 			std::cout << " (" << a << ", " << b << ") ";
+		}
+
+		// returns an std::string that contains the key coordinates.
+		std::string getKeyString()
+		{
+			return std::string("(" + std::to_string(a) + ", " + std::to_string(b) + ")");
 		}
 	};
 

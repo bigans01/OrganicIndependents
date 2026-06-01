@@ -198,6 +198,7 @@
     <ClInclude Include="EnclaveBlockVertexTextureModeEnum.h" />
     <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveFractureResultsMap.h" />
+    <ClInclude Include="Enclave2DKeyMapHasher.h" />
     <ClInclude Include="EnclavePoly.h" />
     <ClInclude Include="EnclaveTriangleOld.h" />
     <ClInclude Include="EPolyMap.h" />
@@ -345,6 +346,8 @@
     <ClInclude Include="NeighboringBlueprintLocationSet.h" />
     <ClInclude Include="NeighboringORELocation.h" />
     <ClInclude Include="NeighboringORELocationSet.h" />
+    <ClInclude Include="NGSClusterEntry.h" />
+    <ClInclude Include="NGSCScanTargetGrouping.h" />
     <ClInclude Include="Operable3DEnclaveKeySet.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
@@ -381,6 +384,9 @@
     <ClInclude Include="PAtomDimType.h" />
     <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PerfectClampEnum.h" />
+    <ClInclude Include="Perlin.h" />
+    <ClInclude Include="PerlinCluster.h" />
+    <ClInclude Include="PerlinClusterMeta.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
     <ClInclude Include="PMassResult.h" />
@@ -569,6 +575,8 @@
     <ClCompile Include="NeighboringBlockLocationSet.cpp" />
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
     <ClCompile Include="NeighboringORELocationSet.cpp" />
+    <ClCompile Include="NGSClusterEntry.cpp" />
+    <ClCompile Include="NGSCScanTargetGrouping.cpp" />
     <ClCompile Include="OREFracturingMachine.cpp" />
     <ClCompile Include="OrganicFanGroup.cpp" />
     <ClCompile Include="OrganicPolygon.cpp" />
@@ -586,6 +594,8 @@
     <ClCompile Include="OutputDirector.cpp" />
     <ClCompile Include="PAtom2DXY.cpp" />
     <ClCompile Include="PAtomBase.cpp" />
+    <ClCompile Include="PerlinCluster.cpp" />
+    <ClCompile Include="PerlinClusterMeta.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />
     <ClCompile Include="PointTranslationCheck.cpp" />

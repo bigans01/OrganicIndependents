@@ -310,15 +310,21 @@
     <Filter Include="Source Files\Grid">
       <UniqueIdentifier>{d438968b-dcda-466f-8108-61f67597751a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Perlin">
+      <UniqueIdentifier>{39862ad0-67b2-4cef-8623-d5a26b9d61c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Perlin">
+      <UniqueIdentifier>{f114f42e-4b0b-41ba-ba86-70ce994bfcbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EnclaveKey">
+      <UniqueIdentifier>{14fd362a-c683-411f-a7b1-d6e94670e162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnclaveKeyDef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EuclideanDirection3D.h">
@@ -791,9 +797,6 @@
     </ClInclude>
     <ClInclude Include="EnclaveBlockState.h">
       <Filter>Header Files\Blueprints\ORE\EnclaveBlock</Filter>
-    </ClInclude>
-    <ClInclude Include="EnclaveKeyPair.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RippleImpactRegister.h">
       <Filter>Header Files\RippleImpact</Filter>
@@ -1299,6 +1302,30 @@
     <ClInclude Include="ReconManagerV2.h">
       <Filter>Header Files\Blueprints\ReconstitutedBlueprint</Filter>
     </ClInclude>
+    <ClInclude Include="Perlin.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinClusterMeta.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
+    <ClInclude Include="NGSCScanTargetGrouping.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="NGSClusterEntry.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinCluster.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
+    <ClInclude Include="Enclave2DKeyMapHasher.h">
+      <Filter>Header Files\EnclaveKey</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveKeyPair.h">
+      <Filter>Header Files\EnclaveKey</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveKeyDef.h">
+      <Filter>Header Files\EnclaveKey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1732,6 +1759,18 @@
     </ClCompile>
     <ClCompile Include="ReconManagerV2.cpp">
       <Filter>Source Files\Blueprints\ReconstitutedBlueprint</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinClusterMeta.cpp">
+      <Filter>Source Files\Perlin</Filter>
+    </ClCompile>
+    <ClCompile Include="NGSCScanTargetGrouping.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="NGSClusterEntry.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinCluster.cpp">
+      <Filter>Source Files\Perlin</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
