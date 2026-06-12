@@ -44,6 +44,20 @@ class NGSClusterEntry
 	public:
 		NGSClusterEntry() {};
 
+		struct ClusterGroupingStatus
+		{
+
+			ClusterGroupingStatus() {};
+			ClusterGroupingStatus(int in_clusterGroupingTileCount, bool in_clusterGroupingIsUsed) :
+				clusterGroupingTileCount(in_clusterGroupingTileCount),
+				clusterGroupingIsUsed(in_clusterGroupingIsUsed)
+			{
+			}
+
+			int clusterGroupingTileCount;
+			bool clusterGroupingIsUsed = false;
+		};
+
 		void printEntry()
 		{
 			std::string enumedValue = "";
@@ -206,24 +220,17 @@ class NGSClusterEntry
 			return fetchedIds;
 		}
 
+		std::map<int, ClusterGroupingStatus> fetchClusterGroupingCopy()
+		{
+			return clusterGroupingMap;
+		}
+
 	private:
 		NGSCSectorSuperStatus currentState = NGSCSectorSuperStatus::NGSC_SS_UNDEFINED;
 		//int groupingId = -1;
 		int totalTilesInGroupCluster = -1;
 
-		struct ClusterGroupingStatus
-		{
-
-			ClusterGroupingStatus() {};
-			ClusterGroupingStatus(int in_clusterGroupingTileCount, bool in_clusterGroupingIsUsed) :
-				clusterGroupingTileCount(in_clusterGroupingTileCount),
-				clusterGroupingIsUsed(in_clusterGroupingIsUsed)
-			{
-			}
-
-			int clusterGroupingTileCount;
-			bool clusterGroupingIsUsed = false;
-		};
+		
 
 		std::map<int, ClusterGroupingStatus> clusterGroupingMap;
 

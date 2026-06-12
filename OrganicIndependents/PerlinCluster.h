@@ -4,6 +4,8 @@
 #define PERLINCLUSTER_H
 
 #include "PerlinClusterMeta.h"
+#include "NoiseGridTile.h"
+#include "Enclave2DKeyMapHasher.h"
 
 /* PerlinCluster: a PerlinCluster contains metadata about a scanned perlin mass, resulting from generated PerlinClusterMeta objects 
 found in a call to NoiseGridScanner::start.
@@ -15,14 +17,14 @@ already exists in memory (assuming its mapped correctly).
 
 */
 
-class NoiseGrid;
 class PerlinCluster
 {
 	public:
 		PerlinCluster() {};
-		PerlinCluster(NoiseGrid* in_noiseGridPtr, PerlinClusterMeta in_metaInfo) :
-			noiseGridPtr(in_noiseGridPtr),
-			metaInfo(in_metaInfo)
+		PerlinCluster(PerlinClusterMeta in_metaInfo,
+			          std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> in_perlinClusterTiles) :
+			metaInfo(in_metaInfo),
+			perlinClusterTiles(in_perlinClusterTiles)
 		{};
 
 		void printPerlinClusterMeta()
@@ -42,28 +44,12 @@ class PerlinCluster
 			return metaInfo.searchForOriginKey();
 		}
 
-		std::string produceHash()
-		{
-			std::string returnHash = "";
+		bool isClusterValid();
 
-			// The process goes as this:
-			// 1. get each key from a call to metaInfo.fetchedMetaMap().
-			// 
-			// 2. go to the sector of each key, and use the NGSClusterEntry value of the current key being looked at,
-			//  to determine which grouping ids to look at.
-			// 
-			// 3. copy the data of each grouping (would come from tileGroupings member of NoiseGridSector) into a single
-			//  unordered_map.
-			// 
-			// 4. call Enclave2DKeyMapHasher on this new map. Verify that the number of keys used in hash calculation equals to the total
-			//    sum of all keys from all tile groupings. If they don't match, there's a potential hash collision.
-
-
-			return returnHash;
-		}
+		std::string produceHash();
 
 	private:
-		NoiseGrid* noiseGridPtr = nullptr;
+		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> perlinClusterTiles;
 		PerlinClusterMeta metaInfo;
 };
 

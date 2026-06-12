@@ -77,7 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;F:\Boost\boost_1_91_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -87,7 +87,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;$(IncludePath)</IncludePath>
+    <IncludePath>F:\glm;F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\GLEW\glew-2.0.0\include;C:\Program Files\OpenSSL-Win64\include\;F:\Boost\boost_1_91_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\OpenSSL-Win64\lib;C:\Program Files\OpenSSL-Win64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -348,6 +348,7 @@
     <ClInclude Include="NeighboringORELocationSet.h" />
     <ClInclude Include="NGSClusterEntry.h" />
     <ClInclude Include="NGSCScanTargetGrouping.h" />
+    <ClInclude Include="NoiseGridTile.h" />
     <ClInclude Include="Operable3DEnclaveKeySet.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
@@ -387,6 +388,7 @@
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="PerlinCluster.h" />
     <ClInclude Include="PerlinClusterMeta.h" />
+    <ClInclude Include="PerlinFactory.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
     <ClInclude Include="PMassResult.h" />
@@ -577,6 +579,7 @@
     <ClCompile Include="NeighboringORELocationSet.cpp" />
     <ClCompile Include="NGSClusterEntry.cpp" />
     <ClCompile Include="NGSCScanTargetGrouping.cpp" />
+    <ClCompile Include="NoiseGridTile.cpp" />
     <ClCompile Include="OREFracturingMachine.cpp" />
     <ClCompile Include="OrganicFanGroup.cpp" />
     <ClCompile Include="OrganicPolygon.cpp" />
@@ -596,6 +599,7 @@
     <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PerlinCluster.cpp" />
     <ClCompile Include="PerlinClusterMeta.cpp" />
+    <ClCompile Include="PerlinFactory.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />
     <ClCompile Include="PointTranslationCheck.cpp" />

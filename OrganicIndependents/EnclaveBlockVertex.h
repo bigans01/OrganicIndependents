@@ -5,6 +5,8 @@
 
 #include "EnclaveBlockVertexTextureModeEnum.h"
 #include "Message.h"
+#include <boost/archive/basic_binary_oarchive.hpp>
+#include <boost/archive/basic_binary_iarchive.hpp>
 
 /*
 * 
@@ -68,6 +70,18 @@ class EnclaveBlockVertex
 				z == other.z);
 		}
 
+		// Boost template
+		// Boost serialization template function
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version) {
+			ar & x;
+			ar & y;
+			ar & z;
+			ar & usesUV;
+			ar & vertU;
+			ar & vertV;
+		}
+
 		EnclaveBlockVertexTextureModeEnum texturingModeValue = EnclaveBlockVertexTextureModeEnum::TILED_COORDS;	// default will be tiled coords.
 
 		Message convertBlockVertexToMessage()	// converts the EnclaveBlockVertex to a Message.
@@ -96,6 +110,9 @@ class EnclaveBlockVertex
 		unsigned char getVertexX() { return x; }
 		unsigned char getVertexY() { return y; }
 		unsigned char getVertexZ() { return z; }
+
+		float getU() { return vertU; }
+		float getV() { return vertV; }
 
 	private:
 		unsigned char x = 0;

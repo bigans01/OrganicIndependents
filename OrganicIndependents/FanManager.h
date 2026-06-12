@@ -15,11 +15,93 @@
 #include "TriangleMaterial.h"
 #include "ECBPolyPoint.h"
 
+#include <boost/archive/basic_binary_oarchive.hpp>
+#include <boost/archive/basic_binary_iarchive.hpp>
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/unique_ptr.hpp>
+
+/*
+* 
+* Decription: the FanManager class is the "meat and potatoes" of an EnclaveBlock that stores EnclaveBlockVertex points,
+* and the ThinFan / FatFan objects that utilize those points. It begins to use unique_ptr versions of arrays and Thin/Fat fans,
+* when there are too many of either to store locally. This is managed entirely on an internal basis in this class. 
+
+*/
+
+
 class IndependentUtils;
 class FanManager
 {
 public:
 	FanManager() {};
+
+	// Boost functions
+	// Boost template
+		// Boost serialization template function
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version) 
+	{
+		if (Archive::is_saving::value)
+		{
+			std::cout << "!! Starting save..." << std::endl;
+		}
+		else
+		{
+			std::cout << "!! Starting load..." << std::endl;
+		}
+
+
+		ar & currentPointStorageMode;
+		ar & totalPoints;
+		PointArrayMode serializedPointArrayModeVal = PointArrayMode(currentPointStorageMode);
+
+		std::cout << "!! FanManager:Boost, currentPointStorageMode value is: " << int(currentPointStorageMode) << std::endl;
+		std::cout << "!! FanManager:Boost, totalPoints: " << int(totalPoints) << std::endl;
+
+
+		// +++++++Load EnclaveBlockVertex data, depending on the value of currentPointStorageMode.
+		// ++++++++++++++++++++++++++++++++++++++++++Begin loading logic for EnclaveBlockVertex data
+		ar & expandedVertexArraySize;
+		std::cout << "!!FanManager:Boost, expandedVertexArraySize: " << expandedVertexArraySize << std::endl;
+
+		// If local, get the points from localVertexArray.
+		switch (serializedPointArrayModeVal)
+		{
+			case PointArrayMode::LOCAL_POINTS:
+			{
+				std::cout << "+++++++++++++++++++ FOUND: LOCAL_POINTS. " << std::endl;
+				ar& boost::serialization::make_array(localVertexArray, totalPoints);
+				break;
+			}
+
+			case PointArrayMode::NONLOCAL_POINTS:
+			{
+				std::cout << "+++++++++++++++++++ FOUND: NONLOCAL_POINTS. " << std::endl;
+				if (Archive::is_saving::value)
+				{
+					for (std::size_t i = 0; i < totalPoints; i++)
+					{
+						ar& expandedVertexArray[i];
+					}
+				}
+				else
+				{
+					std::cout << "!! FanManager:Boost: Loading expandedVertexArray..." << std::endl;
+
+					//expandedVertexArray = std::make_unique<EnclaveBlockVertex>();
+					expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
+					for (std::size_t i = 0; i < totalPoints; i++)
+					{
+						ar& expandedVertexArray[i];
+					}
+
+				}
+			}
+		}
+
+		// ++++++++++++++++++++++++++++++++++++++++++End loading logic for EnclaveBlockVertex data
+	}
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// -------------------------------------------------------------------------------> Constructor Overload #1
@@ -203,6 +285,7 @@ public:
 	}
 
 	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);									// used by EnclaveBlock::processTertiaryData
+
 	void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);															// used by EnclaveBlock::insertBBFanFromRawEnclave
 	PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);														// used by EnclaveBlock::checkIfPointExists
 	PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);												// used by EnclaveBlock::checkIfNearbyPointExists

@@ -1326,6 +1326,12 @@
     <ClInclude Include="EnclaveKeyDef.h">
       <Filter>Header Files\EnclaveKey</Filter>
     </ClInclude>
+    <ClInclude Include="NoiseGridTile.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinFactory.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1770,6 +1776,12 @@
       <Filter>Source Files\Grid</Filter>
     </ClCompile>
     <ClCompile Include="PerlinCluster.cpp">
+      <Filter>Source Files\Perlin</Filter>
+    </ClCompile>
+    <ClCompile Include="NoiseGridTile.cpp">
+      <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinFactory.cpp">
       <Filter>Source Files\Perlin</Filter>
     </ClCompile>
   </ItemGroup>

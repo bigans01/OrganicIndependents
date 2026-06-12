@@ -574,7 +574,12 @@ void FanManager::checkForVertexExpansion()
 	else if (currentPointStorageMode == PointArrayMode::NONLOCAL_POINTS)
 	{
 		// as long as we're at < 256, stay at THIN.
-		if (totalPoints < 256)
+		if 
+		(
+			(totalPoints < 256)
+			&&
+			totalPoints == expandedVertexArraySize
+		)
 		{
 			std::unique_ptr<EnclaveBlockVertex[]> tempOldVertexArray;
 			int oldArraySize = expandedVertexArraySize;

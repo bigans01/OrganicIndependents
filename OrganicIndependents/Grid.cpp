@@ -14,7 +14,7 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 
 
 
-		gridPtr->generateSamplesForSector(in_startSectorKey.a, in_startSectorKey.b, 35);
+		gridPtr->generateSamplesForSector(in_startSectorKey.a, in_startSectorKey.b, gridPtr->getSeedValue());
 
 		// One island:  run a clip value of 0.50 against a coord at -3054, -1030
 		// Two islands: run a clip value of 0.43 against a coord at 1024, -6.
