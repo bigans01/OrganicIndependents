@@ -38,7 +38,7 @@ void FanManager::processTertiaryData(TertiaryTriangleContainer in_polyMetaData, 
 void FanManager::insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan)
 {
 	//std::cout << "starting fill..." << std::endl;
-// determine number of points to iterate over, based on the number of triangles
+	// determine number of points to iterate over, based on the number of triangles
 	int numberOfPolyMetaDataPoints = 2 + in_wrappedFan.poly.numberOfTertiaries;		// i.e, 1 sub-triangle = 3 points, 2 = 4, etc
 	checkForTriangleExpansion();	// check whether or not we will have to expand the arrays before adding a new triangle.
 	auto currentTriangleRef = retrieveNextAvailableSecondary();
@@ -62,7 +62,88 @@ void FanManager::insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan)
 
 	currentTriangleRef->numberOfTertiaries = numberOfPolyMetaDataPoints - 2;		// set the number of tertiaries
 	currentTriangleRef->materialID = in_wrappedFan.poly.materialID;
-	currentTriangleRef->emptyNormal = in_wrappedFan.poly.emptyNormal;
+
+	// If wishing to directly set the normal, change the cases of setEmptyNormalAndCheckAlignment in OrganicWrappedBBFan.
+	//currentTriangleRef->emptyNormal = in_wrappedFan.poly.emptyNormal;
+
+	EnclaveBlockVertexTri fanBeginTrianglePoints(in_wrappedFan.vertices[0], in_wrappedFan.vertices[1], in_wrappedFan.vertices[2]);
+	
+	// OLD WAY:
+	//currentTriangleRef->setFanEmptyNormal(in_wrappedFan.poly.getFanEmptyNormal());
+
+	// NEW WAY:
+	currentTriangleRef->setFanEmptyNormal(calculateNormalFromPointIndices(currentTriangleRef->fetchExpandedFanIndices()));
+
+	currentTriangleRef->faceAlignment = in_wrappedFan.poly.faceAlignment;
+
+
+	// be sure to increment the number of secondary polys
+	totalFans++;
+}
+
+void FanManager::insertBBFanFromRawEnclaveV2Debug(OrganicWrappedBBFan in_wrappedFan)
+{
+	//std::cout << "starting fill..." << std::endl;
+	// 
+	// determine number of points to iterate over, based on the number of triangles
+
+	std::cout << "++++++++++ Initial value of empty normal is: " << in_wrappedFan.poly.getFanEmptyNormal().x << ", " << in_wrappedFan.poly.getFanEmptyNormal().y << ", " << in_wrappedFan.poly.getFanEmptyNormal().z << std::endl;
+
+	int numberOfPolyMetaDataPoints = 2 + in_wrappedFan.poly.numberOfTertiaries;		// i.e, 1 sub-triangle = 3 points, 2 = 4, etc
+	checkForTriangleExpansion();	// check whether or not we will have to expand the arrays before adding a new triangle.
+	auto currentTriangleRef = retrieveNextAvailableSecondary();
+	for (int x = 0; x < numberOfPolyMetaDataPoints; x++)	// the number of used points in the input parameter, in_polyMetaData
+	{
+		PointSearchData pointData = checkIfPointExists(in_wrappedFan.vertices[x]);	// does a search
+
+		std::cout << "++DEBUG: will attempt to insert point: ";
+		ECBPolyPoint debugPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(in_wrappedFan.vertices[x]);
+		debugPoint.printPointCoords();
+		std::cout << std::endl;
+
+
+		short indexOflocalVertexArrayPointToUse = 0;	// the index of the point to use, from the block's struct array
+		if (pointData.isPointFound == 0)	// if it was never found, add a new point
+		{
+			checkForVertexExpansion();		// SAFETY: check if the number of POINTS exceeds threshold 
+			indexOflocalVertexArrayPointToUse = addNewPoint(in_wrappedFan.vertices[x]);
+		}
+		else if (pointData.isPointFound == 1)
+		{
+			indexOflocalVertexArrayPointToUse = pointData.foundPointIndex;	// set the 
+		}
+
+		// for each point of the input poly, put the found/new index into the appropriate nibble in the EnclaveBlockTriangle
+		currentTriangleRef->fillPointIndex(x, indexOflocalVertexArrayPointToUse);
+	}
+
+	currentTriangleRef->numberOfTertiaries = numberOfPolyMetaDataPoints - 2;		// set the number of tertiaries
+	currentTriangleRef->materialID = in_wrappedFan.poly.materialID;
+	//currentTriangleRef->emptyNormal = in_wrappedFan.poly.emptyNormal;
+
+	EnclaveBlockVertexTri fanBeginTrianglePoints(in_wrappedFan.vertices[0], in_wrappedFan.vertices[1], in_wrappedFan.vertices[2]);
+
+
+	// TEST: current empty normal calc by point indices.
+	//glm::vec3 preModNormal = calculateNormalFromPointIndices(currentTriangleRef->fetchExpandedFanIndices());
+	glm::vec3 preModNormal = glm::vec3(in_wrappedFan.poly.getFanEmptyNormal().x, in_wrappedFan.poly.getFanEmptyNormal().y, in_wrappedFan.poly.getFanEmptyNormal().z);
+
+	std::cout << "|||||||| points of input parameter poly: " << std::endl;
+	in_wrappedFan.printPointsOfFan();
+
+	std::cout << "|||||||| points of current fan: " << std::endl;
+	printPointsAtIndices(currentTriangleRef->fetchExpandedFanIndices());
+
+	std::cout << "+++++++++ pre modify normal value is: " << preModNormal.x << ", " << preModNormal.y << ", " << preModNormal.z << std::endl;
+	std::cout << "+++++++++ printingPoints prior to modify: " << std::endl;
+	currentTriangleRef->printPoints();
+
+	currentTriangleRef->setFanEmptyNormal(in_wrappedFan.poly.getFanEmptyNormal());
+
+	glm::vec3 postModNormal = calculateNormalFromPointIndices(currentTriangleRef->fetchExpandedFanIndices());
+	std::cout << "+++++++++ post modify normal value is: " << postModNormal.x << ", " << postModNormal.y << ", " << postModNormal.z << std::endl;
+
+
 	currentTriangleRef->faceAlignment = in_wrappedFan.poly.faceAlignment;
 
 
@@ -353,7 +434,8 @@ void FanManager::listSecondaries()
 			auto targetFanPtr = &localFanArray[x];
 			std::cout << "Orientation: " << targetFanPtr->faceAlignment.getPrintableIndicatorValue() << std::endl;
 			auto currentFanData = targetFanPtr->getFanData();
-			std::cout << "Normal: " << targetFanPtr->emptyNormal.x << ", " << targetFanPtr->emptyNormal.y << ", " << targetFanPtr->emptyNormal.z << std::endl;
+			//std::cout << "Normal: " << targetFanPtr->emptyNormal.x << ", " << targetFanPtr->emptyNormal.y << ", " << targetFanPtr->emptyNormal.z << std::endl;
+			std::cout << "Normal: " << targetFanPtr->getFanEmptyNormal().x << ", " << targetFanPtr->getFanEmptyNormal().y << ", " << targetFanPtr->getFanEmptyNormal().z << std::endl;
 			int totalPointsToPrint = currentFanData.numberOfTertiaries + 2;
 			for (int y = 0; y < totalPointsToPrint; y++)
 			{
@@ -527,15 +609,18 @@ ECBPolyPoint FanManager::getEmptyNormalFromTriangle(int in_index)
 	ECBPolyPoint returnNormal;
 	if (currentFanStorageMode == FanArrayMode::LOCALIZED)
 	{
-		returnNormal = localFanArray[in_index].emptyNormal;
+		//returnNormal = localFanArray[in_index].emptyNormal;
+		returnNormal = localFanArray[in_index].getFanEmptyNormal();
 	}
 	else if (currentFanStorageMode == FanArrayMode::THIN)
 	{
-		returnNormal = expandedThinFanArray[in_index].emptyNormal;
+		//returnNormal = expandedThinFanArray[in_index].emptyNormal;
+		returnNormal = expandedThinFanArray[in_index].getFanEmptyNormal();
 	}
 	else if (currentFanStorageMode == FanArrayMode::FAT)
 	{
-		returnNormal = expandedFatFanArray[in_index].emptyNormal;
+		//returnNormal = expandedFatFanArray[in_index].emptyNormal;
+		returnNormal = expandedFatFanArray[in_index].getFanEmptyNormal();
 	}
 	return returnNormal;
 }
@@ -888,5 +973,64 @@ void FanManager::constructManagerFromMessage(Message* in_managerDataMessage)
 			}
 			break;
 		}
+	}
+}
+
+glm::vec3 FanManager::calculateNormalFromPointIndices(std::vector<unsigned int> in_indexVector)
+{
+	glm::vec3 returnVec3;
+	EnclaveBlockVertex points[3];
+
+	int currentIndexToLoad = 0;
+	for (auto& currentPointToFetch : in_indexVector)
+	{
+		points[currentIndexToLoad] = fetchPoint(currentPointToFetch);
+		currentIndexToLoad++;
+	}
+
+	// generate common points
+	ECBPolyPoint determiningPoint0 = IndependentUtils::convertEnclaveBlockVertexToFloats(points[0]);
+	ECBPolyPoint determiningPoint1 = IndependentUtils::convertEnclaveBlockVertexToFloats(points[1]);
+	ECBPolyPoint determiningPoint2 = IndependentUtils::convertEnclaveBlockVertexToFloats(points[2]);
+
+	// calculate the vectors.
+	ECBPolyPoint vectorA = determiningPoint1 - determiningPoint0;
+	ECBPolyPoint vectorB = determiningPoint2 - determiningPoint0;
+
+	glm::vec3 u(vectorA.x, vectorA.y, vectorA.z);
+	glm::vec3 v(vectorB.x, vectorB.y, vectorB.z);
+
+	// calculate the original unit vector - cross(u,v)
+	glm::vec3 originalNormal = normalize(cross(u, v));
+
+	return originalNormal;
+}
+
+void FanManager::printPointsAtIndices(std::vector<unsigned int> in_indicesVector)
+{
+	for (auto& currentPointIndex : in_indicesVector)
+	{
+		ECBPolyPoint convertedPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(fetchPoint(currentPointIndex));
+		std::cout << currentPointIndex << " -> "; 
+		convertedPoint.printPointCoords(); 
+		std::cout << std::endl;
+	}
+}
+
+void FanManager::setFanNormals()
+{ 
+	// get the number of Fans to set
+	for (int x = 0; x < totalFans; x++)
+	{
+		auto currentTriangleRef = retrieveSecondaryFromIndex(x);
+		currentTriangleRef->setFanEmptyNormal(calculateNormalFromPointIndices(currentTriangleRef->fetchExpandedFanIndices()));
+
+		std::cout << "initial points of current fan: " << std::endl;
+		printPointsAtIndices(currentTriangleRef->fetchExpandedFanIndices());
+
+		ECBPolyPoint acquiredNormal = currentTriangleRef->getFanEmptyNormal();
+		std::cout << "currently acquiredNormal of current fan: ";
+		acquiredNormal.printPointCoords();
+		std::cout << std::endl;
 	}
 }

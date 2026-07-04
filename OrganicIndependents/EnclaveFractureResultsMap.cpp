@@ -54,6 +54,43 @@ MassDriverLimitArray EnclaveFractureResultsMap::produceMassDriverLimitArray()
 	return returnLimitArray;
 }
 
+MassDriverLimitArray EnclaveFractureResultsMap::produceMassDriverLimitArrayDebug(EnclaveKeyDef::EnclaveKey in_debugOreKey)
+{
+	std::cout << "!!! Calling debug function, ::produceMassDriverLimitArrayDebug..." << std::endl;
+
+	MassDriverLimitArray returnLimitArray;
+	auto organicRawEnclavesBegin = fractureResultsContainerMap.begin();
+	auto organicRawEnclavesEnd = fractureResultsContainerMap.end();
+	for (organicRawEnclavesBegin; organicRawEnclavesBegin != organicRawEnclavesEnd; organicRawEnclavesBegin++)
+	{
+		std::set<int> touchedBlocks = organicRawEnclavesBegin->second.getTouchedBlockList();	// get the touched block list
+		auto touchedBlocksBegin = touchedBlocks.begin();
+		auto touchedBlocksEnd = touchedBlocks.end();
+		//std::cout << "Gathering touched blocks for key: " << organicRawEnclavesBegin->first.x << ", " << organicRawEnclavesBegin->first.y << ", " << organicRawEnclavesBegin->first.z << "; there are " << touchedBlocks.size() << " touched blocks in this OrganicRawEnclave. " << std::endl;
+		for (touchedBlocksBegin; touchedBlocksBegin != touchedBlocksEnd; touchedBlocksBegin++)
+		{
+			EnclaveKeyDef::EnclaveKey blockKey = PolyUtils::convertSingleToBlockKey(*touchedBlocksBegin);
+			returnLimitArray.updateLimit(organicRawEnclavesBegin->first, blockKey);
+		}
+
+		EnclaveKeyDef::EnclaveKey currentOREKeyCopy = organicRawEnclavesBegin->first;
+		if (currentOREKeyCopy == in_debugOreKey)
+		{
+			std::cout << "!!! Found ORE to print for... " << std::endl;
+			auto debugList = organicRawEnclavesBegin->second.getTouchedBlockList();
+
+			// For each entry currently in touchedBlockList, insert into originalTouchedBlocks.
+			for (auto& currentBlockInt : debugList)
+			{
+				EnclaveKeyDef::EnclaveKey convertedKey = PolyUtils::convertSingleToBlockKey(currentBlockInt);
+				convertedKey.printKey(); 
+				std::cout << std::endl;
+			}
+		}
+	}
+	return returnLimitArray;
+}
+
 bool EnclaveFractureResultsMap::checkIfAnyOREsExist()
 {
 	return !fractureResultsContainerMap.empty();	// returns true if there are OREs

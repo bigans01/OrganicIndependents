@@ -52,6 +52,8 @@ public:
 		}
 
 
+		// +++++++Load EnclaveBlockVertex data, depending on the value of currentPointStorageMode.
+		// ++++++++++++++++++++++++++++++++++++++++++Begin loading logic for EnclaveBlockVertex data
 		ar & currentPointStorageMode;
 		ar & totalPoints;
 		PointArrayMode serializedPointArrayModeVal = PointArrayMode(currentPointStorageMode);
@@ -60,8 +62,6 @@ public:
 		std::cout << "!! FanManager:Boost, totalPoints: " << int(totalPoints) << std::endl;
 
 
-		// +++++++Load EnclaveBlockVertex data, depending on the value of currentPointStorageMode.
-		// ++++++++++++++++++++++++++++++++++++++++++Begin loading logic for EnclaveBlockVertex data
 		ar & expandedVertexArraySize;
 		std::cout << "!!FanManager:Boost, expandedVertexArraySize: " << expandedVertexArraySize << std::endl;
 
@@ -100,7 +100,82 @@ public:
 			}
 		}
 
+
+
 		// ++++++++++++++++++++++++++++++++++++++++++End loading logic for EnclaveBlockVertex data
+
+
+
+
+		// +++++++Load Fan data
+		// ++++++++++++++++++++++++++++++++++++++++++Begin loading logic for Fan data
+		ar& currentFanStorageMode;
+		ar& totalFans;
+		ar& isExpandedFanArrayActive;
+		ar& expandedFanArraySize;
+
+		std::cout << "!! FanManager:Boost, totalFans: " << int(totalFans) << std::endl;
+
+		if (!isExpandedFanArrayActive)
+		{
+			ar& boost::serialization::make_array(localFanArray, totalFans);
+		}
+
+		else if (isExpandedFanArrayActive)
+		{
+			if (currentFanStorageMode == FanArrayMode::THIN)
+			{
+				// save mode
+				if (Archive::is_saving::value)
+				{
+					for (std::size_t i = 0; i < totalFans; i++)
+					{
+						ar& expandedThinFanArray[i];
+					}
+				}
+
+				// load  mode
+				else
+				{
+					expandedThinFanArray.reset(new ThinFan[expandedFanArraySize]);
+					for (std::size_t i = 0; i < totalFans; i++)
+					{
+						ar& expandedThinFanArray[i];
+					}
+				}
+			}
+
+			else if (currentFanStorageMode == FanArrayMode::FAT)
+			{
+				// save mode
+				if (Archive::is_saving::value)
+				{
+					for (std::size_t i = 0; i < totalFans; i++)
+					{
+						ar& expandedFatFanArray[i];
+					}
+				}
+
+				// load mode
+				else
+				{
+					expandedFatFanArray.reset(new FatFan[expandedFanArraySize]);
+					for (std::size_t i = 0; i < totalFans; i++)
+					{
+						ar& expandedFatFanArray[i];
+					}
+				}
+			}
+		}
+
+		// Lastly, set the normals of the loaded FanTriangles, if we are in loading mode.
+		if (Archive::is_loading::value)
+		{
+			setFanNormals();
+		}
+
+		// ++++++++++++++++++++++++++++++++++++++++++End loading logic for Fan data
+
 	}
 
 	// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -116,15 +191,21 @@ public:
 		currentPointStorageMode = fanManager_a.currentPointStorageMode;
 
 
-		for (int x = 0; x < 16; x++)
-		{
-			localFanArray[x] = fanManager_a.localFanArray[x];
-		}
 
 		// Fan Array checks and copies
 		isExpandedFanArrayActive = fanManager_a.isExpandedFanArrayActive;
 		expandedFanArraySize = fanManager_a.expandedFanArraySize;
-		if (isExpandedFanArrayActive == true)
+
+		if (!isExpandedFanArrayActive)
+		{
+			for (int x = 0; x < 16; x++)
+			{
+				localFanArray[x] = fanManager_a.localFanArray[x];
+			}
+		}
+
+
+		else if (isExpandedFanArrayActive == true)
 		{
 			if (currentFanStorageMode == FanArrayMode::THIN)
 			{
@@ -173,17 +254,20 @@ public:
 		totalPoints = fanManager_a.totalPoints;
 		currentPointStorageMode = fanManager_a.currentPointStorageMode;
 
-		for (int x = 0; x < 16; x++)
-		{
-			localFanArray[x] = fanManager_a.localFanArray[x];
-		}
 
 		// Fan Array checks and copies
 		isExpandedFanArrayActive = fanManager_a.isExpandedFanArrayActive;
 		expandedFanArraySize = fanManager_a.expandedFanArraySize;
 
+		if (!isExpandedFanArrayActive)
+		{
+			for (int x = 0; x < 16; x++)
+			{
+				localFanArray[x] = fanManager_a.localFanArray[x];
+			}
+		}
 
-		if (isExpandedFanArrayActive == true)
+		else if (isExpandedFanArrayActive == true)
 		{
 			if (currentFanStorageMode == FanArrayMode::THIN)
 			{
@@ -287,6 +371,7 @@ public:
 	void processTertiaryData(TertiaryTriangleContainer in_polyMetaData, TriangleMaterial in_materialID);									// used by EnclaveBlock::processTertiaryData
 
 	void insertBBFanFromRawEnclave(OrganicWrappedBBFan in_wrappedFan);															// used by EnclaveBlock::insertBBFanFromRawEnclave
+	void insertBBFanFromRawEnclaveV2Debug(OrganicWrappedBBFan in_wrappedFan);
 	PointSearchData checkIfPointExists(EnclaveBlockVertex in_blockVertex);														// used by EnclaveBlock::checkIfPointExists
 	PointSearchData checkIfNearbyPointExists(EnclaveBlockVertex in_blockVertex);												// used by EnclaveBlock::checkIfNearbyPointExists
 	BlockSearchMeta checkForExactPoint(ECBPolyPoint in_point, int in_debugFlag);												// used by EnclaveBlock::checkForExactPoint
@@ -390,6 +475,15 @@ private:
 	int addNewPoint(EnclaveBlockVertex in_blockVertex);
 
 	ECBPolyPoint convertVertexToPolyPoint(EnclaveBlockVertex in_blockVertex);
+
+	glm::vec3 calculateNormalFromPointIndices(std::vector<unsigned int> in_indexVector);	// given a std::vector of 3 ints that represent point indices,
+																							// produce a normal. Used in conjunction with the fetchExpandedFanIndices function,
+																							// in order to the set the empty normal of a FanBase-derived class such as FatFan or ThinFan.
+
+	void printPointsAtIndices(std::vector<unsigned int> in_indicesVector);
+
+	void setFanNormals();	// used when using Boost to read triangle data from a file; should be called to set the normals of all FanBase-derived classes,
+							// after they have been read in during a Boost load operation.
 };
 
 #endif

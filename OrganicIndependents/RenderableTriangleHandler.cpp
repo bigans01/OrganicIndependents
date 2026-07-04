@@ -59,7 +59,7 @@ Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey
 	handlerToBDMMsg.insertEnclaveKeyFront(in_oreKey);
 	handlerToBDMMsg.insertEnclaveKeyFront(in_blueprintKey);
 
-
+		
 	return handlerToBDMMsg;
 }
 
@@ -540,7 +540,7 @@ int RenderableTriangleHandler::getTriangleCountFromContainers()
 	return triangleCount;
 }
 
-void RenderableTriangleHandler::clear()
+void RenderableTriangleHandler::clearRT()
 {
 	uniqueIDLookup.clear();
 	rTypesMap.clear();

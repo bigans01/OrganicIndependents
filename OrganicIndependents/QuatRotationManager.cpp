@@ -6,36 +6,6 @@ void QuatRotationManager::setDebugLevel(PolyDebugLevel in_polyDebugLevel)
 	quatRotationManagerLogger.setDebugLevel(in_polyDebugLevel);
 }
 
-void QuatRotationManager::initializeAndRunForEmptyNormal(QuatRotationPoints* in_quatpointsRefVector)
-{
-	rotationpointsRefVector = in_quatpointsRefVector;
-	
-	pointACopy = rotationpointsRefVector->getFirstPoint();
-	pointBCopy = rotationpointsRefVector->getSecondPoint();
-	pointCCopy = rotationpointsRefVector->getThirdPoint();
-
-
-	// check if we need to rotate about the Y-axis to get to the same Z values for the line
-	if (pointBCopy.z != 0.0f)
-	{
-		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Y;
-		rotationOrder.push_back(rotateType); //push into the vector
-	}
-
-	// check if we need to rotate about the Z-axis to get to the same Y values for the line
-	if (pointBCopy.y != 0.0f)
-	{
-		QuatRotationType rotateType = QuatRotationType::ROTATE_AROUND_Z;
-		rotationOrder.push_back(rotateType);
-	}
-
-	executeRotationsForEmptyNormal();		// run each rotation against the points in the vector (for empty normal, prior to calculating it)
-	calculateEmptyNormal();
-	rotateToOriginalPosition();
-}
-
-
-
 
 void QuatRotationManager::initializeAndRunForZFracture(QuatRotationPoints* in_quatpointsRefVector)
 {

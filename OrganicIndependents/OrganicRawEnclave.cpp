@@ -120,7 +120,7 @@ void OrganicRawEnclave::reconstituteOREStatesFromMessage(Message in_oreHeaderMes
 void OrganicRawEnclave::clearOutDataContainers()
 {
 	// OT-6
-	oreRTHandler.clear();
+	oreRTHandler.clearRT();
 }
 
 void OrganicRawEnclave::reconstituteBlocksFromBDMMap(std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_blockMessageMapRef)
@@ -855,7 +855,7 @@ void OrganicRawEnclave::reloadSpawnedEnclaveTriangleSkeletonContainers(std::mute
 {
 	std::lock_guard<std::mutex> lock(*in_mutexRef);
 
-	oreRTHandler.clear();
+	oreRTHandler.clearRT();
 
 	existingEnclaveTriangleSkeletonContainerTracker.intSet.clear();		// because we will be reloading the tracker entirely, wipe it clean. Used by OREMatterCollider::extractResultsAndSendToORE in OrganicCoreLib, when an RMatter mass has been produced.
 

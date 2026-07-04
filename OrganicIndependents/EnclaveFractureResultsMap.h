@@ -69,7 +69,10 @@ public:
 
 
 	void insertNewRawManifest(EnclaveKeyDef::EnclaveKey in_enclaveKey, std::mutex* in_mutexRef);
+	
 	MassDriverLimitArray produceMassDriverLimitArray();
+	MassDriverLimitArray produceMassDriverLimitArrayDebug(EnclaveKeyDef::EnclaveKey in_debugOreKey);
+
 	bool checkIfAnyOREsExist();
 	bool checkIfSpecificOREExists(EnclaveKeyDef::EnclaveKey in_enclaveKey);
 	bool checkIfSpecificOREContainsAnyBlocks(EnclaveKeyDef::EnclaveKey in_enclaveKey);

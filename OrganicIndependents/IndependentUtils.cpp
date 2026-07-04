@@ -5261,6 +5261,15 @@ ECBPolyPoint IndependentUtils::determineTriangleCentroid(ECBPolyPoint in_pointA,
 	return returnPoint;
 }
 
+DoublePoint IndependentUtils::determineTriangleCentroid(DoublePoint in_pointA, DoublePoint in_pointB, DoublePoint in_pointC)
+{
+	DoublePoint returnPoint;
+	returnPoint.x = ((in_pointA.x) + (in_pointB.x) + (in_pointC.x)) / 3;
+	returnPoint.y = ((in_pointA.y) + (in_pointB.y) + (in_pointC.y)) / 3;
+	returnPoint.z = ((in_pointA.z) + (in_pointB.z) + (in_pointC.z)) / 3;
+	return returnPoint;
+}
+
 glm::vec3 IndependentUtils::findTriangleCentroid(glm::vec3 in_point0, glm::vec3 in_point1, glm::vec3 in_point2)
 {
 	glm::vec3 foundCentroid;

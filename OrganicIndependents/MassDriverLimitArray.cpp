@@ -33,6 +33,15 @@ void MassDriverLimitArray::updateLimit(EnclaveKeyDef::EnclaveKey in_enclaveKey, 
 	}
 }
 
+char MassDriverLimitArray::fetchLimitValue(EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blockKey)
+{
+	int x_coord = (in_enclaveKey.x * 4) + in_blockKey.x;
+	int y_coord = (in_enclaveKey.y * 4) + in_blockKey.y;
+	int z_coord = (in_enclaveKey.z * 4) + in_blockKey.z;
+
+	return limitArray[x_coord][z_coord].maxY;
+}
+
 void MassDriverLimitArray::updateLimitDebug(EnclaveKeyDef::EnclaveKey in_enclaveKey, EnclaveKeyDef::EnclaveKey in_blockKey)
 {
 	int x_coord = (in_enclaveKey.x * 4) + in_blockKey.x;

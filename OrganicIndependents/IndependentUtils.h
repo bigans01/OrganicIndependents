@@ -79,6 +79,8 @@ class IndependentUtils
 		static ECBPolyPoint findCommonMoveValues(ECBPolyPoint in_polyPointA, ECBPolyPoint in_polyPointB);
 
 		static ECBPolyPoint determineTriangleCentroid(ECBPolyPoint in_pointA, ECBPolyPoint in_pointB, ECBPolyPoint in_pointC);
+		static DoublePoint determineTriangleCentroid(DoublePoint in_pointA, DoublePoint in_pointB, DoublePoint in_pointC);
+
 		static glm::vec3 findTriangleCentroid(glm::vec3 in_point0, glm::vec3 in_point1, glm::vec3 in_point2);
 		static glm::vec3 findTriangleNormal(glm::vec3 in_point0, glm::vec3 in_point1, glm::vec3 in_point2);
 

@@ -4,6 +4,7 @@
 #define ORGANICWRAPPEDBBFAN_H
 
 #include "EnclaveBlockVertex.h"
+#include "EnclaveBlockVertexTri.h"
 #include "PrimarySegmentTracker.h"
 #include "BlockCircuit.h"
 #include "BlockBorderLineList.h"
@@ -44,6 +45,14 @@ class OrganicWrappedBBFan
 							ECBPolyPoint in_emptyNormal,
 							BoundaryPolyIndicator in_boundaryPolyIndicator);
 
+
+		// FOR TESTING ONLY: Empty normal testing only; don't care about indicator...
+		OrganicWrappedBBFan(ECBPolyPoint in_pointsArray[4],
+							TriangleMaterial in_materialID,
+							ECBPolyPoint in_emptyNormal);
+
+
+
 		int keyID;
 		PrimarySegmentTracker blockSegmentTracker;
 		PrimarySegmentTracker reverseSegmentTracker;
@@ -66,6 +75,8 @@ class OrganicWrappedBBFan
 		void runBoundaryChecks();	// checks the first 3 points in a FatFan (poly member), to see if any bordering flags need to be set for the fans.
 									// should only be done after checkForAndEraseAnomalousTriangles() has been called. Should not be called if there are no tertiaries;
 									// (this function assumes there are tertiaries to operate on)
+
+		void printPointsOfFan();
 	private:
 		// TemporalTriangle -- used to determine what the points of each fan in a triangle are; 
 		// instances of this class should only be instantiated/managed after the call to performFirstLastMatchCheck()
@@ -159,6 +170,8 @@ class OrganicWrappedBBFan
 		void chopOutPointAndShiftVertices(int in_targetIndexToChop);	// "chops" out the midpoint of a triangle fan, and moves down all points above it
 																		// (that is, points that have an index greater than that of the chopped out point) down
 																		// by 1. Used by checkForAndEraseAnomalousTriangles().
+
+		void reversePoints();
 };
 
 #endif

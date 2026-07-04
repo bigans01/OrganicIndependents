@@ -107,7 +107,7 @@ class RenderableTriangleHandler
 												// come from the TERRAIN_TILE_1 entry in rTypesMap. Needed by OrganicRawEnclave::getNumberOfTrianglesByLOD. This would be called in
 												// cases where a remote terrain rendering job has to scan for independent OREs to combine those polys with actual ECBPolys, for a single draw call.
 
-		void clear();	// wipe out everything, start from scratch, clean up memory etc; equivalent of calling clear() on all 3 of the old data maps in OrganicRawEnclave
+		void clearRT();	// wipe out everything, start from scratch, clean up memory etc; equivalent of calling clear() on all 3 of the old data maps in OrganicRawEnclave
 						// (i.e., how OrganicRawEnclave::checkIfFull() calls clear on skeletonSGM, etcSGM, and organicTriangleSecondarySGM.
 
 		void printData();

@@ -3,6 +3,8 @@
 #ifndef BOUNDARYPOLYINDICATOR_H
 #define BOUNDARYPOLYINDICATOR_H
 
+#include <boost/archive/basic_binary_oarchive.hpp>
+#include <boost/archive/basic_binary_iarchive.hpp>
 
 /*
 
@@ -31,6 +33,13 @@ class BoundaryPolyIndicator
 													// instantiate a BoundaryPolyIndicator from Message data
 		{
 			indicatorData = unsigned char(in_indicatorInt);
+		}
+
+		// Boost functions
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& indicatorData;
 		}
 
 		void setBoundaryIndicator(BoundaryOrientation in_faceOrientation)

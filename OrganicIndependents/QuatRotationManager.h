@@ -24,7 +24,6 @@ class QuatRotationManager
 
 		void setDebugLevel(PolyDebugLevel in_polyDebugLevel);
 
-		void initializeAndRunForEmptyNormal(QuatRotationPoints* in_quatpointsRefVector);
 		void initializeAndRunForZFracture(QuatRotationPoints* in_quatpointsRefVector);
 		glm::vec3 initializeAndRunForPlanarSlide(QuatRotationPoints* in_quatpointsRefVector);
 		void initializeAndRunForPlanarAlignmentToZ(QuatRotationPoints* in_quatpointsRefVector);

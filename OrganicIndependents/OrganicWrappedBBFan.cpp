@@ -73,7 +73,25 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(FTriangleContainer* in_fTriangleContain
 	// Part 2: metadata updates.
 	poly.numberOfTertiaries = totalTriangles;
 	poly.materialID = in_materialID;
-	poly.emptyNormal = in_emptyNormal;
+
+	// OLD WAY:: if doing this, don't forget to switch the empty normal logic in FanManager::insertBBFanFromRawEnclave
+	//poly.emptyNormal = in_emptyNormal;
+	//poly.setFanEmptyNormal(in_emptyNormal);
+
+	EnclaveBlockVertexTri fanBeginTrianglePoints(IndependentUtils::convertFTrianglePointToBlockVertex(in_fTriangleContainerRef->fracturedTriangles.begin()->second.fracturePoints[0]),
+									             IndependentUtils::convertFTrianglePointToBlockVertex(in_fTriangleContainerRef->fracturedTriangles.begin()->second.fracturePoints[1]),
+		                                         IndependentUtils::convertFTrianglePointToBlockVertex(in_fTriangleContainerRef->fracturedTriangles.begin()->second.fracturePoints[2]));
+
+	// OLD WAY:: if doing this, don't forget to switch the empty normal logic in FanManager::insertBBFanFromRawEnclave
+	//poly.setFanEmptyNormal(in_emptyNormal);
+	
+	// NEW WAY
+	
+	if (poly.setEmptyNormalAndCheckAlignment(in_emptyNormal, fanBeginTrianglePoints))
+	{
+		reversePoints();
+	}
+	
 	poly.faceAlignment = in_boundaryPolyIndicator;
 
 	
@@ -92,10 +110,110 @@ OrganicWrappedBBFan::OrganicWrappedBBFan(ECBPolyPoint in_pointsArray[4],
 
 	poly.numberOfTertiaries = 2;
 	poly.materialID = in_materialID;
-	poly.emptyNormal = in_emptyNormal;
+
+	// OLD WAY: if doing this, don't forget to switch the empty normal logic in FanManager::insertBBFanFromRawEnclave
+	//poly.emptyNormal = in_emptyNormal;
+	//poly.setFanEmptyNormal(in_emptyNormal);
+	EnclaveBlockVertexTri fanBeginTrianglePoints(IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[0]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[1]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[2]));
+
+	// NEW WAY:
+	//
+	// Below: take the first 3 points of the array, and compare them against the empty normal,
+	// to see which two possible normals of the triangle come closest to the passed-in empty normal value.
+	// If the current arrangement of points forms a normal that is not close to the empty normal,
+	// they must be flipped (the call to setFanEmptyNormalDebug below would return true if that is the case).
+	// If true, call reversePoints to reverse the order of points that make up the fan, which effectively will flip
+	// the normal of the triangle, making it the closest to the empty normal.
+	
+	if (poly.setEmptyNormalAndCheckAlignment(in_emptyNormal, fanBeginTrianglePoints))
+	{
+		reversePoints();
+	}
+	
+	
 	poly.faceAlignment = in_boundaryPolyIndicator;
 }
 
+OrganicWrappedBBFan::OrganicWrappedBBFan(ECBPolyPoint in_pointsArray[4],
+	TriangleMaterial in_materialID,
+	ECBPolyPoint in_emptyNormal)
+{
+	for (int x = 0; x < 4; x++)
+	{
+		poly.fillPointIndex(x, x);
+		vertices[x] = IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[x]);
+	}
+
+	poly.numberOfTertiaries = 2;
+	poly.materialID = in_materialID;
+	//poly.emptyNormal = in_emptyNormal;
+	EnclaveBlockVertexTri fanBeginTrianglePoints(IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[0]),
+		IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[1]),
+		IndependentUtils::convertPolyPointToBlockVertex(in_pointsArray[2]));
+
+	// Below: take the first 3 points of the array, and compare them against the empty normal,
+	// to see which two possible normals of the triangle come closest to the passed-in empty normal value.
+	// If the current arrangement of points forms a normal that is not close to the empty normal,
+	// they must be flipped (the call to setFanEmptyNormalDebug below would return true if that is the case).
+	// If true, call reversePoints to reverse the order of points that make up the fan, which effectively will flip
+	// the normal of the triangle, making it the closest to the empty normal.
+	if (poly.setFanEmptyNormalDebug(in_emptyNormal, fanBeginTrianglePoints))
+	{
+		std::cout << "!!! OrganicWrappedBBFan:: flip of points required!! " << std::endl;
+		reversePoints();
+	}
+
+	// Boundary indicator not set in this test.
+	//poly.faceAlignment = in_boundaryPolyIndicator;
+}
+
+void OrganicWrappedBBFan::reversePoints()
+{
+	// The number of points to reverse should be equal to the following formula:
+	// (2 + number of tertiaries) - 1
+	int numberOfPointsToReverse = 2 + poly.numberOfTertiaries - 1;
+
+	// First point at index 0 is ignored; start at 1 and iterate from there.
+	int startIndex = 1;
+	int tempStartIndex = numberOfPointsToReverse;
+	EnclaveBlockVertex tempArray[8];
+
+	// Print points prior to swap.
+	//std::cout << "OrganicWrappedBBFan: prior to reversal of points:" << std::endl;
+	//printPointsOfFan();
+
+	for (int x = 0; x < numberOfPointsToReverse; x++)
+	{
+		tempArray[tempStartIndex] = vertices[startIndex];
+		startIndex++;
+		tempStartIndex--;
+	}
+
+	// Step 2: overwrite original array; after ressetting the startIndex.
+	startIndex = 1;
+	for (int y = 0; y < numberOfPointsToReverse; y++)
+	{
+		vertices[startIndex] = tempArray[startIndex];
+		startIndex++;
+	}
+
+	//std::cout << "OrganicWrappedBBFan: after reversal of points:" << std::endl;
+	//printPointsOfFan();
+}
+
+void OrganicWrappedBBFan::printPointsOfFan()
+{
+	auto indicesVector = poly.fetchExpandedFanIndices();
+	for (auto& currentPointIndex : indicesVector)
+	{
+		ECBPolyPoint convertedPoint = IndependentUtils::convertEnclaveBlockVertexToFloats(vertices[currentPointIndex]);
+		std::cout << currentPointIndex << " -> ";
+		convertedPoint.printPointCoords();
+		std::cout << std::endl;
+	}
+}
 
 void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleMaterial in_materialID, ECBPolyPoint in_emptyNormal)
 {
@@ -114,7 +232,27 @@ void OrganicWrappedBBFan::buildBBFan(BlockCircuit* in_blockCircuitRef, TriangleM
 	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
 	//std::cout << "BBFan number of tertiaries: " << int(poly.numberOfTertiaries) << std::endl;
 	poly.materialID = in_materialID;
-	poly.emptyNormal = in_emptyNormal;
+
+	// OLD WAY: if doing this, don't forget to switch the empty normal logic in FanManager::insertBBFanFromRawEnclave
+	//poly.emptyNormal = in_emptyNormal;
+	//poly.setFanEmptyNormal(in_emptyNormal);
+	EnclaveBlockVertexTri fanBeginTrianglePoints(IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[0]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[1]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[2]));
+
+	// NEW WAY::
+	//
+	// Below: take the first 3 points of the array, and compare them against the empty normal,
+	// to see which two possible normals of the triangle come closest to the passed-in empty normal value.
+	// If the current arrangement of points forms a normal that is not close to the empty normal,
+	// they must be flipped (the call to setFanEmptyNormalDebug below would return true if that is the case).
+	// If true, call reversePoints to reverse the order of points that make up the fan, which effectively will flip
+	// the normal of the triangle, making it the closest to the empty normal.
+	if (poly.setEmptyNormalAndCheckAlignment(in_emptyNormal, fanBeginTrianglePoints))
+	{
+		reversePoints();
+	}
+	
 }
 
 void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_blockCircuitRef,
@@ -137,7 +275,30 @@ void OrganicWrappedBBFan::buildBBFanWithBoundaryIndicator(BlockCircuit* in_block
 	poly.numberOfTertiaries = in_blockCircuitRef->finalCircuitPoints.numberOfPoints - 2;	// store the number of triangles (equal to number of points - 2)
 	//std::cout << "BBFan number of tertiaries: " << int(poly.numberOfTertiaries) << std::endl;
 	poly.materialID = in_materialID;
-	poly.emptyNormal = in_emptyNormal;
+
+	// OLD WAY: if doing this, don't forget to switch the empty normal logic in FanManager::insertBBFanFromRawEnclave
+	//poly.emptyNormal = in_emptyNormal;
+	//poly.setFanEmptyNormal(in_emptyNormal);
+	EnclaveBlockVertexTri fanBeginTrianglePoints(IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[0]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[1]),
+												 IndependentUtils::convertPolyPointToBlockVertex(in_blockCircuitRef->finalCircuitPoints.pointArray[2]));
+
+
+	
+	// NEW WAY:
+	//
+	// Below: take the first 3 points of the array, and compare them against the empty normal,
+	// to see which two possible normals of the triangle come closest to the passed-in empty normal value.
+	// If the current arrangement of points forms a normal that is not close to the empty normal,
+	// they must be flipped (the call to setFanEmptyNormalDebug below would return true if that is the case).
+	// If true, call reversePoints to reverse the order of points that make up the fan, which effectively will flip
+	// the normal of the triangle, making it the closest to the empty normal.
+	
+	if (poly.setEmptyNormalAndCheckAlignment(in_emptyNormal, fanBeginTrianglePoints))
+	{
+		reversePoints();
+	}
+
 	poly.faceAlignment = in_boundaryPolyIndicator;
 }
 
