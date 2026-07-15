@@ -58,6 +58,8 @@ class PerlinFactory
 
 		void insertGridProcessOrder(std::string in_gridName, int in_order);
 
+		void printOutClusterArt();	// print out all tiles that are involved in the cluster, in one giant art output.
+
 	private:
 		// below: a stringed map of noise grids.
 		std::unordered_map<std::string, NoiseGrid> noiseGridMap;

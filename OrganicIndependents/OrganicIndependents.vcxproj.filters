@@ -1332,6 +1332,15 @@
     <ClInclude Include="PerlinFactory.h">
       <Filter>Header Files\Perlin</Filter>
     </ClInclude>
+    <ClInclude Include="Perlin2DKeyedState.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
+    <ClInclude Include="Perlin2DSectorMappings.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGridTileSamplingField.h">
+      <Filter>Header Files\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1783,6 +1792,9 @@
     </ClCompile>
     <ClCompile Include="PerlinFactory.cpp">
       <Filter>Source Files\Perlin</Filter>
+    </ClCompile>
+    <ClCompile Include="NoiseGridTileSamplingField.cpp">
+      <Filter>Source Files\Grid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 
 #include "NGSCScanTargetGrouping.h"
 #include "NGSClusterEntry.h"
+#include "Perlin2DKeyedState.h"
 
 /*
 * 
@@ -83,6 +84,17 @@ class PerlinClusterMeta
 			}
 
 			return searchAttempt;
+		}
+
+		std::vector<Perlin2DKeyedState> fetchKeyedStates()
+		{
+			std::vector<Perlin2DKeyedState> fetchedVector;
+			for (auto& currentClusterEntry : metaMap)
+			{
+				Perlin2DKeyedState newState(currentClusterEntry.first, currentClusterEntry.second.getGroupingStatus());
+				fetchedVector.push_back(newState);
+			}
+			return fetchedVector;
 		}
 
 	private:

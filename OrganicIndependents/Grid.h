@@ -9,6 +9,7 @@
 #include "NGSClusterEntry.h"
 #include <iomanip>
 #include "NoiseGridTile.h"
+#include "NoiseGridTileSamplingField.h"
 
 /* Description: contains classes related to grids. A GridLocation is a coordinate system that will correlate with and be generated
 by an existing Grid object. */
@@ -135,146 +136,6 @@ class UnitVectorQuad
 		glm::vec2 uvArray[4];
 };
 
-// EnclaveKey2DKeyQuad: contains four EnclaveKeyDef::Enclave2DKey values; meant to be used
-// by NoiseGridTileSamplingField when generating the 16 points that make up the field (i.e, 4 rows of 4, so
-// 4 values of these. 
-class EnclaveKey2DKeyQuad
-{
-	public:
-		EnclaveKey2DKeyQuad() {}
-		EnclaveKey2DKeyQuad(EnclaveKeyDef::Enclave2DKey in_key0, 
-							EnclaveKeyDef::Enclave2DKey in_key1, 
-							EnclaveKeyDef::Enclave2DKey in_key2,
-							EnclaveKeyDef::Enclave2DKey in_key3)
-		{
-			keys[0] = in_key0;
-			keys[1] = in_key1;
-			keys[2] = in_key2;
-			keys[3] = in_key3;
-		}
-
-		void printValues()
-		{
-			std::cout << "!! Printing values for EnclaveKey2DKeyQuad: " << std::endl;
-			for (int x = 0; x < 4; x++)
-			{
-				std::cout << x << ": " << keys[x].a << ", " << keys[x].b << std::endl;
-			}
-		}
-
-		EnclaveKeyDef::Enclave2DKey keys[4];
-};
-
-
-
-// NoiseGridTileSamplingField: when cosntructed, it contains a series of 16 points that are utilized for bicubic interpolation. The
-// 16 points are each generated from a call to a PerlinNoise object; this object takes in the seed value used for the grid and the 2d key of the point to produce a 
-// pseudo-random value. This value becomes the value of the sampled point.
-// 
-// When generated, the function calculateBicubicInterpolation is called, which takes a value of 0 to 1 to sample betweeen the four points closest to the center
-// of the 16 point (4x4) grid.
-class NoiseGridTileSamplingField
-{
-	public:
-		// Below: the constructor that should always be used when generating a new instance of NoiseGridTileSamplingField;
-		// after this is called, call calculateBicubicInterpolation to fetch bicubically interpolated values.
-		NoiseGridTileSamplingField(EnclaveKeyDef::Enclave2DKey in_samplingTileRootCoord, short in_tileDim, int in_seedValue) :
-			seedValue(in_seedValue)
-		{
-			tileToSample = NoiseGridTile(in_samplingTileRootCoord, in_tileDim);
-
-			tileRootCoord = in_samplingTileRootCoord;
-			tileDim = in_tileDim;
-			seedValue = in_seedValue;
-
-			generateField();
-		}
-
-		// Fetch a bicubic interpolated value; the values of in_x and in_z must fall between the range of 0 and 1.
-		float calculateBicubicInterpolation(float in_x, float in_z)
-		{
-			BicubicInterpolationSet interpSet(quadPointSets[0], quadPointSets[1], quadPointSets[2], quadPointSets[3]);
-			return interpSet.fetchBicubicValue(in_x, in_z);
-		}
-
-	private:
-		NoiseGridTile tileToSample;
-
-		// Below: this function generates the point field that is based around the root tile that we will be sampling, so that we may
-		// sample the root tile.
-		void generateField()
-		{
-			// Step 1: get the coords of the neighboring corner tile's' root coords.
-			NoiseGridTileCorners neighboringTileRoots = tileToSample.fetchNeighboringCornerTileRootCoords();
-
-			EnclaveKeyDef::Enclave2DKey posXnegZRootCoordKey = neighboringTileRoots.posXnegZcorner;
-			EnclaveKeyDef::Enclave2DKey posXposZRootCoordKey = neighboringTileRoots.posXposZcorner;
-			EnclaveKeyDef::Enclave2DKey negXposZRootCoordKey = neighboringTileRoots.negXposZcorner;
-			EnclaveKeyDef::Enclave2DKey negXnegZRootCoordKey = neighboringTileRoots.negXnegZcorner;
-
-			// Step 2: Create a new tile for each corner.
-			NoiseGridTile posXnegZNeighbor(posXnegZRootCoordKey, tileDim);
-			NoiseGridTile posXposZNeighbor(posXposZRootCoordKey, tileDim);
-			NoiseGridTile negXposZNeighbor(negXposZRootCoordKey, tileDim);
-			NoiseGridTile negXnegZNeighbor(negXnegZRootCoordKey, tileDim);
-
-			// Step 3: Fetch the four corners from the four newly generated neighboring corner tiles.
-			NoiseGridTileCorners posXnegZNeighborCorners = posXnegZNeighbor.fetchTileCorners();
-			NoiseGridTileCorners posXposZNeighborCorners = posXposZNeighbor.fetchTileCorners();
-			NoiseGridTileCorners negXposZNeighborCorners = negXposZNeighbor.fetchTileCorners();
-			NoiseGridTileCorners negXnegZNeighborCorners = negXnegZNeighbor.fetchTileCorners();
-
-			std::cout << "TEST: printing out neighboring corners of tile at root coord of: ";
-			tileRootCoord.printKey();
-
-			posXnegZNeighbor.printTileRootCoordAndCorners();
-			posXposZNeighbor.printTileRootCoordAndCorners();
-			negXposZNeighbor.printTileRootCoordAndCorners();
-			negXnegZNeighbor.printTileRootCoordAndCorners();
-
-			// Step 4: genereat the quad values, starting at X = 0, Z = 0.
-			EnclaveKey2DKeyQuad row0(negXnegZNeighborCorners.negXnegZcorner, negXnegZNeighborCorners.posXnegZcorner, posXnegZNeighborCorners.negXnegZcorner, posXnegZNeighborCorners.posXnegZcorner);
-			EnclaveKey2DKeyQuad row1(negXnegZNeighborCorners.negXposZcorner, negXnegZNeighborCorners.posXposZcorner, posXnegZNeighborCorners.negXposZcorner, posXnegZNeighborCorners.posXposZcorner);
-			EnclaveKey2DKeyQuad row2(negXposZNeighborCorners.negXnegZcorner, negXposZNeighborCorners.posXnegZcorner, posXposZNeighborCorners.negXnegZcorner, posXposZNeighborCorners.posXnegZcorner);
-			EnclaveKey2DKeyQuad row3(negXposZNeighborCorners.negXposZcorner, negXposZNeighborCorners.posXposZcorner, posXposZNeighborCorners.negXposZcorner, posXposZNeighborCorners.posXposZcorner);
-
-			// Debug only: print the EnclaveKeyDef::Enclave2DKey values at each of the 16 points (4 per row)
-			std::cout << "~~~~~~ row print, prior ~~~~~~" << std::endl;
-			row0.printValues();
-			row1.printValues();
-			row2.printValues();
-			row3.printValues();
-			std::cout << "~~~~~~ row print, after ~~~~~~" << std::endl;
-
-			// Create a PerlinNose object to determine the 16 bicubic interpolation input points
-			PerlinNoise noiseObj;
-
-			QuadInterpolationPointSet quadSet0(noiseObj.getSeededVecSimiliarity(seedValue, row0.keys[0]), noiseObj.getSeededVecSimiliarity(seedValue, row0.keys[1]), noiseObj.getSeededVecSimiliarity(seedValue, row0.keys[2]), noiseObj.getSeededVecSimiliarity(seedValue, row0.keys[3]));
-			QuadInterpolationPointSet quadSet1(noiseObj.getSeededVecSimiliarity(seedValue, row1.keys[0]), noiseObj.getSeededVecSimiliarity(seedValue, row1.keys[1]), noiseObj.getSeededVecSimiliarity(seedValue, row1.keys[2]), noiseObj.getSeededVecSimiliarity(seedValue, row1.keys[3]));
-			QuadInterpolationPointSet quadSet2(noiseObj.getSeededVecSimiliarity(seedValue, row2.keys[0]), noiseObj.getSeededVecSimiliarity(seedValue, row2.keys[1]), noiseObj.getSeededVecSimiliarity(seedValue, row2.keys[2]), noiseObj.getSeededVecSimiliarity(seedValue, row2.keys[3]));
-			QuadInterpolationPointSet quadSet3(noiseObj.getSeededVecSimiliarity(seedValue, row3.keys[0]), noiseObj.getSeededVecSimiliarity(seedValue, row3.keys[1]), noiseObj.getSeededVecSimiliarity(seedValue, row3.keys[2]), noiseObj.getSeededVecSimiliarity(seedValue, row3.keys[3]));
-
-			quadPointSets[0] = quadSet0;
-			quadPointSets[1] = quadSet1;
-			quadPointSets[2] = quadSet2;
-			quadPointSets[3] = quadSet3;
-
-			// Debug only: print the origin values for each quadPointSet.
-			std::cout << "###### Printing origin values (generateFieldV2) #####" << std::endl;
-
-			quadPointSets[3].printOriginValues();
-			quadPointSets[2].printOriginValues();
-			quadPointSets[1].printOriginValues();
-			quadPointSets[0].printOriginValues();
-
-		}
-				
-		EnclaveKeyDef::Enclave2DKey tileRootCoord;
-		short tileDim = 0;
-		int seedValue = 0;
-
-		QuadInterpolationPointSet quadPointSets[4];
-};
 
 // NoiseGridSectorGroupingLink: meant to be used by NoiseGridSectorGrouping, it is intended to store
 // the values of neighboring tiles that could *possibly* border a NoiseGridSectorGrouping; it does not
@@ -1854,170 +1715,180 @@ class NoiseGridSubSector
 // 7: Generate the groupings.
 class NoiseGrid
 {
-	public:
-		friend class NoiseGridScanner;
+public:
+	friend class NoiseGridScanner;
 
-		NoiseGrid() {};
-		NoiseGrid(short in_tileDim,
-			      short in_gSectorSize,
-			      float in_thresholdValue,
-				  int in_seedValue)
+	NoiseGrid() {};
+	NoiseGrid(short in_tileDim,
+		short in_gSectorSize,
+		float in_thresholdValue,
+		int in_seedValue)
+	{
+		noiseGridTileDim = in_tileDim;
+		gridSectorDim = in_gSectorSize;
+		tilesPerDim = in_gSectorSize / in_tileDim;
+		thresholdValue = in_thresholdValue;
+		seedValue = in_seedValue;
+	}
+
+	void findSubSector(double in_coordinateX, double in_coordinateZ, int in_subSectorSize)
+	{
+		auto xKeys = findSubSectorCoord(in_coordinateX, in_subSectorSize);
+		auto zKeys = findSubSectorCoord(in_coordinateZ, in_subSectorSize);
+
+		int trueSectorXCoord = xKeys.a * gridSectorDim;
+		int trueSectorZCoord = zKeys.a * gridSectorDim;
+
+		int trueSubSectorXCoord = xKeys.b * in_subSectorSize;
+		int trueSubSectorZCoord = zKeys.b * in_subSectorSize;
+
+		int tilesPerSubSector = in_subSectorSize / noiseGridTileDim;
+
+		std::cout << "~~~~~~~ Sub sector stats for coord: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
+		std::cout << "X coord: sector:" << trueSectorXCoord << " | subsector: " << trueSubSectorXCoord << std::endl;
+		std::cout << "Z coord: sector:" << trueSectorZCoord << " | subsector: " << trueSubSectorZCoord << std::endl;
+		std::cout << "Tiles per subsector: " << tilesPerSubSector << std::endl;
+
+		EnclaveKeyDef::Enclave2DKey targetSector(trueSectorXCoord, trueSectorZCoord);
+		EnclaveKeyDef::Enclave2DKey targetSubSectorRootCoord(trueSubSectorXCoord, trueSubSectorZCoord);
+
+		NoiseGridSubSector targetSubSector(targetSubSectorRootCoord + targetSector, tilesPerSubSector, noiseGridTileDim);
+
+		if (doesSectorExist(targetSector))
 		{
-			noiseGridTileDim = in_tileDim;
-			gridSectorDim = in_gSectorSize;
-			tilesPerDim = in_gSectorSize / in_tileDim;
-			thresholdValue = in_thresholdValue;
-			seedValue = in_seedValue;
-		}
+			std::cout << "!! Found target sector, to get subsector for. " << std::endl;
 
-		void findSubSector(double in_coordinateX, double in_coordinateZ, int in_subSectorSize)
-		{
-			auto xKeys = findSubSectorCoord(in_coordinateX, in_subSectorSize);
-			auto zKeys = findSubSectorCoord(in_coordinateZ, in_subSectorSize);
+			auto sectorPtr = getSectorRef(in_coordinateX, in_coordinateZ);
 
-			int trueSectorXCoord = xKeys.a * gridSectorDim;
-			int trueSectorZCoord = zKeys.a * gridSectorDim;
+			int subSectorXStart = trueSectorXCoord + trueSubSectorXCoord;
+			int subSectorZStart = trueSectorZCoord + trueSubSectorZCoord;
 
-			int trueSubSectorXCoord = xKeys.b * in_subSectorSize;
-			int trueSubSectorZCoord = zKeys.b * in_subSectorSize;
+			std::cout << "!! Sub sector root tile coord will be: " << subSectorXStart << ", " << subSectorZStart << std::endl;
 
-			int tilesPerSubSector = in_subSectorSize / noiseGridTileDim;
 
-			std::cout << "~~~~~~~ Sub sector stats for coord: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
-			std::cout << "X coord: sector:" << trueSectorXCoord << " | subsector: " << trueSubSectorXCoord << std::endl;
-			std::cout << "Z coord: sector:" << trueSectorZCoord << " | subsector: " << trueSubSectorZCoord << std::endl;
-			std::cout << "Tiles per subsector: " << tilesPerSubSector << std::endl;
-
-			EnclaveKeyDef::Enclave2DKey targetSector(trueSectorXCoord, trueSectorZCoord);
-			EnclaveKeyDef::Enclave2DKey targetSubSectorRootCoord(trueSubSectorXCoord, trueSubSectorZCoord);
-
-			NoiseGridSubSector targetSubSector(targetSubSectorRootCoord + targetSector, tilesPerSubSector, noiseGridTileDim);
-
-			if (doesSectorExist(targetSector))
+			for (int x = 0; x < tilesPerSubSector; x++)
 			{
-				std::cout << "!! Found target sector, to get subsector for. " << std::endl;
-
-				auto sectorPtr = getSectorRef(in_coordinateX, in_coordinateZ);
-
-				int subSectorXStart = trueSectorXCoord + trueSubSectorXCoord;
-				int subSectorZStart = trueSectorZCoord + trueSubSectorZCoord;
-
-				std::cout << "!! Sub sector root tile coord will be: " << subSectorXStart << ", " << subSectorZStart << std::endl;
-
-
-				for (int x = 0; x < tilesPerSubSector; x++)
+				for (int z = 0; z < tilesPerSubSector; z++)
 				{
-					for (int z = 0; z < tilesPerSubSector; z++)
+					int currentTileToScanX = subSectorXStart + (x * noiseGridTileDim);
+					int currentTileToScanZ = subSectorZStart + (z * noiseGridTileDim);
+					EnclaveKeyDef::Enclave2DKey currentKeyToScan(currentTileToScanX, currentTileToScanZ);
+
+					std::cout << "Scanning for key: ";
+					currentKeyToScan.printKey();
+					std::cout << ": ";
+
+					if (sectorPtr->doesTileExistInGroupings(currentKeyToScan))
 					{
-						int currentTileToScanX = subSectorXStart + (x * noiseGridTileDim);
-						int currentTileToScanZ = subSectorZStart + (z * noiseGridTileDim);
-						EnclaveKeyDef::Enclave2DKey currentKeyToScan(currentTileToScanX, currentTileToScanZ);
-
-						std::cout << "Scanning for key: ";
-						currentKeyToScan.printKey();
-						std::cout << ": ";
-
-						if (sectorPtr->doesTileExistInGroupings(currentKeyToScan))
-						{
-							std::cout << " Found ";
-							auto fetchedTile = sectorPtr->fetchTileGromGroupings(currentKeyToScan);
-							targetSubSector.insertTile(currentKeyToScan, fetchedTile);
-						}
-						else
-						{
-							std::cout << " Not found ";
-						}
-						std::cout << std::endl;
-
+						std::cout << " Found ";
+						auto fetchedTile = sectorPtr->fetchTileGromGroupings(currentKeyToScan);
+						targetSubSector.insertTile(currentKeyToScan, fetchedTile);
 					}
-				}
-
-				targetSubSector.printSubSectorCoutArt();
-
-			}
-			else
-			{
-				std::cout << "!! Couldn't find sector for subsector!" << std::endl;
-			}
-
-		}
-
-		EnclaveKeyDef::Enclave2DKey findSubSectorCoord(double in_coordinate, int in_subSectorSize)
-		{
-			int superSectorCoord = 0;
-			int subSectorCoord = 0;
-
-			float divide = in_coordinate / gridSectorDim;
-
-
-			if (in_coordinate < 0)
-			{
-				// STEP 1: perform logic based on if coord is negative or positive.
-				
-				if ((divide < 0) && in_coordinate >= -gridSectorDim)
-				{
-					// as long as it stays within the first negative sector, it's -1.
-					if (fmod(in_coordinate, gridSectorDim) != 0)
-					{
-						superSectorCoord = -1;
-					}
-
-					// ...otherwise for all cases, do a floor on the value to get the coordinate. (same as casting a float to int)
 					else
 					{
-						superSectorCoord = int(divide);
+						std::cout << " Not found ";
 					}
-					
+					std::cout << std::endl;
+
 				}
-
-				else if ((divide < 0) && in_coordinate < -gridSectorDim)
-				{
-					// if going beyond the first negative sector, check if it's on a precise border in the negative direction.
-					// If it is at the border, it won't increment.
-					// 
-					// For example, -2048 against a gridSectorDim of 1024 results in 0, so the coord would be at -2.
-					if (fmod(in_coordinate, gridSectorDim) == 0)
-					{
-						superSectorCoord = int(divide);
-					}
-					// ...otherwise, get the floor of the value, then subtract 1, to get the correct value.
-					//
-					// So if using -2049, the value would be at -3.
-					else
-					{
-						superSectorCoord = int(divide) - 1;
-					}
-				}
-
-				// STEP 2: get remainder
-				float negModResult = float(fmod(in_coordinate, gridSectorDim));
-				float sectorWidth = gridSectorDim;
-				float truePositionInSector = sectorWidth + negModResult;
-
-				subSectorCoord = int((fmod(truePositionInSector, gridSectorDim) / in_subSectorSize));
-
 			}
 
-			else if (in_coordinate >= 0)
+			targetSubSector.printSubSectorCoutArt();
+
+		}
+		else
+		{
+			std::cout << "!! Couldn't find sector for subsector!" << std::endl;
+		}
+
+	}
+
+	EnclaveKeyDef::Enclave2DKey findSubSectorCoord(double in_coordinate, int in_subSectorSize)
+	{
+		int superSectorCoord = 0;
+		int subSectorCoord = 0;
+
+		float divide = in_coordinate / gridSectorDim;
+
+
+		if (in_coordinate < 0)
+		{
+			// STEP 1: perform logic based on if coord is negative or positive.
+
+			if ((divide < 0) && in_coordinate >= -gridSectorDim)
 			{
-				// STEP 1: 
-				// If we are in the positive direction, beyond the 0 sector...
-				if ((divide > 0) && in_coordinate > gridSectorDim)
+				// as long as it stays within the first negative sector, it's -1.
+				if (fmod(in_coordinate, gridSectorDim) != 0)
+				{
+					superSectorCoord = -1;
+				}
+
+				// ...otherwise for all cases, do a floor on the value to get the coordinate. (same as casting a float to int)
+				else
 				{
 					superSectorCoord = int(divide);
 				}
 
-				// STEP 2: get remainder
-				subSectorCoord = int((fmod(in_coordinate, gridSectorDim) / in_subSectorSize));
-
 			}
 
-			return EnclaveKeyDef::Enclave2DKey(superSectorCoord, subSectorCoord);
+			else if ((divide < 0) && in_coordinate < -gridSectorDim)
+			{
+				// if going beyond the first negative sector, check if it's on a precise border in the negative direction.
+				// If it is at the border, it won't increment.
+				// 
+				// For example, -2048 against a gridSectorDim of 1024 results in 0, so the coord would be at -2.
+				if (fmod(in_coordinate, gridSectorDim) == 0)
+				{
+					superSectorCoord = int(divide);
+				}
+				// ...otherwise, get the floor of the value, then subtract 1, to get the correct value.
+				//
+				// So if using -2049, the value would be at -3.
+				else
+				{
+					superSectorCoord = int(divide) - 1;
+				}
+			}
+
+			// STEP 2: get remainder
+			float negModResult = float(fmod(in_coordinate, gridSectorDim));
+			float sectorWidth = gridSectorDim;
+			float truePositionInSector = sectorWidth + negModResult;
+
+			subSectorCoord = int((fmod(truePositionInSector, gridSectorDim) / in_subSectorSize));
+
 		}
+
+		else if (in_coordinate >= 0)
+		{
+			// STEP 1: 
+			// If we are in the positive direction, beyond the 0 sector...
+			if ((divide > 0) && in_coordinate > gridSectorDim)
+			{
+				superSectorCoord = int(divide);
+			}
+
+			// STEP 2: get remainder
+			subSectorCoord = int((fmod(in_coordinate, gridSectorDim) / in_subSectorSize));
+
+		}
+
+		return EnclaveKeyDef::Enclave2DKey(superSectorCoord, subSectorCoord);
+	}
 
 		int getSeedValue()
 		{
 			return seedValue;
+		}
+
+		float getThresholdValue()
+		{
+			return thresholdValue;
+		}
+
+		int getGridSectorDim()
+		{
+			return gridSectorDim;
 		}
 
 		EnclaveKeyDef::Enclave2DKey findGridTileSectorCoordinate(double in_coordinateX, double in_coordinateZ)
@@ -2269,10 +2140,7 @@ class NoiseGrid
 			return exists;
 		}
 
-		float getThresholdValue()
-		{
-			return thresholdValue;
-		}
+		
 
 	private:
 		short noiseGridTileDim = 0;	// the dim of a tile within a grid sector; must be less than or equal to the value of gridSectorDim, and have a modulus of 0 when used as the divisor when the dividend is gridSectorDim.

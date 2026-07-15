@@ -22,6 +22,14 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 	// be processed accordingly PerlinClusterMeta (i.e, getting its hash value so we can see if it exists yet or not)
 	auto producedPerlinClusterMeta = noiseGridMap[in_gridName].populateSector(in_coordA, in_coordB);
 
+	// Get the sector dim; this will need to be passed to the PerlinCluster, so that it may eventually
+	// determine the sectors of each of the tiles later on, if needed.
+	int currentNoiseGridDim = noiseGridMap[in_gridName].getGridSectorDim();
+
+	// Get the seed value, which is needed to generate sampling fields in the cluster, when the cluster needs
+	// to set itself up for generating output(s).
+	int currentGridSeed = noiseGridMap[in_gridName].getSeedValue();
+
 	// cycle through the vector of PerlinClusterMeta.
 	for (auto& currentClusterMeta : producedPerlinClusterMeta)
 	{
@@ -65,7 +73,7 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		//std::cout << "!! Size of current currentTileClusterMap: " << currentTileClusterMap.size() << std::endl;
 
 
-		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap));
+		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed);
 
 		// TODO: if the GridProcessOrder of the current Grid is not the "first" (i.e, 0),
 		// we will need to go through all previous produced PerlinClusters in preceding grids,
@@ -183,4 +191,13 @@ bool PerlinFactory::doesPerlinClusterExist(std::string in_clusterHash)
 void PerlinFactory::insertPerlinCluster(std::string in_clusterHash, PerlinCluster in_clusterToInsert)
 {
 	perlinClusterHashMap[in_clusterHash] = in_clusterToInsert;
+}
+
+void PerlinFactory::printOutClusterArt()
+{
+	for (auto& currentCluster : perlinClusterHashMap)
+	{
+		std::cout << "++++++++++++ Art for cluster with hash: " << currentCluster.first << std::endl;
+		currentCluster.second.printClusterOutputArt();
+	}
 }

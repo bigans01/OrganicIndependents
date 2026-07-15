@@ -349,6 +349,7 @@
     <ClInclude Include="NGSClusterEntry.h" />
     <ClInclude Include="NGSCScanTargetGrouping.h" />
     <ClInclude Include="NoiseGridTile.h" />
+    <ClInclude Include="NoiseGridTileSamplingField.h" />
     <ClInclude Include="Operable3DEnclaveKeySet.h" />
     <ClInclude Include="OperableIntSet.h" />
     <ClInclude Include="OREAppendedState.h" />
@@ -386,9 +387,11 @@
     <ClInclude Include="PAtomState.h" />
     <ClInclude Include="PerfectClampEnum.h" />
     <ClInclude Include="Perlin.h" />
+    <ClInclude Include="Perlin2DSectorMappings.h" />
     <ClInclude Include="PerlinCluster.h" />
     <ClInclude Include="PerlinClusterMeta.h" />
     <ClInclude Include="PerlinFactory.h" />
+    <ClInclude Include="Perlin2DKeyedState.h" />
     <ClInclude Include="PLTracingResult.h" />
     <ClInclude Include="PMass.h" />
     <ClInclude Include="PMassResult.h" />
@@ -580,6 +583,7 @@
     <ClCompile Include="NGSClusterEntry.cpp" />
     <ClCompile Include="NGSCScanTargetGrouping.cpp" />
     <ClCompile Include="NoiseGridTile.cpp" />
+    <ClCompile Include="NoiseGridTileSamplingField.cpp" />
     <ClCompile Include="OREFracturingMachine.cpp" />
     <ClCompile Include="OrganicFanGroup.cpp" />
     <ClCompile Include="OrganicPolygon.cpp" />
