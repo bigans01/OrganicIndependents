@@ -98,13 +98,14 @@ private:
 		NoiseGridTileCorners negXposZNeighborCorners = negXposZNeighbor.fetchTileCorners();
 		NoiseGridTileCorners negXnegZNeighborCorners = negXnegZNeighbor.fetchTileCorners();
 
+		/*
 		std::cout << "TEST: printing out neighboring corners of tile at root coord of: ";
 		tileRootCoord.printKey();
-
 		posXnegZNeighbor.printTileRootCoordAndCorners();
 		posXposZNeighbor.printTileRootCoordAndCorners();
 		negXposZNeighbor.printTileRootCoordAndCorners();
 		negXnegZNeighbor.printTileRootCoordAndCorners();
+		*/
 
 		// Step 4: genereat the quad values, starting at X = 0, Z = 0.
 		EnclaveKey2DKeyQuad row0(negXnegZNeighborCorners.negXnegZcorner, negXnegZNeighborCorners.posXnegZcorner, posXnegZNeighborCorners.negXnegZcorner, posXnegZNeighborCorners.posXnegZcorner);
@@ -113,12 +114,14 @@ private:
 		EnclaveKey2DKeyQuad row3(negXposZNeighborCorners.negXposZcorner, negXposZNeighborCorners.posXposZcorner, posXposZNeighborCorners.negXposZcorner, posXposZNeighborCorners.posXposZcorner);
 
 		// Debug only: print the EnclaveKeyDef::Enclave2DKey values at each of the 16 points (4 per row)
+		/*
 		std::cout << "~~~~~~ row print, prior ~~~~~~" << std::endl;
 		row0.printValues();
 		row1.printValues();
 		row2.printValues();
 		row3.printValues();
 		std::cout << "~~~~~~ row print, after ~~~~~~" << std::endl;
+		*/
 
 		// Create a PerlinNose object to determine the 16 bicubic interpolation input points
 		PerlinNoise noiseObj;
@@ -133,14 +136,14 @@ private:
 		quadPointSets[2] = quadSet2;
 		quadPointSets[3] = quadSet3;
 
+		/*
 		// Debug only: print the origin values for each quadPointSet.
 		std::cout << "###### Printing origin values (generateFieldV2) #####" << std::endl;
-
 		quadPointSets[3].printOriginValues();
 		quadPointSets[2].printOriginValues();
 		quadPointSets[1].printOriginValues();
 		quadPointSets[0].printOriginValues();
-
+		*/
 	}
 
 	EnclaveKeyDef::Enclave2DKey tileRootCoord;

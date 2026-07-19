@@ -47,15 +47,18 @@ class Enlave2DKeyMapHasher
     private:
         template <typename MapType> void runHashCalculation(const MapType&& mapInstance)
         {
-            std::cout << "Hooray. " << std::endl;
+            // std::cout << "Hooray. " << std::endl;
             
             // Step 1: populate yByXMap.
             for (auto& currentKey : *mapInstance)
             {
                 EnclaveKeyDef::Enclave2DKey currentKeyCopy = currentKey.first;
+
+                /*
                 std::cout << "++ Current key to hash is: ";
                 currentKeyCopy.printKey();
                 std::cout << std::endl;
+                */
 
                 // Remember: each y (b), from least to greatest, get's a set of x (a) values from least to greatest.
                 yByXMap[currentKeyCopy.b].insert(currentKeyCopy.a);
@@ -71,7 +74,7 @@ class Enlave2DKeyMapHasher
                 }
             }
             
-            printHashOrder();
+            //printHashOrder();
         }
 
         void printHashOrder()

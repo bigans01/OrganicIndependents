@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "PerlinFactory.h"
 
-void PerlinFactory::setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, float in_thresholdValue, int in_seedValue)
+void PerlinFactory::setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue)
 {
-	NoiseGrid newGrid(in_tileDim, in_gSectorSize, in_thresholdValue, in_seedValue);
+	NoiseGrid newGrid(in_tileDim, in_gSectorSize, in_gridStartY, in_thresholdValue, in_seedValue);
 	noiseGridMap[in_gridName] = newGrid;
 }
 
-void PerlinFactory::insertGridProcessOrder(std::string in_gridName, int in_order)
+void PerlinFactory::insertGridProcessOrder(int in_order, std::string in_gridName)
 {
-	gridProcessOrderMap[in_gridName] = in_order;
+	gridProcessOrderMap[in_order] = in_gridName;
 }
 
 std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::string in_gridName, int in_coordA, int in_coordB)
@@ -200,4 +200,31 @@ void PerlinFactory::printOutClusterArt()
 		std::cout << "++++++++++++ Art for cluster with hash: " << currentCluster.first << std::endl;
 		currentCluster.second.printClusterOutputArt();
 	}
+}
+
+std::map<int, std::string> PerlinFactory::fetchGridProcessOrderMap()
+{
+	return gridProcessOrderMap;
+}
+
+int PerlinFactory::fetchNoiseGridSectorDim(std::string in_noiseGridName)
+{
+	int fetchedDimLength = -1;
+	auto gridFindAttempt = noiseGridMap.find(in_noiseGridName);
+	if (gridFindAttempt != noiseGridMap.end())
+	{
+		fetchedDimLength = noiseGridMap[in_noiseGridName].getGridSectorDim();
+	}
+	return fetchedDimLength;
+}
+
+double PerlinFactory::fetchNoiseGridStartY(std::string in_noiseGridName)
+{
+	double returnDouble = 0.0f;
+	auto gridFindAttempt = noiseGridMap.find(in_noiseGridName);
+	if (gridFindAttempt != noiseGridMap.end())
+	{
+		returnDouble = noiseGridMap[in_noiseGridName].fetchGridStartY();
+	}
+	return returnDouble;
 }

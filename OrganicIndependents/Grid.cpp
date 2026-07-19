@@ -6,7 +6,7 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 	// Check if the sector exists.
 	if (!gridPtr->doesSectorExist(in_startSectorKey))
 	{
-		std::cout << "! Sector does not exist, will generate members of sector before continuing..." << std::endl;
+		//std::cout << "! Sector does not exist, will generate members of sector before continuing..." << std::endl;
 
 		gridPtr->generateSector(in_startSectorKey.a, in_startSectorKey.b);
 		gridPtr->generateSectorTiles(in_startSectorKey.a, in_startSectorKey.b);
@@ -24,24 +24,26 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 		gridPtr->runClippingOnExistingSector(in_startSectorKey.a, in_startSectorKey.b, gridPtr->getThresholdValue());
 		gridPtr->generateSectorTilesets(in_startSectorKey.a, in_startSectorKey.b);
 
+		/*
 		std::cout << "::::::::::::::::::: NEW TEST START :::::::::::::::::::::::::::::: " << std::endl;
-
 		std::cout << "Testing on sector with key: ";
 		in_startSectorKey.printKey();
 		std::cout << std::endl;
-
+		*/
 		
 		auto fetchedTileMapPtr = gridPtr->getSectorTileMapPtr(in_startSectorKey.a, in_startSectorKey.b);
 
 		NoiseGridSectorGroupBuilderV2 newBuilder(fetchedTileMapPtr);
 		newBuilder.start();
 
+		/*
 		std::cout << "::::::::::::::::::: NEW TEST END :::::::::::::::::::::::::::::: " << std::endl;
 		int testPass = 3;
 		std::cin >> testPass;
+		*/
 
 		gridPtr->generateSectorGroupings(in_startSectorKey.a, in_startSectorKey.b);
-		gridPtr->printSectorCoutArt(in_startSectorKey.a, in_startSectorKey.b);
+		//gridPtr->printSectorCoutArt(in_startSectorKey.a, in_startSectorKey.b);
 		gridPtr->printNeighborMetadataForTilesInSector(in_startSectorKey.a, in_startSectorKey.b);
 
 
@@ -51,10 +53,12 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 		auto targetSectorPtr = gridPtr->getSectorRef(in_startSectorKey.a, in_startSectorKey.b);
 		if (targetSectorPtr->doesSectorHaveGroupings())
 		{
+			/*
 			std::cout << "--------------------------------------------" << std::endl;
 			std::cout << "Found data in sector, printing grouping data. " << std::endl;
 			std::cout << "--------------------------------------------" << std::endl;
 			targetSectorPtr->printNeighboringLinksPerGrouping();
+			*/
 
 			// TODO: while fetching first grouping is fine initially, we will need to cycle
 			// through each grouping
@@ -123,12 +127,14 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 			// 
 			// 
 			// Optional: print out grouping stats from the debug struct above.
+
+			/*
 			std::cout << "++++++++++++++++++ Printing out grpingStatsVector +++++++++++++++++++++++" << std::endl;
 			for (auto& currentStats : grpingStatsVector)
 			{
 				currentStats.printGroupingStats();
 			}
-
+			*/
 		}
 		
 		
@@ -145,9 +151,8 @@ std::vector<PerlinClusterMeta> NoiseGridScanner::fetchClusterMetaVector()
 
 void NoiseGridScanAttempt::runScan()
 {
-	std::cout << "!! Running scan..." << std::endl;
-
-	currentScanSectorPtr->printGroupingTileCounts();
+	//std::cout << "!! Running scan..." << std::endl;
+	//currentScanSectorPtr->printGroupingTileCounts();
 
 
 
@@ -157,7 +162,7 @@ void NoiseGridScanAttempt::runScan()
 	// TEST: print out the neighboring tiles to check for in the current grouping.
 	currentScanSectorFetchedGrouping.groupingPtr->scanForTilesWithRemainingLocalNeighbors();
 
-	currentScanSectorFetchedGrouping.groupingPtr->printNeighboringLinks();
+	//currentScanSectorFetchedGrouping.groupingPtr->printNeighboringLinks();
 
 
 
@@ -195,11 +200,14 @@ void NoiseGridScanAttempt::runScan()
 			// Check if the desired key exists in the grid.
 			if (!scanAttemptGridPtr->doesSectorExist(firstHitKey))
 			{
+				/*
 				std::cout << "NoiseGridScanAttempt: Neighboring sector ";
 				firstHitKey.printKey();
 				std::cout << " does not exist; will create sector." << std::endl;
+				*/
 
-				scanAttemptGridPtr->generateSectorContents(firstHitKey, true);
+				//scanAttemptGridPtr->generateSectorContents(firstHitKey, true);
+				scanAttemptGridPtr->generateSectorContents(firstHitKey, false);
 			}
 
 
@@ -210,16 +218,18 @@ void NoiseGridScanAttempt::runScan()
 			// If the result was found, put it into the scanning map.
 			if (searchResult.wasLinkFound)
 			{
+				/*
 				std::cout << "!! Link found in grouping " << searchResult.foundLinkGroupingID << " in sector ";
 				searchResult.foundLinkSector.printKey();
 				std::cout << std::endl;
+				*/
 
 				// Attempt to insert the NGSCClusterEntry as referenced.
 				attemptCluster.attemptToInsertSectorAsReferenced(searchResult.foundLinkSector,
 					searchResult.foundLinkGroupingID,
 					currentNeighboringScanSectorPtr->getNumberOfTilesInGrouping(searchResult.foundLinkGroupingID));
 
-				attemptCluster.printClusterData();
+				//attemptCluster.printClusterData();
 			}
 
 
@@ -229,7 +239,7 @@ void NoiseGridScanAttempt::runScan()
 		loopRunState = attemptCluster.fetchRunState();
 		if (loopRunState == NGSClusterRunState::SHOULD_CONTINUE)
 		{
-			std::cout << "!! Run state set as NGSClusterRunState::SHOULD_CONTINUE...will iterate again. " << std::endl;
+			//std::cout << "!! Run state set as NGSClusterRunState::SHOULD_CONTINUE...will iterate again. " << std::endl;
 
 			// Below: the function call updates the following values:
 			// -currentScanSectorPtr
@@ -284,6 +294,6 @@ void NoiseGridScanAttempt::setupNextScanIteration()
 	currentScanSectorFetchedGrouping.groupingId = nextGrouping.targetGroupingId;
 	currentScanSectorFetchedGrouping.groupingPtr = scanAttemptGridPtr->getSectorRef(nextGrouping.targetGroupingSectorKey.a, nextGrouping.targetGroupingSectorKey.b)->fetchSpecificGroupingById(nextGrouping.targetGroupingId);
 
-	std::cout << "!! Cout art of the next iteration's sector: " << std::endl;
-	scanAttemptGridPtr->printSectorCoutArt(nextGrouping.targetGroupingSectorKey.a, nextGrouping.targetGroupingSectorKey.b);
+	//std::cout << "!! Cout art of the next iteration's sector: " << std::endl;
+	//scanAttemptGridPtr->printSectorCoutArt(nextGrouping.targetGroupingSectorKey.a, nextGrouping.targetGroupingSectorKey.b);
 }

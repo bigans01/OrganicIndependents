@@ -223,9 +223,11 @@ class PerlinNoise
 
 			returnValue = getVectorSimiliarity(unitVec1, unitVec2);
 
+			/*
 			std::cout << "(DEBUG): EnclaveKey2D value: ";
 			in_twoDKey.printKey();
 			std::cout << "| twoDKeyHash: " << twoDKeyHash << " | currentKeyValue: " << currentKeyValue << " | float range vec1: " << selectedFloatRangeVec1 << " | float range vec2: " << selectedFloatRangeVec2 << " | returnValue: " << returnValue << std::endl;
+			*/
 
 			return returnValue;
 		}

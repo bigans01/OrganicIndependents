@@ -59,12 +59,14 @@ void PerlinCluster::generateTileToSectorMappingsAndSamplingFields()
 		EnclaveKeyDef::Enclave2DKey mappedSectorCoordForTileCoord = EnclaveKeyDef::Enclave2DKey(tileToSectorX, tileToSectorZ);
 		tileToSectorMapping[currentTile.first] = mappedSectorCoordForTileCoord;
 
+		/*
 		std::cout << "Tile coordinate: ";
 		EnclaveKeyDef::Enclave2DKey tileCoordCopy = currentTile.first;
 		tileCoordCopy.printKey();
 		std::cout << "Sector coordinate: ";
 		mappedSectorCoordForTileCoord.printKey();
 		std::cout << std::endl;
+		*/
 	}
 
 	// Test only, can move below some place else

@@ -44,9 +44,10 @@ class PerlinClusterHashMeta
 {
 	public:
 		PerlinClusterHashMeta() {};
-		PerlinClusterHashMeta(std::string in_clusterHash, PerlinClusterSectorStateEnum in_clusterStatusInSector):
+		PerlinClusterHashMeta(std::string in_clusterHash, PerlinClusterSectorStateEnum in_clusterStatusInSector, std::string in_parentGridName):
 			clusterHash(in_clusterHash),
-			clusterStatusInSector(in_clusterStatusInSector)
+			clusterStatusInSector(in_clusterStatusInSector),
+			parentGridName(in_parentGridName)
 		{}
 
 		template<class Archive>
@@ -54,6 +55,7 @@ class PerlinClusterHashMeta
 		{
 			ar & clusterHash;
 			ar & clusterStatusInSector;
+			ar & parentGridName;
 		}
 
 		void printHashMetaData()
@@ -63,26 +65,28 @@ class PerlinClusterHashMeta
 			{
 				case PerlinClusterSectorStateEnum::NOVAL:
 				{
-					std::cout << "PerlinClusterSectorStateEnum::NOVAL" << std::endl;
+					std::cout << "PerlinClusterSectorStateEnum::NOVAL";
 					break;
 				}
 
 				case PerlinClusterSectorStateEnum::PROCESSED:
 				{
-					std::cout << "PerlinClusterSectorStateEnum::PROCESSED" << std::endl;
+					std::cout << "PerlinClusterSectorStateEnum::PROCESSED";
 					break;
 				}
 
 				case PerlinClusterSectorStateEnum::REFERENCED:
 				{
-					std::cout << "PerlinClusterSectorStateEnum::REFERENCED" << std::endl;
+					std::cout << "PerlinClusterSectorStateEnum::REFERENCED";
 					break;
 				}
 			}
+			std::cout << " | parentGridName: " << parentGridName << std::endl;
 		}
 
 		std::string clusterHash = "";
 		PerlinClusterSectorStateEnum clusterStatusInSector = PerlinClusterSectorStateEnum::NOVAL;
+		std::string parentGridName = "";
 
 };
 
@@ -103,10 +107,12 @@ class PerlinClusterSectorState
 		EnclaveKeyDef::Enclave2DKey currentKey;
 		PerlinClusterSectorStateEnum currentClusterSectorState = PerlinClusterSectorStateEnum::NOVAL;
 
-		PerlinClusterHashMeta generateClusterHashMeta()
+		PerlinClusterHashMeta generateClusterHashMeta(std::string in_parentGridName)
 		{
-			return PerlinClusterHashMeta(currentHash, currentClusterSectorState);
+			return PerlinClusterHashMeta(currentHash, currentClusterSectorState, in_parentGridName);
 		}
+
+
 };
 
 /*
@@ -125,6 +131,7 @@ class Perlin2DSectorMappingContainer
 			containerOriginKey(in_containerOriginKey)
 		{}
 
+		// Below: used by PerlinCluster::generateMappingContainer() to create new PerlinClusterSectorState objects.
 		void insertKeyedStates(std::vector<Perlin2DKeyedState> in_keyedStateVector)
 		{
 			for (auto& currentKeyedItem : in_keyedStateVector)
@@ -177,6 +184,13 @@ class Perlin2DSectorMappingContainer
 			}
 		}
 		
+		// Below: these two functions are used by OSectorManager::checkProcessingColumn
+		std::vector<PerlinClusterSectorState> fetchContainerSectorStates()
+		{
+			return stateMappings;
+		}
+
+		EnclaveKeyDef::Enclave2DKey fetchContainerOriginKey() { return containerOriginKey; }
 		
 
 	private:

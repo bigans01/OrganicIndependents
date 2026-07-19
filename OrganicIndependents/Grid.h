@@ -194,18 +194,21 @@ class NoiseGridSectorGrouping
 
 		void scanForTilesWithRemainingLocalNeighbors()
 		{
-			std::cout << "Scanning tiles of this grouping (total size of tiles is " << tiles.size() << std::endl;
+			//std::cout << "Scanning tiles of this grouping (total size of tiles is " << tiles.size() << std::endl;
 
 			for (auto& currentTile : tiles)
 			{
 				auto currentTileNeighbors = currentTile.second.getLocalNeighborSetCopy();
+
+				/*
 				if (currentTileNeighbors.size() > 0)
 				{
 					EnclaveKeyDef::Enclave2DKey keyCopy = currentTile.first;
 					std::cout << "! Tile at "; 
 					keyCopy.printKey(); 
-					std::cout << " has " << currentTileNeighbors.size() << "neighbors. " << std::endl;
+					std::cout << " has " << currentTileNeighbors.size() << " neighbors. " << std::endl;
 				}
+				*/
 			}
 		}
 
@@ -375,7 +378,7 @@ class NoiseGridSectorGroupBuilderV2
 					refedTileMapBegin++;
 				}
 			}
-			std::cout << "Final size of tile cluster is: " << tileClusterMap.size() << std::endl;
+			//std::cout << "Final size of tile cluster is: " << tileClusterMap.size() << std::endl;
 		}
 
 		std::unordered_set<EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::KeyHasher> fetchClusterTileKeys()
@@ -649,7 +652,7 @@ class NoiseGridSector
 
 		void generateSamples(int in_seedValue)
 		{
-			std::cout << "Generating samples for coordinate: "; sectorCoordinate.printKey(); std::cout << std::endl;
+			//std::cout << "Generating samples for coordinate: "; sectorCoordinate.printKey(); std::cout << std::endl;
 
 			NoiseGridTileSamplingField sectorSamplingField(sectorCoordinate, sectorDim, in_seedValue);
 
@@ -946,7 +949,7 @@ class NoiseGridSector
 					// A valid linking key was found; populate a valid NoiseGridLinkSearchResult and return it.
 					if (currentGrouping.second.doesKeyExist(currentLinkkey))
 					{
-						std::cout << "!! Key found in grouping " << currentGrouping.first << std::endl;
+						//std::cout << "!! Key found in grouping " << currentGrouping.first << std::endl;
 
 						NoiseGridLinkSearchResult foundLink(sectorCoordinate, currentGrouping.first);
 						scanResult = foundLink;
@@ -1506,7 +1509,7 @@ class NoiseGridScanCluster
 				}
 			}
 
-			std::cout << "++ Final run state: " << stateString << std::endl;
+			//std::cout << "++ Final run state: " << stateString << std::endl;
 
 			// Calculate the total number of tiles overall from sectorClusterMap
 			int totalTilesOverall = 0;
@@ -1515,8 +1518,8 @@ class NoiseGridScanCluster
 				totalTilesOverall += currentClusterEntry.second.getTotalTiles();
 			}
 
-			std::cout << "++ Total tiles in cluster: " << totalTilesOverall << std::endl;
-			std::cout << "++ Tile limit: " << sizeLimit << std::endl;
+			//std::cout << "++ Total tiles in cluster: " << totalTilesOverall << std::endl;
+			//std::cout << "++ Tile limit: " << sizeLimit << std::endl;
 
 		}
 
@@ -1715,166 +1718,170 @@ class NoiseGridSubSector
 // 7: Generate the groupings.
 class NoiseGrid
 {
-public:
-	friend class NoiseGridScanner;
+	public:
+		friend class NoiseGridScanner;
 
-	NoiseGrid() {};
-	NoiseGrid(short in_tileDim,
-		short in_gSectorSize,
-		float in_thresholdValue,
-		int in_seedValue)
-	{
-		noiseGridTileDim = in_tileDim;
-		gridSectorDim = in_gSectorSize;
-		tilesPerDim = in_gSectorSize / in_tileDim;
-		thresholdValue = in_thresholdValue;
-		seedValue = in_seedValue;
-	}
-
-	void findSubSector(double in_coordinateX, double in_coordinateZ, int in_subSectorSize)
-	{
-		auto xKeys = findSubSectorCoord(in_coordinateX, in_subSectorSize);
-		auto zKeys = findSubSectorCoord(in_coordinateZ, in_subSectorSize);
-
-		int trueSectorXCoord = xKeys.a * gridSectorDim;
-		int trueSectorZCoord = zKeys.a * gridSectorDim;
-
-		int trueSubSectorXCoord = xKeys.b * in_subSectorSize;
-		int trueSubSectorZCoord = zKeys.b * in_subSectorSize;
-
-		int tilesPerSubSector = in_subSectorSize / noiseGridTileDim;
-
-		std::cout << "~~~~~~~ Sub sector stats for coord: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
-		std::cout << "X coord: sector:" << trueSectorXCoord << " | subsector: " << trueSubSectorXCoord << std::endl;
-		std::cout << "Z coord: sector:" << trueSectorZCoord << " | subsector: " << trueSubSectorZCoord << std::endl;
-		std::cout << "Tiles per subsector: " << tilesPerSubSector << std::endl;
-
-		EnclaveKeyDef::Enclave2DKey targetSector(trueSectorXCoord, trueSectorZCoord);
-		EnclaveKeyDef::Enclave2DKey targetSubSectorRootCoord(trueSubSectorXCoord, trueSubSectorZCoord);
-
-		NoiseGridSubSector targetSubSector(targetSubSectorRootCoord + targetSector, tilesPerSubSector, noiseGridTileDim);
-
-		if (doesSectorExist(targetSector))
+		NoiseGrid() {};
+		NoiseGrid(short in_tileDim,
+			short in_gSectorSize,
+			double in_gridStartY,
+			float in_thresholdValue,
+			int in_seedValue)
 		{
-			std::cout << "!! Found target sector, to get subsector for. " << std::endl;
+			noiseGridTileDim = in_tileDim;
+			gridSectorDim = in_gSectorSize;
+			gridStartY = in_gridStartY;
+			tilesPerDim = in_gSectorSize / in_tileDim;
+			thresholdValue = in_thresholdValue;
+			seedValue = in_seedValue;
+		}
 
-			auto sectorPtr = getSectorRef(in_coordinateX, in_coordinateZ);
+		double fetchGridStartY() { return gridStartY; }
 
-			int subSectorXStart = trueSectorXCoord + trueSubSectorXCoord;
-			int subSectorZStart = trueSectorZCoord + trueSubSectorZCoord;
+		void findSubSector(double in_coordinateX, double in_coordinateZ, int in_subSectorSize)
+		{
+			auto xKeys = findSubSectorCoord(in_coordinateX, in_subSectorSize);
+			auto zKeys = findSubSectorCoord(in_coordinateZ, in_subSectorSize);
 
-			std::cout << "!! Sub sector root tile coord will be: " << subSectorXStart << ", " << subSectorZStart << std::endl;
+			int trueSectorXCoord = xKeys.a * gridSectorDim;
+			int trueSectorZCoord = zKeys.a * gridSectorDim;
 
+			int trueSubSectorXCoord = xKeys.b * in_subSectorSize;
+			int trueSubSectorZCoord = zKeys.b * in_subSectorSize;
 
-			for (int x = 0; x < tilesPerSubSector; x++)
+			int tilesPerSubSector = in_subSectorSize / noiseGridTileDim;
+
+			std::cout << "~~~~~~~ Sub sector stats for coord: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
+			std::cout << "X coord: sector:" << trueSectorXCoord << " | subsector: " << trueSubSectorXCoord << std::endl;
+			std::cout << "Z coord: sector:" << trueSectorZCoord << " | subsector: " << trueSubSectorZCoord << std::endl;
+			std::cout << "Tiles per subsector: " << tilesPerSubSector << std::endl;
+
+			EnclaveKeyDef::Enclave2DKey targetSector(trueSectorXCoord, trueSectorZCoord);
+			EnclaveKeyDef::Enclave2DKey targetSubSectorRootCoord(trueSubSectorXCoord, trueSubSectorZCoord);
+
+			NoiseGridSubSector targetSubSector(targetSubSectorRootCoord + targetSector, tilesPerSubSector, noiseGridTileDim);
+
+			if (doesSectorExist(targetSector))
 			{
-				for (int z = 0; z < tilesPerSubSector; z++)
+				std::cout << "!! Found target sector, to get subsector for. " << std::endl;
+
+				auto sectorPtr = getSectorRef(in_coordinateX, in_coordinateZ);
+
+				int subSectorXStart = trueSectorXCoord + trueSubSectorXCoord;
+				int subSectorZStart = trueSectorZCoord + trueSubSectorZCoord;
+
+				std::cout << "!! Sub sector root tile coord will be: " << subSectorXStart << ", " << subSectorZStart << std::endl;
+
+
+				for (int x = 0; x < tilesPerSubSector; x++)
 				{
-					int currentTileToScanX = subSectorXStart + (x * noiseGridTileDim);
-					int currentTileToScanZ = subSectorZStart + (z * noiseGridTileDim);
-					EnclaveKeyDef::Enclave2DKey currentKeyToScan(currentTileToScanX, currentTileToScanZ);
-
-					std::cout << "Scanning for key: ";
-					currentKeyToScan.printKey();
-					std::cout << ": ";
-
-					if (sectorPtr->doesTileExistInGroupings(currentKeyToScan))
+					for (int z = 0; z < tilesPerSubSector; z++)
 					{
-						std::cout << " Found ";
-						auto fetchedTile = sectorPtr->fetchTileGromGroupings(currentKeyToScan);
-						targetSubSector.insertTile(currentKeyToScan, fetchedTile);
+						int currentTileToScanX = subSectorXStart + (x * noiseGridTileDim);
+						int currentTileToScanZ = subSectorZStart + (z * noiseGridTileDim);
+						EnclaveKeyDef::Enclave2DKey currentKeyToScan(currentTileToScanX, currentTileToScanZ);
+
+						std::cout << "Scanning for key: ";
+						currentKeyToScan.printKey();
+						std::cout << ": ";
+
+						if (sectorPtr->doesTileExistInGroupings(currentKeyToScan))
+						{
+							std::cout << " Found ";
+							auto fetchedTile = sectorPtr->fetchTileGromGroupings(currentKeyToScan);
+							targetSubSector.insertTile(currentKeyToScan, fetchedTile);
+						}
+						else
+						{
+							std::cout << " Not found ";
+						}
+						std::cout << std::endl;
+
 					}
+				}
+
+				targetSubSector.printSubSectorCoutArt();
+
+			}
+			else
+			{
+				std::cout << "!! Couldn't find sector for subsector!" << std::endl;
+			}
+
+		}
+
+		EnclaveKeyDef::Enclave2DKey findSubSectorCoord(double in_coordinate, int in_subSectorSize)
+		{
+			int superSectorCoord = 0;
+			int subSectorCoord = 0;
+
+			float divide = in_coordinate / gridSectorDim;
+
+
+			if (in_coordinate < 0)
+			{
+				// STEP 1: perform logic based on if coord is negative or positive.
+
+				if ((divide < 0) && in_coordinate >= -gridSectorDim)
+				{
+					// as long as it stays within the first negative sector, it's -1.
+					if (fmod(in_coordinate, gridSectorDim) != 0)
+					{
+						superSectorCoord = -1;
+					}
+
+					// ...otherwise for all cases, do a floor on the value to get the coordinate. (same as casting a float to int)
 					else
 					{
-						std::cout << " Not found ";
+						superSectorCoord = int(divide);
 					}
-					std::cout << std::endl;
 
 				}
+
+				else if ((divide < 0) && in_coordinate < -gridSectorDim)
+				{
+					// if going beyond the first negative sector, check if it's on a precise border in the negative direction.
+					// If it is at the border, it won't increment.
+					// 
+					// For example, -2048 against a gridSectorDim of 1024 results in 0, so the coord would be at -2.
+					if (fmod(in_coordinate, gridSectorDim) == 0)
+					{
+						superSectorCoord = int(divide);
+					}
+					// ...otherwise, get the floor of the value, then subtract 1, to get the correct value.
+					//
+					// So if using -2049, the value would be at -3.
+					else
+					{
+						superSectorCoord = int(divide) - 1;
+					}
+				}
+
+				// STEP 2: get remainder
+				float negModResult = float(fmod(in_coordinate, gridSectorDim));
+				float sectorWidth = gridSectorDim;
+				float truePositionInSector = sectorWidth + negModResult;
+
+				subSectorCoord = int((fmod(truePositionInSector, gridSectorDim) / in_subSectorSize));
+
 			}
 
-			targetSubSector.printSubSectorCoutArt();
-
-		}
-		else
-		{
-			std::cout << "!! Couldn't find sector for subsector!" << std::endl;
-		}
-
-	}
-
-	EnclaveKeyDef::Enclave2DKey findSubSectorCoord(double in_coordinate, int in_subSectorSize)
-	{
-		int superSectorCoord = 0;
-		int subSectorCoord = 0;
-
-		float divide = in_coordinate / gridSectorDim;
-
-
-		if (in_coordinate < 0)
-		{
-			// STEP 1: perform logic based on if coord is negative or positive.
-
-			if ((divide < 0) && in_coordinate >= -gridSectorDim)
+			else if (in_coordinate >= 0)
 			{
-				// as long as it stays within the first negative sector, it's -1.
-				if (fmod(in_coordinate, gridSectorDim) != 0)
-				{
-					superSectorCoord = -1;
-				}
-
-				// ...otherwise for all cases, do a floor on the value to get the coordinate. (same as casting a float to int)
-				else
+				// STEP 1: 
+				// If we are in the positive direction, beyond the 0 sector...
+				if ((divide > 0) && in_coordinate > gridSectorDim)
 				{
 					superSectorCoord = int(divide);
 				}
 
+				// STEP 2: get remainder
+				subSectorCoord = int((fmod(in_coordinate, gridSectorDim) / in_subSectorSize));
+
 			}
 
-			else if ((divide < 0) && in_coordinate < -gridSectorDim)
-			{
-				// if going beyond the first negative sector, check if it's on a precise border in the negative direction.
-				// If it is at the border, it won't increment.
-				// 
-				// For example, -2048 against a gridSectorDim of 1024 results in 0, so the coord would be at -2.
-				if (fmod(in_coordinate, gridSectorDim) == 0)
-				{
-					superSectorCoord = int(divide);
-				}
-				// ...otherwise, get the floor of the value, then subtract 1, to get the correct value.
-				//
-				// So if using -2049, the value would be at -3.
-				else
-				{
-					superSectorCoord = int(divide) - 1;
-				}
-			}
-
-			// STEP 2: get remainder
-			float negModResult = float(fmod(in_coordinate, gridSectorDim));
-			float sectorWidth = gridSectorDim;
-			float truePositionInSector = sectorWidth + negModResult;
-
-			subSectorCoord = int((fmod(truePositionInSector, gridSectorDim) / in_subSectorSize));
-
+			return EnclaveKeyDef::Enclave2DKey(superSectorCoord, subSectorCoord);
 		}
-
-		else if (in_coordinate >= 0)
-		{
-			// STEP 1: 
-			// If we are in the positive direction, beyond the 0 sector...
-			if ((divide > 0) && in_coordinate > gridSectorDim)
-			{
-				superSectorCoord = int(divide);
-			}
-
-			// STEP 2: get remainder
-			subSectorCoord = int((fmod(in_coordinate, gridSectorDim) / in_subSectorSize));
-
-		}
-
-		return EnclaveKeyDef::Enclave2DKey(superSectorCoord, subSectorCoord);
-	}
 
 		int getSeedValue()
 		{
@@ -1920,8 +1927,8 @@ public:
 		{
 			EnclaveKeyDef::Enclave2DKey sectorCoord = findGridTileSectorCoordinate(in_coordinateX, in_coordinateZ);
 
-			std::cout << "!!! generateSector: original values to generate from: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
-			std::cout << "!!! generateSector: new sector coord is: "; sectorCoord.printKey(); std::cout << std::endl;
+			//std::cout << "!!! generateSector: original values to generate from: " << in_coordinateX << ", " << in_coordinateZ << std::endl;
+			//std::cout << "!!! generateSector: new sector coord is: "; sectorCoord.printKey(); std::cout << std::endl;
 
 			if (!doesSectorExist(sectorCoord))
 			{
@@ -1992,12 +1999,12 @@ public:
 		{
 			std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher>* fetchedPtr = nullptr;
 			EnclaveKeyDef::Enclave2DKey sectorCoord = findGridTileSectorCoordinate(in_coordinateX, in_coordinateZ);
-			std::cout << "!!! Checking sector existence..." << std::endl;
+			//std::cout << "!!! Checking sector existence..." << std::endl;
 			if (doesSectorExist(sectorCoord))
 			{
-				std::cout << "!!! Sector found..." << std::endl;
+				//std::cout << "!!! Sector found..." << std::endl;
 				fetchedPtr = sectorMap[sectorCoord].getTileMapRef();
-				std::cout << "!!! Size of refed tileMap: " << fetchedPtr->size() << std::endl;
+				//std::cout << "!!! Size of refed tileMap: " << fetchedPtr->size() << std::endl;
 			}
 			return fetchedPtr;
 		}
@@ -2053,62 +2060,7 @@ public:
 			// fetch the produced vector of PerlinClusterMeta objects; 1 PerlinClusterMeta per instance of PerlinCluster will be needed.
 			auto generatedMeta = newScanner.fetchClusterMetaVector();
 
-			std::cout << "+++++++++++++++++++++++++++ Size of generatedMeta: " << generatedMeta.size() << std::endl;
-
-			// Now, produce the un-populated PerlinClusters.
-
-			// Note for below: if this is a completely fresh sector being generated, the very first currentMeta value below
-			// should create a new sector file if it doesn't exist already; subsequent loops through will not need to create a new file, but will 
-			// instead update the new file.
-			for (auto& currentMeta : generatedMeta)
-			{
-				
-				if (currentMeta.searchForOriginKey().wasOriginFound())
-				{
-					std::cout << "!! Found origin key!" << std::endl;
-				}
-				
-
-				currentMeta.findAndPrintScanOriginKey();
-
-				std::cout << "!! Printing cluster contents..." << std::endl;
-				
-				//PerlinCluster newCluster(this, currentMeta);
-				//newCluster.printPerlinClusterMeta();
-				//newCluster.produceHash();
-				// 
-				// Step 1: calculate the PerlinCluster's unique hash value. We can then use this to see if it exists in memory,
-				// or write/update a sector file with the appropriate data.
-				//
-				// Step 2: Run the following two checks, after the cluster hash has been calculated:
-				//
-				// A.) Find the origin key of the currentMeta, and look for the sector file corresponding to that key. Check if the file exists, 
-				//     AND if it exists, does it contain the PerlinCluster's unique hash?
-				//
-				// B.) Does a materialized PerlinCluster with the corresponding perlin cluster hash already exist in memory?
-				//
-				//
-				// Now, check the results:
-				//
-				// If "A" and "B" are false:         materialize the PerlinCluster, put it into memory, and update all of the corresponding sector files, 
-				//									 creating files that dont exist already. The origin sector file should receive a value of NGSCGroupingStatus::GROUPING_USED 
-				//									 for the corresponding cluster hash in that file; the same hash value in the other files should receive NGSCGroupingStatus::GROUPING_REFERENCED.
-				//									
-				// 
-				// If "A" is true, and "B" is false: materialize the PerlinCluster, putting it into memory only (if it isn't already in memory).
-				//                                   If the corresponding PerlinCluster hash value from the sector file shows up with a state of NGSCGroupingStatus::GROUPING_REFERENCED,
-				//                                   update that sector file to be NGSCGroupingStatus::GROUPING_USED. If the value from the sector file shows up as
-				//                                   NGSCGroupingStatus::GROUPING_USED, do nothing to the file itself (we'd just be loading an 
-				//                                   already-generated sector)
-				// 
-				// If "A" is false, and "B" is true: the PerlinCluster exists in memory already, but the corresponding origin key sector file
-				//                                   either doesnt exist, or doesn't have the corresponding hash in the file. In this case,
-				//									 create the file if it doesnt exist, putting the hash in, or if the file exists, update it
-				//									 with the current hash. Do not materialize into memory.
-				// 
-				// If "A" AND "B" are true:          the file exists already, it has the corresponding cluster hash in it, and the cluster is already in memory.
-				//                                   Check the value of the NGSCGroupingStatus in the file; update it to NGSCGroupingStatus::GROUPING_USED.
-			}
+			
 
 			returnMeta = generatedMeta;
 			return returnMeta;
@@ -2122,6 +2074,7 @@ public:
 			runClippingOnExistingSector(in_sectorToGenerateKey.a, in_sectorToGenerateKey.b, thresholdValue);
 			generateSectorTilesets(in_sectorToGenerateKey.a, in_sectorToGenerateKey.b);
 			generateSectorGroupings(in_sectorToGenerateKey.a, in_sectorToGenerateKey.b);
+
 
 			if (in_printOutArt)
 			{
@@ -2145,6 +2098,8 @@ public:
 	private:
 		short noiseGridTileDim = 0;	// the dim of a tile within a grid sector; must be less than or equal to the value of gridSectorDim, and have a modulus of 0 when used as the divisor when the dividend is gridSectorDim.
 		short gridSectorDim = 0;	// the overall dim / length of an individual sector; all sectors in an instance of this class will have this same value.
+		double gridStartY = 0.0;	// this represents the Y-elevation of the NoiseGrid, so that we can get the appropriate Y-value of the starting OSectors to check against when seeing if a PerlinCluster exists
+									// in a certain file.
 		int tilesPerDim = 0;
 		float thresholdValue = 0.0f;
 		int seedValue = 0;

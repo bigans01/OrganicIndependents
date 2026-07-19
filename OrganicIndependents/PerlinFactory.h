@@ -52,13 +52,22 @@ class PerlinFactory
 	public:
 		PerlinFactory() {};
 
-		void setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, float in_thresholdValue, int in_seedValue);
+		void setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue);
 
-		std::vector<PerlinClusterGenResult> populateSectorInGrid(std::string in_gridName, int in_coordA, int in_coordB);
+		std::vector<PerlinClusterGenResult> populateSectorInGrid(std::string in_gridName, int in_coordA, int in_coordB);	// pass in an int value representing x and z, to attempt
+																															// to populate the grid at that point; the underlying call to the populateSector
+																															// function will determine the sector to work on.
 
-		void insertGridProcessOrder(std::string in_gridName, int in_order);
+		void insertGridProcessOrder(int in_order, std::string in_gridName);
 
-		void printOutClusterArt();	// print out all tiles that are involved in the cluster, in one giant art output.
+		void printOutClusterArt();	// print out all tiles that are involved in each cluster, in one giant art output per cluster..
+
+		std::map<int, std::string> fetchGridProcessOrderMap();
+
+		int fetchNoiseGridSectorDim(std::string in_noiseGridName);	// fetch the noise grid sector dim from an existing NoiseGrid; should
+																	// return 0 if no sector was found.
+
+		double fetchNoiseGridStartY(std::string in_noiseGridName); // fetch start Y for an existing named NoiseGrid.
 
 	private:
 		// below: a stringed map of noise grids.
@@ -66,7 +75,7 @@ class PerlinFactory
 
 		// below: gridProcessOrderMap, to determine the order of grids to process. Grids at 0 would be first, then 1, then 2, etc;
 		// modify or insert all grids wishing to be used 
-		std::unordered_map<std::string, int> gridProcessOrderMap;
+		std::map<int, std::string> gridProcessOrderMap;
 
 		std::unordered_map<std::string, PerlinCluster> perlinClusterHashMap;
 
