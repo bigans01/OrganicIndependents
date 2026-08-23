@@ -47,6 +47,20 @@ Perlin2DSectorMappingContainer PerlinCluster::generateMappingContainer()
 	return returnContainer;
 }
 
+std::vector<PerlinClusterSectorState3D> PerlinCluster::generateAffected3DSectorKeys()
+{
+	std::vector<PerlinClusterSectorState3D> returnVector;
+	std::string currentHash = produceHash();
+
+	/*
+	
+	TBD: figure out the logic here 
+	
+	*/
+	
+	return returnVector;
+}
+
 void PerlinCluster::generateTileToSectorMappingsAndSamplingFields()
 {
 	std::cout << "#### Generating tileToSectorMappings..." << std::endl;
@@ -209,6 +223,25 @@ void PerlinCluster::fetchBicubicallyInterpolatedCoordinate(float in_coordX, floa
 		std::cout << "!! Correpsonding sampling sector not found! " << std::endl;
 	}
 
+}
+
+PerlinClusterGenerationState PerlinCluster::fetchClusterState()
+{
+	return currentClusterState;
+}
+
+void PerlinCluster::generate(PerlinClusterGeneratorEnum in_generatePlanEnum)
+{
+	// Do the magic work of generation here, using the in_generatePlanEnum
+	// to determine how to operate on the cluster.
+
+	// ...when all is said and done, update the clsuter's state
+	currentClusterState = PerlinClusterGenerationState::PERLIN_MATERIALIZED;
+}
+
+std::unordered_map<EnclaveKeyDef::EnclaveKey, PerlinClusterSectorOutput, EnclaveKeyDef::KeyHasher>* PerlinCluster::getClusterOutputs()
+{
+	return &clusterOutputs;
 }
 
 PerlinClusterSectorPointSearch PerlinCluster::fetchBicubicallyInterpolatedCoordinateV2(float in_coordX, float in_coordZ)

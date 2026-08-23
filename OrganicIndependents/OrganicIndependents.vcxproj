@@ -389,6 +389,7 @@
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Perlin2DSectorMappings.h" />
     <ClInclude Include="PerlinCluster.h" />
+    <ClInclude Include="PerlinClusterGeneratorEnum.h" />
     <ClInclude Include="PerlinClusterMeta.h" />
     <ClInclude Include="PerlinFactory.h" />
     <ClInclude Include="Perlin2DKeyedState.h" />

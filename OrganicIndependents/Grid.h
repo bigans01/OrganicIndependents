@@ -10,6 +10,7 @@
 #include <iomanip>
 #include "NoiseGridTile.h"
 #include "NoiseGridTileSamplingField.h"
+#include "PerlinClusterGeneratorEnum.h"
 
 /* Description: contains classes related to grids. A GridLocation is a coordinate system that will correlate with and be generated
 by an existing Grid object. */
@@ -1726,7 +1727,8 @@ class NoiseGrid
 			short in_gSectorSize,
 			double in_gridStartY,
 			float in_thresholdValue,
-			int in_seedValue)
+			int in_seedValue,
+			PerlinClusterGeneratorEnum in_generationType)
 		{
 			noiseGridTileDim = in_tileDim;
 			gridSectorDim = in_gSectorSize;
@@ -1734,7 +1736,10 @@ class NoiseGrid
 			tilesPerDim = in_gSectorSize / in_tileDim;
 			thresholdValue = in_thresholdValue;
 			seedValue = in_seedValue;
+			noiseGridGenerationType = in_generationType;
 		}
+
+		PerlinClusterGeneratorEnum getGeneratorType() { return noiseGridGenerationType; }
 
 		double fetchGridStartY() { return gridStartY; }
 
@@ -2103,6 +2108,10 @@ class NoiseGrid
 		int tilesPerDim = 0;
 		float thresholdValue = 0.0f;
 		int seedValue = 0;
+
+		PerlinClusterGeneratorEnum noiseGridGenerationType = PerlinClusterGeneratorEnum::PERLIN_NOGENVAL;	// store the type of terrain that this NoiseGrid will generate,
+																											// when any PerlinCluster(s) derived from this grid call their generate functions
+																														
 
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridSector, EnclaveKeyDef::KeyHasher> sectorMap;
 

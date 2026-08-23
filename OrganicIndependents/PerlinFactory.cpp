@@ -1,9 +1,15 @@
 #include "stdafx.h"
 #include "PerlinFactory.h"
 
-void PerlinFactory::setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue)
+void PerlinFactory::setupNewGrid(std::string in_gridName, 
+								short in_tileDim, 
+								short in_gSectorSize, 
+								double in_gridStartY, 
+								float in_thresholdValue, 
+								int in_seedValue,
+								PerlinClusterGeneratorEnum in_generationType)
 {
-	NoiseGrid newGrid(in_tileDim, in_gSectorSize, in_gridStartY, in_thresholdValue, in_seedValue);
+	NoiseGrid newGrid(in_tileDim, in_gSectorSize, in_gridStartY, in_thresholdValue, in_seedValue, in_generationType);
 	noiseGridMap[in_gridName] = newGrid;
 }
 
@@ -73,7 +79,7 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		//std::cout << "!! Size of current currentTileClusterMap: " << currentTileClusterMap.size() << std::endl;
 
 
-		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed);
+		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed, 256);
 
 		// TODO: if the GridProcessOrder of the current Grid is not the "first" (i.e, 0),
 		// we will need to go through all previous produced PerlinClusters in preceding grids,
@@ -91,8 +97,14 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		//
 		// Step 2: Run the following two checks, after the cluster hash has been calculated:
 		//
-		// A.) Find the origin key of the currentMeta, and look for the sector file corresponding to that key. Check if the file exists, 
-		//     AND if it exists, does it contain the PerlinCluster's unique hash?
+		// A.) For the current PerlinCluster being looked at, call the PerlinCluster::generateMappingContainer() function
+		//     to generate a Perlin2DSectorMappingContainer. Use the Perlin2DSectorMappingContainer contents to generate a series of
+		//     PerlinClusterHashMeta objects, that will contain the PerlinCluster's starting sector files (see OSectorManager function, checkProcessingColumn
+		//     in OrganicServerLib). If any of the correspoinding OSector files in this series exist AND have this PerlinCluster's hash, the PerlinCluster was processed in it's entirety,
+		//     and should show up as PerlinClusterSectorStateEnum::PROCESSED in at least one file, and PerlinClusterSectorStateEnum::REFERENCED
+		//     in sectors touched by this PerlinCluster but which haven't been processed for this type of PerlinCluster. If this is the case, "A" is true (meaning proof
+		//     that the entire PerlinCluster was already given an attempt at processing); otherwise, if there are 0 files that contain this PerlinCluster's hash,
+		//	   or none of those files exist at all, it means work was not attempted for this PerlinCluster, and "A" will be false.
 		//
 		// B.) Does a materialized PerlinCluster with the corresponding perlin cluster hash already exist in memory?
 		//
@@ -101,24 +113,26 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		// 
 		// Now, check the results:
 		//
-		// If "A" and "B" are false:         materialize the PerlinCluster, put it into memory, and update all of the corresponding sector files, 
-		//									 creating files that dont exist already. The origin sector file should receive a value of NGSCGroupingStatus::GROUPING_USED 
-		//									 for the corresponding cluster hash in that file; the same hash value in the other files should receive NGSCGroupingStatus::GROUPING_REFERENCED.
+		// If "A" and "B" are false:         materialize the PerlinCluster in it's entirety (phase 1 AND phase 2), put it into memory, and update all of the corresponding sector files, 
+		//									 creating files that dont exist already. The origin sector file should receive a value of PerlinClusterSectorStateEnum::PROCESSED 
+		//									 for the corresponding cluster hash in that file; the same hash value in the other files should receive PerlinClusterSectorStateEnum::REFERENCED.
 		//									
 		// 
-		// If "A" is true, and "B" is false: materialize the PerlinCluster, putting it into memory only (if it isn't already in memory).
-		//                                   If the corresponding PerlinCluster hash value from the sector file shows up with a state of NGSCGroupingStatus::GROUPING_REFERENCED,
-		//                                   update that sector file to be NGSCGroupingStatus::GROUPING_USED. If the value from the sector file shows up as
-		//                                   NGSCGroupingStatus::GROUPING_USED, do nothing to the file itself (we'd just be loading an 
-		//                                   already-generated sector)
+		// If "A" is true, and "B" is false: materialize the PerlinCluster to phase 1 (NOT phase 2, because the existence of the hashes in files means it was processed once already), 
+		//                                   putting it into memory only (if it isn't already in memory). If the corresponding PerlinCluster hash value from the sector file we are processing
+		//                                   shows up with a state of PerlinClusterSectorStateEnum::REFERENCED, update that sector file to be PerlinClusterSectorStateEnum::PROCESSED, but ONLY 
+		//									 for the sector column we are doing the processing in -- all other involved sector files remain untouched.
+		//                                   If the value from the sector file shows up as PerlinClusterSectorStateEnum::PROCESSED, do nothing to the file itself (there's no need to 
+		//                                   update for an already-generated cluster in the sector file we're running the processing pass on)
 		// 
 		// If "A" is false, and "B" is true: the PerlinCluster exists in memory already, but the corresponding origin key sector file
 		//                                   either doesnt exist, or doesn't have the corresponding hash in the file. In this case,
 		//									 create the file if it doesnt exist, putting the hash in, or if the file exists, update it
-		//									 with the current hash. Do not materialize into memory.
+		//									 with the current hash. Do not materialize into memory. Still unsure of when this exact case
+		//                                   might occur; may scrap this later.
 		// 
 		// If "A" AND "B" are true:          the file exists already, it has the corresponding cluster hash in it, and the cluster is already in memory.
-		//                                   Check the value of the NGSCGroupingStatus in the file; update it to NGSCGroupingStatus::GROUPING_USED.
+		//                                   Check the value of the PerlinClusterSectorStateEnum in the file; update it to NGSCGroupingStatus::PerlinClusterSectorStateEnum::PROCESSED.
 		//
 		//
 		//
@@ -227,4 +241,15 @@ double PerlinFactory::fetchNoiseGridStartY(std::string in_noiseGridName)
 		returnDouble = noiseGridMap[in_noiseGridName].fetchGridStartY();
 	}
 	return returnDouble;
+}
+
+PerlinClusterGeneratorEnum PerlinFactory::getGridGenerationType(std::string in_noiseGridName)
+{
+	PerlinClusterGeneratorEnum returnEnum = PerlinClusterGeneratorEnum::PERLIN_NOGENVAL;
+	auto gridFindAttempt = noiseGridMap.find(in_noiseGridName);
+	if (gridFindAttempt != noiseGridMap.end())
+	{
+		returnEnum = noiseGridMap[in_noiseGridName].getGeneratorType();
+	}
+	return returnEnum;
 }

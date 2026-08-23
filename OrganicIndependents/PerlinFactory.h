@@ -52,7 +52,8 @@ class PerlinFactory
 	public:
 		PerlinFactory() {};
 
-		void setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue);
+		void setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue,
+							PerlinClusterGeneratorEnum in_generationType);
 
 		std::vector<PerlinClusterGenResult> populateSectorInGrid(std::string in_gridName, int in_coordA, int in_coordB);	// pass in an int value representing x and z, to attempt
 																															// to populate the grid at that point; the underlying call to the populateSector
@@ -68,6 +69,8 @@ class PerlinFactory
 																	// return 0 if no sector was found.
 
 		double fetchNoiseGridStartY(std::string in_noiseGridName); // fetch start Y for an existing named NoiseGrid.
+
+		PerlinClusterGeneratorEnum getGridGenerationType(std::string in_noiseGridName);
 
 	private:
 		// below: a stringed map of noise grids.

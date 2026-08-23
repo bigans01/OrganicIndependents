@@ -10,6 +10,8 @@
 #include "NoiseGridTile.h"
 #include "Perlin.h"
 #include "NoiseGridTileSamplingField.h"
+#include "EnclaveCollectionBlueprint.h"
+#include "PerlinClusterGeneratorEnum.h"
 
 /*
 * 
@@ -41,6 +43,36 @@ class PerlinClusterSectorPointSearch
 };
 
 
+/* Description: PerlinClusterGenerationState is meant to describe whether or not
+* the blueprint data produced by the PerlinCluster is actually sitting in memory.
+* It is used by functions such as OSectorManager::checkProcessingColumn (see OrganicServerLib),
+* in order to determine whether or not to generate the data of the PerlinCluster.
+*/
+enum class PerlinClusterGenerationState
+{
+	PERLIN_NOVAL,
+	PERLIN_BASE,
+	PERLIN_MATERIALIZED
+};
+
+/*
+* 
+* Description: PerlinClusterSectorOutput is meant to serve as a container of completed blueprints for a given 
+* OSector.
+
+*/
+class PerlinClusterSectorOutput
+{
+	public:
+		PerlinClusterSectorOutput() {};
+		void setSectorOutputState(PerlinClusterSectorState3D in_stateToSet) { sectorOutputState = in_stateToSet; }
+		PerlinClusterSectorState3D getSectorOutputState() { return sectorOutputState; }
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher> sectorOutputBlueprints;
+	private:
+		PerlinClusterSectorState3D sectorOutputState;
+};
+
+
 /* PerlinCluster: a PerlinCluster contains metadata about a scanned perlin mass, resulting from generated PerlinClusterMeta objects 
 found in a call to NoiseGridScanner::start.
 
@@ -48,6 +80,15 @@ The PerlinCluster should have the ability to determine what is known as the perl
 This value should be able to be generated immediately within this class after it's second constructor below. This unique hash
 value can then be applied to or checked against multiple sector files, to update them or determine if the PerlinCluster 
 already exists in memory (assuming its mapped correctly).
+
+Additionally, this class should have a pointer to what is known as a "PerlinMachine" derivative. PerlinMachine objects run off
+of the data stored in the PerlinCluster, in order to produce PerlinClusterSectorOutput, which can be fetched by the function
+getClusterOutputs(), once the PerlinMachine has produced its outputs. The PerlinMachine needs the following, at a minimum:
+
+-references to the following: perlinClusterTiles, tileToSectorMapping, sectorSamplingFields
+-dimensional values, such as: parentGridSectorLength, oSectorDimSize
+-the seed value used to generate the grid
+-optional message data (TBD, not ready for testing yet)
 
 This class also contains facilities that allows it to determine items such as:
 
@@ -77,13 +118,16 @@ class PerlinCluster
 	public:
 		PerlinCluster() {};
 		PerlinCluster(PerlinClusterMeta in_metaInfo,
-			          std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> in_perlinClusterTiles,
-			          int in_parentGridSectorLength,
-			          int in_gridSeedValue) :
+					std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> in_perlinClusterTiles,
+					int in_parentGridSectorLength,
+					int in_gridSeedValue,
+			        int in_oSectorDimSize) :
 			metaInfo(in_metaInfo),
 			perlinClusterTiles(in_perlinClusterTiles),
 			parentGridSectorLength(in_parentGridSectorLength),
-			gridSeedValue(in_gridSeedValue)
+			gridSeedValue(in_gridSeedValue),
+			oSectorDimSize(in_oSectorDimSize),
+			currentClusterState(PerlinClusterGenerationState::PERLIN_BASE)
 		{};
 
 		void printPerlinClusterMeta();	// print the groupings per sector key.
@@ -100,6 +144,8 @@ class PerlinCluster
 		Perlin2DSectorMappingContainer generateMappingContainer(); // generate and return the Perlin2DSectorMappingContainer of this PerlinCluster;
 																   // the contents of the Perlin2DSectorMappingContainer can be used to update the OSector files 
 																   // with the appropriate entries in their perlin cluster hash lookup table(s).
+
+		std::vector<PerlinClusterSectorState3D> generateAffected3DSectorKeys();	// IN-DEVELOPMENT (8/15/2026): saved for later
 																	
 		void generateTileToSectorMappingsAndSamplingFields();	// generates the contents of tileToSectorMapping, which allows for the mapping of tiles to their sectors 
 																// that they belong to, then generate the individual NoiseGridTileSamplingField(s) to use.
@@ -112,15 +158,30 @@ class PerlinCluster
 																													// generateTileToSectorMappingsAndSamplingFields, this can be used to return a point value in 
 																													// a sampling field, if said field exists.
 
+		PerlinClusterGenerationState fetchClusterState();
+
+		void generate(PerlinClusterGeneratorEnum in_generatePlanEnum);	// IN-DEVELOPMENT (8/15/2026): generate the desired PerlinCluster form (i.e, mouintain, plains, forest, desert, etc)
+
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, PerlinClusterSectorOutput, EnclaveKeyDef::KeyHasher>* getClusterOutputs();	// IN-DEVELOPMENT (8/15/2026): fetch the map of PerlinClusterSectorOutput objects produced
+																																	// as a result of calling the generate function.
+
 	private:
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> perlinClusterTiles;					// stores all tiles invovled with the cluster; populated via non-default constructor.
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::KeyHasher> tileToSectorMapping;		// maps tiles to their corresponding sectors, before any translation of tiles/sectors occurs.
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTileSamplingField, EnclaveKeyDef::KeyHasher> sectorSamplingFields;		// stores all unique sampling fields that could be used by the PerlinCluster.
 		PerlinClusterMeta metaInfo;		// stores the groupings from each sector that this PerlinCluster will use.
 
+		PerlinClusterGenerationState currentClusterState = PerlinClusterGenerationState::PERLIN_NOVAL;	// keeps track of whether or not the blueprint data of the PerlinCluster has been generated.
+
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, PerlinClusterSectorOutput, EnclaveKeyDef::KeyHasher> clusterOutputs;	// a map of 
+
 		int parentGridSectorLength = 0;		// the length of a sector, based on the NoiseGrid that this PerlinClsuter originated from.
 		int gridSeedValue = 0;				// the seed value from the NoiseGrid object that this PerlinCluster originated from. Needed when 
 											// generating the sampling fields per sector.
+
+		int oSectorDimSize = 0;	// the cubic size of an OSector file, that determines the number of blocks in each x/y/z dimension it could track; i.e, 256 would be 256^3.
+								// It is required that this is compared against the parentGridSectorLength, when a PerlinMachine produces its outputs, and must be set on initialization.
+									
 
 		void generateSamplingFieldLookups();	// populate the contents of sectorSamplingFields. Must be called before attempting to find 
 												// bicubically interpolated values, and should be called immediately after generateTileToSectorMappingsAndSamplingFields.

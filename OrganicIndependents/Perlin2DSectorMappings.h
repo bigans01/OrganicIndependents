@@ -116,11 +116,40 @@ class PerlinClusterSectorState
 };
 
 /*
-* Description: Perlin2DSectorMappingContainer is designed to contain a std::vector of PerlinClusterSectorState;
-* the non-default constructor takes in a origin key that is used to update the PerlinClusterSectorState corresponding to 
-* that key to use a PerlinClusterSectorStateEnum::PROCESSED value; this allows the calling function to have all the metadata
-* needed to update the corresponding PerlinClusterSectorState entries in each OSector file appropriately. The primary method of 
-* generating this is via PerlinCluster::generateMappingContainer()
+* 
+* Dsecription: (IN-DEVELOPMENT, 8/15/2026) PerlinClusterSectorState3D stores the state of a 3D sector key; used by OSectorManager to determine what sectors to update;
+* used by OSectorManager::checkProcessingColumn, when it calls PerlinCluster::getClusterOutputs()
+* (see OrganicServerLib)
+
+*/
+class PerlinClusterSectorState3D
+{
+	public:
+		PerlinClusterSectorState3D() {};
+		PerlinClusterSectorState3D(std::string in_currentHash, EnclaveKeyDef::EnclaveKey in_currentKey, PerlinClusterSectorStateEnum in_currentClusterSectorState) :
+			currentHash(in_currentHash),
+			currentKey(in_currentKey),
+			currentClusterSectorState(in_currentClusterSectorState)
+		{}
+
+		std::string currentHash = "";
+		EnclaveKeyDef::EnclaveKey currentKey;
+		PerlinClusterSectorStateEnum currentClusterSectorState = PerlinClusterSectorStateEnum::NOVAL;
+
+		PerlinClusterHashMeta generateClusterHashMeta(std::string in_parentGridName)
+		{
+			return PerlinClusterHashMeta(currentHash, currentClusterSectorState, in_parentGridName);
+		}
+
+};
+
+
+/*
+ Description: Perlin2DSectorMappingContainer is designed to contain a std::vector of PerlinClusterSectorState;
+ the non-default constructor takes in a origin key that is used to update the PerlinClusterSectorState corresponding to 
+ that key to use a PerlinClusterSectorStateEnum::PROCESSED value; this allows the calling function to have all the metadata
+ needed to update the corresponding PerlinClusterSectorState entries in each OSector file appropriately. The primary method of 
+ generating this is via PerlinCluster::generateMappingContainer()
 */
 class Perlin2DSectorMappingContainer
 {

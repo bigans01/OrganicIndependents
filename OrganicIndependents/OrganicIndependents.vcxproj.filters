@@ -1341,6 +1341,9 @@
     <ClInclude Include="NoiseGridTileSamplingField.h">
       <Filter>Header Files\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="PerlinClusterGeneratorEnum.h">
+      <Filter>Header Files\Perlin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
