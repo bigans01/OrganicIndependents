@@ -17,6 +17,7 @@ class ExceptionRecorder
 	public:
 		void insertException(ExceptionRecord in_recordToInsert);
 		bool doExceptionsExist();
+		bool doesSpecificExceptionExist(ExceptionRecordType in_typeToFind);		// returns true on the first match of the given ExceptionRecordType; returns false otherwise.
 		std::vector<ExceptionRecord> recordedExceptionVector;
 	private:
 };

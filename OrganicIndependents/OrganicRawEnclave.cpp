@@ -109,6 +109,14 @@ void OrganicRawEnclave::reconstituteAsFull(Message in_bdmMetadataMessage,
 	//std::cout << "(OrganicRawEnclave::reconstituteAsFull) -> reconstitution to FULL complete; number of skeletons is: " << blockSkeletonMap.size() << std::endl;
 }
 
+void OrganicRawEnclave::reconstituteAsSmartFull(Message in_bdmMetadataMessage)
+{
+	//std::cout << "(OrganicRawEnclave::reconstituteAsFull) -> reconstituting ORE as SMART_FULL. " << std::endl;
+	total_triangles = 0;
+
+	reconstituteOREStatesFromMessage(in_bdmMetadataMessage);
+}
+
 void OrganicRawEnclave::reconstituteOREStatesFromMessage(Message in_oreHeaderMessage)
 {
 	in_oreHeaderMessage.open();
@@ -325,9 +333,9 @@ std::map<int, EnclaveBlockSkeleton> OrganicRawEnclave::getUnexposedBlocksCopy()
 }
 
 bool OrganicRawEnclave::checkIfFull()
-{
+{ 
 	bool returnValue = false;
-	//std::cout << "blockSkeletonMap size is: " << blockSkeletonMap.size();
+
 	if (blockSkeletonMap.size() == 64)	// a full ORE has exactly 64 skeletons
 	{
 		returnValue = true;
@@ -344,6 +352,24 @@ bool OrganicRawEnclave::checkIfFull()
 		total_triangles = 0;
 		currentLodState = ORELodState::FULL;
 	}
+
+	return returnValue;
+}
+
+bool OrganicRawEnclave::checkIfSmartFull()
+{
+	bool returnValue = false;
+
+	if (blockSkeletonMap.size() == 64)	// a full ORE has exactly 64 skeletons
+	{
+		blockMap.clear();
+		clearOutDataContainers();
+		total_triangles = 0;
+		currentLodState = ORELodState::SMART_FULL;
+		blockSkeletonMap.clear();
+	}
+
+
 	return returnValue;
 }
 
@@ -506,7 +532,18 @@ void OrganicRawEnclave::morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::
 		{
 			// when morphing from FULL to LOD_BLOCK, all blocks will initially be unexposed.
 			produceAllUnexposedBlocks(in_mutexRef);
+			break;
 		};
+
+		case ORELodState::SMART_FULL:
+		{
+			// when morphing from SMART_FULL to LOD_BLOCK, all blocks will initially be unexposed.
+			// Although produceAllUnexposedBlocks is used to produce all blocks, there should
+			// probably be a function (or an update to this one) in the future that sets the 
+			// values of these blocks via some perlin-style noise or other mechanism.
+			produceAllUnexposedBlocks(in_mutexRef);
+			break;
+		}
 	}
 
 	currentLodState = ORELodState::LOD_BLOCK;					// switch to block mode
@@ -1298,6 +1335,33 @@ EnclaveBlockState OrganicRawEnclave::getBlockStatus(EnclaveKeyDef::EnclaveKey in
 			returnBlockState = EnclaveBlockState::NONEXISTENT_BECAUSE_FULL;
 		}
 	}
+
+	else if (currentLodState == ORELodState::SMART_FULL)
+	{
+		returnBlockState = EnclaveBlockState::NONEXISTENT_BECAUSE_FULL;
+	}
+
+	/*
+	switch (currentLodState)
+	{
+		case ORELodState::LOD_BLOCK:
+		{
+			std::cout << ">>>>>>>>>>>>> getBlockStatus, found as ORELodState::LOD_BLOCK " << std::endl;
+			break;
+		}
+		case ORELodState::FULL:
+		{
+			std::cout << ">>>>>>>>>>>>> getBlockStatus, found as ORELodState::FULL " << std::endl;
+			break;
+		}
+		case ORELodState::SMART_FULL:
+		{
+			std::cout << ">>>>>>>>>>>>> getBlockStatus, found as ORELodState::SMART_FULL" << std::endl;
+			break;
+		}
+	}
+	*/
+
 	return returnBlockState;
 }
 

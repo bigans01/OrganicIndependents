@@ -22,11 +22,16 @@ enum class ExceptionRecordType
 													//			(aka calls to WeldedTriangle::shiftLines() in this function) exceeded the max
 													//			amount of 3, as there should never be more than 3 shifts occurring. 
 													// REQUIRES: a Message containing two context strings.
-	EXCEPTION_TERMINATION_ATTEMPTS_EXCEEDED	// used by: WeldedTriangleGroupBuilder::runTracingObservers(). Indicates that the function may have been stuck
+
+	EXCEPTION_TERMINATION_ATTEMPTS_EXCEEDED,	// used by: WeldedTriangleGroupBuilder::runTracingObservers(). Indicates that the function may have been stuck
 											// in an infinite loop, which would have been flagged by too many instances where a TracingObserver had a 
 											// currentObserverState value of TracingObserverState::TERMINATED. See that function for more details on usage.
 											// This exception code should have a corresponding error message, containing the original WeldedLines, and
 											// the remaining ones.
+
+	EXCEPTION_INVALID_SHELL_PRODUCED,	// used by: SPolyShellProducer::checkShellCompleteness(). Indicates the the SPolyShellProducer failed to produce
+										// valid shell (meaning, the SPolyShellProducer had exactly 0 outputSPolySuperGroups in it, which is symbolic of a shell production failure)
+										// REQUIRES: a Message containing information about why the shell failed (# of strings TBD, but inserted one for now)
 };
 
 #endif

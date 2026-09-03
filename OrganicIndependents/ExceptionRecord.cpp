@@ -28,10 +28,16 @@ std::vector<std::string> ExceptionRecord::transformRecordToStrings()
 		// Used in function WeldedTriangleGroupBuilder::handleFinalObservation() (OrganicGLWinLib)
 		case ExceptionRecordType::EXCEPTION_WELDED_TRIANGLE_SHIFT_LINES_EXCEEDED: { writeOutWeldedTriangleShiftLinesExceeded(&returnStrings); break; }
 		case ExceptionRecordType::EXCEPTION_TERMINATION_ATTEMPTS_EXCEEDED: { writeOutExcessiveTerminatingLines(&returnStrings); break; }
+		case ExceptionRecordType::EXCEPTION_INVALID_SHELL_PRODUCED: { writeOutInvalidSPolyShell(&returnStrings); break; }
 	}
 
 	// the return vector that contains our output.
 	return returnStrings;
+}
+
+ExceptionRecordType ExceptionRecord::getExceptionType()
+{
+	return exceptionType;
 }
 
 void ExceptionRecord::writeOutCategorizedLines(std::vector<std::string>* in_outVectorRef)
@@ -102,4 +108,13 @@ void ExceptionRecord::writeOutExcessiveTerminatingLines(std::vector<std::string>
 	{
 		in_outVectorRef->push_back(exceptionMessage.readString());
 	}
+}
+
+void ExceptionRecord::writeOutInvalidSPolyShell(std::vector<std::string>* in_outVectorRef)
+{
+	// Remember, open the message first.
+	exceptionMessage.open();
+
+	// First two strings are context strings.
+	in_outVectorRef->push_back(exceptionMessage.readString());
 }

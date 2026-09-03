@@ -233,6 +233,17 @@ void ReconstitutedBlueprint::ReconstitutableORE::runReconstitution(EnclaveKeyDef
 				break;
 			}
 
+			// For an ORE in the SMART_FULL, we must load:
+			case ORELodState::SMART_FULL:
+			{
+				producedORE.reconstituteAsSmartFull(reconstitutedOREHeader.reconstitutionMessage);
+
+				// Final step: insert the produced ORE into the referenced generatedBlueprints member, which comes from the ReconstitutionManager class.
+				(*in_generatedBlueprintMapRef)[in_targetBlueprintKey].fractureResults.fractureResultsContainerMap[in_targetOREKey] = producedORE;
+
+				break;
+			}
+
 			// For an ORE in the LOD_ENCLAVE_SMATTER state
 			case ORELodState::LOD_ENCLAVE_SMATTER:
 			{

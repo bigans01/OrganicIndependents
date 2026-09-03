@@ -16,3 +16,17 @@ bool ExceptionRecorder::doExceptionsExist()
 	return exceptionsExist;
 }
 
+bool ExceptionRecorder::doesSpecificExceptionExist(ExceptionRecordType in_typeToFind)
+{
+	bool specificExceptionFound = false;
+	for (auto& currentException : recordedExceptionVector)
+	{
+		if (currentException.getExceptionType() == in_typeToFind)
+		{
+			specificExceptionFound = true;
+			break;
+		}
+	}
+
+	return specificExceptionFound;
+}

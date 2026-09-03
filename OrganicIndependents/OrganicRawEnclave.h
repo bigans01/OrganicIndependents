@@ -98,6 +98,10 @@ public:
 	void reconstituteAsFull(Message in_bdmMetadataMessage,
 							std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef);		// This function is used by ReconstitutedBlueprint::ReconstitutableORE::runReconstitution, when attempting to reconstitute an ORE that has a state of FULL.
 
+	// Reconstitute as SMART_FULL; clears out all block and other data, but stays "full" until it is 
+	// updated by morphLodToBlock or another similar function.
+	void reconstituteAsSmartFull(Message in_bdmMetadataMessage);
+
 	// Reconstitute as LOD_ENCLAVE_SMATTER; sets the states from the ORE header data, populates any skeletons that may exist, and builds the skeletonSGM.
 	void reconstituteAsSMatter(Message in_bdmMetadataMessage,
 							   std::unordered_map<EnclaveKeyDef::EnclaveKey, Message, EnclaveKeyDef::KeyHasher>* in_skeletonMessageMapRef,
@@ -183,10 +187,15 @@ public:
 
 	std::vector<ORETerrainTriangle> produceAndReturnTerrainTriangles();
 
-	bool checkIfFull();		// analyzes the number of unexposed blocks, to determine if the ORE is FULL. If the number equals 64, the currentLodState is updated to FULL,
-							// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out; the total_triangles value also gets reset to 0. This case can occur in OrganicCoreLib functions,
-							// OrganicMassDriverElevator::proceedToNextFloorAndUpdateMassDrivers() and OrganicMassDriverElevator::runDriversForStartingFloor(),
-							// which call this function. This function should only be used by the OrganicMassDriverElevator class.
+	bool checkIfFull();				// analyzes the number of unexposed blocks, to determine if the ORE is FULL. If the number equals 64, the currentLodState is updated to FULL,
+									// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out; the total_triangles value also gets reset to 0. This would be used in the case
+									// that the mass of an ORE gets filled up and needs to be de-rendered but active (ie, if 1 block is added to the 63 other blocks, don't render).
+
+	bool checkIfSmartFull();		// analyzes the number of unexposed blocks, to determine if the ORE is SMART_FULL. If the number equals 64, the currentLodState is updated to SMART_FULL,
+									// and the skeletonSGM, etcSGM and organicTriangleSecondarySGM are cleared out; the total_triangles value also gets reset to 0. This case can occur in OrganicCoreLib functions,
+									// OrganicMassDriverElevator::proceedToNextFloorAndUpdateMassDrivers() and OrganicMassDriverElevator::runDriversForStartingFloor(),
+									// which call this function. This function should only be used by the OrganicMassDriverElevator class.
+							
 	void updateOREForRMass();					// switches the ORE to currentLodState of ORELodState::LOD_ENCLAVE_RMATTER,
 												// it's currentDependencyState to OREDependencyState::INDEPENDENT, 
 												// and clears out the blockSkeletonMap; the skeleton map must be cleared, because it's possible that an OrganicMassDriverElevator can produce
@@ -196,7 +205,8 @@ public:
 
 	void morphLodToBlock(std::mutex* in_mutexRef, EnclaveKeyDef::EnclaveKey in_enclaveKey);		// updates the ORE's currentLodState to be LOD_BLOCK, from a state of LOD_ENCLAVE_RMATTER, LOD_ENCLAVE_SMATTER, or FULL;
 																								// used by functions such as OrganicSystem::jobMorphOREToBlock (OrganicCoreLib), to configure the ORE
-																								// to have it's blocks ready for analysis/modification.
+																								// to have it's blocks ready for analysis/modification. Although this function deals with SMART_FULL data types,
+																								// it will probably need to be updated to use perlin-noise or another mechanism to populate that specific mode.
 												
 	bool doesOREContainRenderableData();																	// determines if the ORE contains any renderable data, be it generated via EnclaveTriangles, or EnclaveBlocks; 
 	void appendSpawnedEnclaveTriangleSkeletonContainers(std::mutex* in_mutexRef, 
