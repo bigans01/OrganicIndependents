@@ -28,6 +28,31 @@ class RippleImpactRegister
 			impacts[in_blueprintKey].impactedOREs[in_oreKey].insertBlockKey(in_blockKey, in_boundaryOrientation);
 		}
 
+		// Below: this function returns true if the specified block exists; used by 
+		// RJPhasedDeleteBlock::runProducedSPolyInsertionLogic in OrganicCoreLib.
+		bool doesImpactedBlockExist(EnclaveKeyDef::EnclaveKey in_blueprintKey,
+			EnclaveKeyDef::EnclaveKey in_oreKey,
+			EnclaveKeyDef::EnclaveKey in_blockKey)
+		{
+			bool blockExists = false;
+
+			auto bpFinder = impacts.find(in_blueprintKey);
+			if (bpFinder != impacts.end())
+			{
+				auto oreFinder = impacts[in_blueprintKey].impactedOREs.find(in_oreKey);
+				if (oreFinder != impacts[in_blueprintKey].impactedOREs.end())
+				{
+					auto blockFinder = impacts[in_blueprintKey].impactedOREs[in_oreKey].impactedBlockOrientations.find(in_blockKey);
+					if (blockFinder != impacts[in_blueprintKey].impactedOREs[in_oreKey].impactedBlockOrientations.end())
+					{
+						blockExists = true;
+					}
+				}
+			}
+
+			return blockExists;
+		}
+
 		void removeImpactedBlock(EnclaveKeyDef::EnclaveKey in_blueprintKey,
 			EnclaveKeyDef::EnclaveKey in_oreKey,
 			EnclaveKeyDef::EnclaveKey in_blockKey)
