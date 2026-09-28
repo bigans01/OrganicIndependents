@@ -235,6 +235,18 @@ void PerlinCluster::generate(PerlinClusterGeneratorEnum in_generatePlanEnum)
 	// Do the magic work of generation here, using the in_generatePlanEnum
 	// to determine how to operate on the cluster.
 
+	switch (in_generatePlanEnum)
+	{
+		case PerlinClusterGeneratorEnum::PERLIN_MOUNTAIN:
+		{
+			std::cout << "!!!!################### Size of sectorSamplingFields prior to generation: " << sectorSamplingFields.size() << std::endl;
+
+			pco = std::shared_ptr<PerlinClusterOutputBase>(new MountainPCO());
+			pco->initializeBase(parentGridSectorLength, parentGridTileLength, &perlinClusterTiles, &tileToSectorMapping, &sectorSamplingFields);
+			break;
+		}
+	}
+
 	// ...when all is said and done, update the clsuter's state
 	currentClusterState = PerlinClusterGenerationState::PERLIN_MATERIALIZED;
 }

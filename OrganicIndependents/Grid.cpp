@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Grid.h"
 
-void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
+void NoiseGridScanner::startScanAttempt(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 {
 	// Check if the sector exists.
 	if (!gridPtr->doesSectorExist(in_startSectorKey))
@@ -34,7 +34,7 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 		auto fetchedTileMapPtr = gridPtr->getSectorTileMapPtr(in_startSectorKey.a, in_startSectorKey.b);
 
 		NoiseGridSectorGroupBuilderV2 newBuilder(fetchedTileMapPtr);
-		newBuilder.start();
+		newBuilder.startBuilder();
 
 		/*
 		std::cout << "::::::::::::::::::: NEW TEST END :::::::::::::::::::::::::::::: " << std::endl;
@@ -53,12 +53,12 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 		auto targetSectorPtr = gridPtr->getSectorRef(in_startSectorKey.a, in_startSectorKey.b);
 		if (targetSectorPtr->doesSectorHaveGroupings())
 		{
-			/*
+			
 			std::cout << "--------------------------------------------" << std::endl;
 			std::cout << "Found data in sector, printing grouping data. " << std::endl;
 			std::cout << "--------------------------------------------" << std::endl;
 			targetSectorPtr->printNeighboringLinksPerGrouping();
-			*/
+			
 
 			// TODO: while fetching first grouping is fine initially, we will need to cycle
 			// through each grouping
@@ -100,6 +100,9 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 
 
 			auto fetchedGroupings = targetSectorPtr->fetchGroupingVector();
+
+			std::cout << "!!!!#### Size of fetchedGroupings: " << fetchedGroupings.size() << std::endl;
+
 			for (auto& targetGrouping : fetchedGroupings)
 			{
 				NoiseGridScanAttempt initialScanAttempt(gridPtr, targetSectorPtr, targetGrouping);
@@ -112,8 +115,21 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 					ScanGroupingStats newStats(targetGroupingIndex, initialScanAttempt.getFinalTileCount(), true);
 					grpingStatsVector.push_back(newStats);
 				}
+
+
 				else
 				{
+					if (initialScanAttempt.getFinalRunState() == NGSClusterRunState::STOP_LIMIT_REACHED)
+					{
+						std::cout << "!!!!++++ WARNING: limit reached. " << std::endl;
+						std::cout << "!!!!++++ Final tile count was: " << initialScanAttempt.getFinalTileCount() << std::endl;
+					}
+
+					// The scan has likely failed if it hits this else statement; make sure to handle
+					// the failure appropriately in whatever it is that called this function.
+					//
+					// An invalid scan attempt will NOT be inserted into generatedClusterMetaVector.
+
 					ScanGroupingStats newStats(targetGroupingIndex, initialScanAttempt.getFinalTileCount(), false);
 					grpingStatsVector.push_back(newStats);
 				}
@@ -136,12 +152,24 @@ void NoiseGridScanner::start(EnclaveKeyDef::Enclave2DKey in_startSectorKey)
 			}
 			*/
 		}
+		else
+		{
+			std::cout << "!!!! NOTICE: sector did not have any groupings. " << std::endl;
+		}
 		
 		
 
 		// Check the neighboringSectorLinks of the selected NoiseGridSectorGrouping, to determine if there are any checks that have to be done
 		// in a neighboring sector. If there are no neighboringSectorLinks, this scan is complete, as there is nothing to link to.
 	}
+	
+	else
+	{
+		std::cout << "NoiseGridScanner:: found existing sector already; ignoring run of start." << std::endl;
+	}
+
+	//std::cout << "Printing out existing sector keys after this pass..." << std::endl;
+	gridPtr->listExistingSectors();
 }
 
 std::vector<PerlinClusterMeta> NoiseGridScanner::fetchClusterMetaVector()

@@ -7,11 +7,13 @@
 #include "NoiseGridTile.h"
 #include "Enclave2DKeyMapHasher.h"
 #include "Perlin2DSectorMappings.h"
-#include "NoiseGridTile.h"
 #include "Perlin.h"
 #include "NoiseGridTileSamplingField.h"
 #include "EnclaveCollectionBlueprint.h"
 #include "PerlinClusterGeneratorEnum.h"
+
+#include "PerlinClusterOutputBase.h"
+#include "MountainPCO.h"
 
 /*
 * 
@@ -121,12 +123,14 @@ class PerlinCluster
 					std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> in_perlinClusterTiles,
 					int in_parentGridSectorLength,
 					int in_gridSeedValue,
-			        int in_oSectorDimSize) :
+			        int in_oSectorDimSize,
+			        int in_parentGridTileLength) :
 			metaInfo(in_metaInfo),
 			perlinClusterTiles(in_perlinClusterTiles),
 			parentGridSectorLength(in_parentGridSectorLength),
 			gridSeedValue(in_gridSeedValue),
-			oSectorDimSize(in_oSectorDimSize),
+			oSectorDimSize(in_oSectorDimSize),	// should always be a value of 256...if so, why initialize?
+			parentGridTileLength(in_parentGridTileLength),
 			currentClusterState(PerlinClusterGenerationState::PERLIN_BASE)
 		{};
 
@@ -160,7 +164,8 @@ class PerlinCluster
 
 		PerlinClusterGenerationState fetchClusterState();
 
-		void generate(PerlinClusterGeneratorEnum in_generatePlanEnum);	// IN-DEVELOPMENT (8/15/2026): generate the desired PerlinCluster form (i.e, mouintain, plains, forest, desert, etc)
+		void generate(PerlinClusterGeneratorEnum in_generatePlanEnum);	// IN-DEVELOPMENT (8/15/2026): generate the desired PerlinCluster form (i.e, mouintain, plains, forest, desert, etc).
+																		// Currently only called by OSectorManager::checkProcessingColumn function (see OrganicServerLib)
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, PerlinClusterSectorOutput, EnclaveKeyDef::KeyHasher>* getClusterOutputs();	// IN-DEVELOPMENT (8/15/2026): fetch the map of PerlinClusterSectorOutput objects produced
 																																	// as a result of calling the generate function.
@@ -169,6 +174,12 @@ class PerlinCluster
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> perlinClusterTiles;					// stores all tiles invovled with the cluster; populated via non-default constructor.
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::KeyHasher> tileToSectorMapping;		// maps tiles to their corresponding sectors, before any translation of tiles/sectors occurs.
 		std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTileSamplingField, EnclaveKeyDef::KeyHasher> sectorSamplingFields;		// stores all unique sampling fields that could be used by the PerlinCluster.
+																																		// The key of the sampling fields is the absolute root point of the starting sector, not the OSector file key
+																																		// that the sector relates to. For example, a sector starting at X = 256, Z = 512 has a coord of 256, 512, not 1,2.
+																																		//
+																																		// Also remember that sampling field sizes may differ from the typical 256x256 area that an OSector file is supposed to cover;
+																																		// For instance, a noise grid that has large sectors of 512x512 would cover 4 256x256 areas per field, so that would
+																																		// Need to be accounted for.			
 		PerlinClusterMeta metaInfo;		// stores the groupings from each sector that this PerlinCluster will use.
 
 		PerlinClusterGenerationState currentClusterState = PerlinClusterGenerationState::PERLIN_NOVAL;	// keeps track of whether or not the blueprint data of the PerlinCluster has been generated.
@@ -181,6 +192,11 @@ class PerlinCluster
 
 		int oSectorDimSize = 0;	// the cubic size of an OSector file, that determines the number of blocks in each x/y/z dimension it could track; i.e, 256 would be 256^3.
 								// It is required that this is compared against the parentGridSectorLength, when a PerlinMachine produces its outputs, and must be set on initialization.
+
+		int parentGridTileLength = 0;	// stores the value passed down from PerlinFactory::populateSectorInGrid, which instantiates new instances of this class;
+										// this value eventually gets passed down to the pco during it's call to initializeBase.
+
+		std::shared_ptr<PerlinClusterOutputBase> pco;	// set up by the call to generate()
 									
 
 		void generateSamplingFieldLookups();	// populate the contents of sectorSamplingFields. Must be called before attempting to find 

@@ -319,6 +319,12 @@
     <Filter Include="Header Files\EnclaveKey">
       <UniqueIdentifier>{14fd362a-c683-411f-a7b1-d6e94670e162}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Perlin\PerlinClusterOutput">
+      <UniqueIdentifier>{497810b6-0a82-415d-b637-a5f656763b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Perlin\PerlinClusterOutputBase">
+      <UniqueIdentifier>{8fac9e8c-a517-4750-a15b-a374d1fce1b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1344,6 +1350,12 @@
     <ClInclude Include="PerlinClusterGeneratorEnum.h">
       <Filter>Header Files\Perlin</Filter>
     </ClInclude>
+    <ClInclude Include="PerlinClusterOutputBase.h">
+      <Filter>Header Files\Perlin\PerlinClusterOutput</Filter>
+    </ClInclude>
+    <ClInclude Include="MountainPCO.h">
+      <Filter>Header Files\Perlin\PerlinClusterOutput</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1798,6 +1810,12 @@
     </ClCompile>
     <ClCompile Include="NoiseGridTileSamplingField.cpp">
       <Filter>Source Files\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinClusterOutputBase.cpp">
+      <Filter>Source Files\Perlin\PerlinClusterOutputBase</Filter>
+    </ClCompile>
+    <ClCompile Include="MountainPCO.cpp">
+      <Filter>Source Files\Perlin\PerlinClusterOutputBase</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

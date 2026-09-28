@@ -338,6 +338,7 @@
     <ClInclude Include="MessageType.h" />
     <ClInclude Include="MicroPolyPointContainer.h" />
     <ClInclude Include="MidwayVectorFinder.h" />
+    <ClInclude Include="MountainPCO.h" />
     <ClInclude Include="MShaderHintEnum.h" />
     <ClInclude Include="NeighboringBlockLocation.h" />
     <ClInclude Include="NeighboringBlockLocationSet.h" />
@@ -391,6 +392,7 @@
     <ClInclude Include="PerlinCluster.h" />
     <ClInclude Include="PerlinClusterGeneratorEnum.h" />
     <ClInclude Include="PerlinClusterMeta.h" />
+    <ClInclude Include="PerlinClusterOutputBase.h" />
     <ClInclude Include="PerlinFactory.h" />
     <ClInclude Include="Perlin2DKeyedState.h" />
     <ClInclude Include="PLTracingResult.h" />
@@ -578,6 +580,7 @@
     <ClCompile Include="MessageInterpreter.cpp" />
     <ClCompile Include="MicroPolyPointContainer.cpp" />
     <ClCompile Include="MidwayVectorFinder.cpp" />
+    <ClCompile Include="MountainPCO.cpp" />
     <ClCompile Include="NeighboringBlockLocationSet.cpp" />
     <ClCompile Include="NeighboringBlueprintLocationSet.cpp" />
     <ClCompile Include="NeighboringORELocationSet.cpp" />
@@ -604,6 +607,7 @@
     <ClCompile Include="PAtomBase.cpp" />
     <ClCompile Include="PerlinCluster.cpp" />
     <ClCompile Include="PerlinClusterMeta.cpp" />
+    <ClCompile Include="PerlinClusterOutputBase.cpp" />
     <ClCompile Include="PerlinFactory.cpp" />
     <ClCompile Include="PLTracingResult.cpp" />
     <ClCompile Include="PMass.cpp" />

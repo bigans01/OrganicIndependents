@@ -27,16 +27,21 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 	// Step 1: populate the sector, fetch any producd PerlinClusterMeta. Each individual must 
 	// be processed accordingly PerlinClusterMeta (i.e, getting its hash value so we can see if it exists yet or not)
 	auto producedPerlinClusterMeta = noiseGridMap[in_gridName].populateSector(in_coordA, in_coordB);
+	std::cout << "!!!!! Size of producedPerlinClusterMeta: " << producedPerlinClusterMeta.size() << std::endl;
 
 	// Get the sector dim; this will need to be passed to the PerlinCluster, so that it may eventually
 	// determine the sectors of each of the tiles later on, if needed.
 	int currentNoiseGridDim = noiseGridMap[in_gridName].getGridSectorDim();
 
+	// Get the tile dim, for all tiles sitting in the sector.
+	int currentNoiseGridTileDim = noiseGridMap[in_gridName].getGridTileDim();
+
 	// Get the seed value, which is needed to generate sampling fields in the cluster, when the cluster needs
 	// to set itself up for generating output(s).
 	int currentGridSeed = noiseGridMap[in_gridName].getSeedValue();
 
-	// cycle through the vector of PerlinClusterMeta.
+	// cycle through the vector of PerlinClusterMeta; each entry in the vector
+	// refers to exactly 1 individual PerlinCluster.
 	for (auto& currentClusterMeta : producedPerlinClusterMeta)
 	{
 		//std::cout << "Cycling through next currentClusterMeta..." << std::endl;
@@ -45,9 +50,12 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 
 		int expectedNumberOfTiles = 0;
 		auto fetchedMeta = currentClusterMeta.fetchMetaMap();
+
+		// The fetchedMeta value contains all individual sectors
+		// that this PerlinCluster touches
 		for (auto& currentMetaEntry : fetchedMeta)
 		{
-			// For each grouping in the currently looked at instance of NGSClusterEntry,
+			// For each sector in the currently looked at grouping of NGSClusterEntry (fetchedMeta),
 			// get the copy of tiles from that grouping. Each tile, from each grouping, will go into the currentTileClusterMap.
 			auto currentClusterCopy = currentMetaEntry.second.fetchClusterGroupingCopy();
 			for (auto& currentGroupingId : currentClusterCopy)
@@ -79,7 +87,7 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		//std::cout << "!! Size of current currentTileClusterMap: " << currentTileClusterMap.size() << std::endl;
 
 
-		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed, 256);
+		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed, 256, currentNoiseGridTileDim);
 
 		// TODO: if the GridProcessOrder of the current Grid is not the "first" (i.e, 0),
 		// we will need to go through all previous produced PerlinClusters in preceding grids,
@@ -148,6 +156,9 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		bool clusterExists = false;
 		bool isClusterValid = newCluster.isClusterValid();	// remember, we can't look at it after the std::move inserts it,
 															// during the call to insertPerlinCluster; so store it here.
+															// 
+		std::cout << "#### value of isClusterValid: " << isClusterValid << std::endl;
+
 		// Only insert if: 
 		// 1. The cluster doesn't exist in the perlinClusterHashMap, meaning it was never valid after processing and then entered into the map.
 		// 2. The cluster is "valid" (i.e, has tiles left to process; this criteria is determined internally by the PerlinCluster itself)

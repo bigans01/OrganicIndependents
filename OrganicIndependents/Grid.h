@@ -347,7 +347,7 @@ class NoiseGridSectorGroupBuilderV2
 			tileMapPtr = in_tileMapPtr;
 		}
 
-		void start()
+		void startBuilder()
 		{
 			auto refedTileMapBegin = (*tileMapPtr).begin();
 
@@ -1024,7 +1024,7 @@ class NoiseGridSector
 			while (!tileMap.empty())
 			{
 				NoiseGridSectorGroupBuilderV2 newBuilder(&tileMap);
-				newBuilder.start();
+				newBuilder.startBuilder();
 				auto currentPassKeys = newBuilder.fetchClusterTileKeys();
 
 				NoiseGridSectorGrouping currentGrouping;
@@ -1589,7 +1589,7 @@ class NoiseGridScanner
 			gridPtr = in_gridPtr;
 		}
 
-		void start(EnclaveKeyDef::Enclave2DKey in_startSectorKey);
+		void startScanAttempt(EnclaveKeyDef::Enclave2DKey in_startSectorKey);
 		std::vector<PerlinClusterMeta> fetchClusterMetaVector();
 	private:
 		NoiseGrid* gridPtr = nullptr;
@@ -1903,6 +1903,11 @@ class NoiseGrid
 			return gridSectorDim;
 		}
 
+		int getGridTileDim()
+		{
+			return noiseGridTileDim;
+		}
+
 		EnclaveKeyDef::Enclave2DKey findGridTileSectorCoordinate(double in_coordinateX, double in_coordinateZ)
 		{
 			return EnclaveKeyDef::Enclave2DKey(NoiseGridUtils::findTileCoordinate(in_coordinateX, gridSectorDim), NoiseGridUtils::findTileCoordinate(in_coordinateZ, gridSectorDim));
@@ -2060,7 +2065,7 @@ class NoiseGrid
 			EnclaveKeyDef::Enclave2DKey sectorCoord = findGridTileSectorCoordinate(in_coordinateX, in_coordinateZ);
 			NoiseGridScanner newScanner;
 			newScanner.setGrid(this);
-			newScanner.start(sectorCoord);
+			newScanner.startScanAttempt(sectorCoord);
 
 			// fetch the produced vector of PerlinClusterMeta objects; 1 PerlinClusterMeta per instance of PerlinCluster will be needed.
 			auto generatedMeta = newScanner.fetchClusterMetaVector();
@@ -2096,6 +2101,18 @@ class NoiseGrid
 				exists = true;
 			}
 			return exists;
+		}
+
+		void listExistingSectors()
+		{
+			std::cout << "######### calling listExistingSectors: " << std::endl;
+			for (auto& currentSectorEntry : sectorMap)
+			{
+				EnclaveKeyDef::Enclave2DKey currentSectorKeyCopy = currentSectorEntry.first;
+				currentSectorKeyCopy.printKey();
+				std::cout << std::endl;
+
+			}
 		}
 
 		
