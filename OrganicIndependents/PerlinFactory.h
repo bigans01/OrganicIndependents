@@ -7,6 +7,7 @@
 #include "PerlinClusterMeta.h"
 #include "PerlinCluster.h"
 #include "Enclave2DKeyMapHasher.h"
+#include "ECBMap.h"
 
 /* Description: PerlinClusterGenResult is used to store metadata about where the results of a PerlinCluster are located within an
 * instance of PerlinFactory, as well as whether or not the cluster specified with the given hash (perlinClsuterHashValue) existed
@@ -52,6 +53,7 @@ class PerlinFactory
 	public:
 		PerlinFactory() {};
 
+		void setBlueprintStoragePtr(ECBMap* in_blueprintStoragePtr);	// call this before anything else; called in functions such as OSectorManager::setup 
 		void setupNewGrid(std::string in_gridName, short in_tileDim, short in_gSectorSize, double in_gridStartY, float in_thresholdValue, int in_seedValue,
 							PerlinClusterGeneratorEnum in_generationType);
 
@@ -85,6 +87,8 @@ class PerlinFactory
 		bool doesPerlinClusterExist(std::string in_clusterHash);
 
 		void insertPerlinCluster(std::string in_clusterHash, PerlinCluster in_clusterToInsert);
+
+		ECBMap* blueprintStoragePtr = nullptr;
 
 };
 

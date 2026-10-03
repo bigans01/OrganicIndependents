@@ -11,7 +11,7 @@
 #include "NoiseGridTileSamplingField.h"
 #include "EnclaveCollectionBlueprint.h"
 #include "PerlinClusterGeneratorEnum.h"
-
+#include "ECBMap.h"
 #include "PerlinClusterOutputBase.h"
 #include "MountainPCO.h"
 
@@ -119,12 +119,14 @@ class PerlinCluster
 {
 	public:
 		PerlinCluster() {};
-		PerlinCluster(PerlinClusterMeta in_metaInfo,
+		PerlinCluster(ECBMap* in_clusterECBMapRef,
+			        PerlinClusterMeta in_metaInfo,
 					std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher> in_perlinClusterTiles,
 					int in_parentGridSectorLength,
 					int in_gridSeedValue,
 			        int in_oSectorDimSize,
 			        int in_parentGridTileLength) :
+			clusterECBMapRef(in_clusterECBMapRef),
 			metaInfo(in_metaInfo),
 			perlinClusterTiles(in_perlinClusterTiles),
 			parentGridSectorLength(in_parentGridSectorLength),
@@ -183,6 +185,10 @@ class PerlinCluster
 		PerlinClusterMeta metaInfo;		// stores the groupings from each sector that this PerlinCluster will use.
 
 		PerlinClusterGenerationState currentClusterState = PerlinClusterGenerationState::PERLIN_NOVAL;	// keeps track of whether or not the blueprint data of the PerlinCluster has been generated.
+
+		ECBMap* clusterECBMapRef = nullptr;		// a pointer to an instance of ECBMap; this eventually gets passed to the 
+												// selected derivative class of PerlinClusterOutputBase thats is created in the call to generate().
+												// It should be set appropriately when the non-default constructor of this class is called.
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, PerlinClusterSectorOutput, EnclaveKeyDef::KeyHasher> clusterOutputs;	// a map of 
 

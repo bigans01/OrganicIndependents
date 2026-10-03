@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "PerlinFactory.h"
 
+void PerlinFactory::setBlueprintStoragePtr(ECBMap* in_blueprintStoragePtr)
+{
+	blueprintStoragePtr = in_blueprintStoragePtr;
+}
+
 void PerlinFactory::setupNewGrid(std::string in_gridName, 
 								short in_tileDim, 
 								short in_gSectorSize, 
@@ -87,7 +92,7 @@ std::vector<PerlinClusterGenResult> PerlinFactory::populateSectorInGrid(std::str
 		//std::cout << "!! Size of current currentTileClusterMap: " << currentTileClusterMap.size() << std::endl;
 
 
-		PerlinCluster newCluster(currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed, 256, currentNoiseGridTileDim);
+		PerlinCluster newCluster(blueprintStoragePtr, currentClusterMeta, std::move(currentTileClusterMap), currentNoiseGridDim, currentGridSeed, 256, currentNoiseGridTileDim);
 
 		// TODO: if the GridProcessOrder of the current Grid is not the "first" (i.e, 0),
 		// we will need to go through all previous produced PerlinClusters in preceding grids,

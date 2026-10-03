@@ -242,7 +242,7 @@ void PerlinCluster::generate(PerlinClusterGeneratorEnum in_generatePlanEnum)
 			std::cout << "!!!!################### Size of sectorSamplingFields prior to generation: " << sectorSamplingFields.size() << std::endl;
 
 			pco = std::shared_ptr<PerlinClusterOutputBase>(new MountainPCO());
-			pco->initializeBase(parentGridSectorLength, parentGridTileLength, &perlinClusterTiles, &tileToSectorMapping, &sectorSamplingFields);
+			pco->initializeBase(clusterECBMapRef, parentGridSectorLength, parentGridTileLength, &perlinClusterTiles, &tileToSectorMapping, &sectorSamplingFields);
 			break;
 		}
 	}

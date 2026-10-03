@@ -7,12 +7,15 @@ PerlinClusterOutputBase::PerlinClusterOutputBase()
 }
 
 void PerlinClusterOutputBase::initializeBase(
+	ECBMap* in_pcoBaseECBMapRef,
 	int in_parentClusterSectorWidth,
 	int in_parentClusterTileWidth,
 	std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher>* in_parentPerlinClusterTilesRef,
 	std::unordered_map<EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::KeyHasher>* in_parentTileToSectorMappingRef,
 	std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTileSamplingField, EnclaveKeyDef::KeyHasher>* in_parentSectorSamplingFieldsRef)
 {
+	pcoBaseECBMapRef = in_pcoBaseECBMapRef;
+
 	parentClusterSectorWidth = in_parentClusterSectorWidth;
 	parentClusterTileWidth = in_parentClusterTileWidth;
 
@@ -52,6 +55,12 @@ void PerlinClusterOutputBase::initializeBase(
 	auto attempt2Results = runSamplingAttempt(0, 0);	// should do nothing...
 	std::cout << "!!!!! Size of attempt2Results: " << attempt2Results.size() << std::endl;
 	//runSamplingAttempt(417, 769);	// 1 tile.
+
+
+	// Below: test, just to make sure the ref is working; remove when needed.
+	//std::cout << "!!!! Printing all keys in referenced map: " << std::endl;
+	//pcoBaseECBMapRef->printAllKeys();
+
 }
 
 void PerlinClusterOutputBase::printRelativeShiftingKey()

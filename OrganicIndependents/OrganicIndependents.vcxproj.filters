@@ -325,6 +325,12 @@
     <Filter Include="Source Files\Perlin\PerlinClusterOutputBase">
       <UniqueIdentifier>{8fac9e8c-a517-4750-a15b-a374d1fce1b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Blueprints\ECBMap">
+      <UniqueIdentifier>{923cbc27-622b-4ac4-9f8c-d8b9f5d79b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Blueprints\ECBMap">
+      <UniqueIdentifier>{8a2dda05-5548-43f7-b5b9-a4194ffae421}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1356,6 +1362,15 @@
     <ClInclude Include="MountainPCO.h">
       <Filter>Header Files\Perlin\PerlinClusterOutput</Filter>
     </ClInclude>
+    <ClInclude Include="BlueprintLockRequest.h">
+      <Filter>Header Files\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintLockController.h">
+      <Filter>Header Files\Blueprints\ECBMap</Filter>
+    </ClInclude>
+    <ClInclude Include="ECBMap.h">
+      <Filter>Header Files\Blueprints\ECBMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1816,6 +1831,9 @@
     </ClCompile>
     <ClCompile Include="MountainPCO.cpp">
       <Filter>Source Files\Perlin\PerlinClusterOutputBase</Filter>
+    </ClCompile>
+    <ClCompile Include="ECBMap.cpp">
+      <Filter>Source Files\Blueprints\ECBMap</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

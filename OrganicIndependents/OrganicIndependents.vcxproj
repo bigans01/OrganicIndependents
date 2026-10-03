@@ -183,6 +183,8 @@
     <ClInclude Include="BlockSubType.h" />
     <ClInclude Include="BlockUtils.h" />
     <ClInclude Include="BlueprintFracturingMachine.h" />
+    <ClInclude Include="BlueprintLockController.h" />
+    <ClInclude Include="BlueprintLockRequest.h" />
     <ClInclude Include="BlueprintScanningCuboid.h" />
     <ClInclude Include="BlueprintState.h" />
     <ClInclude Include="BlueprintSyncTracker.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="CalibrateableOREKeyPair.h" />
     <ClInclude Include="ContainerType.h" />
     <ClInclude Include="CyclingDirection.h" />
+    <ClInclude Include="ECBMap.h" />
     <ClInclude Include="EnclaveBlockVertexTextureModeEnum.h" />
     <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveFractureResultsMap.h" />
@@ -526,6 +529,7 @@
     <ClCompile Include="DynamicBorderLineList.cpp" />
     <ClCompile Include="DynamicLinePointSynchronizer.cpp" />
     <ClCompile Include="ECBBorder.cpp" />
+    <ClCompile Include="ECBMap.cpp" />
     <ClCompile Include="ECBPoly.cpp" />
     <ClCompile Include="EnclaveBlock.cpp" />
     <ClCompile Include="EnclaveBorderLineList.cpp" />

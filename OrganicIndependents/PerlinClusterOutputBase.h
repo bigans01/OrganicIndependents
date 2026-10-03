@@ -5,6 +5,7 @@
 
 #include "NoiseGridTileSamplingField.h"
 #include "NoiseGridTile.h"
+#include "ECBMap.h"
 
 
 /* Description: TileToSectorLink stores metadata on the relationship between a local tile's data and it's corresponding absolute mirrors.
@@ -18,6 +19,11 @@
 * The runSamplingAttempt function of PerlinClusterOutputBase should return only TileToSectorLink objects that refer to valid points that can exist;
 * an empty vector that is returned by this function means that no TileToSectorLink could be found to perform sampling on, which indicates the point 
 * doesn't exist.
+* 
+* The PerlinClusterOutputBase needs to have the ability to check existing blueprint data that was done
+* prior to its generation -- if any such data exists. This can be accomplished with a pointer to an existing
+* ECBMap (which should contain already-generated blueprint data), which in this case is pcoBaseECBMapRef.
+* 
 
 */
 class TileToSectorLink
@@ -80,13 +86,19 @@ class PerlinClusterOutputBase
 	public:
 		PerlinClusterOutputBase();
 
-		void initializeBase(int in_parentClusterSectorWidth, 
+		void initializeBase(ECBMap* in_pcoBaseECBMapRef,
+							int in_parentClusterSectorWidth, 
 						    int in_parentClusterTileWidth,
 							std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTile, EnclaveKeyDef::KeyHasher>* in_parentPerlinClusterTilesRef,
 							std::unordered_map<EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::Enclave2DKey, EnclaveKeyDef::KeyHasher>* in_parentTileToSectorMappingRef,
 							std::unordered_map<EnclaveKeyDef::Enclave2DKey, NoiseGridTileSamplingField, EnclaveKeyDef::KeyHasher>* in_parentSectorSamplingFieldsRef);
 
 	private:
+
+		// Below: Use this pointer to allow the PerlinClusterOutputBase-derived classes of this one to check for
+		// previously generated blueprint data, that may be used to influence the terrain of what is currently being produced by
+		// by the PerlinClusterOutputBase-derived class utilizing it.
+		ECBMap* pcoBaseECBMapRef = nullptr;
 
 		// Below: the relativeShiftingKey key is used to shift the tiles and produced blueprint values,
 		// Depending on which item that is being shifted, this key is used in certain formulas of multiplication. The value of
