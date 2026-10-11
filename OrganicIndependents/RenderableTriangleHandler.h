@@ -118,6 +118,9 @@ class RenderableTriangleHandler
 								    EnclaveKeyDef::EnclaveKey in_oreKey);		// digestable Message format; the Message should contain the blueprint key and ORE key (in that order)
 																				// at the front of the Message.
 
+		Message convertHandlerToBDMNoKeys();	// should be functionally the same as convertHandlerToBDM, minus the ore/blueprint keys added at the end;
+												// the purpose of this is to be used as the function that reads/writes the RenderableTriangleHandler via serialization.
+												// Used by the function OrganicRawEnclave::handleOreRTHandlerSerialization, when writing to a file.
 
 	private:
 		std::map<RCategoryEnum, RenderableTriangleContainerManager> rTypesMap;

@@ -108,6 +108,19 @@ class Message
 		Message(int in_messageID, MessageLocality in_messageLocality, MessageType in_messageType) : messageID(in_messageID), messageLocality(in_messageLocality), messageType(in_messageType) {};
 		Message(MessageType in_messageType) : messageType(in_messageType) {};
 
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& messageLocality;
+			ar& messageType;
+			
+			ar& intVector;
+			ar& floatVector;
+			ar& stringVector;
+
+			ar& messageID;
+		}
+
 		MessageLocality messageLocality = MessageLocality::LOCAL;	// default is LOCAL
 		MessageType messageType = MessageType::NOVAL;
 

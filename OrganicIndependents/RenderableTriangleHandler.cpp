@@ -63,6 +63,60 @@ Message RenderableTriangleHandler::convertHandlerToBDM(EnclaveKeyDef::EnclaveKey
 	return handlerToBDMMsg;
 }
 
+Message RenderableTriangleHandler::convertHandlerToBDMNoKeys()
+{
+	Message handlerToBDMMsg(MessageType::BDM_ORE_SKELETONSGM);
+
+	// Each triangle to insert needs the following:
+	//
+	//	-the type (represented by an RCategoryEnum value)
+	//	-the corresponding supergroup ID
+	int totalNumbeOfHandlerEntries = 0;
+	for (auto& currentTypeContainer : rTypesMap)
+	{
+		for (auto& currentContainer : currentTypeContainer.second.mappedContainers)
+		{
+			for (auto& currentContainerTriangle : currentContainer.second.rtVector)
+			{
+				// The category of triangles to insert is based on the RCategoryEnum key.
+				//
+				// -RCategoryEnum::TERRAIN_TILE_1 should correspond to any RDerivedTypeEnum::R_TILED derivative.
+				switch (currentTypeContainer.first)
+				{
+				case RCategoryEnum::TERRAIN_TILE_1:
+				{
+					// The order of values, in this case, is the following:
+					// 
+					// -the category type (ie. RCategoryEnum)
+					// -the corresponding supergroup
+					// -data from the actual triangle
+
+					handlerToBDMMsg.insertInt(int(RCategoryEnum::TERRAIN_TILE_1));	// TERRAIN_TILE_1 should always be this
+					handlerToBDMMsg.insertInt(currentContainer.first);			// insert the super group ID
+					handlerToBDMMsg.insertInt(int(currentContainerTriangle->getRenderingType()));	// get the derived type, store it
+
+					// Append the actual data
+					//handlerToBDMMsg.appendOtherMessage(&currentContainerTriangle->writeRTToMessage());	// insert the actual data; works with C++_17
+
+					Message messageToAppend = currentContainerTriangle->writeRTToMessage();	// works with C++_20
+					handlerToBDMMsg.appendOtherMessage(&messageToAppend);
+
+
+					totalNumbeOfHandlerEntries++;
+					break;
+				}
+				}
+			}
+		}
+	}
+
+	// After we have acquired all the skeletons and sent them into the message, just add thetotal number of RenderableTriangleBase entries,
+	// since we're doing the serialization method.
+	handlerToBDMMsg.insertIntFront(totalNumbeOfHandlerEntries);
+
+	return handlerToBDMMsg;
+}
+
 RenderableTriangleHandler::RenderableTriangleHandler(Message in_buildingMessage)
 {
 	// Step 1: open the message.

@@ -30,6 +30,19 @@ class EnclaveBlock
 
 		EnclaveBlock(Message in_blockDataMessage);		// for creating a block directly from a Message that has a MessageType of BDM_BLOCK_UNTAGGED.
 
+
+		// Boost serialization function, for reading/writing (primarily for usage by OrganicRawEnclave)
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			// read/write out blockFlags first.
+			ar& blockflags;
+
+			// then do the same for the manager.
+			ar& manager;
+		}
+		
+
 		// meta data member variables.
 		BlockFlags blockflags;						// is block air, is block solid, is block set to render, etc
 		FanManager manager;							// stores EnclaveBlockVertexes and FanBases; automatically expands to allocate storage based on needs of the EnclaveBlock.
