@@ -23,6 +23,19 @@ class ECBPoly
 		ECBPoly(ECBPolyType in_polyType) : polyType(in_polyType) {};	// instantiate an ECBPoly with a type; will be deprecated in the future.
 		ECBPoly(FTriangleOutput in_completeTriangleOutput);		// constructor designed for building the ECBPoly off an FTriangleOutput.
 		ECBPoly(Message in_reconstitutingBDMMessage);	// constructor for using a de-keyed and de-ID'd Message of the type BDM_BLUEPRINT_ECBPOLY.
+
+		// Boost serialization
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			
+			ar& polyType;		
+			ar& ecbPolyPoints;
+			ar& materialID;
+			ar& isPolyPerfectlyClamped;
+			ar& emptyNormal;
+			ar& polyBoundaryOrientation;
+		}
 														
 		ECBPolyType polyType = ECBPolyType::FREE;		// types that are required so that ContourPlan instances (OrganicServerLib) know which ECBPoly instances
 														// are used for operations such as mass driving.

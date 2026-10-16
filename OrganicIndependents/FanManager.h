@@ -42,6 +42,7 @@ public:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int version) 
 	{
+		/*
 		if (Archive::is_saving::value)
 		{
 			std::cout << "!! Starting save..." << std::endl;
@@ -50,7 +51,7 @@ public:
 		{
 			std::cout << "!! Starting load..." << std::endl;
 		}
-
+		*/
 
 		// +++++++Load EnclaveBlockVertex data, depending on the value of currentPointStorageMode.
 		// ++++++++++++++++++++++++++++++++++++++++++Begin loading logic for EnclaveBlockVertex data
@@ -58,26 +59,26 @@ public:
 		ar & totalPoints;
 		PointArrayMode serializedPointArrayModeVal = PointArrayMode(currentPointStorageMode);
 
-		std::cout << "!! FanManager:Boost, currentPointStorageMode value is: " << int(currentPointStorageMode) << std::endl;
-		std::cout << "!! FanManager:Boost, totalPoints: " << int(totalPoints) << std::endl;
+		//std::cout << "!! FanManager:Boost, currentPointStorageMode value is: " << int(currentPointStorageMode) << std::endl;
+		//std::cout << "!! FanManager:Boost, totalPoints: " << int(totalPoints) << std::endl;
 
 
 		ar & expandedVertexArraySize;
-		std::cout << "!!FanManager:Boost, expandedVertexArraySize: " << expandedVertexArraySize << std::endl;
+		//std::cout << "!!FanManager:Boost, expandedVertexArraySize: " << expandedVertexArraySize << std::endl;
 
 		// If local, get the points from localVertexArray.
 		switch (serializedPointArrayModeVal)
 		{
 			case PointArrayMode::LOCAL_POINTS:
 			{
-				std::cout << "+++++++++++++++++++ FOUND: LOCAL_POINTS. " << std::endl;
+				//std::cout << "+++++++++++++++++++ FOUND: LOCAL_POINTS. " << std::endl;
 				ar& boost::serialization::make_array(localVertexArray, totalPoints);
 				break;
 			}
 
 			case PointArrayMode::NONLOCAL_POINTS:
 			{
-				std::cout << "+++++++++++++++++++ FOUND: NONLOCAL_POINTS. " << std::endl;
+				//std::cout << "+++++++++++++++++++ FOUND: NONLOCAL_POINTS. " << std::endl;
 				if (Archive::is_saving::value)
 				{
 					for (std::size_t i = 0; i < totalPoints; i++)
@@ -87,7 +88,7 @@ public:
 				}
 				else
 				{
-					std::cout << "!! FanManager:Boost: Loading expandedVertexArray..." << std::endl;
+					//std::cout << "!! FanManager:Boost: Loading expandedVertexArray..." << std::endl;
 
 					//expandedVertexArray = std::make_unique<EnclaveBlockVertex>();
 					expandedVertexArray.reset(new EnclaveBlockVertex[expandedVertexArraySize]);
@@ -114,7 +115,7 @@ public:
 		ar& isExpandedFanArrayActive;
 		ar& expandedFanArraySize;
 
-		std::cout << "!! FanManager:Boost, totalFans: " << int(totalFans) << std::endl;
+		//std::cout << "!! FanManager:Boost, totalFans: " << int(totalFans) << std::endl;
 
 		if (!isExpandedFanArrayActive)
 		{

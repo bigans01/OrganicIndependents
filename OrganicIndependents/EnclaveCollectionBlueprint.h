@@ -29,108 +29,160 @@ and has the ability to store EnclavePainters, which have the ability to change t
 #include "HashUtils.h"
 
 class EnclaveCollectionBlueprint {
-public:
-	EnclaveCollectionBlueprint();
-	EnclaveCollectionBlueprint(const EnclaveCollectionBlueprint& blueprint_orig);
+	public:
+		EnclaveCollectionBlueprint();
+		EnclaveCollectionBlueprint(const EnclaveCollectionBlueprint& blueprint_orig);
 
 
-	EnclaveCollectionBlueprint& operator=(EnclaveCollectionBlueprint&& blueprint_a)
-	{
-		// check for OrganicTriangleCatalog, if it's enabled.
-		if (blueprint_a.isOrganicTriangleCatalogEnabled == true)
+		EnclaveCollectionBlueprint& operator=(EnclaveCollectionBlueprint&& blueprint_a)
 		{
-			isOrganicTriangleCatalogEnabled = blueprint_a.isOrganicTriangleCatalogEnabled;
-			otCatalog = blueprint_a.otCatalog;
+			// check for OrganicTriangleCatalog, if it's enabled.
+			if (blueprint_a.isOrganicTriangleCatalogEnabled == true)
+			{
+				isOrganicTriangleCatalogEnabled = blueprint_a.isOrganicTriangleCatalogEnabled;
+				otCatalog = blueprint_a.otCatalog;
+			}
+
+			bpTracker = blueprint_a.bpTracker;
+			primaryPolygonMap = blueprint_a.primaryPolygonMap;
+			polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
+			fractureResults = blueprint_a.fractureResults;
+
+			return *this;
 		}
 
-		bpTracker = blueprint_a.bpTracker;
-		primaryPolygonMap = blueprint_a.primaryPolygonMap;
-		polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
-		fractureResults = blueprint_a.fractureResults;
-
-		return *this;
-	}
-
-	EnclaveCollectionBlueprint& operator=(const EnclaveCollectionBlueprint& blueprint_a)
-	{
-		// check for OrganicTriangleCatalog, if it's enabled.
-		if (blueprint_a.isOrganicTriangleCatalogEnabled == true)
+		EnclaveCollectionBlueprint& operator=(const EnclaveCollectionBlueprint& blueprint_a)
 		{
-			isOrganicTriangleCatalogEnabled = blueprint_a.isOrganicTriangleCatalogEnabled;
-			otCatalog = blueprint_a.otCatalog;
+			// check for OrganicTriangleCatalog, if it's enabled.
+			if (blueprint_a.isOrganicTriangleCatalogEnabled == true)
+			{
+				isOrganicTriangleCatalogEnabled = blueprint_a.isOrganicTriangleCatalogEnabled;
+				otCatalog = blueprint_a.otCatalog;
+			}
+
+			bpTracker = blueprint_a.bpTracker;
+			primaryPolygonMap = blueprint_a.primaryPolygonMap;
+			polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
+			fractureResults = blueprint_a.fractureResults;
+
+			return *this;
 		}
 
-		bpTracker = blueprint_a.bpTracker;
-		primaryPolygonMap = blueprint_a.primaryPolygonMap;
-		polyGroupRangeMap = blueprint_a.polyGroupRangeMap;
-		fractureResults = blueprint_a.fractureResults;
+		// Boost serialization
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			// writing operations
+			if (Archive::is_saving::value)
+			{				
+				// Write out the fractureResults first.
+				ar& fractureResults;
 
-		return *this;
-	}
+				// Operate on ECBPolys. Write out the number of ECBPolys first,
+				// then for each ECBPoly, write it's ID and then the poly itself.
+				int numberOfEcbPolys = primaryPolygonMap.size();
+				ar& numberOfEcbPolys;
 
-	void copyExistingECBPolysToOtherBlueprint(OperableIntSet in_polyIDsToTransfer, EnclaveCollectionBlueprint* in_otherBlueprintRef);	// transfers ECBPolys ONLY!
-	void copyFractureResultsMapToOtherBlueprint(EnclaveCollectionBlueprint* in_destinationBlueprintRef);
-	int fetchNextECBPolyKeyID();
-	std::set<int> fetchNextIDs(int in_numberOfIdsToFetch);
-	bool doesECBPolyWithKeyAlreadyExist(int in_keyValue);
-	void enableAndRebuildOrganicTriangleCatalog(EnclaveKeyDef::EnclaveKey in_blueprintKey);
-	bool isCatalogEnabled();
-	std::set<int> fetchMorphLodToBlockAffectedOrganicTriangles(EnclaveKeyDef::EnclaveKey in_oreKey);
+				for (auto& currentECBPoly : primaryPolygonMap)
+				{
+					int currentFoundId = currentECBPoly.first;
+					ECBPoly currentFoundPoly = currentECBPoly.second;
 
-	OperableIntSet produceECBPolyIDSet();
-	std::map<int, ECBPoly>::iterator getPolygonMapBeginIter();				// fetches the begin iterator for primaryPolygonMap.
-	std::map<int, ECBPoly>::iterator getPolyIterFromMap(int in_keyValue);	// returns an iterator specific keyed ECBPoly.
-	std::map<int, ECBPoly>::iterator getPolygonMapEndIter();				// fetches the end iterator for primaryPolygonMap.
-	void insertPolyWithKeyValue(int in_keyValue, ECBPoly in_ecbPoly);		// inserts an ECBPoly at a specific key.
+					ar& currentFoundId;
+					ar& currentFoundPoly;
+				}
+				
+			}
 
-	bool insertECBPolyLineIntoPoly(int in_keyValue, int in_lineID, ECBPolyLine in_ecbPolyLine);	// inserts an ECBPolyLine having a specific lineID, into the specified keyed ECBPoly;
-																								// the ECBPoly must already exit for this to work.
+			// reading operations
+			else
+			{
+				// Read in the fractureResults first.
+				ar& fractureResults;
 
-	int getPolygonMapSize();			// returns the size of primaryPolygonMap.
-	void deletePoly(int in_keyValue);	// deletes an ECBPoly at the specified key, in primaryPolygonMap.
+				// Read-in the number of ECBPolys.
+				int numberOfFoundECBPolys = 0;
+				ar& numberOfFoundECBPolys;
 
-	void insertPolyWithKeyValueAndCatalogMapping(int in_keyValue, ECBPoly in_ecbPoly, EnclaveKeyDef::EnclaveKey in_blueprintKey);
-	void deletePolyAndCatalogMapping(int in_keyValue);
+				
+				
+				for (int x = 0; x < numberOfFoundECBPolys; x++)
+				{
+					int currentPolyId = 0;
+					ar& currentPolyId;
 
-	// debug/diag functions; not critical to application but handy for development/debug.
-	void printBDMForORESkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		// attempts to query an ORE, if it exists, to
-																														// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's oreRTHandler.
-																														// This function just prints out the contents in a readable manner, for testing purposes.
+					ECBPoly currentECBPoly;
+					ar& currentECBPoly;
 
-	MessageContainer convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// generate all data necessary to make an instance of this class, in BDM format.
+					primaryPolygonMap[currentPolyId] = currentECBPoly;
+				}
+				
+			}
+		}
 
-	std::string getBlueprintHash();	// analyzes the contents of the blueprint to produce a SHA256 for integrity/verification purposes.
+		void copyExistingECBPolysToOtherBlueprint(OperableIntSet in_polyIDsToTransfer, EnclaveCollectionBlueprint* in_otherBlueprintRef);	// transfers ECBPolys ONLY!
+		void copyFractureResultsMapToOtherBlueprint(EnclaveCollectionBlueprint* in_destinationBlueprintRef);
+		int fetchNextECBPolyKeyID();
+		std::set<int> fetchNextIDs(int in_numberOfIdsToFetch);
+		bool doesECBPolyWithKeyAlreadyExist(int in_keyValue);
+		void enableAndRebuildOrganicTriangleCatalog(EnclaveKeyDef::EnclaveKey in_blueprintKey);
+		bool isCatalogEnabled();
+		std::set<int> fetchMorphLodToBlockAffectedOrganicTriangles(EnclaveKeyDef::EnclaveKey in_oreKey);
 
-	std::map<int, PolyGroupRange> polyGroupRangeMap;
-	EnclaveFractureResultsMap fractureResults;
-	BlueprintSyncTracker bpTracker;
+		OperableIntSet produceECBPolyIDSet();
+		std::map<int, ECBPoly>::iterator getPolygonMapBeginIter();				// fetches the begin iterator for primaryPolygonMap.
+		std::map<int, ECBPoly>::iterator getPolyIterFromMap(int in_keyValue);	// returns an iterator specific keyed ECBPoly.
+		std::map<int, ECBPoly>::iterator getPolygonMapEndIter();				// fetches the end iterator for primaryPolygonMap.
+		void insertPolyWithKeyValue(int in_keyValue, ECBPoly in_ecbPoly);		// inserts an ECBPoly at a specific key.
 
-private:
-	friend class EnclaveCollection;
-	friend class OrganicSystem;
-	friend class Enclave;
-	friend class EnclaveCollectionMap;
-	friend class ECBMap;
+		bool insertECBPolyLineIntoPoly(int in_keyValue, int in_lineID, ECBPolyLine in_ecbPolyLine);	// inserts an ECBPolyLine having a specific lineID, into the specified keyed ECBPoly;
+																									// the ECBPoly must already exit for this to work.
 
-	OrganicTriangleCatalog otCatalog;
-	int currentPolyGroup = 0;
-	bool requiresProcessing = true;								// does the blueprint need to be run through the engine? the default is always true, so that new blueprints are run through terrain processing. changed to false when a collection has been processed. 
-	bool requiresMMProcessing = true;							// does the blueprint need to be run through the MM pipeline?
-	bool isOrganicTriangleCatalogEnabled = false;				// determines whether or not the OrganicTriangleCatalog is active in this blueprint.
+		int getPolygonMapSize();			// returns the size of primaryPolygonMap.
+		void deletePoly(int in_keyValue);	// deletes an ECBPoly at the specified key, in primaryPolygonMap.
 
-	std::map<int, ECBPoly> primaryPolygonMap;			// causes strange false positive in MSVC??
+		void insertPolyWithKeyValueAndCatalogMapping(int in_keyValue, ECBPoly in_ecbPoly, EnclaveKeyDef::EnclaveKey in_blueprintKey);
+		void deletePolyAndCatalogMapping(int in_keyValue);
 
-	bool doesBlueprintRequireProcessing();
-	bool doesBlueprintRequireMMProcessing();
-	int createPolyGroupRangeAndIncrement(PolyGroupRange in_polyGroupRange);		// create the poly group, return its group ID.
+		// debug/diag functions; not critical to application but handy for development/debug.
+		void printBDMForORESkeletonSGM(EnclaveKeyDef::EnclaveKey in_blueprintKey, EnclaveKeyDef::EnclaveKey in_oreKey);		// attempts to query an ORE, if it exists, to
+																															// produce a BDM_ORE_SKELETONSGM Message to parse, from that ORE's oreRTHandler.
+																															// This function just prints out the contents in a readable manner, for testing purposes.
 
-	Message createBDMBlueprintHeaderMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// creates a Message of the type MessageType::BDM_BLUEPRINT_HEADER,
-																						// that contains necessary metadata of the EnclaveCollectionBlueprint, that 
-																						// can be checked against when reconstituting a blueprint to make sure it is rebuilt correctly.
-																						// Currently, a Message of this type includes:
-																						//	-the key of the blueprint that this Message will be created for
-																						//	-the number of ECBPolys in the primaryPolygonMap
-																						//	-the total number of OREs in the blueprint
+		MessageContainer convertBlueprintTOBDMFormat(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// generate all data necessary to make an instance of this class, in BDM format.
+
+		std::string getBlueprintHash();	// analyzes the contents of the blueprint to produce a SHA256 for integrity/verification purposes.
+
+		std::map<int, PolyGroupRange> polyGroupRangeMap;
+		EnclaveFractureResultsMap fractureResults;
+		BlueprintSyncTracker bpTracker;
+
+	private:
+		friend class EnclaveCollection;
+		friend class OrganicSystem;
+		friend class Enclave;
+		friend class EnclaveCollectionMap;
+		friend class ECBMap;
+
+		OrganicTriangleCatalog otCatalog;
+		int currentPolyGroup = 0;
+		bool requiresProcessing = true;								// does the blueprint need to be run through the engine? the default is always true, so that new blueprints are run through terrain processing. changed to false when a collection has been processed. 
+		bool requiresMMProcessing = true;							// does the blueprint need to be run through the MM pipeline?
+		bool isOrganicTriangleCatalogEnabled = false;				// determines whether or not the OrganicTriangleCatalog is active in this blueprint.
+
+		std::map<int, ECBPoly> primaryPolygonMap;			// causes strange false positive in MSVC??
+
+		bool doesBlueprintRequireProcessing();
+		bool doesBlueprintRequireMMProcessing();
+		int createPolyGroupRangeAndIncrement(PolyGroupRange in_polyGroupRange);		// create the poly group, return its group ID.
+
+		Message createBDMBlueprintHeaderMessage(EnclaveKeyDef::EnclaveKey in_blueprintKey);	// creates a Message of the type MessageType::BDM_BLUEPRINT_HEADER,
+																							// that contains necessary metadata of the EnclaveCollectionBlueprint, that 
+																							// can be checked against when reconstituting a blueprint to make sure it is rebuilt correctly.
+																							// Currently, a Message of this type includes:
+																							//	-the key of the blueprint that this Message will be created for
+																							//	-the number of ECBPolys in the primaryPolygonMap
+																							//	-the total number of OREs in the blueprint
 
 };
 

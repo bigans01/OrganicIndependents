@@ -10751,3 +10751,29 @@ BoundaryOrientation IndependentUtils::convertIntToBoundaryOrientation(int in_ind
 	}
 	return returnOrientation;
 }
+
+int IndependentUtils::convertOREKeyCoordsToSingle(EnclaveKeyDef::EnclaveKey in_oreKey)
+{
+	int x = in_oreKey.x * 64;
+	int y = in_oreKey.y * 8;
+	return x + y + in_oreKey.z;
+}
+
+EnclaveKeyDef::EnclaveKey IndependentUtils::convertSingleToOREKeyCoords(int in_singleValue)
+{
+	EnclaveKeyDef::EnclaveKey oreKey;
+
+	int x = in_singleValue / 64;
+	int remainder_x = in_singleValue % 64;
+
+	int y = remainder_x / 8;
+	int remainder_y = remainder_x % 8;
+
+	int z = remainder_y;
+
+	oreKey.x = x;
+	oreKey.y = y;
+	oreKey.z = z;
+
+	return oreKey;
+}

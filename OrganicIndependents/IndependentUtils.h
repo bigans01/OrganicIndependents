@@ -222,6 +222,8 @@ class IndependentUtils
 		static std::string getBoundaryOrientationString(BoundaryOrientation in_boundaryOrientation);
 		static int convertBoundaryOrientationToInt(BoundaryOrientation in_boundaryOrientation);
 		static BoundaryOrientation convertIntToBoundaryOrientation(int in_indexValueToConvert);
+		static int convertOREKeyCoordsToSingle(EnclaveKeyDef::EnclaveKey in_oreKey);
+		static EnclaveKeyDef::EnclaveKey convertSingleToOREKeyCoords(int in_singleValue);
 };
 
 #endif

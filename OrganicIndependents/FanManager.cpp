@@ -1025,6 +1025,7 @@ void FanManager::setFanNormals()
 		auto currentTriangleRef = retrieveSecondaryFromIndex(x);
 		currentTriangleRef->setFanEmptyNormal(calculateNormalFromPointIndices(currentTriangleRef->fetchExpandedFanIndices()));
 
+		/*
 		std::cout << "initial points of current fan: " << std::endl;
 		printPointsAtIndices(currentTriangleRef->fetchExpandedFanIndices());
 
@@ -1032,5 +1033,6 @@ void FanManager::setFanNormals()
 		std::cout << "currently acquiredNormal of current fan: ";
 		acquiredNormal.printPointCoords();
 		std::cout << std::endl;
+		*/
 	}
 }

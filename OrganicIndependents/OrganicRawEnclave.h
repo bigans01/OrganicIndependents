@@ -441,7 +441,7 @@ class OrganicRawEnclave
 		{
 			if (Archive::is_saving::value)
 			{
-				std::cout << "Calling handleBlockSerialization, for saved serialized data..." << std::endl;
+				//std::cout << "Calling handleBlockSerialization, for saved serialized data..." << std::endl;
 
 				// get total number of blocks, write this value, then serialize each one via the EnclaveBlockSerialWrapper.
 				int totalBlocks = blockMap.size();
@@ -452,12 +452,12 @@ class OrganicRawEnclave
 					EnclaveBlockSerialWrapper currentWrapper(currentBlock.first, currentBlock.second);
 					ar& currentWrapper;
 
-					std::cout << "Saved block with key: " << currentBlock.first << std::endl;
+					//std::cout << "Saved block with key: " << currentBlock.first << std::endl;
 				}
 			}
 			else
 			{
-				std::cout << "Calling handleBlockSerialization, for loading serialized data..." << std::endl;
+				//std::cout << "Calling handleBlockSerialization, for loading serialized data..." << std::endl;
 
 				// when reading-in, get the total number of blocks first. Loop that many times,
 				// copying the stored block data directly into the blockMap.
@@ -465,7 +465,7 @@ class OrganicRawEnclave
 				ar& totalBlocksToRead;
 
 
-				std::cout << "Found " << totalBlocksToRead << " blocks to read. " << std::endl;
+				//std::cout << "Found " << totalBlocksToRead << " blocks to read. " << std::endl;
 				for (int x = 0; x < totalBlocksToRead; x++)
 				{
 					EnclaveBlockSerialWrapper blockToReadWrapper;
@@ -475,7 +475,7 @@ class OrganicRawEnclave
 					int currentBlockId = blockToReadWrapper.blockKey;
 					blockMap[currentBlockId] = blockToReadWrapper.blockCopy;
 
-					std::cout << "Found and loaded block with ID: " << currentBlockId << std::endl;
+					//std::cout << "Found and loaded block with ID: " << currentBlockId << std::endl;
 				}
 			}
 		}
@@ -486,12 +486,12 @@ class OrganicRawEnclave
 		{
 			if (Archive::is_saving::value)
 			{
-				std::cout << "Calling handleSkeletonSerialization, for saved serialized data..." << std::endl;
+				//std::cout << "Calling handleSkeletonSerialization, for saved serialized data..." << std::endl;
 
 				// get total number of skeletons, write this value, then serialize each one via the EnclaveBlockSerialWrapper.
 				int totalSkeletons = blockSkeletonMap.size();
 
-				std::cout << "Number of skeletons to write will be: " << totalSkeletons << std::endl;
+				//std::cout << "Number of skeletons to write will be: " << totalSkeletons << std::endl;
 				ar& totalSkeletons;
 
 				for (auto& currentSkeleton : blockSkeletonMap)
@@ -499,7 +499,7 @@ class OrganicRawEnclave
 					SkeletonWrapper newSkeletonWrapper(currentSkeleton.first, currentSkeleton.second);
 					ar& newSkeletonWrapper;
 
-					std::cout << "Saved skeleton with key: " << currentSkeleton.first << std::endl;
+					//std::cout << "Saved skeleton with key: " << currentSkeleton.first << std::endl;
 
 				}
 			}
@@ -510,7 +510,7 @@ class OrganicRawEnclave
 				int totalSkeletonsToRead = 0;
 				ar& totalSkeletonsToRead;
 
-				std::cout << "Found " << totalSkeletonsToRead << " skeletons to read. " << std::endl;
+				//std::cout << "Found " << totalSkeletonsToRead << " skeletons to read. " << std::endl;
 				for (int x = 0; x < totalSkeletonsToRead; x++)
 				{
 					SkeletonWrapper loadedSkeletonWrapper;
@@ -520,7 +520,7 @@ class OrganicRawEnclave
 					int currentSkeletonId = loadedSkeletonWrapper.skeletonIntKey;
 					blockSkeletonMap[currentSkeletonId] = loadedSkeletonWrapper.skeletonCopy;
 
-					std::cout << "Found and loaded skeleton with ID: " << currentSkeletonId << std::endl;
+					//std::cout << "Found and loaded skeleton with ID: " << currentSkeletonId << std::endl;
 				}
 			}
 		}
