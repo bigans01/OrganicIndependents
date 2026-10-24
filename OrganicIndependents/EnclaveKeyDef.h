@@ -20,195 +20,202 @@ maps and unordered_maps must specify the KeyHasher hashing function, to make the
 #define ENCLAVEKEY_H
 
 class EnclaveKeyDef {
-
-public:
-	// forms the structure of the Key itself.
-	struct EnclaveKey
-	{
-		int x = 0;
-		int y = 0;
-		int z = 0;
-
-		EnclaveKey() {};
-		EnclaveKey(int in_x, int in_y, int in_z) : x(in_x), y(in_y), z(in_z) {}
-
-		// addition operator overload
-		EnclaveKey& operator+=(const EnclaveKey& enclaveKey_b)
+	public:
+		// forms the structure of the Key itself.
+		struct EnclaveKey
 		{
-			x += enclaveKey_b.x;
-			y += enclaveKey_b.y;
-			z += enclaveKey_b.z;
-			return *this;
-		}
+			int x = 0;
+			int y = 0;
+			int z = 0;
 
-		// subtraction operator overload
-		EnclaveKey& operator-=(const EnclaveKey& enclaveKey_b)
-		{
-			x -= enclaveKey_b.x;
-			y -= enclaveKey_b.y;
-			z -= enclaveKey_b.z;
-			return *this;
-		}
+			template<class Archive>
+			void serialize(Archive& ar, const unsigned int version)
+			{
+				ar& x;
+				ar& y;
+				ar& z;
+			}
 
-		EnclaveKey operator+(const EnclaveKey& enclaveKey_b)
-		{
-			EnclaveKey returnKey;
-			returnKey.x = x + enclaveKey_b.x;
-			returnKey.y = y + enclaveKey_b.y;
-			returnKey.z = z + enclaveKey_b.z;
-			return returnKey;
-		}
+			EnclaveKey() {};
+			EnclaveKey(int in_x, int in_y, int in_z) : x(in_x), y(in_y), z(in_z) {}
 
-		EnclaveKey operator-(const EnclaveKey& enclaveKey_b)
-		{
-			EnclaveKey returnKey;
-			returnKey.x = x - enclaveKey_b.x;
-			returnKey.y = y - enclaveKey_b.y;
-			returnKey.z = z - enclaveKey_b.z;
-			return returnKey;
-		}
+			// addition operator overload
+			EnclaveKey& operator+=(const EnclaveKey& enclaveKey_b)
+			{
+				x += enclaveKey_b.x;
+				y += enclaveKey_b.y;
+				z += enclaveKey_b.z;
+				return *this;
+			}
 
-		// operator overloading (required)
-		bool operator==(const EnclaveKey &other) const
-		{
-			return (x == other.x
-				&&
-				y == other.y
-				&&
-				z == other.z);
-		}
-		bool operator!=(const EnclaveKey &other) const
-		{
-			return
-			(x != other.x
-			||
-			y != other.y
-			||
-			z != other.z);
-		}
+			// subtraction operator overload
+			EnclaveKey& operator-=(const EnclaveKey& enclaveKey_b)
+			{
+				x -= enclaveKey_b.x;
+				y -= enclaveKey_b.y;
+				z -= enclaveKey_b.z;
+				return *this;
+			}
+
+			EnclaveKey operator+(const EnclaveKey& enclaveKey_b)
+			{
+				EnclaveKey returnKey;
+				returnKey.x = x + enclaveKey_b.x;
+				returnKey.y = y + enclaveKey_b.y;
+				returnKey.z = z + enclaveKey_b.z;
+				return returnKey;
+			}
+
+			EnclaveKey operator-(const EnclaveKey& enclaveKey_b)
+			{
+				EnclaveKey returnKey;
+				returnKey.x = x - enclaveKey_b.x;
+				returnKey.y = y - enclaveKey_b.y;
+				returnKey.z = z - enclaveKey_b.z;
+				return returnKey;
+			}
+
+			// operator overloading (required)
+			bool operator==(const EnclaveKey &other) const
+			{
+				return (x == other.x
+					&&
+					y == other.y
+					&&
+					z == other.z);
+			}
+			bool operator!=(const EnclaveKey &other) const
+			{
+				return
+				(x != other.x
+				||
+				y != other.y
+				||
+				z != other.z);
+			}
 		
-		// checks if the key equals this exact x/y/z
-		bool equals(int in_x, int in_y, int in_z)
-		{
-			bool equalsValue = false;
-			if
-			(
-				(x == in_x)
-				&&
-				(y == in_y)
-				&&
-				(z == in_z)
-			)
+			// checks if the key equals this exact x/y/z
+			bool equals(int in_x, int in_y, int in_z)
 			{
-				equalsValue = true;
+				bool equalsValue = false;
+				if
+				(
+					(x == in_x)
+					&&
+					(y == in_y)
+					&&
+					(z == in_z)
+				)
+				{
+					equalsValue = true;
+				}
+				return equalsValue;
 			}
-			return equalsValue;
-		}
 
-		// simply prints the key to std::cout.
-		void printKey()
-		{
-			std::cout << " (" << x << ", " << y << ", " << z << ") ";
-		}
-
-		// simply return the inverted key.
-		EnclaveKey getInvertedKey()
-		{
-			return EnclaveKey(x*-1, y*-1, z*-1);
-		}
-
-		// returns an std::string that contains the key coordinates.
-		std::string getKeyString()
-		{
-			return std::string("(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")");
-		}
-	};
-
-	struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
-	{
-		int a = 0;
-		int b = 0;
-
-		Enclave2DKey() {};
-		Enclave2DKey(int in_a, int in_b) : a(in_a), b(in_b) {};
-
-		Enclave2DKey operator-(const Enclave2DKey& enclaveKey_b)
-		{
-			Enclave2DKey returnKey;
-			returnKey.a = a - enclaveKey_b.a;
-			returnKey.b = b - enclaveKey_b.b;
-			return returnKey;
-		}
-
-		Enclave2DKey operator+(const Enclave2DKey& enclaveKey_b)
-		{
-			Enclave2DKey returnKey;
-			returnKey.a = a + enclaveKey_b.a;
-			returnKey.b = b + enclaveKey_b.b;
-			return returnKey;
-		}
-
-		bool equals(int in_a, int in_b)
-		{
-			bool equalsValue = false;
-			if
-			(
-				(a == in_a)
-				&&
-				(b == in_b)
-			)
+			// simply prints the key to std::cout.
+			void printKey()
 			{
-				equalsValue = true;
+				std::cout << " (" << x << ", " << y << ", " << z << ") ";
 			}
-			return equalsValue;
-		}
 
-		bool operator==(const Enclave2DKey &other) const
+			// simply return the inverted key.
+			EnclaveKey getInvertedKey()
+			{
+				return EnclaveKey(x*-1, y*-1, z*-1);
+			}
+
+			// returns an std::string that contains the key coordinates.
+			std::string getKeyString()
+			{
+				return std::string("(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")");
+			}
+		};
+
+		struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
 		{
-			return (a == other.a
-				&&
-				b == other.b
-				);
-		}
+			int a = 0;
+			int b = 0;
 
-		void printKey()
+			Enclave2DKey() {};
+			Enclave2DKey(int in_a, int in_b) : a(in_a), b(in_b) {};
+
+			Enclave2DKey operator-(const Enclave2DKey& enclaveKey_b)
+			{
+				Enclave2DKey returnKey;
+				returnKey.a = a - enclaveKey_b.a;
+				returnKey.b = b - enclaveKey_b.b;
+				return returnKey;
+			}
+
+			Enclave2DKey operator+(const Enclave2DKey& enclaveKey_b)
+			{
+				Enclave2DKey returnKey;
+				returnKey.a = a + enclaveKey_b.a;
+				returnKey.b = b + enclaveKey_b.b;
+				return returnKey;
+			}
+
+			bool equals(int in_a, int in_b)
+			{
+				bool equalsValue = false;
+				if
+				(
+					(a == in_a)
+					&&
+					(b == in_b)
+				)
+				{
+					equalsValue = true;
+				}
+				return equalsValue;
+			}
+
+			bool operator==(const Enclave2DKey &other) const
+			{
+				return (a == other.a
+					&&
+					b == other.b
+					);
+			}
+
+			void printKey()
+			{
+				std::cout << " (" << a << ", " << b << ") ";
+			}
+
+			// returns an std::string that contains the key coordinates.
+			std::string getKeyString()
+			{
+				return std::string("(" + std::to_string(a) + ", " + std::to_string(b) + ")");
+			}
+		};
+
+
+		struct KeyHasher
 		{
-			std::cout << " (" << a << ", " << b << ") ";
-		}
+			// hash generation function, required to be specified when put into an unordered map. 
+			std::size_t operator()(const EnclaveKey& k) const
+			{
+				using std::size_t;
+				using std::hash;
+				using std::string;
+				return (
+					(hash<int>()(k.x)
+						^ (hash<int>()(k.y) << 1)
+						) >> 1)
+					^ (hash<int>()(k.z) << 1);
+			}
 
-		// returns an std::string that contains the key coordinates.
-		std::string getKeyString()
-		{
-			return std::string("(" + std::to_string(a) + ", " + std::to_string(b) + ")");
-		}
-	};
-
-
-	struct KeyHasher
-	{
-		// hash generation function, required to be specified when put into an unordered map. 
-		std::size_t operator()(const EnclaveKey& k) const
-		{
-			using std::size_t;
-			using std::hash;
-			using std::string;
-			return (
-				(hash<int>()(k.x)
-					^ (hash<int>()(k.y) << 1)
-					) >> 1)
-				^ (hash<int>()(k.z) << 1);
-		}
-
-		std::size_t operator()(const Enclave2DKey& k) const
-		{
-			using std::size_t;
-			using std::hash;
-			using std::string;
-			return (hash<int>()(k.a)
-				^ (hash<int>()(k.b) << 1)
-				) >> 1;
-		}
-	};
+			std::size_t operator()(const Enclave2DKey& k) const
+			{
+				using std::size_t;
+				using std::hash;
+				using std::string;
+				return (hash<int>()(k.a)
+					^ (hash<int>()(k.b) << 1)
+					) >> 1;
+			}
+		};
 
 
 };
